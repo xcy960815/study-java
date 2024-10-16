@@ -13,3 +13,9 @@
  - 自己在controller层成功引用service层的实现类，并了解了@Resource注解的用法
  - 并给实现类添加接口，并了解了@Service注解在实现类中的用法
  - 最后就是在倒腾idea的语言配置，浪费了很多时间
+
+### 10月16日
+
+ - 将之前的HelloWordController类改名为StudyJavaUserController
+ - 将之前的HelloWordService改名为StudyJavaUserService
+ - 打通数据库的连接，并生成了对应的实体类
