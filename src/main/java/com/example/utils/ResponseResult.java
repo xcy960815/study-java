@@ -2,6 +2,11 @@ package com.example.utils;
 
 import java.io.Serializable;
 
+
+/**
+ * 改类是生成响应的工具类
+ * @param <T>
+ */
 public class ResponseResult <T> implements Serializable {
     private int code;
     private String message;

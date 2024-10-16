@@ -1,5 +1,9 @@
 package com.example.utils;
 
+
+/**
+ * 改类是生成响应的工具类
+ */
 public class ResponseGenerator {
     private static final int SUCCESS_CODE = 200;
     private static final int ERROR_CODE = 500;
