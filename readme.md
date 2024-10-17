@@ -19,3 +19,9 @@
  - 将之前的HelloWordController类改名为StudyJavaUserController
  - 将之前的HelloWordService改名为StudyJavaUserService
  - 打通数据库的连接，并生成了对应的实体类
+
+### 10月17日
+
+ - 今天学习了在表类使用 TableField 注解 代表给这个类上添加一个字段，且不是这个表中的原生字段
+ - 还有就是@JSONignore注解，用于往接口输出的时候忽略这个字段，但是仍可以在service层中使用
+ - 在一个就是使用DTO的方式处理接口返回数据，这个相对比较灵活，可以生成自己想要的字段名字，以及想要哪些字段，缺点就是麻烦点
