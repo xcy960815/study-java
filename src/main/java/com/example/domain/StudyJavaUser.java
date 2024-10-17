@@ -2,8 +2,10 @@ package com.example.domain;
 
 import java.io.Serializable;
 import java.util.Date;
-import lombok.Data;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Data;
+import com.baomidou.mybatisplus.annotation.TableField;
 /**
  * 
  * @TableName study_java_user
@@ -19,6 +21,12 @@ public class StudyJavaUser implements Serializable {
      * 用户昵称
      */
     private String nickName;
+
+    /**
+     * 用户年龄 不是表里面的字段
+     */
+    @TableField(exist = false)
+    private String age;
 
     /**
      * 登陆名称(默认为手机号)
@@ -43,11 +51,13 @@ public class StudyJavaUser implements Serializable {
     /**
      * 注销标识字段(0-正常 1-已注销)
      */
+    @JsonIgnore
     private Integer isDeleted;
 
     /**
      * 锁定标识字段(0-未锁定 1-已锁定)
      */
+    @JsonIgnore
     private Integer lockedFlag;
 
     /**

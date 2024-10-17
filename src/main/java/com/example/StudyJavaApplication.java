@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext;
 import org.springframework.context.ApplicationContext;
 
+
 @SpringBootApplication
 @MapperScan("com.example.mapper") // 扫描mapper
 public class StudyJavaApplication {

@@ -12,7 +12,7 @@ import java.util.List;
 */
 public interface StudyJavaUserMapper {
 
-    int deleteByPrimaryKey(Long id);
+    int deleteById(Long id);
 
     int insert(StudyJavaUser record);
 

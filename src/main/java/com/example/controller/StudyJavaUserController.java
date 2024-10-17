@@ -1,5 +1,6 @@
 package com.example.controller;
 import com.example.domain.StudyJavaUser;
+import com.example.dto.StudyJavaUserDTO;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -22,8 +23,14 @@ public class StudyJavaUserController {
      */
     @RequestMapping("/getAllUser")
     @ResponseBody
-    public ResponseResult getSuccess() {
+    public ResponseResult getAllUser() {
         List<StudyJavaUser> userList = studyJavaUserService.getAllUsers();
+        return ResponseGenerator.generatSuccessResult(userList) ;
+    }
+    @RequestMapping("/getAllUserDto")
+    @ResponseBody
+    public ResponseResult getAllUserDTO() {
+        List<StudyJavaUserDTO> userList = studyJavaUserService.getAllUsersDTO();
         return ResponseGenerator.generatSuccessResult(userList) ;
     }
     /**
