@@ -44,4 +44,9 @@ public class StudyJavaUserServiceImp implements StudyJavaUserService {
         studyJavaUser.setCreateTime(createTime);// 提供一个默认值
         return studyJavaUserMapper.insertUser(studyJavaUser);
     }
+
+    @Override
+    public int deleteUser(StudyJavaUser studyJavaUser) {
+        return studyJavaUserMapper.deleteUser(studyJavaUser);
+    }
 }

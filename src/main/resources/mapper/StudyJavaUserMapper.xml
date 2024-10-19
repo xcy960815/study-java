@@ -59,26 +59,6 @@
         )
     </insert>
     <!--  更新一条用户数据  -->
-<!--    <update id="updateUser" parameterType="com.example.domain.StudyJavaUser">-->
-<!--        update study_java_user-->
-<!--        <set>-->
-<!--                <if test="studyJavaUser and studyJavaUser.nickName != null">-->
-<!--                    nick_name = #{studyJavaUser.nickName,jdbcType=VARCHAR},-->
-<!--                </if>-->
-<!--                <if test="studyJavaUser and studyJavaUser.loginName != null">-->
-<!--                    login_name = #{studyJavaUser.loginName,jdbcType=VARCHAR},-->
-<!--                </if>-->
-<!--                <if test="studyJavaUser and studyJavaUser.introduceSign != null">-->
-<!--                    introduce_sign = #{studyJavaUser.introduceSign,jdbcType=VARCHAR},-->
-<!--                </if>-->
-<!--                <if test="studyJavaUser and studyJavaUser.address != null">-->
-<!--                    address = #{studyJavaUser.address,jdbcType=VARCHAR},-->
-<!--                </if>-->
-<!--        </set>-->
-<!--        where-->
-<!--            is_deleted = 0-->
-<!--            user_id = #{studyJavaUser.userId,jdbcType=BIGINT}-->
-<!--    </update>-->
     <update id="updateUser" parameterType="com.example.domain.StudyJavaUser">
         update study_java_user
         <set>
@@ -98,6 +78,15 @@
         where
         is_deleted = 0
         and `user_id` = #{studyJavaUser.userId,jdbcType=BIGINT}
+    </update>
+    <!--  删除用户 软删除  -->
+    <update id="deleteUser" parameterType="com.example.domain.StudyJavaUser">
+        update study_java_user
+        <set>
+            is_deleted = 1
+        </set>
+        where
+            `user_id` = #{studyJavaUser.userId,jdbcType=BIGINT}
     </update>
 
 </mapper>

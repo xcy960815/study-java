@@ -22,4 +22,6 @@ public interface StudyJavaUserMapper {
     int updateUser( @Param("studyJavaUser") StudyJavaUser studyJavaUser);
     // 添加用户
     int insertUser( @Param("studyJavaUser") StudyJavaUser studyJavaUser);
+    // 删除用户
+    int deleteUser( @Param("studyJavaUser") StudyJavaUser studyJavaUser);
 }

@@ -47,4 +47,11 @@ public class StudyJavaUserController {
         // 返回插入结果
         return ResponseGenerator.generatSuccessResult(true);
     }
+    @DeleteMapping("/deleteUser")
+    @ResponseBody
+    public ResponseResult deleteUser(@RequestBody StudyJavaUser studyJavaUser) {
+        studyJavaUserService.deleteUser(studyJavaUser);
+        // 返回插入结果
+        return ResponseGenerator.generatSuccessResult(true);
+    }
 }
