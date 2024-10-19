@@ -29,7 +29,7 @@
         study_java_user
         <where>
             is_deleted = 0
-            <if test="studyJavaUser != null and studyJavaUser.studyJavaUser.userId != null and studyJavaUser.studyJavaUser.userId != ''">
+            <if test="studyJavaUser != null and studyJavaUser.userId != null and studyJavaUser.userId != ''">
                 AND user_id = #{studyJavaUser.userId}
             </if>
             <if test="studyJavaUser != null and studyJavaUser.nickName != null and studyJavaUser.nickName != ''">
@@ -53,30 +53,51 @@
         ,password_md5,introduce_sign,address
         ,is_deleted,locked_flag,create_time
         )
-        values (#{userId,jdbcType=BIGINT},#{nickName,jdbcType=VARCHAR},#{loginName,jdbcType=VARCHAR}
-        ,#{passwordMd5,jdbcType=VARCHAR},#{introduceSign,jdbcType=VARCHAR},#{address,jdbcType=VARCHAR}
-        ,#{isDeleted,jdbcType=TINYINT},#{lockedFlag,jdbcType=TINYINT},#{createTime,jdbcType=TIMESTAMP}
+        values (#{studyJavaUser.userId,jdbcType=BIGINT},#{studyJavaUser.nickName,jdbcType=VARCHAR},#{studyJavaUser.loginName,jdbcType=VARCHAR}
+        ,#{studyJavaUser.passwordMd5,jdbcType=VARCHAR},#{studyJavaUser.introduceSign,jdbcType=VARCHAR},#{studyJavaUser.address,jdbcType=VARCHAR}
+        ,#{studyJavaUser.isDeleted,jdbcType=TINYINT},#{studyJavaUser.lockedFlag,jdbcType=TINYINT},#{studyJavaUser.createTime,jdbcType=TIMESTAMP}
         )
     </insert>
     <!--  更新一条用户数据  -->
+<!--    <update id="updateUser" parameterType="com.example.domain.StudyJavaUser">-->
+<!--        update study_java_user-->
+<!--        <set>-->
+<!--                <if test="studyJavaUser and studyJavaUser.nickName != null">-->
+<!--                    nick_name = #{studyJavaUser.nickName,jdbcType=VARCHAR},-->
+<!--                </if>-->
+<!--                <if test="studyJavaUser and studyJavaUser.loginName != null">-->
+<!--                    login_name = #{studyJavaUser.loginName,jdbcType=VARCHAR},-->
+<!--                </if>-->
+<!--                <if test="studyJavaUser and studyJavaUser.introduceSign != null">-->
+<!--                    introduce_sign = #{studyJavaUser.introduceSign,jdbcType=VARCHAR},-->
+<!--                </if>-->
+<!--                <if test="studyJavaUser and studyJavaUser.address != null">-->
+<!--                    address = #{studyJavaUser.address,jdbcType=VARCHAR},-->
+<!--                </if>-->
+<!--        </set>-->
+<!--        where-->
+<!--            is_deleted = 0-->
+<!--            user_id = #{studyJavaUser.userId,jdbcType=BIGINT}-->
+<!--    </update>-->
     <update id="updateUser" parameterType="com.example.domain.StudyJavaUser">
         update study_java_user
         <set>
-                <if test="studyJavaUser.nickName != null">
-                    nick_name = #{studyJavaUser.nickName,jdbcType=VARCHAR},
-                </if>
-                <if test="studyJavaUser.loginName != null">
-                    login_name = #{studyJavaUser.loginName,jdbcType=VARCHAR},
-                </if>
-                <if test="studyJavaUser.introduceSign != null">
-                    introduce_sign = #{studyJavaUser.introduceSign,jdbcType=VARCHAR},
-                </if>
-                <if test="studyJavaUser.address != null">
-                    address = #{studyJavaUser.address,jdbcType=VARCHAR},
-                </if>
+            <if test="studyJavaUser.nickName != null">
+                nick_name = #{studyJavaUser.nickName,jdbcType=VARCHAR},
+            </if>
+            <if test="studyJavaUser.loginName != null">
+                login_name = #{studyJavaUser.loginName,jdbcType=VARCHAR},
+            </if>
+            <if test="studyJavaUser.introduceSign != null">
+                introduce_sign = #{studyJavaUser.introduceSign,jdbcType=VARCHAR},
+            </if>
+            <if test="studyJavaUser.address != null">
+                address = #{studyJavaUser.address,jdbcType=VARCHAR},
+            </if>
         </set>
         where
-            is_deleted = 0
-            user_id = #{studyJavaUser.userId,jdbcType=BIGINT}
+        is_deleted = 0
+        and `user_id` = #{studyJavaUser.userId,jdbcType=BIGINT}
     </update>
+
 </mapper>

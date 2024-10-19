@@ -20,4 +20,6 @@ public interface StudyJavaUserMapper {
     IPage<StudyJavaUser> getUserList(@Param("page") Page<StudyJavaUser> page, @Param("studyJavaUser") StudyJavaUser studyJavaUser);
     // 更新用户
     int updateUser( @Param("studyJavaUser") StudyJavaUser studyJavaUser);
+    // 添加用户
+    int insertUser( @Param("studyJavaUser") StudyJavaUser studyJavaUser);
 }

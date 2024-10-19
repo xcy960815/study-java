@@ -19,4 +19,10 @@ public interface StudyJavaUserService {
      * @param studyJavaUser
      */
     int updateUser(StudyJavaUser studyJavaUser);
+
+    /**
+     * 添加用户
+     * @param studyJavaUser
+     */
+    int insertUser(StudyJavaUser studyJavaUser);
 }

@@ -36,7 +36,15 @@ public class StudyJavaUserController {
     @PostMapping("/updateUser")
     @ResponseBody
     public ResponseResult updateUser(@RequestBody StudyJavaUser studyJavaUser) {
-        int changedLine =  studyJavaUserService.updateUser(studyJavaUser);
+        studyJavaUserService.updateUser(studyJavaUser);
+        // 返回更新结果
+        return ResponseGenerator.generatSuccessResult(true);
+    }
+    @PostMapping("/insertUser")
+    @ResponseBody
+    public ResponseResult insertUser(@RequestBody StudyJavaUser studyJavaUser) {
+        studyJavaUserService.insertUser(studyJavaUser);
+        // 返回插入结果
         return ResponseGenerator.generatSuccessResult(true);
     }
 }

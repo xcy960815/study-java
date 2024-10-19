@@ -28,6 +28,13 @@ public class StudyJavaUser implements Serializable {
     @TableField(exist = false)
     private int age;
 
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
     /**
      * 登陆名称(默认为手机号)
      */
