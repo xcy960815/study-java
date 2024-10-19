@@ -1,6 +1,10 @@
 package com.example.mapper;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.domain.StudyJavaUser;
+import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
@@ -10,19 +14,17 @@ import java.util.List;
 * @createDate 2024-10-16 11:26:58
 * @Entity com.example.domain.StudyJavaUser
 */
+@Repository
 public interface StudyJavaUserMapper {
 
-    int deleteById(Long id);
+//    int insert(StudyJavaUser record);
+//
+//    int insertSelective(StudyJavaUser record);
+//
+//    int updateById(StudyJavaUser record);
+//
+//    int updateByPrimaryKey(StudyJavaUser record);
 
-    int insert(StudyJavaUser record);
-
-    int insertSelective(StudyJavaUser record);
-
-    StudyJavaUser selectByPrimaryKey(Long id);
-
-    int updateByPrimaryKeySelective(StudyJavaUser record);
-
-    int updateByPrimaryKey(StudyJavaUser record);
-
-    List<StudyJavaUser> selectAllUsers();
+    // 获取用户列表
+    IPage<StudyJavaUser> getUserList(@Param("page") Page<StudyJavaUser> page, @Param("userQueryData") StudyJavaUser userQueryData);
 }

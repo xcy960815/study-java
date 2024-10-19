@@ -1,15 +1,17 @@
 package com.example.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.domain.StudyJavaUser;
-import com.example.dto.StudyJavaUserDTO;
-import java.util.List;
+
+
 
 public interface StudyJavaUserService {
 
-    List<StudyJavaUser> getAllUsers();
-
-    List<StudyJavaUserDTO> getAllUsersDTO();
-
-    String getError();
+    /**
+    * 查询所有用户
+    * @return IPage<StudyJavaUser>
+    */
+    IPage<StudyJavaUser> getUserList(Page<StudyJavaUser> page, StudyJavaUser userQueryData);
 
 }

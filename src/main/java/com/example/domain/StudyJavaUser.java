@@ -26,7 +26,7 @@ public class StudyJavaUser implements Serializable {
      * 用户年龄 不是表里面的字段
      */
     @TableField(exist = false)
-    private String age;
+    private int age;
 
     /**
      * 登陆名称(默认为手机号)

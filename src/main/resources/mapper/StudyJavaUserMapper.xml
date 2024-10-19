@@ -22,110 +22,81 @@
         is_deleted,locked_flag,create_time
     </sql>
 
-    <select id="selectAllUsers"  resultMap="BaseResultMap">
-        select
+    <!--  根据条件查询所有的用户  -->
+    <select id="getUserList" resultType="com.example.domain.StudyJavaUser">
+        SELECT
         <include refid="Base_Column_List" />
-        from study_java_user
+        FROM
+        study_java_user
+        <where>
+            1 = 1
+            <if test="userQueryData.nickName != null and userQueryData.nickName != ''">
+                AND nick_name LIKE CONCAT('%', #{userQueryData.nickName}, '%')
+            </if>
+            <if test="userQueryData.loginName != null and userQueryData.loginName != ''">
+                AND login_name = #{userQueryData.loginName}
+            </if>
+        </where>
     </select>
 
 
-    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List" />
-        from study_java_user
-        where  user_id = #{userId,jdbcType=BIGINT}
-    </select>
-
-    <delete id="deleteById" parameterType="java.lang.Long">
-        delete from study_java_user
-        where  user_id = #{userId,jdbcType=BIGINT} 
-    </delete>
-
-
-    <insert id="insert" keyColumn="user_id" keyProperty="userId" parameterType="com.example.domain.StudyJavaUser" useGeneratedKeys="true">
-        insert into study_java_user
-        ( user_id,nick_name,login_name
-        ,password_md5,introduce_sign,address
-        ,is_deleted,locked_flag,create_time
-        )
-        values (#{userId,jdbcType=BIGINT},#{nickName,jdbcType=VARCHAR},#{loginName,jdbcType=VARCHAR}
-        ,#{passwordMd5,jdbcType=VARCHAR},#{introduceSign,jdbcType=VARCHAR},#{address,jdbcType=VARCHAR}
-        ,#{isDeleted,jdbcType=TINYINT},#{lockedFlag,jdbcType=TINYINT},#{createTime,jdbcType=TIMESTAMP}
-        )
-    </insert>
-
-
-    <insert id="insertSelective" keyColumn="user_id" keyProperty="userId" parameterType="com.example.domain.StudyJavaUser" useGeneratedKeys="true">
-        insert into study_java_user
-        <trim prefix="(" suffix=")" suffixOverrides=",">
-                <if test="userId != null">user_id,</if>
-                <if test="nickName != null">nick_name,</if>
-                <if test="loginName != null">login_name,</if>
-                <if test="passwordMd5 != null">password_md5,</if>
-                <if test="introduceSign != null">introduce_sign,</if>
-                <if test="address != null">address,</if>
-                <if test="isDeleted != null">is_deleted,</if>
-                <if test="lockedFlag != null">locked_flag,</if>
-                <if test="createTime != null">create_time,</if>
-        </trim>
-        <trim prefix="values (" suffix=")" suffixOverrides=",">
-                <if test="userId != null">#{userId,jdbcType=BIGINT},</if>
-                <if test="nickName != null">#{nickName,jdbcType=VARCHAR},</if>
-                <if test="loginName != null">#{loginName,jdbcType=VARCHAR},</if>
-                <if test="passwordMd5 != null">#{passwordMd5,jdbcType=VARCHAR},</if>
-                <if test="introduceSign != null">#{introduceSign,jdbcType=VARCHAR},</if>
-                <if test="address != null">#{address,jdbcType=VARCHAR},</if>
-                <if test="isDeleted != null">#{isDeleted,jdbcType=TINYINT},</if>
-                <if test="lockedFlag != null">#{lockedFlag,jdbcType=TINYINT},</if>
-                <if test="createTime != null">#{createTime,jdbcType=TIMESTAMP},</if>
-        </trim>
-    </insert>
-
-
-    <update id="updateByPrimaryKeySelective" parameterType="com.example.domain.StudyJavaUser">
-        update study_java_user
-        <set>
-                <if test="nickName != null">
-                    nick_name = #{nickName,jdbcType=VARCHAR},
-                </if>
-                <if test="loginName != null">
-                    login_name = #{loginName,jdbcType=VARCHAR},
-                </if>
-                <if test="passwordMd5 != null">
-                    password_md5 = #{passwordMd5,jdbcType=VARCHAR},
-                </if>
-                <if test="introduceSign != null">
-                    introduce_sign = #{introduceSign,jdbcType=VARCHAR},
-                </if>
-                <if test="address != null">
-                    address = #{address,jdbcType=VARCHAR},
-                </if>
-                <if test="isDeleted != null">
-                    is_deleted = #{isDeleted,jdbcType=TINYINT},
-                </if>
-                <if test="lockedFlag != null">
-                    locked_flag = #{lockedFlag,jdbcType=TINYINT},
-                </if>
-                <if test="createTime != null">
-                    create_time = #{createTime,jdbcType=TIMESTAMP},
-                </if>
-        </set>
-        where   user_id = #{userId,jdbcType=BIGINT} 
-    </update>
+<!--    <insert id="insert" keyColumn="user_id" keyProperty="userId" parameterType="com.example.domain.StudyJavaUser" useGeneratedKeys="true">-->
+<!--        insert into study_java_user-->
+<!--        ( user_id,nick_name,login_name-->
+<!--        ,password_md5,introduce_sign,address-->
+<!--        ,is_deleted,locked_flag,create_time-->
+<!--        )-->
+<!--        values (#{userId,jdbcType=BIGINT},#{nickName,jdbcType=VARCHAR},#{loginName,jdbcType=VARCHAR}-->
+<!--        ,#{passwordMd5,jdbcType=VARCHAR},#{introduceSign,jdbcType=VARCHAR},#{address,jdbcType=VARCHAR}-->
+<!--        ,#{isDeleted,jdbcType=TINYINT},#{lockedFlag,jdbcType=TINYINT},#{createTime,jdbcType=TIMESTAMP}-->
+<!--        )-->
+<!--    </insert>-->
 
 
 
-    <update id="updateByPrimaryKey" parameterType="com.example.domain.StudyJavaUser">
-        update study_java_user
-        set 
-            nick_name =  #{nickName,jdbcType=VARCHAR},
-            login_name =  #{loginName,jdbcType=VARCHAR},
-            password_md5 =  #{passwordMd5,jdbcType=VARCHAR},
-            introduce_sign =  #{introduceSign,jdbcType=VARCHAR},
-            address =  #{address,jdbcType=VARCHAR},
-            is_deleted =  #{isDeleted,jdbcType=TINYINT},
-            locked_flag =  #{lockedFlag,jdbcType=TINYINT},
-            create_time =  #{createTime,jdbcType=TIMESTAMP}
-        where   user_id = #{userId,jdbcType=BIGINT} 
-    </update>
+<!--    <update id="updateById" parameterType="com.example.domain.StudyJavaUser">-->
+<!--        update study_java_user-->
+<!--        <set>-->
+<!--                <if test="nickName != null">-->
+<!--                    nick_name = #{nickName,jdbcType=VARCHAR},-->
+<!--                </if>-->
+<!--                <if test="loginName != null">-->
+<!--                    login_name = #{loginName,jdbcType=VARCHAR},-->
+<!--                </if>-->
+<!--                <if test="passwordMd5 != null">-->
+<!--                    password_md5 = #{passwordMd5,jdbcType=VARCHAR},-->
+<!--                </if>-->
+<!--                <if test="introduceSign != null">-->
+<!--                    introduce_sign = #{introduceSign,jdbcType=VARCHAR},-->
+<!--                </if>-->
+<!--                <if test="address != null">-->
+<!--                    address = #{address,jdbcType=VARCHAR},-->
+<!--                </if>-->
+<!--                <if test="isDeleted != null">-->
+<!--                    is_deleted = #{isDeleted,jdbcType=TINYINT},-->
+<!--                </if>-->
+<!--                <if test="lockedFlag != null">-->
+<!--                    locked_flag = #{lockedFlag,jdbcType=TINYINT},-->
+<!--                </if>-->
+<!--                <if test="createTime != null">-->
+<!--                    create_time = #{createTime,jdbcType=TIMESTAMP},-->
+<!--                </if>-->
+<!--        </set>-->
+<!--        where   user_id = #{userId,jdbcType=BIGINT} -->
+<!--    </update>-->
+
+
+<!--    <update id="updateByPrimaryKey" parameterType="com.example.domain.StudyJavaUser">-->
+<!--        update study_java_user-->
+<!--        set -->
+<!--            nick_name =  #{nickName,jdbcType=VARCHAR},-->
+<!--            login_name =  #{loginName,jdbcType=VARCHAR},-->
+<!--            password_md5 =  #{passwordMd5,jdbcType=VARCHAR},-->
+<!--            introduce_sign =  #{introduceSign,jdbcType=VARCHAR},-->
+<!--            address =  #{address,jdbcType=VARCHAR},-->
+<!--            is_deleted =  #{isDeleted,jdbcType=TINYINT},-->
+<!--            locked_flag =  #{lockedFlag,jdbcType=TINYINT},-->
+<!--            create_time =  #{createTime,jdbcType=TIMESTAMP}-->
+<!--        where   user_id = #{userId,jdbcType=BIGINT} -->
+<!--    </update>-->
 </mapper>
