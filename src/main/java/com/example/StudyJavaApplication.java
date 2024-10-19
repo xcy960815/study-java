@@ -7,13 +7,15 @@ import org.springframework.boot.web.servlet.context.ServletWebServerApplicationC
 import org.springframework.context.ApplicationContext;
 
 
-@SpringBootApplication
+
 @MapperScan("com.example.mapper") // 扫描mapper
+@SpringBootApplication(scanBasePackages = "com.example")
 public class StudyJavaApplication {
     public static void main(String[] args) {
         SpringApplication.run(StudyJavaApplication.class, args);
     }
 
+//    获取服务端端口
     public void getServerPort() {
         ApplicationContext context = SpringApplication.run(StudyJavaApplication.class, null);
         ServletWebServerApplicationContext servletWebServerApplicationContext = (ServletWebServerApplicationContext) context;

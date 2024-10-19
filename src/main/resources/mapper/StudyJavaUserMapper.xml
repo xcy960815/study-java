@@ -21,7 +21,6 @@
         password_md5,introduce_sign,address,
         is_deleted,locked_flag,create_time
     </sql>
-
     <!--  根据条件查询所有的用户  -->
     <select id="getUserList" resultType="com.example.domain.StudyJavaUser">
         SELECT
@@ -29,74 +28,55 @@
         FROM
         study_java_user
         <where>
-            1 = 1
-            <if test="userQueryData.nickName != null and userQueryData.nickName != ''">
-                AND nick_name LIKE CONCAT('%', #{userQueryData.nickName}, '%')
+            is_deleted = 0
+            <if test="studyJavaUser != null and studyJavaUser.studyJavaUser.userId != null and studyJavaUser.studyJavaUser.userId != ''">
+                AND user_id = #{studyJavaUser.userId}
             </if>
-            <if test="userQueryData.loginName != null and userQueryData.loginName != ''">
-                AND login_name = #{userQueryData.loginName}
+            <if test="studyJavaUser != null and studyJavaUser.nickName != null and studyJavaUser.nickName != ''">
+                AND nick_name LIKE CONCAT('%', #{studyJavaUser.nickName}, '%')
+            </if>
+            <if test="studyJavaUser != null and studyJavaUser.loginName != null and studyJavaUser.loginName != ''">
+                AND login_name LIKE CONCAT('%', #{studyJavaUser.loginName},'%')
+            </if>
+            <if test="studyJavaUser != null and studyJavaUser.introduceSign != null and studyJavaUser.introduceSign != ''">
+                AND introduce_sign LIKE CONCAT('%', #{studyJavaUser.introduceSign},'%')
+            </if>
+            <if test="studyJavaUser != null and studyJavaUser.address != null and studyJavaUser.address != ''">
+                AND address LIKE CONCA('%',#{studyJavaUser.address},'%')
             </if>
         </where>
     </select>
-
-
-<!--    <insert id="insert" keyColumn="user_id" keyProperty="userId" parameterType="com.example.domain.StudyJavaUser" useGeneratedKeys="true">-->
-<!--        insert into study_java_user-->
-<!--        ( user_id,nick_name,login_name-->
-<!--        ,password_md5,introduce_sign,address-->
-<!--        ,is_deleted,locked_flag,create_time-->
-<!--        )-->
-<!--        values (#{userId,jdbcType=BIGINT},#{nickName,jdbcType=VARCHAR},#{loginName,jdbcType=VARCHAR}-->
-<!--        ,#{passwordMd5,jdbcType=VARCHAR},#{introduceSign,jdbcType=VARCHAR},#{address,jdbcType=VARCHAR}-->
-<!--        ,#{isDeleted,jdbcType=TINYINT},#{lockedFlag,jdbcType=TINYINT},#{createTime,jdbcType=TIMESTAMP}-->
-<!--        )-->
-<!--    </insert>-->
-
-
-
-<!--    <update id="updateById" parameterType="com.example.domain.StudyJavaUser">-->
-<!--        update study_java_user-->
-<!--        <set>-->
-<!--                <if test="nickName != null">-->
-<!--                    nick_name = #{nickName,jdbcType=VARCHAR},-->
-<!--                </if>-->
-<!--                <if test="loginName != null">-->
-<!--                    login_name = #{loginName,jdbcType=VARCHAR},-->
-<!--                </if>-->
-<!--                <if test="passwordMd5 != null">-->
-<!--                    password_md5 = #{passwordMd5,jdbcType=VARCHAR},-->
-<!--                </if>-->
-<!--                <if test="introduceSign != null">-->
-<!--                    introduce_sign = #{introduceSign,jdbcType=VARCHAR},-->
-<!--                </if>-->
-<!--                <if test="address != null">-->
-<!--                    address = #{address,jdbcType=VARCHAR},-->
-<!--                </if>-->
-<!--                <if test="isDeleted != null">-->
-<!--                    is_deleted = #{isDeleted,jdbcType=TINYINT},-->
-<!--                </if>-->
-<!--                <if test="lockedFlag != null">-->
-<!--                    locked_flag = #{lockedFlag,jdbcType=TINYINT},-->
-<!--                </if>-->
-<!--                <if test="createTime != null">-->
-<!--                    create_time = #{createTime,jdbcType=TIMESTAMP},-->
-<!--                </if>-->
-<!--        </set>-->
-<!--        where   user_id = #{userId,jdbcType=BIGINT} -->
-<!--    </update>-->
-
-
-<!--    <update id="updateByPrimaryKey" parameterType="com.example.domain.StudyJavaUser">-->
-<!--        update study_java_user-->
-<!--        set -->
-<!--            nick_name =  #{nickName,jdbcType=VARCHAR},-->
-<!--            login_name =  #{loginName,jdbcType=VARCHAR},-->
-<!--            password_md5 =  #{passwordMd5,jdbcType=VARCHAR},-->
-<!--            introduce_sign =  #{introduceSign,jdbcType=VARCHAR},-->
-<!--            address =  #{address,jdbcType=VARCHAR},-->
-<!--            is_deleted =  #{isDeleted,jdbcType=TINYINT},-->
-<!--            locked_flag =  #{lockedFlag,jdbcType=TINYINT},-->
-<!--            create_time =  #{createTime,jdbcType=TIMESTAMP}-->
-<!--        where   user_id = #{userId,jdbcType=BIGINT} -->
-<!--    </update>-->
+    <!--  新增一条用户数据  -->
+    <insert id="insertUser" keyColumn="user_id" keyProperty="userId" parameterType="com.example.domain.StudyJavaUser" useGeneratedKeys="true">
+        insert into study_java_user
+        ( user_id,nick_name,login_name
+        ,password_md5,introduce_sign,address
+        ,is_deleted,locked_flag,create_time
+        )
+        values (#{userId,jdbcType=BIGINT},#{nickName,jdbcType=VARCHAR},#{loginName,jdbcType=VARCHAR}
+        ,#{passwordMd5,jdbcType=VARCHAR},#{introduceSign,jdbcType=VARCHAR},#{address,jdbcType=VARCHAR}
+        ,#{isDeleted,jdbcType=TINYINT},#{lockedFlag,jdbcType=TINYINT},#{createTime,jdbcType=TIMESTAMP}
+        )
+    </insert>
+    <!--  更新一条用户数据  -->
+    <update id="updateUser" parameterType="com.example.domain.StudyJavaUser">
+        update study_java_user
+        <set>
+                <if test="studyJavaUser.nickName != null">
+                    nick_name = #{studyJavaUser.nickName,jdbcType=VARCHAR},
+                </if>
+                <if test="studyJavaUser.loginName != null">
+                    login_name = #{studyJavaUser.loginName,jdbcType=VARCHAR},
+                </if>
+                <if test="studyJavaUser.introduceSign != null">
+                    introduce_sign = #{studyJavaUser.introduceSign,jdbcType=VARCHAR},
+                </if>
+                <if test="studyJavaUser.address != null">
+                    address = #{studyJavaUser.address,jdbcType=VARCHAR},
+                </if>
+        </set>
+        where
+            is_deleted = 0
+            user_id = #{studyJavaUser.userId,jdbcType=BIGINT}
+    </update>
 </mapper>

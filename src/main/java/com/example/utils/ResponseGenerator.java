@@ -1,8 +1,6 @@
 package com.example.utils;
 
 
-import jakarta.annotation.Resource;
-
 /**
  * 改类是生成响应的工具类
  */
@@ -12,8 +10,6 @@ public class ResponseGenerator {
     private static final String SUCCESS_MESSAGE = "SUCCESS";
     private static final String ERROR_MESSAGE = "ERROR";
 
-//    @Resource
-//    ResponseResult responseResult;
     /**
      * 生成响应
      * @param code
@@ -41,7 +37,6 @@ public class ResponseGenerator {
         responseResult.setData(data);
         return responseResult;
     }
-
     /**
      * 生成失败响应
      * @param message

@@ -14,4 +14,9 @@ public interface StudyJavaUserService {
     */
     IPage<StudyJavaUser> getUserList(Page<StudyJavaUser> page, StudyJavaUser userQueryData);
 
+    /**
+     * 更新用户
+     * @param studyJavaUser
+     */
+    int updateUser(StudyJavaUser studyJavaUser);
 }

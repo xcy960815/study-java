@@ -8,7 +8,9 @@ import org.springframework.web.bind.annotation.*;
 import com.example.utils.ResponseResult;
 import com.example.utils.ResponseGenerator;
 import com.example.service.StudyJavaUserService;
-import java.util.List;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/user") // 前缀
@@ -22,32 +24,19 @@ public class StudyJavaUserController {
     public ResponseResult getUserList(
             @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
             @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
-            @ModelAttribute("userQueryData") StudyJavaUser  userQueryData) {
-
-        // 分页对象，传入当前页码和每页条数
+            @ModelAttribute("studyJavaUser") StudyJavaUser  studyJavaUser) {
         Page<StudyJavaUser> page = new Page<>(pageNum, pageSize);
-        IPage<StudyJavaUser> userPage = studyJavaUserService.getUserList(page, userQueryData);
-//        临时性写法
-        class UserPageResult {
-            private int total;
-            private List<StudyJavaUser> data;
-            public int getTotal() {
-               return total;
-           }
-           public void setTotal(int total) {
-                this.total = total;
-           }
-           public List<StudyJavaUser> getData() {
-                return data;
-           }
-            public void setData(List<StudyJavaUser> data) {
-                this.data = data;
-            }
-        }
-        UserPageResult userPageResult = new UserPageResult();
-        userPageResult.setData(userPage.getRecords());
-        userPageResult.setTotal((int)userPage.getTotal());
+        IPage<StudyJavaUser> userPage = studyJavaUserService.getUserList(page, studyJavaUser);
         // 返回分页数据和总条数
-        return ResponseGenerator.generatSuccessResult(userPageResult);
+        Map<String,Object> map = new HashMap<>();
+        map.put("data",userPage.getRecords());
+        map.put("total",userPage.getTotal());
+        return ResponseGenerator.generatSuccessResult(map);
+    }
+    @PostMapping("/updateUser")
+    @ResponseBody
+    public ResponseResult updateUser(@RequestBody StudyJavaUser studyJavaUser) {
+        int changedLine =  studyJavaUserService.updateUser(studyJavaUser);
+        return ResponseGenerator.generatSuccessResult(true);
     }
 }

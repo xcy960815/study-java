@@ -17,18 +17,22 @@ public class StudyJavaUserServiceImp implements StudyJavaUserService {
     private StudyJavaUserMapper studyJavaUserMapper;
 
     /**
-    * 查询所有用户
-    * @return List<StudyJavaUser>
-    */
+     * 查询所有用户
+     * @return List<StudyJavaUser>
+     */
     @Override
     public IPage<StudyJavaUser>  getUserList(Page<StudyJavaUser> page ,StudyJavaUser userQueryData) {
         IPage<StudyJavaUser> pageResult = studyJavaUserMapper.getUserList(page,userQueryData);
-//        List<StudyJavaUser> userList = pageResult.getRecords();
-//        userList .forEach(user->{
-//            // 随机生成一个整数
-//            int age = (int)(Math.random()*100);
-//            user.setAge(age);
-//        });
+        List<StudyJavaUser> userList = pageResult.getRecords();
+        userList .forEach(user->{
+            // 随机生成一个整数
+            int age = (int)(Math.random()*100);
+            user.setAge(age);
+        });
         return pageResult;
+    }
+    @Override
+    public int updateUser(StudyJavaUser studyJavaUser) {
+        return studyJavaUserMapper.updateUser(studyJavaUser);
     }
 }
