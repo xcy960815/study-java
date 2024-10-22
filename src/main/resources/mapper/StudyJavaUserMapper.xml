@@ -22,7 +22,7 @@
         is_deleted,locked_flag,create_time
     </sql>
     <!--  根据条件查询所有的用户  -->
-    <select id="getUserList" resultType="com.example.domain.StudyJavaUser">
+    <select id="getUserList" resultMap="BaseResultMap" resultType="com.example.domain.StudyJavaUser">
         SELECT
         <include refid="Base_Column_List" />
         FROM

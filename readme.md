@@ -30,3 +30,9 @@
  
 - 用hashmap完成了接口的返回值，之前封装了一个util类型，结果不知道为啥service实现层没了一直导致报错，把这个类也删除了
 - 已经将StudyJavaUser模块完成增删改查功能
+
+### 10月22日
+
+- 完成adminUser模块接口的增删改查
+- 在userController层添加必填项的校验
+- 在adminUserController层添加必填项的校验
