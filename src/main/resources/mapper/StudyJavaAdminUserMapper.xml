@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.StudyJavaAdminUserMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.domain.StudyJavaAdminUser">
+            <id property="adminUserId" column="admin_user_id" jdbcType="INTEGER"/>
+            <result property="loginUserName" column="login_user_name" jdbcType="VARCHAR"/>
+            <result property="loginPassword" column="login_password" jdbcType="VARCHAR"/>
+            <result property="nickName" column="nick_name" jdbcType="VARCHAR"/>
+            <result property="locked" column="locked" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        admin_user_id,login_user_name,login_password,
+        nick_name,locked
+    </sql>
+    <!--  获取没有被锁定的超级管理员列表  -->
+    <select id="getAdminUserList" resultMap="BaseResultMap" resultType="com.example.domain.StudyJavaAdminUser">
+        select
+        <include refid="Base_Column_List" />
+        from study_java_admin_user
+        <where>
+            locked = 0
+            <if test="studyJavaAdminUser != null and studyJavaAdminUser.adminUserId != null and studyJavaAdminUser.adminUserId != ''">
+                AND admin_user_id = #{studyJavaAdminUser.adminUserId}
+            </if>
+        </where>
+    </select>
+
+    <!--  更新管理员信息  -->
+    <update id="updateAdminUser" parameterType="com.example.domain.StudyJavaAdminUser">
+        update study_java_admin_user
+        <set>
+            <if test="studyJavaAdminUser != null and studyJavaAdminUser.loginUserName != null and studyJavaAdminUser.loginUserName != ''">
+                login_user_name = #{studyJavaAdminUser.loginUserName,jdbcType=VARCHAR}
+            </if>
+            <if test="studyJavaAdminUser != null and studyJavaAdminUser.loginPassword != null and studyJavaAdminUser.loginPassword != ''">
+                login_password = #{studyJavaAdminUser.loginPassword,jdbcType=ARRAY}
+            </if>
+            <if test="studyJavaAdminUser != null and studyJavaAdminUser.nickName != null and studyJavaAdminUser.nickName != ''">
+                nick_name = #{studyJavaAdminUser.nickName,jdbcType=VARCHAR}
+            </if>
+            <if test="studyJavaAdminUser != null and studyJavaAdminUser.locked != null and studyJavaAdminUser.locked != ''">
+                locked = #{studyJavaAdminUser.locked,jdbcType=ARRAY}
+            </if>
+        </set>
+        where
+            locked = 0
+            and admin_user_id = #{studyJavaAdminUser.adminUserId,jdbcType=INTEGER}
+    </update>
+
+    <!--  新建管理员信息  -->
+    <insert id="insertAdminUser" parameterType="com.example.domain.StudyJavaAdminUser">
+        insert into study_java_admin_user
+        ( admin_user_id,login_user_name,login_password)
+        values
+        (#{studyJavaAdminUser.adminUserId,jdbcType=INTEGER},#{studyJavaAdminUser.loginUserName,jdbcType=VARCHAR},#{studyJavaAdminUser.loginPassword,jdbcType=ARRAY})
+    </insert>
+
+    <update id="deleteAdminUser" parameterType="com.example.domain.StudyJavaAdminUser">
+        update study_java_admin_user
+        <set>
+            locked = 1
+        </set>
+        where
+            locked = 0
+            and admin_user_id = #{studyJavaAdminUser.adminUserId,jdbcType=INTEGER}
+    </update>
+</mapper>
