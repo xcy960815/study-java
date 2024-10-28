@@ -29,11 +29,10 @@ public class StudyJavaUserController {
         Page<StudyJavaUser> page = new Page<>(pageNum, pageSize);
         IPage<StudyJavaUser> userPage = studyJavaUserService.getUserList(page, studyJavaUser);
         // 返回分页数据和总条数
-//        Map<String,Object> map = new HashMap<>();
-//        map.put("data",userPage.getRecords());
-//        map.put("total",userPage.getTotal());
-//        return ResponseGenerator.generatSuccessResult(map);
-        return ResponseGenerator.generatSuccessResult(userPage.getRecords());
+        Map<String,Object> map = new HashMap<>();
+        map.put("data",userPage.getRecords());
+        map.put("total",userPage.getTotal());
+        return ResponseGenerator.generatSuccessResult(map);
     }
     @PostMapping("/updateUser")
     @ResponseBody

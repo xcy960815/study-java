@@ -1,7 +1,6 @@
 package com.example.utils;
 
 import java.io.Serializable;
-//import lombok.Data;
 
 /**
  * 改类是生成响应的工具类
