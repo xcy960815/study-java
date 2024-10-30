@@ -10,7 +10,9 @@ import com.example.utils.ResponseResult;
 import com.example.utils.ResponseGenerator;
 import com.example.service.StudyJavaUserService;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -34,6 +36,32 @@ public class StudyJavaUserController {
         map.put("total",userPage.getTotal());
         return ResponseGenerator.generatSuccessResult(map);
     }
+//    @GetMapping("/test")
+//    @ResponseBody
+//    public Map<String, Object> test(){
+//        List<Map<String, Object>> userList = new ArrayList<>();
+//        // 创建并添加第一个用户
+//        Map<String, Object> user1 = new HashMap<>();
+//        user1.put("name", "Alice");
+//        user1.put("id", 1);
+//        userList.add(user1);
+//
+//        // 创建并添加第二个用户
+//        Map<String, Object> user2 = new HashMap<>();
+//        user2.put("name", "Bob");
+//        user2.put("id", 2);
+//        userList.add(user2);
+//
+//        // 创建并添加第三个用户
+//        Map<String, Object> user3 = new HashMap<>();
+//        user3.put("name", "Charlie");
+//        user3.put("id", 3);
+//        userList.add(user3);
+//        Map<String, Object> result = new HashMap<>();
+//        result.put("data", userList);
+//        result.put("code",200);
+//        return result;
+//    }
     @PostMapping("/updateUser")
     @ResponseBody
     public ResponseResult updateUser(@RequestBody StudyJavaUser studyJavaUser) {

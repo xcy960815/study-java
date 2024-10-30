@@ -22,15 +22,21 @@ public class AuthInterceptor implements HandlerInterceptor {
             httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return false;
         }
-
         try {
+            // 从用户的请求头上获取token
             String token = authHeader.substring(7);
-            System.out.println("Token received: " + token); // 调试输出
-//            Claims claims = Jwts.parser()
-//                    .setSigningKey(JwtTokenUtil.getSecretKey())
-//                    .parseClaimsJws(token)
-//                    .getBody();
-//            System.out.println("Claims: " + claims); // 调试输出
+            Boolean isTokenExpired = JwtTokenUtil.isTokenExpired(token);
+            if (isTokenExpired) {
+                httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                httpServletResponse.getWriter().write("{\"code\": 401, \"message\": \"Token已过期\"}");
+                httpServletResponse.setContentType("application/json");
+                return false;
+            }
+            String name = JwtTokenUtil.getUsernameFromToken(token);
+            System.out.println("当前登录用户是"+name);
+            // 验证token
+//           Boolean valid =  JwtTokenUtil.validateToken(token, name);
+//           System.out.println(valid);
             return true;
         } catch (Exception e) {
             e.printStackTrace(); // 打印错误信息
