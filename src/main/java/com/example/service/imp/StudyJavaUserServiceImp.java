@@ -38,10 +38,10 @@ public class StudyJavaUserServiceImp implements StudyJavaUserService {
 
     @Override
     public int insertUser(StudyJavaUser studyJavaUser) {
-        studyJavaUser.setIsDeleted(0);// 提供一个默认值
-        studyJavaUser.setLockedFlag(0);// 提供一个默认值
+        studyJavaUser.setIsDeleted(0);
+        studyJavaUser.setLockedFlag(0);
         Date createTime = new Date();
-        studyJavaUser.setCreateTime(createTime);// 提供一个默认值
+        studyJavaUser.setCreateTime(createTime);
         return studyJavaUserMapper.insertUser(studyJavaUser);
     }
 

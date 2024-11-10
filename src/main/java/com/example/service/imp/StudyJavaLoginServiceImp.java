@@ -13,18 +13,16 @@ public class StudyJavaLoginServiceImp implements StudyJavaLoginService {
     @Resource
     private JwtTokenUtil jwtTokenUtil;
 
-    // private final StudyJavaUserService studyJavaUserService;
-
-    // 使用构造函数注入 UserService
-//    public OrderStudyJavaUserService(StudyJavaUserService studyJavaUserService) {
-////        this.userService = studyJavaUserService;
-//    }
+    @Resource
+    private StudyJavaUserService studyJavaUserService; // 注入接口
 
     public String login(StudyJavaLoginDomain studyJavaLoginDomain) {
         String name = studyJavaLoginDomain.getName();
         String password = studyJavaLoginDomain.getPassword();
 
-        String token = jwtTokenUtil.generateToken(name);
-        return token ;
+//        if (!studyJavaUserService.login(name, password)) {
+//            return null;
+//        }
+        return JwtTokenUtil.generateToken(name);
     }
 }

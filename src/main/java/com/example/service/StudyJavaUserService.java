@@ -16,18 +16,18 @@ public interface StudyJavaUserService {
 
     /**
      * 更新用户
-     * @param studyJavaUser
      */
     int updateUser(StudyJavaUser studyJavaUser);
 
     /**
      * 添加用户
-     * @param studyJavaUser
      */
     int insertUser(StudyJavaUser studyJavaUser);
     /**
      * 删除用户
-     * @param studyJavaUser
      */
     int deleteUser(StudyJavaUser studyJavaUser);
+
+
+
 }

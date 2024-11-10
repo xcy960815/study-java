@@ -1,5 +1,6 @@
 package com.example.domain;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -7,9 +8,11 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import com.baomidou.mybatisplus.annotation.TableField;
+import lombok.Getter;
+import lombok.Setter;
+
 /**
- * 
- * @TableName study_java_user
+ * TableName  study_java_user
  */
 @Data
 public class StudyJavaUser implements Serializable {
@@ -26,16 +29,11 @@ public class StudyJavaUser implements Serializable {
     /**
      * 用户年龄 不是表里面的字段
      */
+    @Setter
+    @Getter
     @TableField(exist = false)
     private int age;
 
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
     /**
      * 登陆名称(默认为手机号)
      */
@@ -69,13 +67,11 @@ public class StudyJavaUser implements Serializable {
     private Integer lockedFlag;
 
     /**
-     * 注册时间
-     */
-    /**
      * 注册时间，格式化为 "yyyy-MM-dd"
      */
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date createTime;
 
+    @Serial
     private static final long serialVersionUID = 1L;
 }
