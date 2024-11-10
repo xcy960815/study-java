@@ -15,6 +15,9 @@ public interface StudyJavaAdminUserMapper {
     // 获取所有的超级管理员列表
     IPage<StudyJavaAdminUser> getAdminUserList(@Param("page") Page<StudyJavaAdminUser> page, @Param("studyJavaAdminUser") StudyJavaAdminUser studyJavaAdminUser);
 
+    // 验证用户是否存在
+    StudyJavaAdminUser checkUser(@Param("studyJavaAdminUser") StudyJavaAdminUser studyJavaAdminUser);
+
     // 更新管理员信息
     int updateAdminUser(@Param("studyJavaAdminUser") StudyJavaAdminUser studyJavaAdminUser);
 

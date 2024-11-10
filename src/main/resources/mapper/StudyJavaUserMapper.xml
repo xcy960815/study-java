@@ -88,5 +88,16 @@
         where
             `user_id` = #{studyJavaUser.userId,jdbcType=BIGINT}
     </update>
-
+    <!--验证用户 账号密码-->
+    <select id="checkUser" parameterType="com.example.domain.StudyJavaUser" resultType="com.example.domain.StudyJavaUser">
+        select
+        <include refid="Base_Column_List" />
+        from study_java_user
+        <where>
+            login_name = #{studyJavaUser.loginName}
+            <if test="studyJavaUser != null and studyJavaUser.passwordMd5 != null and studyJavaUser.passwordMd5 != ''">
+                AND password_md5 = #{studyJavaUser.passwordMd5}
+            </if>
+        </where>
+    </select>
 </mapper>

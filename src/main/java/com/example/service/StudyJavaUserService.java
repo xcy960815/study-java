@@ -4,8 +4,6 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.domain.StudyJavaUser;
 
-
-
 public interface StudyJavaUserService {
 
     /**
@@ -28,6 +26,6 @@ public interface StudyJavaUserService {
      */
     int deleteUser(StudyJavaUser studyJavaUser);
 
-
+    boolean checkUser(StudyJavaUser studyJavaUser);
 
 }

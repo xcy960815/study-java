@@ -29,6 +29,19 @@
         </where>
     </select>
 
+    <!--验证用户 账号密码-->
+    <select id="checkUser" parameterType="com.example.domain.StudyJavaAdminUser" resultType="com.example.domain.StudyJavaAdminUser">
+        select
+        <include refid="Base_Column_List" />
+        from study_java_admin_user
+        <where>
+            login_user_name = #{studyJavaAdminUser.loginUserName}
+            <if test="studyJavaAdminUser != null and studyJavaAdminUser.loginPassword != null and studyJavaAdminUser.loginPassword != ''">
+                AND login_password = #{studyJavaAdminUser.loginPassword}
+            </if>
+        </where>
+    </select>
+
     <!--  更新管理员信息  -->
     <update id="updateAdminUser" parameterType="com.example.domain.StudyJavaAdminUser">
         update study_java_admin_user

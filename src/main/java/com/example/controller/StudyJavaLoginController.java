@@ -22,7 +22,7 @@ public class StudyJavaLoginController {
     @ResponseBody
     public ResponseResult login(@RequestBody StudyJavaLoginDomain studyJavaLoginDomain) {
         String token = studyJavaLoginService.login(studyJavaLoginDomain);
-        String username = studyJavaLoginDomain.getName();
+
         Map<String,String> loginResult = new HashMap<>();
         loginResult.put("token",token);
         return ResponseGenerator.generatSuccessResult(loginResult);

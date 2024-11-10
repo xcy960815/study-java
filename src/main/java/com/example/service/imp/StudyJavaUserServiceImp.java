@@ -49,4 +49,10 @@ public class StudyJavaUserServiceImp implements StudyJavaUserService {
     public int deleteUser(StudyJavaUser studyJavaUser) {
         return studyJavaUserMapper.deleteUser(studyJavaUser);
     }
+
+    @Override
+    public boolean checkUser(StudyJavaUser studyJavaUser) {
+        StudyJavaUser user = studyJavaUserMapper.checkUser(studyJavaUser);
+        return user != null;
+    }
 }

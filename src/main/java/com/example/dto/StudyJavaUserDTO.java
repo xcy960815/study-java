@@ -1,6 +1,8 @@
 package com.example.dto;
 
 import lombok.Data;
+
+import java.io.Serial;
 import java.util.Date;
 import java.io.Serializable;
 
@@ -39,5 +41,6 @@ public class StudyJavaUserDTO implements Serializable {
      */
     private Date createTime;
 
+    @Serial
     private static final long serialVersionUID = 1L;
 }
