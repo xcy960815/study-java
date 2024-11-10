@@ -17,7 +17,9 @@ public class AuthInterceptorConfig implements WebMvcConfigurer {
 
     // 不需要拦截的路径列表
     private static final List<String> EXCLUDE_PATHS = Arrays.asList(
-            "/login"
+            "/login",
+            "/user/test",
+            "/user/test1"
     );
 
     @Override

@@ -27,9 +27,11 @@ public class AuthInterceptor implements HandlerInterceptor {
             String token = authHeader.substring(7);
             Boolean isTokenExpired = JwtTokenUtil.isTokenExpired(token);
             if (isTokenExpired) {
-                httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+//              继续让接口请求的通 但是返回指定的code 让前端跳转到 登录页
+                httpServletResponse.setStatus(HttpServletResponse.SC_OK);
+//              保证汉字到了前端不乱码
+                httpServletResponse.setContentType("application/json;charset=UTF-8");
                 httpServletResponse.getWriter().write("{\"code\": 401, \"message\": \"Token已过期\"}");
-                httpServletResponse.setContentType("application/json");
                 return false;
             }
             String name = JwtTokenUtil.getUsernameFromToken(token);

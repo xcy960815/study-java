@@ -3,6 +3,7 @@ package com.example.domain;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -70,6 +71,10 @@ public class StudyJavaUser implements Serializable {
     /**
      * 注册时间
      */
+    /**
+     * 注册时间，格式化为 "yyyy-MM-dd"
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date createTime;
 
     private static final long serialVersionUID = 1L;
