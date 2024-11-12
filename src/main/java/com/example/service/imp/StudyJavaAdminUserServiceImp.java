@@ -6,7 +6,7 @@ import com.example.domain.StudyJavaAdminUser;
 import com.example.mapper.StudyJavaAdminUserMapper;
 import com.example.service.StudyJavaAdminUserService;
 import jakarta.annotation.Resource;
-import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,7 +21,7 @@ public class StudyJavaAdminUserServiceImp implements StudyJavaAdminUserService{
     @Override
     public int updateAdminUser(StudyJavaAdminUser studyJavaAdminUser){
         return studyJavaAdminUserMapper.updateAdminUser(studyJavaAdminUser);
-    };
+    }
 
     @Override
     public int insertAdminUser(StudyJavaAdminUser studyJavaAdminUser) {
