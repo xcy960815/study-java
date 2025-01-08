@@ -4,7 +4,6 @@ import com.example.domain.StudyJavaUser;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import jakarta.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import com.example.utils.ResponseResult;
 import com.example.utils.ResponseGenerator;
@@ -15,7 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Controller
+@RestController
 @RequestMapping("/user") // 前缀
 public class StudyJavaUserController {
     @Resource
@@ -43,19 +42,19 @@ public class StudyJavaUserController {
         // 创建并添加第一个用户
         Map<String, Object> user1 = new HashMap<>();
         user1.put("name", "Alice");
-        user1.put("id", 1);
+        user1.put("id", "1");
         userList.add(user1);
 
         // 创建并添加第二个用户
         Map<String, Object> user2 = new HashMap<>();
         user2.put("name", "Bob");
-        user2.put("id", 2);
+        user2.put("id", "2");
         userList.add(user2);
 
         // 创建并添加第三个用户
         Map<String, Object> user3 = new HashMap<>();
         user3.put("name", "Charlie");
-        user3.put("id", 3);
+        user3.put("id", "3");
         userList.add(user3);
         Map<String, Object> result = new HashMap<>();
         result.put("data", userList);
@@ -65,6 +64,45 @@ public class StudyJavaUserController {
     @GetMapping("/test1")
     @ResponseBody
     public Map<String, Object> test1(@RequestParam(value = "name",defaultValue = "") String name){
+        List<Map<String, Object>> userList = new ArrayList<>();
+        // 创建并添加第一个用户
+        Map<String, Object> user1 = new HashMap<>();
+        user1.put("name", "Alice");
+        user1.put("id", "1");
+        userList.add(user1);
+
+        // 创建并添加第二个用户
+        Map<String, Object> user2 = new HashMap<>();
+        user2.put("name", "Bob");
+        user2.put("id", "2");
+        userList.add(user2);
+
+        // 创建并添加第三个用户
+        Map<String, Object> user3 = new HashMap<>();
+        user3.put("name", "Charlie");
+        user3.put("id", "3");
+        userList.add(user3);
+        Map<String, Object> result = new HashMap<>();
+
+        List<Map<String, Object>> resultList = new ArrayList<>();
+
+        for (Map<String, Object> user : userList) {
+            if (name == null || name.isEmpty()) {
+                resultList.add(user);
+            } else {
+                if (name.equals(user.get("name"))) {
+                    resultList.add(user);
+                }
+            }
+        }
+        result.put("data", resultList);
+        result.put("code",200);
+        return result;
+    }
+
+    @GetMapping("/test2")
+    @ResponseBody
+    public Map<String, Object> test2(@RequestParam(value = "name",defaultValue = "") String name){
         List<Map<String, Object>> userList = new ArrayList<>();
         // 创建并添加第一个用户
         Map<String, Object> user1 = new HashMap<>();

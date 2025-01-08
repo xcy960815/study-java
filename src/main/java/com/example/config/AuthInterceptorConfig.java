@@ -22,11 +22,11 @@ public class AuthInterceptorConfig implements WebMvcConfigurer {
             "/user/test1"
     );
 
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(authInterceptor)
-                .addPathPatterns("/**")
-                .excludePathPatterns(EXCLUDE_PATHS); // 不需要拦截的路径;
-    }
+//    @Override
+//    public void addInterceptors(InterceptorRegistry registry) {
+//        registry.addInterceptor(authInterceptor)
+//                .addPathPatterns("/**")
+//                .excludePathPatterns(EXCLUDE_PATHS); // 不需要拦截的路径;
+//    }
 }
 
