@@ -2,7 +2,9 @@ package com.example.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.example.domain.StudyJavaUser;
+import com.example.domain.dto.StudyJavaUserDto;
+import com.example.domain.vo.StudyJavaLoginVo;
+import com.example.domain.vo.StudyJavaUserVo;
 
 public interface StudyJavaUserService {
 
@@ -10,22 +12,21 @@ public interface StudyJavaUserService {
     * 查询所有用户
     * @return IPage<StudyJavaUser>
     */
-    IPage<StudyJavaUser> getUserList(Page<StudyJavaUser> page, StudyJavaUser userQueryData);
+    IPage<StudyJavaUserDto> getUserList(Page<StudyJavaUserVo> page, StudyJavaUserVo userQueryData);
 
     /**
      * 更新用户
      */
-    int updateUser(StudyJavaUser studyJavaUser);
+    int updateUser(StudyJavaUserVo studyJavaUser);
 
     /**
      * 添加用户
      */
-    int insertUser(StudyJavaUser studyJavaUser);
+    int insertUser(StudyJavaUserVo studyJavaUser);
     /**
      * 删除用户
      */
-    int deleteUser(StudyJavaUser studyJavaUser);
+    int deleteUser(StudyJavaUserVo studyJavaUser);
 
-    boolean checkUser(StudyJavaUser studyJavaUser);
-
+    StudyJavaUserDto getUserByNameAndPassword(StudyJavaLoginVo studyJavaLoginDomain);
 }

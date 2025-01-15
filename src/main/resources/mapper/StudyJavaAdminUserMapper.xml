@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.mapper.StudyJavaAdminUserMapper">
 
-    <resultMap id="BaseResultMap" type="com.example.domain.StudyJavaAdminUser">
+    <resultMap id="BaseResultMap" type="com.example.domain.dao.StudyJavaAdminUserDao">
             <id property="adminUserId" column="admin_user_id" jdbcType="INTEGER"/>
             <result property="loginUserName" column="login_user_name" jdbcType="VARCHAR"/>
             <result property="loginPassword" column="login_password" jdbcType="VARCHAR"/>
@@ -16,8 +16,9 @@
         admin_user_id,login_user_name,login_password,
         nick_name,locked
     </sql>
+
     <!--  获取没有被锁定的超级管理员列表  -->
-    <select id="getAdminUserList" resultMap="BaseResultMap" resultType="com.example.domain.StudyJavaAdminUser">
+    <select id="getAdminUserList" resultMap="BaseResultMap" resultType="com.example.domain.dao.StudyJavaAdminUserDao">
         select
         <include refid="Base_Column_List" />
         from study_java_admin_user
@@ -29,21 +30,9 @@
         </where>
     </select>
 
-    <!--验证用户 账号密码-->
-    <select id="checkUser" parameterType="com.example.domain.StudyJavaAdminUser" resultType="com.example.domain.StudyJavaAdminUser">
-        select
-        <include refid="Base_Column_List" />
-        from study_java_admin_user
-        <where>
-            login_user_name = #{studyJavaAdminUser.loginUserName}
-            <if test="studyJavaAdminUser != null and studyJavaAdminUser.loginPassword != null and studyJavaAdminUser.loginPassword != ''">
-                AND login_password = #{studyJavaAdminUser.loginPassword}
-            </if>
-        </where>
-    </select>
 
     <!--  更新管理员信息  -->
-    <update id="updateAdminUser" parameterType="com.example.domain.StudyJavaAdminUser">
+    <update id="updateAdminUser" parameterType="com.example.domain.vo.StudyJavaAdminUserVo">
         update study_java_admin_user
         <set>
             <if test="studyJavaAdminUser != null and studyJavaAdminUser.loginUserName != null and studyJavaAdminUser.loginUserName != ''">
@@ -65,14 +54,14 @@
     </update>
 
     <!--  新建管理员信息  -->
-    <insert id="insertAdminUser" parameterType="com.example.domain.StudyJavaAdminUser">
+    <insert id="insertAdminUser" parameterType="com.example.domain.vo.StudyJavaAdminUserVo">
         insert into study_java_admin_user
         ( admin_user_id,login_user_name,login_password)
         values
         (#{studyJavaAdminUser.adminUserId,jdbcType=INTEGER},#{studyJavaAdminUser.loginUserName,jdbcType=VARCHAR},#{studyJavaAdminUser.loginPassword,jdbcType=ARRAY})
     </insert>
 
-    <update id="deleteAdminUser" parameterType="com.example.domain.StudyJavaAdminUser">
+    <update id="deleteAdminUser" parameterType="com.example.domain.vo.StudyJavaAdminUserVo">
         update study_java_admin_user
         <set>
             locked = 1

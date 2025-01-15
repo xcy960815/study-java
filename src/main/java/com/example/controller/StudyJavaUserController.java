@@ -1,6 +1,7 @@
 package com.example.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.example.domain.StudyJavaUser;
+import com.example.domain.vo.StudyJavaUserVo;
+import com.example.domain.dto.StudyJavaUserDto;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import jakarta.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
@@ -26,9 +27,9 @@ public class StudyJavaUserController {
     public ResponseResult getUserList(
             @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
             @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
-            @ModelAttribute("studyJavaUser") StudyJavaUser  studyJavaUser) {
-        Page<StudyJavaUser> page = new Page<>(pageNum, pageSize);
-        IPage<StudyJavaUser> userPage = studyJavaUserService.getUserList(page, studyJavaUser);
+            @ModelAttribute("studyJavaUser") StudyJavaUserVo  studyJavaUser) {
+        Page<StudyJavaUserVo> page = new Page<>(pageNum, pageSize);
+        IPage<StudyJavaUserDto> userPage = studyJavaUserService.getUserList(page, studyJavaUser);
         // 返回分页数据和总条数
         Map<String,Object> map = new HashMap<>();
         map.put("data",userPage.getRecords());
@@ -146,7 +147,7 @@ public class StudyJavaUserController {
 //    };
     @PostMapping("/updateUser")
     @ResponseBody
-    public ResponseResult updateUser(@RequestBody StudyJavaUser studyJavaUser) {
+    public ResponseResult updateUser(@RequestBody StudyJavaUserVo studyJavaUser) {
         // 获取用户ID
         Long userId = studyJavaUser.getUserId();
         if(userId == null){
@@ -178,7 +179,7 @@ public class StudyJavaUserController {
     }
     @PostMapping("/insertUser")
     @ResponseBody
-    public ResponseResult insertUser(@RequestBody StudyJavaUser studyJavaUser) {
+    public ResponseResult insertUser(@RequestBody StudyJavaUserVo studyJavaUser) {
 
         studyJavaUserService.insertUser(studyJavaUser);
         // 返回插入结果
@@ -186,7 +187,7 @@ public class StudyJavaUserController {
     }
     @DeleteMapping("/deleteUser")
     @ResponseBody
-    public ResponseResult deleteUser(@RequestBody StudyJavaUser studyJavaUser) {
+    public ResponseResult deleteUser(@RequestBody StudyJavaUserVo studyJavaUser) {
         studyJavaUserService.deleteUser(studyJavaUser);
         // 返回插入结果
         return ResponseGenerator.generatSuccessResult(true);

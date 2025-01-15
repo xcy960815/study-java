@@ -1,21 +1,21 @@
-package com.example.domain;
+package com.example.domain.vo;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
 
 import java.io.Serial;
 import java.io.Serializable;
-import lombok.Data;
 
 /**
- * 
+ *
  * @TableName study_java_admin_user
  */
 @TableName(value ="study_java_admin_user")
 @Data
-public class StudyJavaAdminUser implements Serializable {
+public class StudyJavaAdminUserVo implements Serializable {
     /**
      * 管理员id
      */

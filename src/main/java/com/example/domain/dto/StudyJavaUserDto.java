@@ -1,4 +1,4 @@
-package com.example.dto;
+package com.example.domain.dto;
 
 import lombok.Data;
 
@@ -7,7 +7,7 @@ import java.util.Date;
 import java.io.Serializable;
 
 @Data
-public class StudyJavaUserDTO implements Serializable {
+public class StudyJavaUserDto implements Serializable {
     /**
      * 用户主键id
      */

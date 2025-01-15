@@ -1,7 +1,7 @@
 package com.example.controller;
 
 
-import com.example.domain.StudyJavaLoginDomain;
+import com.example.domain.vo.StudyJavaLoginVo;
 import com.example.service.StudyJavaLoginService;
 import com.example.utils.ResponseGenerator;
 import com.example.utils.ResponseResult;
@@ -20,7 +20,7 @@ public class StudyJavaLoginController {
 
     @PostMapping("/login")
     @ResponseBody
-    public ResponseResult login(@RequestBody StudyJavaLoginDomain studyJavaLoginDomain) {
+    public ResponseResult login(@RequestBody StudyJavaLoginVo studyJavaLoginDomain) {
         String token = studyJavaLoginService.login(studyJavaLoginDomain);
 
         Map<String,String> loginResult = new HashMap<>();

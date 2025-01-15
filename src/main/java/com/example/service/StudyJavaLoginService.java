@@ -1,8 +1,8 @@
 package com.example.service;
 
-import com.example.domain.StudyJavaLoginDomain;
+import com.example.domain.vo.StudyJavaLoginVo;
 
 public interface StudyJavaLoginService {
 
-    public  String login(StudyJavaLoginDomain studyJavaLoginDomain);
+    public  String login(StudyJavaLoginVo studyJavaLoginDomain);
 }

@@ -1,4 +1,4 @@
-package com.example.domain;
+package com.example.domain.dao;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -15,7 +15,7 @@ import lombok.Setter;
  * TableName  study_java_user
  */
 @Data
-public class StudyJavaUser implements Serializable {
+public class StudyJavaUserDao implements Serializable {
     /**
      * 用户主键id
      */

@@ -3,7 +3,8 @@ package com.example.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.example.domain.StudyJavaAdminUser;
+import com.example.domain.vo.StudyJavaAdminUserVo;
+import com.example.domain.dto.StudyJavaAdminUserDto;
 import com.example.service.StudyJavaAdminUserService;
 import com.example.utils.ResponseGenerator;
 import com.example.utils.ResponseResult;
@@ -25,9 +26,11 @@ public class StudyJavaAdminUserController {
     public ResponseResult getAdminUserList(
             @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
             @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
-            @ModelAttribute("studyJavaAdminUser") StudyJavaAdminUser  studyJavaAdminUser) {
-        Page<StudyJavaAdminUser> page = new Page<>(pageNum, pageSize);
-        IPage<StudyJavaAdminUser> userPage = studyJavaAdminUserService.getAdminUserList(page, studyJavaAdminUser);
+            @ModelAttribute("studyJavaAdminUser") StudyJavaAdminUserVo  studyJavaAdminUser
+    ) {
+        Page<StudyJavaAdminUserVo> adminUserPage = new Page<>(pageNum, pageSize);
+
+        IPage<StudyJavaAdminUserDto> userPage = studyJavaAdminUserService.getAdminUserList(adminUserPage, studyJavaAdminUser);
         // 返回分页数据和总条数
         Map<String, Object> map = new HashMap<>();
         map.put("message","success");
@@ -38,7 +41,7 @@ public class StudyJavaAdminUserController {
 
     @PostMapping("/updateUser")
     @ResponseBody
-    public ResponseResult updateUser(@RequestBody StudyJavaAdminUser studyJavaAdminUser) {
+    public ResponseResult updateUser(@RequestBody StudyJavaAdminUserVo studyJavaAdminUser) {
         Integer adminUserId = studyJavaAdminUser.getAdminUserId();
         if(adminUserId == null){
             return ResponseGenerator.generatErrorResult("用户ID不能为空");
@@ -51,7 +54,7 @@ public class StudyJavaAdminUserController {
 
     @PostMapping("/insertUser")
     @ResponseBody
-    public ResponseResult insertUser(@RequestBody StudyJavaAdminUser studyJavaAdminUser) {
+    public ResponseResult insertUser(@RequestBody StudyJavaAdminUserVo studyJavaAdminUser) {
         String loginUserName = studyJavaAdminUser.getLoginUserName();
         if(!StringUtils.isNoneEmpty(loginUserName)){
             ResponseGenerator.generatErrorResult("用户名不能为空");
@@ -71,7 +74,7 @@ public class StudyJavaAdminUserController {
 
     @DeleteMapping("/deleteUser")
     @ResponseBody
-    public  ResponseResult deleteUser(@RequestBody StudyJavaAdminUser studyJavaAdminUser) {
+    public  ResponseResult deleteUser(@RequestBody StudyJavaAdminUserVo studyJavaAdminUser) {
         Integer adminUserId = studyJavaAdminUser.getAdminUserId();
         if(adminUserId == null){
             return  ResponseGenerator.generatErrorResult("用户ID不能为空");

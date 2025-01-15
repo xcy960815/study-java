@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.mapper.StudyJavaUserMapper">
 
-    <resultMap id="BaseResultMap" type="com.example.domain.StudyJavaUser">
+    <resultMap id="BaseResultMap" type="com.example.domain.dao.StudyJavaUserDao">
             <id property="userId" column="user_id" jdbcType="BIGINT"/>
             <result property="nickName" column="nick_name" jdbcType="VARCHAR"/>
             <result property="loginName" column="login_name" jdbcType="VARCHAR"/>
@@ -16,13 +16,15 @@
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
     </resultMap>
 
+<!--    基础列-->
     <sql id="Base_Column_List">
         user_id,nick_name,login_name,
         password_md5,introduce_sign,address,
         is_deleted,locked_flag,create_time
     </sql>
+
     <!--  根据条件查询所有的用户  -->
-    <select id="getUserList" resultMap="BaseResultMap" resultType="com.example.domain.StudyJavaUser">
+    <select id="getUserList" resultMap="BaseResultMap" resultType="com.example.domain.dao.StudyJavaUserDao">
         SELECT
         <include refid="Base_Column_List" />
         FROM
@@ -47,7 +49,7 @@
         </where>
     </select>
     <!--  新增一条用户数据  -->
-    <insert id="insertUser" keyColumn="user_id" keyProperty="userId" parameterType="com.example.domain.StudyJavaUser" useGeneratedKeys="true">
+    <insert id="insertUser" keyColumn="user_id" keyProperty="userId" parameterType="com.example.domain.vo.StudyJavaUserVo" useGeneratedKeys="true">
         insert into study_java_user
         ( user_id,nick_name,login_name
         ,password_md5,introduce_sign,address
@@ -59,7 +61,7 @@
         )
     </insert>
     <!--  更新一条用户数据  -->
-    <update id="updateUser" parameterType="com.example.domain.StudyJavaUser">
+    <update id="updateUser" parameterType="com.example.domain.vo.StudyJavaUserVo">
         update study_java_user
         <set>
             <if test="studyJavaUser.nickName != null">
@@ -80,7 +82,7 @@
         and `user_id` = #{studyJavaUser.userId,jdbcType=BIGINT}
     </update>
     <!--  删除用户 软删除  -->
-    <update id="deleteUser" parameterType="com.example.domain.StudyJavaUser">
+    <update id="deleteUser" parameterType="com.example.domain.vo.StudyJavaUserVo">
         update study_java_user
         <set>
             is_deleted = 1
@@ -88,16 +90,20 @@
         where
             `user_id` = #{studyJavaUser.userId,jdbcType=BIGINT}
     </update>
-    <!--验证用户 账号密码-->
-    <select id="checkUser" parameterType="com.example.domain.StudyJavaUser" resultType="com.example.domain.StudyJavaUser">
+    <!--  登录验证  -->
+    <select id="getUserByNameAndPassword" parameterType="com.example.domain.vo.StudyJavaLoginVo" resultType="com.example.domain.dao.StudyJavaUserDao">
         select
-        <include refid="Base_Column_List" />
+        <include refid="Base_Column_List"></include>
         from study_java_user
         <where>
-            login_name = #{studyJavaUser.loginName}
-            <if test="studyJavaUser != null and studyJavaUser.passwordMd5 != null and studyJavaUser.passwordMd5 != ''">
-                AND password_md5 = #{studyJavaUser.passwordMd5}
+            is_deleted = 0
+            <if test="studyJavaLoginVo != null and studyJavaLoginVo.username != null and studyJavaLoginVo.username != ''">
+                AND login_name = #{studyJavaLoginVo.username}
+            </if>
+            <if test="studyJavaLoginVo != null and studyJavaLoginVo.password != null and studyJavaLoginVo.password != ''">
+                AND password_md5 = #{studyJavaLoginVo.password}
             </if>
         </where>
+        Limit 1
     </select>
 </mapper>

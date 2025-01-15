@@ -1,8 +1,8 @@
 package com.example.service.imp;
 
 
-import com.example.domain.StudyJavaLoginDomain;
-import com.example.domain.StudyJavaUser;
+import com.example.domain.vo.StudyJavaLoginVo;
+import com.example.domain.dto.StudyJavaUserDto;
 import com.example.service.StudyJavaLoginService;
 import com.example.service.StudyJavaUserService;
 import com.example.utils.JwtTokenUtil;
@@ -15,17 +15,16 @@ public class StudyJavaLoginServiceImp implements StudyJavaLoginService {
     private JwtTokenUtil jwtTokenUtil;
 
     @Resource
-    private StudyJavaUserService studyJavaUserService; // 注入接口
+    private StudyJavaUserService studyJavaUserService;
 
-    public String login(StudyJavaLoginDomain studyJavaLoginDomain) {
-        String name = studyJavaLoginDomain.getName();
-        String password = studyJavaLoginDomain.getPassword();
-        StudyJavaUser studyJavaUser = new StudyJavaUser();
-        studyJavaUser.setLoginName(name);
-        studyJavaUser.setPasswordMd5(password);
-        if (!studyJavaUserService.checkUser(studyJavaUser)) {
-            return null;
+    public String login(StudyJavaLoginVo studyJavaLoginDomain) {
+
+        StudyJavaUserDto loginUser = studyJavaUserService.getUserByNameAndPassword(studyJavaLoginDomain);
+        String loginName = loginUser.getLoginName();
+        if (loginUser == null) {
+            throw new RuntimeException("找不到用户或者密码不对");
         }
-        return JwtTokenUtil.generateToken(name);
+
+        return jwtTokenUtil.generateToken(loginName);
     }
 }
