@@ -13,15 +13,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-@Controller
+@RestController
 public class StudyJavaLoginController {
     @Resource
     private StudyJavaLoginService studyJavaLoginService;
 
     @PostMapping("/login")
     @ResponseBody
-    public ResponseResult login(@RequestBody StudyJavaLoginVo studyJavaLoginDomain) {
-        String token = studyJavaLoginService.login(studyJavaLoginDomain);
+    public ResponseResult login(@RequestBody StudyJavaLoginVo studyJavaLoginParams) {
+        String token = studyJavaLoginService.login(studyJavaLoginParams);
 
         Map<String,String> loginResult = new HashMap<>();
         loginResult.put("token",token);

@@ -28,5 +28,10 @@ public interface StudyJavaUserService {
      */
     int deleteUser(StudyJavaUserVo studyJavaUser);
 
-    StudyJavaUserDto getUserByNameAndPassword(StudyJavaLoginVo studyJavaLoginDomain);
+    /**
+     *
+     * @param studyJavaLoginParams
+     * @return
+     */
+    StudyJavaUserDto getUserByNameAndPassword(StudyJavaLoginVo studyJavaLoginParams);
 }

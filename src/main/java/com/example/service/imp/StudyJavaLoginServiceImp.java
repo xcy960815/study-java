@@ -17,10 +17,12 @@ public class StudyJavaLoginServiceImp implements StudyJavaLoginService {
     @Resource
     private StudyJavaUserService studyJavaUserService;
 
-    public String login(StudyJavaLoginVo studyJavaLoginDomain) {
+    public String login(StudyJavaLoginVo studyJavaLoginParams) {
 
-        StudyJavaUserDto loginUser = studyJavaUserService.getUserByNameAndPassword(studyJavaLoginDomain);
+        StudyJavaUserDto loginUser = studyJavaUserService.getUserByNameAndPassword(studyJavaLoginParams);
+
         String loginName = loginUser.getLoginName();
+
         if (loginUser == null) {
             throw new RuntimeException("找不到用户或者密码不对");
         }

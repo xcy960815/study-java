@@ -1,7 +1,6 @@
 package com.example.service.imp;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.example.domain.dao.StudyJavaUserDao;
-import com.example.domain.dto.StudyJavaAdminUserDto;
 import com.example.domain.vo.StudyJavaLoginVo;
 import com.example.domain.dto.StudyJavaUserDto;
 import com.example.domain.vo.StudyJavaUserVo;
@@ -59,7 +58,6 @@ public class StudyJavaUserServiceImp implements StudyJavaUserService {
     public int deleteUser(StudyJavaUserVo studyJavaUser) {
         return studyJavaUserMapper.deleteUser(studyJavaUser);
     }
-
 
 
     @Override
