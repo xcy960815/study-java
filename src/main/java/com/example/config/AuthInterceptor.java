@@ -11,9 +11,6 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import com.example.utils.JwtTokenUtil;
 
-import java.util.Arrays;
-import java.util.List;
-
 
 @Component
 public class AuthInterceptor implements HandlerInterceptor {
@@ -40,9 +37,9 @@ public class AuthInterceptor implements HandlerInterceptor {
             String name = JwtTokenUtil.getUsernameFromToken(token);
             System.out.println("当前登录用户是"+name);
             // 验证token
-//           Boolean valid =  JwtTokenUtil.validateToken(token, name);
-//           System.out.println(valid);
-            return true;
+           Boolean valid =  JwtTokenUtil.validateToken(token, name);
+           System.out.println(valid);
+            return valid;
         } catch (Exception e) {
             e.printStackTrace(); // 打印错误信息
             httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

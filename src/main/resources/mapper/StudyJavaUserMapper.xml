@@ -97,11 +97,11 @@
         from study_java_user
         <where>
             is_deleted = 0
-            <if test="studyJavaLoginVo != null and studyJavaLoginVo.username != null and studyJavaLoginVo.username != ''">
-                AND login_name = #{studyJavaLoginVo.username}
+            <if test="studyJavaLoginParams != null and studyJavaLoginParams.username != null and studyJavaLoginParams.username != ''">
+                AND login_name = #{studyJavaLoginParams.username}
             </if>
-            <if test="studyJavaLoginVo != null and studyJavaLoginVo.password != null and studyJavaLoginVo.password != ''">
-                AND password_md5 = #{studyJavaLoginVo.password}
+            <if test="studyJavaLoginParams != null and studyJavaLoginParams.password != null and studyJavaLoginParams.password != ''">
+                AND password_md5 = #{studyJavaLoginParams.password}
             </if>
         </where>
         Limit 1

@@ -31,6 +31,9 @@ public class StudyJavaUserServiceImp implements StudyJavaUserService {
             studyJavaUserDto.setId(user.getUserId());
             studyJavaUserDto.setAddress(user.getAddress());
             studyJavaUserDto.setNickName(user.getNickName());
+            studyJavaUserDto.setLoginName(user.getLoginName());
+            studyJavaUserDto.setIntroduceSign(user.getIntroduceSign());
+            studyJavaUserDto.setCreateTime(user.getCreateTime());
             return studyJavaUserDto;
         }).toList();
         // 创建新的 IPage 对象
@@ -61,9 +64,23 @@ public class StudyJavaUserServiceImp implements StudyJavaUserService {
 
     @Override
     public StudyJavaUserDto getUserByNameAndPassword(StudyJavaLoginVo studyJavaLogin){
+
         StudyJavaUserDao loginUser = studyJavaUserMapper.getUserByNameAndPassword(studyJavaLogin);
+
         StudyJavaUserDto studyJavaUserDto = new StudyJavaUserDto();
+//        用户id
         studyJavaUserDto.setId(loginUser.getUserId());
+//        住址
+        studyJavaUserDto.setAddress(loginUser.getAddress());
+//        登录账号
+        studyJavaUserDto.setLoginName(loginUser.getLoginName());
+//        昵称
+        studyJavaUserDto.setNickName(loginUser.getNickName());
+//        创建时间
+        studyJavaUserDto.setCreateTime(loginUser.getCreateTime());
+//        个性签名
+        studyJavaUserDto.setIntroduceSign(loginUser.getIntroduceSign());
+//
         return studyJavaUserDto;
     }
 }

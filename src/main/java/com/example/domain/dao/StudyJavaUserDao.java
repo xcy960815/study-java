@@ -27,14 +27,6 @@ public class StudyJavaUserDao implements Serializable {
     private String nickName;
 
     /**
-     * 用户年龄 不是表里面的字段
-     */
-    @Setter
-    @Getter
-    @TableField(exist = false)
-    private int age;
-
-    /**
      * 登陆名称(默认为手机号)
      */
     private String loginName;
@@ -66,10 +58,7 @@ public class StudyJavaUserDao implements Serializable {
     @JsonIgnore
     private Integer lockedFlag;
 
-    /**
-     * 注册时间，格式化为 "yyyy-MM-dd"
-     */
-    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+
     private Date createTime;
 
     @Serial

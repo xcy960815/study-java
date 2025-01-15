@@ -1,6 +1,7 @@
 package com.example.controller;
 
 
+import com.example.domain.dto.StudyJavaLoginDto;
 import com.example.domain.vo.StudyJavaLoginVo;
 import com.example.service.StudyJavaLoginService;
 import com.example.utils.ResponseGenerator;
@@ -21,10 +22,7 @@ public class StudyJavaLoginController {
     @PostMapping("/login")
     @ResponseBody
     public ResponseResult login(@RequestBody StudyJavaLoginVo studyJavaLoginParams) {
-        String token = studyJavaLoginService.login(studyJavaLoginParams);
-
-        Map<String,String> loginResult = new HashMap<>();
-        loginResult.put("token",token);
+        StudyJavaLoginDto loginResult = studyJavaLoginService.login(studyJavaLoginParams);
         return ResponseGenerator.generatSuccessResult(loginResult);
     }
 };

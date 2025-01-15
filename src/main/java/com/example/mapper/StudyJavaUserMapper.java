@@ -28,5 +28,5 @@ public interface StudyJavaUserMapper {
     // 删除用户
     int deleteUser( @Param("studyJavaUser") StudyJavaUserVo studyJavaUser);
     // 通过账号密码查找用户信息
-    StudyJavaUserDao getUserByNameAndPassword(@Param("studyJavaLoginVo") StudyJavaLoginVo studyJavaLoginDomain);
+    StudyJavaUserDao getUserByNameAndPassword(@Param("studyJavaLoginParams") StudyJavaLoginVo studyJavaLoginParams);
 }
