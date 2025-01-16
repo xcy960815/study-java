@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 
 @Service
@@ -34,6 +35,10 @@ public class StudyJavaUserServiceImp implements StudyJavaUserService {
             studyJavaUserDto.setLoginName(user.getLoginName());
             studyJavaUserDto.setIntroduceSign(user.getIntroduceSign());
             studyJavaUserDto.setCreateTime(user.getCreateTime());
+            // 年龄 随机生成
+            Random random = new Random();
+            Integer age = random.nextInt(100);
+            studyJavaUserDto.setAge(age);
             return studyJavaUserDto;
         }).toList();
         // 创建新的 IPage 对象
@@ -63,24 +68,20 @@ public class StudyJavaUserServiceImp implements StudyJavaUserService {
 
 
     @Override
-    public StudyJavaUserDto getUserByNameAndPassword(StudyJavaLoginVo studyJavaLogin){
+    public StudyJavaUserDto getUserInfo(StudyJavaUserVo studyJavaUserVo){
+        StudyJavaUserDao userInfoDao = studyJavaUserMapper.getUserInfo(studyJavaUserVo);
+        StudyJavaUserDto userInfoDto = new StudyJavaUserDto();
+        userInfoDto.setId(userInfoDao.getUserId());
+        userInfoDto.setAddress(userInfoDao.getAddress());
+        userInfoDto.setNickName(userInfoDao.getNickName());
+        userInfoDto.setLoginName(userInfoDao.getLoginName());
+        userInfoDto.setIntroduceSign(userInfoDao.getIntroduceSign());
+        userInfoDto.setCreateTime(userInfoDao.getCreateTime());
+        // 年龄 随机生成
+        Random random = new Random();
+        Integer age = random.nextInt(100);
+        userInfoDto.setAge(age);
 
-        StudyJavaUserDao loginUser = studyJavaUserMapper.getUserByNameAndPassword(studyJavaLogin);
-
-        StudyJavaUserDto studyJavaUserDto = new StudyJavaUserDto();
-//        用户id
-        studyJavaUserDto.setId(loginUser.getUserId());
-//        住址
-        studyJavaUserDto.setAddress(loginUser.getAddress());
-//        登录账号
-        studyJavaUserDto.setLoginName(loginUser.getLoginName());
-//        昵称
-        studyJavaUserDto.setNickName(loginUser.getNickName());
-//        创建时间
-        studyJavaUserDto.setCreateTime(loginUser.getCreateTime());
-//        个性签名
-        studyJavaUserDto.setIntroduceSign(loginUser.getIntroduceSign());
-//
-        return studyJavaUserDto;
+        return userInfoDto;
     }
 }

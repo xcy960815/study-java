@@ -14,12 +14,12 @@ public class StudyJavaApplication {
     public static void main(String[] args) {
         SpringApplication.run(StudyJavaApplication.class, args);
     }
-
 //    获取服务端端口
     public void getServerPort() {
         ApplicationContext context = SpringApplication.run(StudyJavaApplication.class, null);
         ServletWebServerApplicationContext servletWebServerApplicationContext = (ServletWebServerApplicationContext) context;
         int port = servletWebServerApplicationContext.getWebServer().getPort();
+        System.out.println("(♥◠‿◠)ﾉﾞ  项目启动成功   ლ(´ڡ`ლ)ﾞ  \n" );
         System.out.println("服务器端口号：" + port);
     }
 }

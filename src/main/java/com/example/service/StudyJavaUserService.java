@@ -29,9 +29,9 @@ public interface StudyJavaUserService {
     int deleteUser(StudyJavaUserVo studyJavaUser);
 
     /**
-     *
-     * @param studyJavaLoginParams
-     * @return
+     * 通过token获取用户信息
+     * @param
+     * @return StudyJavaUserDto
      */
-    StudyJavaUserDto getUserByNameAndPassword(StudyJavaLoginVo studyJavaLoginParams);
+    StudyJavaUserDto getUserInfo(StudyJavaUserVo studyJavaUserVo);
 }

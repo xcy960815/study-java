@@ -90,18 +90,42 @@
         where
             `user_id` = #{studyJavaUser.userId,jdbcType=BIGINT}
     </update>
-    <!--  登录验证  -->
-    <select id="getUserByNameAndPassword" parameterType="com.example.domain.vo.StudyJavaLoginVo" resultType="com.example.domain.dao.StudyJavaUserDao">
+    <!--  获取用户信息  -->
+    <select id="getUserInfo" parameterType="com.example.domain.vo.StudyJavaUserVo" resultType="com.example.domain.dao.StudyJavaUserDao">
         select
         <include refid="Base_Column_List"></include>
         from study_java_user
         <where>
             is_deleted = 0
-            <if test="studyJavaLoginParams != null and studyJavaLoginParams.username != null and studyJavaLoginParams.username != ''">
-                AND login_name = #{studyJavaLoginParams.username}
+            <if test="studyJavaUser != null and studyJavaUser.userId != null and studyJavaUser.userId != ''">
+                AND user_id = #{studyJavaUser.userId}
             </if>
-            <if test="studyJavaLoginParams != null and studyJavaLoginParams.password != null and studyJavaLoginParams.password != ''">
-                AND password_md5 = #{studyJavaLoginParams.password}
+            <if test="studyJavaUser != null and studyJavaUser.loginName != null and studyJavaUser.loginName != ''">
+                AND login_name = #{studyJavaUser.loginName}
+            </if>
+            <if test="studyJavaUser != null and studyJavaUser.nickName != null and studyJavaUser.nickName != ''">
+                AND nick_name = #{studyJavaUser.nickName}
+            </if>
+            <if test="studyJavaUser != null and studyJavaUser.passwordMd5 != null and studyJavaUser.passwordMd5 != ''">
+                AND password_md5 = #{studyJavaUser.passwordMd5}
+            </if>
+            <if test="studyJavaUser != null and studyJavaUser.introduceSign != null and studyJavaUser.introduceSign != ''">
+                AND introduce_sign = #{studyJavaUser.introduceSign}
+            </if>
+            <if test="studyJavaUser != null and studyJavaUser.address != null and studyJavaUser.address != ''">
+                AND address = #{studyJavaUser.address}
+            </if>
+            <if test="studyJavaUser != null and studyJavaUser.lockedFlag != null and studyJavaUser.lockedFlag != ''">
+                AND locked_flag = #{studyJavaUser.lockedFlag}
+            </if>
+            <if test="studyJavaUser != null and studyJavaUser.introduceSign != null and studyJavaUser.introduceSign != ''">
+                AND introduce_sign = #{studyJavaUser.introduceSign}
+            </if>
+            <if test="studyJavaUser != null and studyJavaUser.introduceSign != null and studyJavaUser.introduceSign != ''">
+                AND introduce_sign = #{studyJavaUser.introduceSign}
+            </if>
+            <if test="studyJavaUser != null and studyJavaUser.introduceSign != null and studyJavaUser.introduceSign != ''">
+                AND introduce_sign = #{studyJavaUser.introduceSign}
             </if>
         </where>
         Limit 1

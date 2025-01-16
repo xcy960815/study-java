@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import com.example.utils.ResponseResult;
 import com.example.utils.ResponseGenerator;
 import com.example.service.StudyJavaUserService;
-
+import com.example.utils.JwtTokenUtil;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +20,22 @@ import java.util.Map;
 public class StudyJavaUserController {
     @Resource
     private StudyJavaUserService studyJavaUserService;
+
+//获取用户信息
+    @GetMapping("/getUserInfo")
+    public ResponseResult getUserInfo(@RequestHeader(value = "Authorization", required = false) String authorization){
+        String token = authorization.substring(7);
+        String userInfoStr = JwtTokenUtil.getUserInfoFromToken(token);
+        System.out.println("当前用户的" + userInfoStr);
+        String[] userInfoArr = userInfoStr.split(":");
+        Long userId = Long.parseLong(userInfoArr[0]);
+        String loginName = userInfoArr[1];
+        StudyJavaUserVo studyJavaUserVo = new StudyJavaUserVo();
+        studyJavaUserVo.setUserId(userId);
+        studyJavaUserVo.setLoginName(loginName);
+        StudyJavaUserDto userInfo = studyJavaUserService.getUserInfo(studyJavaUserVo);
+        return ResponseGenerator.generatSuccessResult(userInfo);
+    };
     // RequestParam 通常用于获取单个参数
     // ModelAttribute 通常用于获取多个参数
     @GetMapping("/getUserList")
@@ -27,7 +43,8 @@ public class StudyJavaUserController {
     public ResponseResult getUserList(
             @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
             @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
-            @ModelAttribute("studyJavaUser") StudyJavaUserVo  studyJavaUser) {
+            @ModelAttribute("studyJavaUser") StudyJavaUserVo  studyJavaUser
+    ) {
         Page<StudyJavaUserVo> page = new Page<>(pageNum, pageSize);
         IPage<StudyJavaUserDto> userPage = studyJavaUserService.getUserList(page, studyJavaUser);
         // 返回分页数据和总条数
@@ -36,6 +53,8 @@ public class StudyJavaUserController {
         map.put("total",userPage.getTotal());
         return ResponseGenerator.generatSuccessResult(map);
     }
+
+
     @GetMapping("/test")
     @ResponseBody
     public Map<String, Object> test(){

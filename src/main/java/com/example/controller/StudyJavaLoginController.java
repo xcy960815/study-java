@@ -25,4 +25,11 @@ public class StudyJavaLoginController {
         StudyJavaLoginDto loginResult = studyJavaLoginService.login(studyJavaLoginParams);
         return ResponseGenerator.generatSuccessResult(loginResult);
     }
+
+    @PostMapping("/loginout")
+    @ResponseBody
+    public ResponseResult logout(@RequestBody StudyJavaLoginVo studyJavaLoginParams) {
+//        studyJavaLoginService.logout(studyJavaLoginParams);
+        return ResponseGenerator.generatSuccessResult(null);
+    }
 };

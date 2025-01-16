@@ -27,14 +27,6 @@ public class StudyJavaUserVo implements Serializable {
     private String nickName;
 
     /**
-     * 用户年龄 不是表里面的字段
-     */
-    @Setter
-    @Getter
-    @TableField(exist = false)
-    private int age;
-
-    /**
      * 登陆名称(默认为手机号)
      */
     private String loginName;

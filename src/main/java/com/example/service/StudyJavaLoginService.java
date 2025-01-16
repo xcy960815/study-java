@@ -5,5 +5,7 @@ import com.example.domain.vo.StudyJavaLoginVo;
 
 public interface StudyJavaLoginService {
 
-    public StudyJavaLoginDto login(StudyJavaLoginVo studyJavaLoginDomain);
+    public StudyJavaLoginDto login(StudyJavaLoginVo studyJavaLogin);
+
+//    public void logout(StudyJavaLoginVo studyJavaLogin);
 }

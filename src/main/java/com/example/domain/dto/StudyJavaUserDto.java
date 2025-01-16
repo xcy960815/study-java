@@ -25,6 +25,11 @@ public class StudyJavaUserDto implements Serializable {
     private String loginName;
 
     /**
+     * 年龄 随机生成的
+     */
+    private Integer age;
+
+    /**
      * 个性签名
      */
     private String introduceSign;

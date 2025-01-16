@@ -14,19 +14,19 @@ public class StudyJavaLoginVo {
      */
     private String password;
 
-    String getPassword(){
+    public String getPassword(){
         return password;
     }
 
-    void setPassword(String password){
+    public void setPassword(String password){
         this.password = password;
     }
 
-    String getUsername(){
+    public String getUsername(){
         return username;
     }
 
-    void  setUsername(String username){
+    public void  setUsername(String username){
         this.username = username;
     }
 
