@@ -21,12 +21,11 @@ public class StudyJavaUserController {
     @Resource
     private StudyJavaUserService studyJavaUserService;
 
-//获取用户信息
+    // 获取用户信息
     @GetMapping("/getUserInfo")
     public ResponseResult getUserInfo(@RequestHeader(value = "Authorization", required = false) String authorization){
         String token = authorization.substring(7);
         String userInfoStr = JwtTokenUtil.getUserInfoFromToken(token);
-        System.out.println("当前用户的" + userInfoStr);
         String[] userInfoArr = userInfoStr.split(":");
         Long userId = Long.parseLong(userInfoArr[0]);
         String loginName = userInfoArr[1];
@@ -164,9 +163,9 @@ public class StudyJavaUserController {
 //    public ResponseResult updateUserAvatar(@RequestBody StudyJavaUser studyJavaUser) {
 //
 //    };
-    @PostMapping("/updateUser")
+    @PostMapping("/updateUserInfo")
     @ResponseBody
-    public ResponseResult updateUser(@RequestBody StudyJavaUserVo studyJavaUser) {
+    public ResponseResult updateUserInfo(@RequestBody StudyJavaUserVo studyJavaUser) {
         // 获取用户ID
         Long userId = studyJavaUser.getUserId();
         if(userId == null){
@@ -192,22 +191,41 @@ public class StudyJavaUserController {
         if (!StringUtils.isNoneEmpty(address)){
             return  ResponseGenerator.generatErrorResult("地址不能为空");
         }
-        studyJavaUserService.updateUser(studyJavaUser);
+        studyJavaUserService.updateUserInfo(studyJavaUser);
         // 返回更新结果
         return ResponseGenerator.generatSuccessResult(true);
     }
-    @PostMapping("/insertUser")
+    @PostMapping("/insertUserInfo")
     @ResponseBody
-    public ResponseResult insertUser(@RequestBody StudyJavaUserVo studyJavaUser) {
-
-        studyJavaUserService.insertUser(studyJavaUser);
+    public ResponseResult insertUserInfo(@RequestBody StudyJavaUserVo studyJavaUser) {
+        String nickName = studyJavaUser.getNickName();
+        if (!StringUtils.isNoneEmpty(nickName)){
+            return  ResponseGenerator.generatErrorResult("昵称不能为空");
+        }
+        String loginName = studyJavaUser.getLoginName();
+        if (!StringUtils.isNoneEmpty(loginName)){
+            return  ResponseGenerator.generatErrorResult("登录名不能为空");
+        }
+        String passwordMd5 = studyJavaUser.getPasswordMd5();
+        if (!StringUtils.isNoneEmpty(passwordMd5)){
+            return  ResponseGenerator.generatErrorResult("密码不能为空");
+        }
+        String introduceSign = studyJavaUser.getIntroduceSign();
+        if (!StringUtils.isNoneEmpty(introduceSign)){
+            return  ResponseGenerator.generatErrorResult("介绍不能为空");
+        }
+        String address = studyJavaUser.getAddress();
+        if (!StringUtils.isNoneEmpty(address)){
+            return  ResponseGenerator.generatErrorResult("地址不能为空");
+        }
+        studyJavaUserService.insertUserInfo(studyJavaUser);
         // 返回插入结果
         return ResponseGenerator.generatSuccessResult(true);
     }
-    @DeleteMapping("/deleteUser")
+    @DeleteMapping("/deleteUserInfo")
     @ResponseBody
-    public ResponseResult deleteUser(@RequestBody StudyJavaUserVo studyJavaUser) {
-        studyJavaUserService.deleteUser(studyJavaUser);
+    public ResponseResult deleteUserInfo(@RequestBody StudyJavaUserVo studyJavaUser) {
+        studyJavaUserService.deleteUserInfo(studyJavaUser);
         // 返回插入结果
         return ResponseGenerator.generatSuccessResult(true);
     }

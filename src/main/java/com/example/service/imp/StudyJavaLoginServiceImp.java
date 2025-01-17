@@ -33,14 +33,14 @@ public class StudyJavaLoginServiceImp implements StudyJavaLoginService {
             throw new RuntimeException("找不到用户或者密码不对");
         }
         StudyJavaLoginDto studyJavaLoginDto = new StudyJavaLoginDto();
-        studyJavaLoginDto.setId(userInfo.getId());
+        studyJavaLoginDto.setUserId(userInfo.getUserId());
         studyJavaLoginDto.setLoginName(userInfo.getLoginName());
         studyJavaLoginDto.setAddress(userInfo.getAddress());
         studyJavaLoginDto.setCreateTime(userInfo.getCreateTime());
         studyJavaLoginDto.setIntroduceSign(userInfo.getIntroduceSign());
         studyJavaLoginDto.setNickName(userInfo.getNickName());
 //        将用户关键信息（能从数据库中查出来的字段保存进去）
-        String tokenContent = userInfo.getId() + ":" + userInfo.getLoginName() + ":" + userInfo.getNickName();
+        String tokenContent = userInfo.getUserId() + ":" + userInfo.getLoginName() + ":" + userInfo.getNickName();
         System.out.print("tokenContent---tokenContent"+tokenContent);
         studyJavaLoginDto.setToken(jwtTokenUtil.generateToken(tokenContent));
         return studyJavaLoginDto;

@@ -22,11 +22,11 @@ public interface StudyJavaUserMapper {
     // 获取用户列表
     IPage<StudyJavaUserDao> getUserList(@Param("page") Page<StudyJavaUserVo> page, @Param("studyJavaUser") StudyJavaUserVo studyJavaUser);
     // 更新用户
-    int updateUser( @Param("studyJavaUser") StudyJavaUserVo studyJavaUser);
+    int updateUserInfo( @Param("studyJavaUser") StudyJavaUserVo studyJavaUser);
     // 添加用户
-    int insertUser( @Param("studyJavaUser") StudyJavaUserVo studyJavaUser);
+    int insertUserInfo( @Param("studyJavaUser") StudyJavaUserVo studyJavaUser);
     // 删除用户
-    int deleteUser( @Param("studyJavaUser") StudyJavaUserVo studyJavaUser);
+    int deleteUserInfo( @Param("studyJavaUser") StudyJavaUserVo studyJavaUser);
     // 通过账号密码查找用户信息
     StudyJavaUserDao getUserInfo(@Param("studyJavaUser") StudyJavaUserVo studyJavaUser);
 }

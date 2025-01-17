@@ -12,7 +12,7 @@ public class StudyJavaUserDto implements Serializable {
     /**
      * 用户主键id
      */
-    private Long id;
+    private Long userId;
 
     /**
      * 用户昵称
@@ -43,6 +43,11 @@ public class StudyJavaUserDto implements Serializable {
      */
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date createTime;
+
+    /**
+     * 头像
+     */
+    private String avatar;
 
     @Serial
     private static final long serialVersionUID = 1L;

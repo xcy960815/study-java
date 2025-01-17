@@ -16,7 +16,7 @@
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
     </resultMap>
 
-<!--    基础列-->
+    <!-- 基础列 -->
     <sql id="Base_Column_List">
         user_id,nick_name,login_name,
         password_md5,introduce_sign,address,
@@ -48,8 +48,9 @@
             </if>
         </where>
     </select>
-    <!--  新增一条用户数据  -->
-    <insert id="insertUser" keyColumn="user_id" keyProperty="userId" parameterType="com.example.domain.vo.StudyJavaUserVo" useGeneratedKeys="true">
+
+    <!--  新增用户数据  -->
+    <insert id="insertUserInfo" keyColumn="user_id" keyProperty="userId" parameterType="com.example.domain.vo.StudyJavaUserVo" useGeneratedKeys="true">
         insert into study_java_user
         ( user_id,nick_name,login_name
         ,password_md5,introduce_sign,address
@@ -61,7 +62,7 @@
         )
     </insert>
     <!--  更新一条用户数据  -->
-    <update id="updateUser" parameterType="com.example.domain.vo.StudyJavaUserVo">
+    <update id="updateUserInfo" parameterType="com.example.domain.vo.StudyJavaUserVo">
         update study_java_user
         <set>
             <if test="studyJavaUser.nickName != null">
@@ -82,7 +83,7 @@
         and `user_id` = #{studyJavaUser.userId,jdbcType=BIGINT}
     </update>
     <!--  删除用户 软删除  -->
-    <update id="deleteUser" parameterType="com.example.domain.vo.StudyJavaUserVo">
+    <update id="deleteUserInfo" parameterType="com.example.domain.vo.StudyJavaUserVo">
         update study_java_user
         <set>
             is_deleted = 1
