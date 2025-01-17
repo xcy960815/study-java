@@ -20,7 +20,7 @@
     <sql id="Base_Column_List">
         user_id,nick_name,login_name,
         password_md5,introduce_sign,address,
-        is_deleted,locked_flag,create_time
+        is_deleted,locked_flag,create_time,avatar
     </sql>
 
     <!--  根据条件查询所有的用户  -->
@@ -61,7 +61,29 @@
         ,#{studyJavaUser.isDeleted,jdbcType=TINYINT},#{studyJavaUser.lockedFlag,jdbcType=TINYINT},#{studyJavaUser.createTime,jdbcType=TIMESTAMP}
         )
     </insert>
-    <!--  更新一条用户数据  -->
+
+    <!--  更新用户头像  -->
+    <update id="updateUserAvatar">
+        update study_java_user
+        <set>
+            avatar = #{base64ImageUrl,jdbcType=VARCHAR},
+        </set>
+        where
+            is_deleted = 0
+            and `user_id` = #{userId,jdbcType=BIGINT}
+    </update>
+
+    <!--  删除用户 软删除  -->
+    <update id="deleteUserInfo" parameterType="com.example.domain.vo.StudyJavaUserVo">
+        update study_java_user
+        <set>
+            is_deleted = 1
+        </set>
+        where
+            `user_id` = #{studyJavaUser.userId,jdbcType=BIGINT}
+    </update>
+
+    <!--  更新用户数据  -->
     <update id="updateUserInfo" parameterType="com.example.domain.vo.StudyJavaUserVo">
         update study_java_user
         <set>
@@ -81,15 +103,6 @@
         where
         is_deleted = 0
         and `user_id` = #{studyJavaUser.userId,jdbcType=BIGINT}
-    </update>
-    <!--  删除用户 软删除  -->
-    <update id="deleteUserInfo" parameterType="com.example.domain.vo.StudyJavaUserVo">
-        update study_java_user
-        <set>
-            is_deleted = 1
-        </set>
-        where
-            `user_id` = #{studyJavaUser.userId,jdbcType=BIGINT}
     </update>
     <!--  获取用户信息  -->
     <select id="getUserInfo" parameterType="com.example.domain.vo.StudyJavaUserVo" resultType="com.example.domain.dao.StudyJavaUserDao">

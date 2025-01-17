@@ -27,6 +27,8 @@ public interface StudyJavaUserMapper {
     int insertUserInfo( @Param("studyJavaUser") StudyJavaUserVo studyJavaUser);
     // 删除用户
     int deleteUserInfo( @Param("studyJavaUser") StudyJavaUserVo studyJavaUser);
-    // 通过账号密码查找用户信息
+    // 更新用户头像
+    int updateUserAvatar(@Param("userId") String userId, @Param("base64ImageUrl") String base64ImageUrl) ;
+    // 查找用户信息
     StudyJavaUserDao getUserInfo(@Param("studyJavaUser") StudyJavaUserVo studyJavaUser);
 }

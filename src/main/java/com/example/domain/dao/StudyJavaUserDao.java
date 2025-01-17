@@ -61,6 +61,11 @@ public class StudyJavaUserDao implements Serializable {
 
     private Date createTime;
 
+    /**
+     * 头像
+     */
+    private String avatar;
+
     @Serial
     private static final long serialVersionUID = 1L;
 }

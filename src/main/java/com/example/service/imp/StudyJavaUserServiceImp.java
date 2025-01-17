@@ -8,6 +8,8 @@ import com.example.service.StudyJavaUserService;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -56,6 +58,23 @@ public class StudyJavaUserServiceImp implements StudyJavaUserService {
     public int updateUserInfo(StudyJavaUserVo studyJavaUser) {
         return studyJavaUserMapper.updateUserInfo(studyJavaUser);
     }
+
+    @Override
+    public String updateUserAvatar(String userId, MultipartFile file) throws IOException {
+        //  将文件转成base64
+        if (file.isEmpty()) {
+            throw new IOException("上传的文件为空");
+        }
+        // 将文件转成字节数组
+        byte[] fileBytes = file.getBytes();
+
+        // 将字节数组转成 Base64 编码的字符串
+        String base64Image = Base64.getEncoder().encodeToString(fileBytes);
+        String base64ImageUrl = "data:image/jpeg;base64," + base64Image;
+        studyJavaUserMapper.updateUserAvatar(userId, base64ImageUrl);
+
+        return base64ImageUrl;
+    };
 
     @Override
     public int insertUserInfo(StudyJavaUserVo studyJavaUser) {
@@ -116,14 +135,15 @@ public class StudyJavaUserServiceImp implements StudyJavaUserService {
         Random random = new Random();
         Integer age = random.nextInt(100);
         userInfoDto.setAge(age);
-        try {
-            System.out.print(generateBase64Image());
-            userInfoDto.setAvatar(generateBase64Image());  // 调用可能抛出 IOException 的方法
-        } catch (IOException e) {
-            e.printStackTrace();  // 或者记录日志
-            // 根据需要处理异常，可以设定一个默认值
-            userInfoDto.setAvatar("");  // 设置默认头像
-        }
+        userInfoDto.setAvatar(userInfoDao.getAvatar());
+//        try {
+//            System.out.print(generateBase64Image());
+//            userInfoDto.setAvatar(generateBase64Image());  // 调用可能抛出 IOException 的方法
+//        } catch (IOException e) {
+//            e.printStackTrace();  // 或者记录日志
+//            // 根据需要处理异常，可以设定一个默认值
+//            userInfoDto.setAvatar("");  // 设置默认头像
+//        }
         return userInfoDto;
     }
 }

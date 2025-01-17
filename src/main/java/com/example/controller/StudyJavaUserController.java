@@ -10,6 +10,9 @@ import com.example.utils.ResponseResult;
 import com.example.utils.ResponseGenerator;
 import com.example.service.StudyJavaUserService;
 import com.example.utils.JwtTokenUtil;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -157,12 +160,7 @@ public class StudyJavaUserController {
         result.put("code",200);
         return result;
     }
-//    更新用户头像
-//    @PostMapping("/updateUserAvatar")
-//    @ResponseBody
-//    public ResponseResult updateUserAvatar(@RequestBody StudyJavaUser studyJavaUser) {
-//
-//    };
+
     @PostMapping("/updateUserInfo")
     @ResponseBody
     public ResponseResult updateUserInfo(@RequestBody StudyJavaUserVo studyJavaUser) {
@@ -194,6 +192,24 @@ public class StudyJavaUserController {
         studyJavaUserService.updateUserInfo(studyJavaUser);
         // 返回更新结果
         return ResponseGenerator.generatSuccessResult(true);
+    }
+    @PostMapping("/updateUserAvatar")
+    @ResponseBody
+    public ResponseResult updateUserAvatar(
+            @RequestParam("userId") String userId,
+            @RequestParam("file") MultipartFile file
+    ) {
+        if(userId == null){
+            return ResponseGenerator.generatErrorResult("用户ID不能为空");
+        }
+        try {
+           String base64Image = studyJavaUserService.updateUserAvatar(userId,file);
+
+            // 返回更新结果
+            return ResponseGenerator.generatSuccessResult(base64Image);
+        }catch (IOException error){
+            return ResponseGenerator.generatErrorResult("更新头像失败");
+        }
     }
     @PostMapping("/insertUserInfo")
     @ResponseBody
