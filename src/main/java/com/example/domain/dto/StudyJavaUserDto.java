@@ -45,6 +45,10 @@ public class StudyJavaUserDto implements Serializable {
     private Date createTime;
 
     /**
+     * 密码
+     */
+    private String passwordMd5;
+    /**
      * 头像
      */
     private String avatar;

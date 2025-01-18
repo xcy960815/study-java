@@ -1,6 +1,5 @@
 package com.example.controller;
 
-
 import com.example.domain.dto.StudyJavaLoginDto;
 import com.example.domain.vo.StudyJavaLoginVo;
 import com.example.service.StudyJavaLoginService;
@@ -26,9 +25,9 @@ public class StudyJavaLoginController {
         return ResponseGenerator.generatSuccessResult(loginResult);
     }
 
-    @PostMapping("/loginout")
+    @PostMapping("/logout")
     @ResponseBody
-    public ResponseResult logout(@RequestBody StudyJavaLoginVo studyJavaLoginParams) {
+    public ResponseResult logout() {
 //        studyJavaLoginService.logout(studyJavaLoginParams);
         return ResponseGenerator.generatSuccessResult(null);
     }

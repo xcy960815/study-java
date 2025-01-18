@@ -2,6 +2,7 @@ package com.example.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.domain.dao.StudyJavaUserDao;
 import com.example.domain.dto.StudyJavaUserDto;
 import com.example.domain.vo.StudyJavaUserVo;
 import org.springframework.web.bind.annotation.RequestParam;

@@ -1,5 +1,6 @@
 package com.example.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.domain.dao.StudyJavaAdminUserDao;
@@ -12,7 +13,7 @@ import org.apache.ibatis.annotations.Param;
 * @createDate 2024-10-22 20:57:35
 * @Entity com.example.domain.dao.StudyJavaAdminUserDao
 */
-public interface StudyJavaAdminUserMapper {
+public interface StudyJavaAdminUserMapper extends BaseMapper<StudyJavaAdminUserDao> {
     // 获取所有的超级管理员列表
     IPage<StudyJavaAdminUserDao> getAdminUserList(@Param("page") Page<StudyJavaAdminUserVo> page, @Param("studyJavaAdminUser") StudyJavaAdminUserVo studyJavaAdminUser);
 

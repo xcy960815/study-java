@@ -26,12 +26,16 @@ public class StudyJavaLoginServiceImp implements StudyJavaLoginService {
         }
         StudyJavaUserVo studyJavaUserVo = new StudyJavaUserVo();
         studyJavaUserVo.setLoginName(studyJavaLoginParams.getUsername());
-        studyJavaUserVo.setPasswordMd5(studyJavaLoginParams.getPassword());
+//        studyJavaUserVo.setPasswordMd5(studyJavaLoginParams.getPassword());
 
         StudyJavaUserDto userInfo = studyJavaUserService.getUserInfo(studyJavaUserVo);
         if (userInfo == null) {
-            throw new RuntimeException("找不到用户或者密码不对");
+            throw new RuntimeException("用户不存在");
         }
+//        TODO
+//        if(!userInfo.get().equals(studyJavaLoginParams.getPassword())) {
+//            throw new RuntimeException("密码错误");
+//        }
         StudyJavaLoginDto studyJavaLoginDto = new StudyJavaLoginDto();
         studyJavaLoginDto.setUserId(userInfo.getUserId());
         studyJavaLoginDto.setLoginName(userInfo.getLoginName());

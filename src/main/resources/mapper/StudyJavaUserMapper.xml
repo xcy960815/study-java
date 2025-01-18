@@ -87,17 +87,20 @@
     <update id="updateUserInfo" parameterType="com.example.domain.vo.StudyJavaUserVo">
         update study_java_user
         <set>
-            <if test="studyJavaUser.nickName != null">
+            <if test="studyJavaUser.nickName != null and studyJavaUser.nickName != ''">
                 nick_name = #{studyJavaUser.nickName,jdbcType=VARCHAR},
             </if>
-            <if test="studyJavaUser.loginName != null">
+            <if test="studyJavaUser.loginName != null and studyJavaUser.loginName != ''">
                 login_name = #{studyJavaUser.loginName,jdbcType=VARCHAR},
             </if>
-            <if test="studyJavaUser.introduceSign != null">
+            <if test="studyJavaUser.introduceSign != null and studyJavaUser.introduceSign != ''">
                 introduce_sign = #{studyJavaUser.introduceSign,jdbcType=VARCHAR},
             </if>
-            <if test="studyJavaUser.address != null">
+            <if test="studyJavaUser.address != null and studyJavaUser.address != ''">
                 address = #{studyJavaUser.address,jdbcType=VARCHAR},
+            </if>
+            <if test="studyJavaUser.passwordMd5 != null and studyJavaUser.passwordMd5 != ''">
+                password_md5 = #{studyJavaUser.passwordMd5,jdbcType=VARCHAR},
             </if>
         </set>
         where
@@ -131,12 +134,6 @@
             </if>
             <if test="studyJavaUser != null and studyJavaUser.lockedFlag != null and studyJavaUser.lockedFlag != ''">
                 AND locked_flag = #{studyJavaUser.lockedFlag}
-            </if>
-            <if test="studyJavaUser != null and studyJavaUser.introduceSign != null and studyJavaUser.introduceSign != ''">
-                AND introduce_sign = #{studyJavaUser.introduceSign}
-            </if>
-            <if test="studyJavaUser != null and studyJavaUser.introduceSign != null and studyJavaUser.introduceSign != ''">
-                AND introduce_sign = #{studyJavaUser.introduceSign}
             </if>
             <if test="studyJavaUser != null and studyJavaUser.introduceSign != null and studyJavaUser.introduceSign != ''">
                 AND introduce_sign = #{studyJavaUser.introduceSign}
