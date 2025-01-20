@@ -6,11 +6,8 @@ import com.example.service.StudyJavaLoginService;
 import com.example.utils.ResponseGenerator;
 import com.example.utils.ResponseResult;
 import jakarta.annotation.Resource;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
 
 
 @RestController

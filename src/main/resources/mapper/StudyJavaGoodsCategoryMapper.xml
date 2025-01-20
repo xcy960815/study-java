@@ -23,4 +23,28 @@
         create_time,create_user,update_time,
         update_user
     </sql>
+
+    <select id="getGoodsCategoryList" resultMap="BaseResultMap"
+            parameterType="com.example.domain.vo.StudyJavaGoodsCategoryVo">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM study_java_goods_category
+            WHERE is_deleted = 0
+            <if test="studyJavaGoodsCategoryVo != null and studyJavaGoodsCategoryVo.categoryName != null and studyJavaGoodsCategoryVo.categoryName != ''">
+                AND category_name LIKE CONCAT('%', #{studyJavaGoodsCategoryVo.categoryName}, '%')
+            </if>
+            <if test="studyJavaGoodsCategoryVo != null and studyJavaGoodsCategoryVo.categoryLevel != null and studyJavaGoodsCategoryVo.categoryLevel != 0">
+                AND category_level = #{studyJavaGoodsCategoryVo.categoryLevel}
+            </if>
+            <if test="studyJavaGoodsCategoryVo != null and studyJavaGoodsCategoryVo.parentId != null and studyJavaGoodsCategoryVo.parentId != 0">
+                AND parent_id = #{studyJavaGoodsCategoryVo.parentId}
+            </if>
+            <if test="studyJavaGoodsCategoryVo != null and studyJavaGoodsCategoryVo.categoryRank != null and studyJavaGoodsCategoryVo.categoryRank != 0">
+                AND category_rank = #{studyJavaGoodsCategoryVo.categoryRank}
+            </if>
+<!--            <if test="studyJavaGoodsCategoryVo != null and studyJavaGoodsCategoryVo.createTime != null and studyJavaGoodsCategoryVo.createTime != ''">-->
+<!--                AND create_time  #{studyJavaGoodsCategoryVo.createTime}-->
+<!--            </if>-->
+            ORDER BY category_rank desc
+    </select>
 </mapper>
