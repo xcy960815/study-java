@@ -42,9 +42,6 @@
             <if test="studyJavaGoodsCategoryVo != null and studyJavaGoodsCategoryVo.categoryRank != null and studyJavaGoodsCategoryVo.categoryRank != 0">
                 AND category_rank = #{studyJavaGoodsCategoryVo.categoryRank}
             </if>
-<!--            <if test="studyJavaGoodsCategoryVo != null and studyJavaGoodsCategoryVo.createTime != null and studyJavaGoodsCategoryVo.createTime != ''">-->
-<!--                AND create_time  #{studyJavaGoodsCategoryVo.createTime}-->
-<!--            </if>-->
             ORDER BY category_rank desc
     </select>
 </mapper>
