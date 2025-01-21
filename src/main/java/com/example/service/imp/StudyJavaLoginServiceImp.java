@@ -4,7 +4,7 @@ package com.example.service.imp;
 import com.example.domain.dao.StudyJavaUserDao;
 import com.example.domain.dto.StudyJavaLoginDto;
 import com.example.domain.vo.StudyJavaLoginVo;
-import com.example.exception.CustomException;
+import com.example.exception.StudyJavaException;
 import com.example.domain.vo.StudyJavaUserVo;
 import com.example.mapper.StudyJavaUserMapper;
 import com.example.service.StudyJavaLoginService;
@@ -38,14 +38,14 @@ public class StudyJavaLoginServiceImp implements StudyJavaLoginService {
         StudyJavaUserDao userInfo = studyJavaUserMapper.getUserInfo(studyJavaUserVo);
 
         if (userInfo == null) {
-            throw new CustomException(500,"用户不存在");
+            throw new StudyJavaException(500,"用户不存在");
         }
 
         if(!StringUtils.isBlank(userInfo.getPasswordMd5()) && !StringUtils.isBlank(studyJavaLoginParams.getPassword())) {
             String dataBasePassword = userInfo.getPasswordMd5();
             String loginPassword = studyJavaLoginParams.getPassword();
             if(!dataBasePassword.equals(loginPassword)){
-                throw new CustomException(500,"密码错误");
+                throw new StudyJavaException(500,"密码错误");
             }
         }
         StudyJavaLoginDto studyJavaLoginDto = new StudyJavaLoginDto();

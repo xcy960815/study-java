@@ -7,7 +7,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.util.Arrays;
 import java.util.List;
 
-//验证身份拦截器
+// 验证身份拦截器
 @Configuration
 public class AuthInterceptorConfig implements WebMvcConfigurer {
 

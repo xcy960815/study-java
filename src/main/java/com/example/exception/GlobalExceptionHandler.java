@@ -8,8 +8,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 
 
-
-// 全局错误捕获
+/**
+ * 全局错误捕获
+ */
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -20,8 +21,8 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.OK);  // 返回 200 OK
     }
 
-    @ExceptionHandler(CustomException.class)
-    public ResponseEntity<ResponseResult<String>> handleCustomException(CustomException e) {
+    @ExceptionHandler(StudyJavaException.class)
+    public ResponseEntity<ResponseResult<String>> handleCustomException(StudyJavaException e) {
         // 生成一个带自定义错误信息的响应，返回 HTTP 200
         ResponseResult<String> response = ResponseGenerator.generatErrorResult("自定义错误: " + e.getMessage());
         return new ResponseEntity<>(response, HttpStatus.OK);  // 返回 200 OK
