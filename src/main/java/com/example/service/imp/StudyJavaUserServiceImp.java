@@ -3,6 +3,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.example.domain.dao.StudyJavaUserDao;
 import com.example.domain.dto.StudyJavaUserDto;
 import com.example.domain.vo.StudyJavaUserVo;
+import com.example.exception.StudyJavaException;
 import com.example.mapper.StudyJavaUserMapper;
 import com.example.service.StudyJavaUserService;
 import jakarta.annotation.Resource;
@@ -145,5 +146,24 @@ public class StudyJavaUserServiceImp implements StudyJavaUserService {
 //            userInfoDto.setAvatar("");  // 设置默认头像
 //        }
         return userInfoDto;
+    }
+
+    @Override
+    public void updateUserPassword(StudyJavaUserVo studyJavaUserVo) {
+        StudyJavaUserDao studyJavaUserDao = studyJavaUserMapper.getUserInfo(studyJavaUserVo);
+        String passwordMd5 = studyJavaUserDao.getPasswordMd5();
+        String newPasswordMd5 = studyJavaUserVo.getNewPasswordMd5();
+        String confirmNewPasswordMd5 = studyJavaUserVo.getConfirmNewPasswordMd5();
+        String originalPasswordMd5 = studyJavaUserDao.getPasswordMd5();
+        if (!newPasswordMd5.equals(confirmNewPasswordMd5)) {
+            throw new StudyJavaException(500,"两次密码不一致");
+        }
+        if (!originalPasswordMd5.equals(passwordMd5)) {
+            throw new StudyJavaException(500,"原密码不正确");
+        }
+
+        studyJavaUserVo.setPasswordMd5(newPasswordMd5);
+
+        studyJavaUserMapper.updateUserInfo(studyJavaUserVo);
     }
 }

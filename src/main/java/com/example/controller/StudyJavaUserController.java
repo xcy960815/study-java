@@ -245,4 +245,19 @@ public class StudyJavaUserController {
         // 返回插入结果
         return ResponseGenerator.generatSuccessResult(true);
     }
+
+    @PostMapping("/updateUserPassword")
+    @ResponseBody
+    public ResponseResult updateUserPassword(@RequestHeader(value = "Authorization", required = false) String authorization,@RequestBody StudyJavaUserVo studyJavaUser) {
+        String token = authorization.substring(7);
+        String userInfoStr = JwtTokenUtil.getUserInfoFromToken(token);
+        String[] userInfoArr = userInfoStr.split(":");
+        Long userId = Long.parseLong(userInfoArr[0]);
+        String loginName = userInfoArr[1];
+        studyJavaUser.setUserId(userId);
+        studyJavaUser.setLoginName(loginName);
+        studyJavaUserService.updateUserPassword(studyJavaUser);
+        // 返回插入结果
+        return ResponseGenerator.generatSuccessResult(true);
+    }
 }

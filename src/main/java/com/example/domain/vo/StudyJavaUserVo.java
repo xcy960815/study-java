@@ -1,11 +1,8 @@
 package com.example.domain.vo;
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -35,6 +32,16 @@ public class StudyJavaUserVo implements Serializable {
      * MD5加密后的密码
      */
     private String passwordMd5;
+
+    /**
+     * 新密码 用于修改密码
+     */
+    private String newPasswordMd5;
+
+    /**
+     * 新密码的确认密码 用于修改密码
+     */
+    private String confirmNewPasswordMd5;
 
     /**
      * 个性签名

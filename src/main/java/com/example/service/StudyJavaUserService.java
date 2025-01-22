@@ -35,10 +35,12 @@ public interface StudyJavaUserService {
 
 
     String generateBase64Image() throws IOException;
+
     /**
      * 通过token获取用户信息
-     * @param
      * @return StudyJavaUserDto
      */
     StudyJavaUserDto getUserInfo(StudyJavaUserVo studyJavaUserVo);
+
+    void updateUserPassword(StudyJavaUserVo studyJavaUserVo);
 }
