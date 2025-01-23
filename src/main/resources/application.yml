@@ -1,0 +1,31 @@
+spring:
+  profiles:
+    active: prod // 启动哪个环境
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+server:
+  servlet:
+    context-path: /api // 请求路径前缀
+
+
+mybatis:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+logging:
+  level:
+    com.example.mapper: DEBUG
+    org.apache.ibatis: DEBUG
+    jdbc:
+      sqltiming: DEBUG
+      resultsettable: TRACE
+
+mybatis-plus:
+  configuration:
+    use-deprecated-executor: false
+
+  global-config:
+    db-config:
+      id-type: auto

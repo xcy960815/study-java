@@ -3,7 +3,7 @@ package com.example.config;
 
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.example.domain.StudyJavaUser;
+import com.example.domain.vo.StudyJavaUserVo;
 import com.example.mapper.StudyJavaUserMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +20,8 @@ public class MyBatisPlusTest {
 
     @Test
     public void testGetUserList() {
-        Page<StudyJavaUser> page = new Page<>(1, 3);
-        StudyJavaUser studyJavaUser = new StudyJavaUser();
+        Page<StudyJavaUserVo> page = new Page<>(1, 3);
+        StudyJavaUserVo studyJavaUser = new StudyJavaUserVo();
         studyJavaUserMapper.getUserList(page, studyJavaUser);
         System.out.println(page);
         System.out.println(page.getRecords());//获取分页记录
