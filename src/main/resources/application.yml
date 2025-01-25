@@ -1,13 +1,14 @@
 spring:
   profiles:
-    active: prod // 启动哪个环境
+    # 启动哪个环境
+    active: prod
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
 
 server:
   servlet:
-    context-path: /api // 请求路径前缀
+    context-path: /api
 
 
 mybatis:

@@ -31,4 +31,12 @@
         create_user,create_time,update_user,
         update_time
     </sql>
+
+
+    <select id="getStudyJavaGoodsInfoDetail" resultMap="BaseResultMap" parameterType="com.example.domain.vo.StudyJavaGoodsInfoVo">
+        select
+        <include refid="Base_Column_List" />
+        from study_java_goods_info
+        where  goods_category_id = #{studyJavaGoodsInfoVo.goodsCategoryId,jdbcType=BIGINT}
+    </select>
 </mapper>
