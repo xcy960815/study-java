@@ -1,5 +1,6 @@
 
 package com.example;
+import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -10,6 +11,7 @@ import org.springframework.context.ApplicationContext;
 
 @MapperScan("com.example.mapper") // 扫描mapper
 @SpringBootApplication(scanBasePackages = "com.example")
+@Slf4j
 public class StudyJavaApplication {
     public static void main(String[] args) {
         SpringApplication.run(StudyJavaApplication.class, args);
@@ -19,7 +21,7 @@ public class StudyJavaApplication {
         ApplicationContext context = SpringApplication.run(StudyJavaApplication.class, null);
         ServletWebServerApplicationContext servletWebServerApplicationContext = (ServletWebServerApplicationContext) context;
         int port = servletWebServerApplicationContext.getWebServer().getPort();
-        System.out.println("(♥◠‿◠)ﾉﾞ  项目启动成功   ლ(´ڡ`ლ)ﾞ  \n" );
-        System.out.println("服务器端口号：" + port);
+        log.info("(♥◠‿◠)ﾉﾞ  项目启动成功   ლ(´ڡ`ლ)ﾞ  \n" );
+        log.info("服务器端口号：" + port);
     }
 }

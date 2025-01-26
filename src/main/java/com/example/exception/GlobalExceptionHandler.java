@@ -14,7 +14,7 @@ public class GlobalExceptionHandler {
     //    @ExceptionHandler(Exception.class)
     //    public ResponseEntity<ResponseResult<String>> handleException(Exception e) {
     //        // 生成一个带错误信息的响应，返回 HTTP 200
-    //        ResponseResult<String> response = ResponseGenerator.generatErrorResult("系统错误: " + e.getMessage());
+    //        ResponseResult<String> response = ResponseGenerator.generateErrorResult("系统错误: " + e.getMessage());
     //        return new ResponseEntity<>(response, HttpStatus.OK);  // 返回 200 OK
     //    }
 
@@ -38,7 +38,7 @@ public class GlobalExceptionHandler {
                 "Request URL: " + requestUrl;
 
         // 生成带错误信息的响应
-        ResponseResult<String> response = ResponseGenerator.generatErrorResult(errorMessage);
+        ResponseResult<String> response = ResponseGenerator.generateErrorResult(errorMessage);
         return new ResponseEntity<>(response, HttpStatus.OK); // 返回 500
     }
 
@@ -62,13 +62,13 @@ public class GlobalExceptionHandler {
 //                "Request URL: " + requestUrl;
 //
 //        // 生成带自定义错误信息的响应
-//        ResponseResult<String> response = ResponseGenerator.generatErrorResult(errorMessage);
+//        ResponseResult<String> response = ResponseGenerator.generateErrorResult(errorMessage);
 //        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR); // 返回 500
 //    }
         @ExceptionHandler(StudyJavaException.class)
         public ResponseEntity<ResponseResult<String>> handleCustomException(StudyJavaException e) {
             // 生成一个带自定义错误信息的响应，返回 HTTP 200
-            ResponseResult<String> response = ResponseGenerator.generatErrorResult(e.getMessage());
+            ResponseResult<String> response = ResponseGenerator.generateErrorResult(e.getMessage());
             return new ResponseEntity<>(response, HttpStatus.OK);  // 返回 200 OK
         }
 }

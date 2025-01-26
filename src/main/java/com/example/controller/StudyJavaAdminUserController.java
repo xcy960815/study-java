@@ -36,7 +36,7 @@ public class StudyJavaAdminUserController {
         map.put("message","success");
         map.put("data", userPage.getRecords());
         map.put("total", userPage.getTotal());
-        return ResponseGenerator.generatSuccessResult(map);
+        return ResponseGenerator.generateSuccessResult(map);
     }
 
     @PostMapping("/updateUser")
@@ -44,12 +44,12 @@ public class StudyJavaAdminUserController {
     public ResponseResult updateUser(@RequestBody StudyJavaAdminUserVo studyJavaAdminUser) {
         Integer adminUserId = studyJavaAdminUser.getAdminUserId();
         if(adminUserId == null){
-            return ResponseGenerator.generatErrorResult("用户ID不能为空");
+            return ResponseGenerator.generateErrorResult("用户ID不能为空");
         }
 
         studyJavaAdminUserService.updateAdminUser(studyJavaAdminUser);
         // 返回更新结果
-        return ResponseGenerator.generatSuccessResult(true);
+        return ResponseGenerator.generateSuccessResult(true);
     };
 
     @PostMapping("/insertUser")
@@ -57,19 +57,19 @@ public class StudyJavaAdminUserController {
     public ResponseResult insertUser(@RequestBody StudyJavaAdminUserVo studyJavaAdminUser) {
         String loginUserName = studyJavaAdminUser.getLoginUserName();
         if(!StringUtils.isNoneEmpty(loginUserName)){
-            ResponseGenerator.generatErrorResult("用户名不能为空");
+            ResponseGenerator.generateErrorResult("用户名不能为空");
         }
         String nickName = studyJavaAdminUser.getNickName();
         if (!StringUtils.isNoneEmpty(nickName)){
-            ResponseGenerator.generatErrorResult("昵称不能为空");
+            ResponseGenerator.generateErrorResult("昵称不能为空");
         }
         String loginPassWord = studyJavaAdminUser.getLoginPassword();
         if (!StringUtils.isNoneEmpty(loginPassWord)) {
-            ResponseGenerator.generatErrorResult("密码不能为空");
+            ResponseGenerator.generateErrorResult("密码不能为空");
         }
         int insertAdminUserResult = studyJavaAdminUserService.insertAdminUser(studyJavaAdminUser);
         // 返回插入结果
-        return ResponseGenerator.generatSuccessResult(true);
+        return ResponseGenerator.generateSuccessResult(true);
     }
 
     @DeleteMapping("/deleteUser")
@@ -77,10 +77,10 @@ public class StudyJavaAdminUserController {
     public  ResponseResult deleteUser(@RequestBody StudyJavaAdminUserVo studyJavaAdminUser) {
         Integer adminUserId = studyJavaAdminUser.getAdminUserId();
         if(adminUserId == null){
-            return  ResponseGenerator.generatErrorResult("用户ID不能为空");
+            return  ResponseGenerator.generateErrorResult("用户ID不能为空");
         }
         studyJavaAdminUserService.deleteAdminUser(studyJavaAdminUser);
         // 返回插入结果
-        return ResponseGenerator.generatSuccessResult(true);
+        return ResponseGenerator.generateSuccessResult(true);
     }
 }

@@ -19,13 +19,13 @@ public class StudyJavaLoginController {
     @ResponseBody
     public ResponseResult login(@RequestBody StudyJavaLoginVo studyJavaLoginParams) {
         StudyJavaLoginDto loginResult = studyJavaLoginService.login(studyJavaLoginParams);
-        return ResponseGenerator.generatSuccessResult(loginResult);
+        return ResponseGenerator.generateSuccessResult(loginResult);
     }
 
     @PostMapping("/logout")
     @ResponseBody
     public ResponseResult logout() {
         // studyJavaLoginService.logout(studyJavaLoginParams);
-        return ResponseGenerator.generatSuccessResult(null);
+        return ResponseGenerator.generateSuccessResult(null);
     }
 };

@@ -33,6 +33,6 @@ public class StudyJavaGoodsCategoryController {
         Map<String,Object> iPageResultMap = new HashMap<>();
         iPageResultMap.put("data",iPageResult.getRecords());
         iPageResultMap.put("total",iPageResult.getTotal());
-        return ResponseGenerator.generatSuccessResult(iPageResultMap);
+        return ResponseGenerator.generateSuccessResult(iPageResultMap);
     }
 }
