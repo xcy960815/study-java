@@ -23,6 +23,8 @@ public class VformController {
         int serverPort = request.getLocalPort();
         String serverAddr = request.getLocalAddr();
         String now = DateUtil.now();
+//        System.out.println(clientPort + " " + clientAddr + " " + serverPort + " " + serverAddr + " " + now);
+        log.info( clientPort + " " + clientAddr + " " + serverPort + " " + serverAddr + " " + now);
         List<Map<String, Object>> userList = new ArrayList<>();
         // 创建并添加第一个用户
         Map<String, Object> user1 = new HashMap<>();

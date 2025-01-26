@@ -36,9 +36,6 @@ public class StudyJavaUserController {
         studyJavaUserVo.setUserId(userId);
         studyJavaUserVo.setLoginName(loginName);
         StudyJavaUserDto userInfo = studyJavaUserService.getUserInfo(studyJavaUserVo);
-        log.info("This is an info message");
-        log.error("This is an error message");
-//        log.debug("This is a debug message");
         return ResponseGenerator.generateSuccessResult(userInfo);
     }
     // RequestParam 通常用于获取单个参数
