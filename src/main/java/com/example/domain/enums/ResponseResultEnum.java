@@ -16,5 +16,13 @@ public enum ResponseResultEnum implements BaseEnum {
         public String getMessage() {
             return "Error";
         }
+    },
+    InvalidToken {
+        public int getCode() {
+            return 401;
+        }
+        public String getMessage() {
+            return "Token 已过期";
+        }
     }
 }

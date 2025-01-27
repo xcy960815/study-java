@@ -20,7 +20,8 @@ public class AuthInterceptorConfig implements WebMvcConfigurer {
             "/login",
             "/vform/test",
             "/vform/test1",
-            "/vform/test2"
+            "/vform/test2",
+            "/sse/stream"
     );
 
     @Override

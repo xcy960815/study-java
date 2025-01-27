@@ -1,36 +1,28 @@
 package com.example.controller;
 
 
-
-
+import cn.hutool.core.date.DateUtil;
+import org.springframework.http.MediaType;
+import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-import java.io.IOException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import reactor.core.publisher.Flux;
+
+import java.time.Duration;
+
 
 @RestController
 @RequestMapping("/sse")
 public class StudyJavaSSEController {
 
-    private final ExecutorService executor = Executors.newCachedThreadPool();
-
-    @GetMapping(value = "/getSystemTime")
-    public SseEmitter streamSseEvents() {
-        SseEmitter sseEmitter = new SseEmitter(Long.MAX_VALUE);
-        executor.execute(() -> {
-            try {
-                for (int i = 0; i < 10; i++) {
-                    Thread.sleep(1000);
-                    sseEmitter.send(System.currentTimeMillis());
-                }
-                sseEmitter.complete();
-            } catch (IOException | InterruptedException e) {
-                sseEmitter.completeWithError(e);
-            }
-        });
-        return sseEmitter;
-    }
+    @GetMapping(value = "/serverSendEvent",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<ServerSentEvent<String>> serverSendEvent() {
+        return Flux.interval(Duration.ofSeconds(1))
+                .map(sequence -> ServerSentEvent.<String>builder()
+                        .id(String.valueOf(sequence))
+                        .event("periodic-event")
+                        .data(DateUtil.now())
+                        .build());
+    };
 }
