@@ -17,7 +17,7 @@ public class StudyJavaSSEController {
 
     private final ExecutorService executor = Executors.newCachedThreadPool();
 
-    @GetMapping("/getSystemTime")
+    @GetMapping(value = "/getSystemTime")
     public SseEmitter streamSseEvents() {
         SseEmitter sseEmitter = new SseEmitter(Long.MAX_VALUE);
         executor.execute(() -> {

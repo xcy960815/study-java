@@ -23,7 +23,7 @@ public class StudyJavaAdminUserController {
     StudyJavaAdminUserService studyJavaAdminUserService;
     @RequestMapping("/getAdminUserList")
     @ResponseBody
-    public ResponseResult getAdminUserList(
+    public ResponseResult<Map<String, Object>> getAdminUserList(
             @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
             @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
             @ModelAttribute("studyJavaAdminUser") StudyJavaAdminUserVo  studyJavaAdminUser
@@ -41,7 +41,7 @@ public class StudyJavaAdminUserController {
 
     @PostMapping("/updateUser")
     @ResponseBody
-    public ResponseResult updateUser(@RequestBody StudyJavaAdminUserVo studyJavaAdminUser) {
+    public ResponseResult<Object> updateUser(@RequestBody StudyJavaAdminUserVo studyJavaAdminUser) {
         Integer adminUserId = studyJavaAdminUser.getAdminUserId();
         if(adminUserId == null){
             return ResponseGenerator.generateErrorResult("用户ID不能为空");
@@ -54,7 +54,7 @@ public class StudyJavaAdminUserController {
 
     @PostMapping("/insertUser")
     @ResponseBody
-    public ResponseResult insertUser(@RequestBody StudyJavaAdminUserVo studyJavaAdminUser) {
+    public ResponseResult<Object> insertUser(@RequestBody StudyJavaAdminUserVo studyJavaAdminUser) {
         String loginUserName = studyJavaAdminUser.getLoginUserName();
         if(!StringUtils.isNoneEmpty(loginUserName)){
             ResponseGenerator.generateErrorResult("用户名不能为空");
@@ -74,7 +74,7 @@ public class StudyJavaAdminUserController {
 
     @DeleteMapping("/deleteUser")
     @ResponseBody
-    public  ResponseResult deleteUser(@RequestBody StudyJavaAdminUserVo studyJavaAdminUser) {
+    public ResponseResult<Object> deleteUser(@RequestBody StudyJavaAdminUserVo studyJavaAdminUser) {
         Integer adminUserId = studyJavaAdminUser.getAdminUserId();
         if(adminUserId == null){
             return  ResponseGenerator.generateErrorResult("用户ID不能为空");

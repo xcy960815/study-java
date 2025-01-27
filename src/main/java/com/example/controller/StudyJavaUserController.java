@@ -42,7 +42,7 @@ public class StudyJavaUserController {
     // ModelAttribute 通常用于获取多个参数
     @GetMapping("/getUserList")
     @ResponseBody
-    public ResponseResult getUserList(
+    public ResponseResult<Map<String,Object>> getUserList(
             @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
             @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
             @ModelAttribute("studyJavaUser") StudyJavaUserVo  studyJavaUser
@@ -58,7 +58,7 @@ public class StudyJavaUserController {
 
     @PostMapping("/updateUserInfo")
     @ResponseBody
-    public ResponseResult updateUserInfo(@RequestBody StudyJavaUserVo studyJavaUser) {
+    public ResponseResult<Object> updateUserInfo(@RequestBody StudyJavaUserVo studyJavaUser) {
         // 获取用户ID
         Long userId = studyJavaUser.getUserId();
         if(userId == null){
@@ -90,7 +90,7 @@ public class StudyJavaUserController {
     }
     @PostMapping("/updateUserAvatar")
     @ResponseBody
-    public ResponseResult updateUserAvatar(
+    public ResponseResult<Object> updateUserAvatar(
             @RequestParam("userId") String userId,
             @RequestParam("file") MultipartFile file
     ) {
@@ -107,7 +107,7 @@ public class StudyJavaUserController {
     }
     @PostMapping("/insertUserInfo")
     @ResponseBody
-    public ResponseResult insertUserInfo(@RequestBody StudyJavaUserVo studyJavaUser) {
+    public ResponseResult<Object> insertUserInfo(@RequestBody StudyJavaUserVo studyJavaUser) {
         String nickName = studyJavaUser.getNickName();
         if (!StringUtils.isNoneEmpty(nickName)){
             return  ResponseGenerator.generateErrorResult("昵称不能为空");
@@ -134,7 +134,7 @@ public class StudyJavaUserController {
     }
     @DeleteMapping("/deleteUserInfo")
     @ResponseBody
-    public ResponseResult deleteUserInfo(@RequestBody StudyJavaUserVo studyJavaUser) {
+    public ResponseResult<Boolean> deleteUserInfo(@RequestBody StudyJavaUserVo studyJavaUser) {
         studyJavaUserService.deleteUserInfo(studyJavaUser);
         // 返回插入结果
         return ResponseGenerator.generateSuccessResult(true);
@@ -142,7 +142,7 @@ public class StudyJavaUserController {
 
     @PostMapping("/updateUserPassword")
     @ResponseBody
-    public ResponseResult updateUserPassword(@RequestHeader(value = "Authorization", required = false) String authorization,@RequestBody StudyJavaUserVo studyJavaUser) {
+    public ResponseResult<Boolean> updateUserPassword(@RequestHeader(value = "Authorization", required = false) String authorization,@RequestBody StudyJavaUserVo studyJavaUser) {
         String token = authorization.substring(7);
         String userInfoStr = JwtTokenUtil.getUserInfoFromToken(token);
         String[] userInfoArr = userInfoStr.split(":");

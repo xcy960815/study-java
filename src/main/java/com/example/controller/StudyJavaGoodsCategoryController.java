@@ -22,7 +22,7 @@ public class StudyJavaGoodsCategoryController {
     private StudyJavaGoodsCategoryService studyJavaGoodsCategoryService;
 
     @GetMapping("/getGoodsCategoryList")
-    public ResponseResult getGoodsCategoryList(
+    public ResponseResult<Map<String,Object>> getGoodsCategoryList(
             @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
             @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
             @ModelAttribute("studyJavaUser") StudyJavaGoodsCategoryVo studyJavaGoodsCategoryVo
