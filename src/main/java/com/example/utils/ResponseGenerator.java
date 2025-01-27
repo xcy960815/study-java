@@ -1,14 +1,14 @@
 package com.example.utils;
-
+import com.example.domain.enums.ResponseResultEnum;
 
 /**
  * 该类是生成响应的工具类
  */
 public class ResponseGenerator {
-    private static final int SUCCESS_CODE = 200;
-    private static final int ERROR_CODE = 500;
-    private static final String SUCCESS_MESSAGE = "SUCCESS";
-//    private static final String ERROR_MESSAGE = "ERROR";
+    private static final int SUCCESS_CODE = ResponseResultEnum.SUCCESS.getCode();
+    private static final int ERROR_CODE = ResponseResultEnum.ERROR.getCode();
+    private static final String SUCCESS_MESSAGE = ResponseResultEnum.SUCCESS.getMessage();
+    private static final String ERROR_MESSAGE = ResponseResultEnum.ERROR.getMessage();
 
     public static <T> ResponseResult<T> generateSuccessResult(T data) {
         // 创建一个 ResponseResult 对象，指定泛型类型 T

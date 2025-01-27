@@ -15,13 +15,6 @@ mybatis:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
-#logging:
-#  level:
-#    com.example.mapper: DEBUG
-#    org.apache.ibatis: DEBUG
-#    jdbc:
-#      sqltiming: DEBUG
-#      resultsettable: TRACE
 
 mybatis-plus:
   configuration:
@@ -31,17 +24,3 @@ mybatis-plus:
     db-config:
       id-type: auto
 
-
-#logging:
-#  level:
-#    root: INFO
-#    com.example: DEBUG  # 设置特定包的日志级别
-#  log4j2:
-#    configuration: classpath:log4j2.xml  # 如果你有自定义的 Log4j2 配置文件
-#    # 或者使用 log4j2.properties 文件配置
-#    # configuration: classpath:log4j2.properties
-#  file:
-#    name: logs/application.log  # 设置日志文件输出路径
-#  pattern:
-#    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"  # 控制台输出日志格式
-#    file: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"    # 文件输出日志格式

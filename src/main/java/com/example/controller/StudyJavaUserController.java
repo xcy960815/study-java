@@ -64,15 +64,12 @@ public class StudyJavaUserController {
         if(userId == null){
             return ResponseGenerator.generateErrorResult("用户ID不能为空");
         }
-//        String nickName = studyJavaUser.getNickName();
         if (!StringUtils.isNoneEmpty(studyJavaUser.getNickName())){
             return  ResponseGenerator.generateErrorResult("昵称不能为空");
         }
-//        String loginName = studyJavaUser.getLoginName();
         if (!StringUtils.isNoneEmpty(studyJavaUser.getLoginName())){
             return  ResponseGenerator.generateErrorResult("登录名不能为空");
         }
-//        String passwordMd5 = studyJavaUser.getPasswordMd5();
         if (!StringUtils.isNoneEmpty(studyJavaUser.getPasswordMd5())){
             return  ResponseGenerator.generateErrorResult("密码不能为空");
         }
