@@ -40,7 +40,8 @@ public class AuthInterceptor implements HandlerInterceptor {
             return true;
 
         } catch (Exception e) {
-            e.printStackTrace(); // 打印错误信息
+//            e.printStackTrace(); // 打印错误信息
+            log.error("AuthInterceptor error: " + e);
             httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return false;
         }

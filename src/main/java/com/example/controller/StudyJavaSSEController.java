@@ -11,7 +11,7 @@ import reactor.core.publisher.Flux;
 
 import java.time.Duration;
 
-
+//https://blog.csdn.net/u014390502/article/details/143275309
 @RestController
 @RequestMapping("/sse")
 public class StudyJavaSSEController {
@@ -20,8 +20,8 @@ public class StudyJavaSSEController {
     public Flux<ServerSentEvent<String>> serverSendEvent() {
         return Flux.interval(Duration.ofSeconds(1))
                 .map(sequence -> ServerSentEvent.<String>builder()
-                        .id(String.valueOf(sequence))
-                        .event("periodic-event")
+//                        .id(String.valueOf(sequence))
+//                        .event("periodic-event")
                         .data(DateUtil.now())
                         .build());
     };
