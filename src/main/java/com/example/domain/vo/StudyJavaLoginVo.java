@@ -14,6 +14,19 @@ public class StudyJavaLoginVo {
      */
     private String password;
 
+    /**
+     * 验证码
+     */
+    private String captcha;
+
+    public String getCaptcha(){
+        return captcha;
+    }
+
+    public void setCaptcha(String captcha){
+        this.captcha = captcha;
+    }
+
     public String getPassword(){
         return password;
     }
