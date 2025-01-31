@@ -14,9 +14,9 @@ public class AuthInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object handler) throws Exception {
-        log.info("AuthInterceptor triggered for: {}" + httpServletRequest.getRequestURI());
+        log.info("AuthInterceptor triggered for: {}",httpServletRequest.getRequestURI());
         String requestURI = httpServletRequest.getRequestURI();
-        log.info("当前请求路径是 {}" + requestURI);
+        log.info("当前请求路径是 {}", requestURI);
         String authorization = httpServletRequest.getHeader("Authorization");
 
         if (authorization == null || !authorization.startsWith("Bearer ")) {

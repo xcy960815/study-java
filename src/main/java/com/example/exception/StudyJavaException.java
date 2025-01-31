@@ -1,25 +1,22 @@
 package com.example.exception;
 
 
+import lombok.Getter;
+//import org.springframework.core.annotation.Order;
+
+@Getter
 public class StudyJavaException extends RuntimeException {
 
-    private int errorCode;  // 错误码
+    // 获取错误码
+//    private int errorCode;  // 错误码
+    // 获取错误信息
     private String errorMessage;  // 错误信息
 
     // 构造函数
-    public StudyJavaException(int errorCode, String errorMessage) {
+    public StudyJavaException(String errorMessage) {
         super(errorMessage);  // 调用父类的构造函数
-        this.errorCode = errorCode;
+//        this.errorCode = errorCode;
         this.errorMessage = errorMessage;
     }
 
-    // 获取错误码
-    public int getErrorCode() {
-        return errorCode;
-    }
-
-    // 获取错误信息
-    public String getErrorMessage() {
-        return errorMessage;
-    }
 }

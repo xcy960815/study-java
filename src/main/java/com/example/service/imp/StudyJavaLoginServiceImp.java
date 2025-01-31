@@ -10,12 +10,30 @@ import com.example.mapper.StudyJavaUserMapper;
 import com.example.service.StudyJavaLoginService;
 import com.example.service.StudyJavaUserService;
 import com.example.utils.JwtTokenUtil;
+import com.example.utils.RedisUtil;
+import com.google.code.kaptcha.Producer;
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Base64;
+import java.util.concurrent.TimeUnit;
+
+@Slf4j
 @Service
 public class StudyJavaLoginServiceImp implements StudyJavaLoginService {
+    // 声明一个静态的固定值
+    private final String CAPTCHA_KEY = "captcha";
+
+    @Autowired
+    private Producer kaptchaProducer;
+
     @Resource
     private JwtTokenUtil jwtTokenUtil;
 
@@ -28,8 +46,11 @@ public class StudyJavaLoginServiceImp implements StudyJavaLoginService {
     @Override
     public StudyJavaLoginDto login(StudyJavaLoginVo studyJavaLoginParams)  {
         // 账号密码校验
-        if(StringUtils.isBlank(studyJavaLoginParams.getUsername()) || StringUtils.isBlank(studyJavaLoginParams.getPassword())) {
-            throw new RuntimeException("用户名或者密码不能为空");
+        if(StringUtils.isBlank(studyJavaLoginParams.getUsername()) ) {
+            throw new StudyJavaException("用户名不能为空");
+        }
+        if(StringUtils.isBlank(studyJavaLoginParams.getPassword())){
+            throw new StudyJavaException("密码不能为空");
         }
         StudyJavaUserVo studyJavaUserVo = new StudyJavaUserVo();
 
@@ -38,14 +59,14 @@ public class StudyJavaLoginServiceImp implements StudyJavaLoginService {
         StudyJavaUserDao userInfo = studyJavaUserMapper.getUserInfo(studyJavaUserVo);
 
         if (userInfo == null) {
-            throw new StudyJavaException(500,"用户不存在");
+            throw new StudyJavaException("用户不存在");
         }
 
         if(!StringUtils.isBlank(userInfo.getPasswordMd5()) && !StringUtils.isBlank(studyJavaLoginParams.getPassword())) {
             String dataBasePassword = userInfo.getPasswordMd5();
             String loginPassword = studyJavaLoginParams.getPassword();
             if(!dataBasePassword.equals(loginPassword)){
-                throw new StudyJavaException(500,"密码错误");
+                throw new StudyJavaException("密码错误");
             }
         }
         StudyJavaLoginDto studyJavaLoginDto = new StudyJavaLoginDto();
@@ -61,7 +82,23 @@ public class StudyJavaLoginServiceImp implements StudyJavaLoginService {
         return studyJavaLoginDto;
     }
 
-        public void logout(StudyJavaLoginVo studyJavaLoginParams) {
-            // studyJavaUserService.logout(studyJavaLoginParams);
-        }
+
+    public void logout(StudyJavaLoginVo studyJavaLoginParams) {
+        // studyJavaUserService.logout(studyJavaLoginParams);
+    }
+
+    public String getCaptcha() throws IOException {
+        // 生成验证码文本
+        String captchaText = kaptchaProducer.createText();
+        RedisUtil.setWithExpire(CAPTCHA_KEY, captchaText,10, TimeUnit.SECONDS);
+        BufferedImage captchaImage = kaptchaProducer.createImage(captchaText);
+
+        // 将验证码图像转换为 Base64
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        ImageIO.write(captchaImage, "jpg", byteArrayOutputStream);
+        String base64Image = Base64.getEncoder().encodeToString(byteArrayOutputStream.toByteArray());
+        log.info("base64Image{}", base64Image);
+        // 返回 Base64 字符串
+        return base64Image;
+    }
 }

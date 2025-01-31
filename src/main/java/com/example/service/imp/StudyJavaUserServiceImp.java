@@ -156,10 +156,10 @@ public class StudyJavaUserServiceImp implements StudyJavaUserService {
         String confirmNewPasswordMd5 = studyJavaUserVo.getConfirmNewPasswordMd5();
         String originalPasswordMd5 = studyJavaUserDao.getPasswordMd5();
         if (!newPasswordMd5.equals(confirmNewPasswordMd5)) {
-            throw new StudyJavaException(500,"两次密码不一致");
+            throw new StudyJavaException("两次密码不一致");
         }
         if (!originalPasswordMd5.equals(passwordMd5)) {
-            throw new StudyJavaException(500,"原密码不正确");
+            throw new StudyJavaException("原密码不正确");
         }
 
         studyJavaUserVo.setPasswordMd5(newPasswordMd5);
