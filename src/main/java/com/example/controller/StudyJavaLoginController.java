@@ -10,24 +10,13 @@ import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import com.google.code.kaptcha.Producer;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import javax.imageio.ImageIO;
-
-import com.example.utils.RedisUtil;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Base64;
-import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @RestController
 public class StudyJavaLoginController {
-
-
 
     @Resource
     private StudyJavaLoginService studyJavaLoginService;

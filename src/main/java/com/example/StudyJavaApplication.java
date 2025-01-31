@@ -16,9 +16,9 @@ public class StudyJavaApplication {
     public static void main(String[] args) {
         SpringApplication.run(StudyJavaApplication.class, args);
     }
-//    获取服务端端口
+    // 获取服务端端口
     public void getServerPort() {
-        ApplicationContext context = SpringApplication.run(StudyJavaApplication.class, null);
+        ApplicationContext context = SpringApplication.run(StudyJavaApplication.class);
         ServletWebServerApplicationContext servletWebServerApplicationContext = (ServletWebServerApplicationContext) context;
         int port = servletWebServerApplicationContext.getWebServer().getPort();
         log.info("(♥◠‿◠)ﾉﾞ  项目启动成功   ლ(´ڡ`ლ)ﾞ  \n" );
