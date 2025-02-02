@@ -3,7 +3,6 @@ package com.example.exception;
 import com.example.utils.ResponseGenerator;
 import com.example.utils.ResponseResult;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -28,6 +27,13 @@ public class GlobalExceptionHandler {
         ResponseResult<String> response = ResponseGenerator.generateErrorResult(e.getBindingResult().getFieldError().getDefaultMessage());
         return new ResponseEntity<>(response, HttpStatus.OK); // 正常返回 200
     }
+
+//    @ExceptionHandler({BindException.class})
+//    public ResponseEntity<ResponseResult<String>> handleBindExceptionHandler(MethodArgumentNotValidException e, HttpServletRequest request) {
+//        // 生成带错误信息的响应
+//        ResponseResult<String> response = ResponseGenerator.generateErrorResult(e.getBindingResult().getFieldError().getDefaultMessage());
+//        return new ResponseEntity<>(response, HttpStatus.OK); // 正常返回 200
+//    }
 
     @ExceptionHandler({Exception.class})
     public ResponseEntity<ResponseResult<String>> handleException(Exception e, HttpServletRequest request) {

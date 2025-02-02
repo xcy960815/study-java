@@ -16,13 +16,12 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.HashMap;
 import java.util.Map;
 
-@Controller
+@RestController
 @RequestMapping ("/adminUser")
 public class StudyJavaAdminUserController {
     @Resource
     StudyJavaAdminUserService studyJavaAdminUserService;
     @RequestMapping("/getAdminUserList")
-    @ResponseBody
     public ResponseResult<Map<String, Object>> getAdminUserList(
             @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
             @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
@@ -40,7 +39,6 @@ public class StudyJavaAdminUserController {
     }
 
     @PostMapping("/updateUser")
-    @ResponseBody
     public ResponseResult<Object> updateUser(@RequestBody StudyJavaAdminUserVo studyJavaAdminUser) {
         Integer adminUserId = studyJavaAdminUser.getAdminUserId();
         if(adminUserId == null){
@@ -53,7 +51,6 @@ public class StudyJavaAdminUserController {
     };
 
     @PostMapping("/insertUser")
-    @ResponseBody
     public ResponseResult<Object> insertUser(@RequestBody StudyJavaAdminUserVo studyJavaAdminUser) {
         String loginUserName = studyJavaAdminUser.getLoginUserName();
         if(!StringUtils.isNoneEmpty(loginUserName)){
@@ -73,7 +70,6 @@ public class StudyJavaAdminUserController {
     }
 
     @DeleteMapping("/deleteUser")
-    @ResponseBody
     public ResponseResult<Object> deleteUser(@RequestBody StudyJavaAdminUserVo studyJavaAdminUser) {
         Integer adminUserId = studyJavaAdminUser.getAdminUserId();
         if(adminUserId == null){

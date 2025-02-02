@@ -16,7 +16,6 @@ import java.util.Map;
 public class VformController {
 
     @GetMapping("/test")
-    @ResponseBody
     public Map<String, Object> test(HttpServletRequest request){
         int clientPort =  request.getRemotePort();
         String clientAddr = request.getRemoteAddr();
@@ -49,7 +48,6 @@ public class VformController {
         return result;
     }
     @GetMapping("/test1")
-    @ResponseBody
     public Map<String, Object> test1(@RequestParam(value = "name",defaultValue = "") String name){
         List<Map<String, Object>> userList = new ArrayList<>();
         // 创建并添加第一个用户
@@ -88,7 +86,6 @@ public class VformController {
     }
 
     @GetMapping("/test2")
-    @ResponseBody
     public Map<String, Object> test2(@RequestParam(value = "name",defaultValue = "") String name){
         List<Map<String, Object>> userList = new ArrayList<>();
         // 创建并添加第一个用户

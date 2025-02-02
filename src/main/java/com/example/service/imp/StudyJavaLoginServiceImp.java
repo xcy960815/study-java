@@ -96,7 +96,7 @@ public class StudyJavaLoginServiceImp implements StudyJavaLoginService {
         // 将验证码图像转换为 Base64
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         ImageIO.write(captchaImage, "jpg", byteArrayOutputStream);
-        String base64Image = Base64.getEncoder().encodeToString(byteArrayOutputStream.toByteArray());
+        String base64Image = "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(byteArrayOutputStream.toByteArray());
         log.info("base64Image{}", base64Image);
         // 返回 Base64 字符串
         return base64Image;

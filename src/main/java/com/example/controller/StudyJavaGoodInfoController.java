@@ -16,7 +16,6 @@ public class StudyJavaGoodInfoController {
     private StudyJavaGoodsInfoService studyJavaGoodsInfoService;
 
     @GetMapping("/getGoodsCategoryDetail")
-    @ResponseBody
     public ResponseResult<StudyJavaGoodsInfoDto> getGoodsCategoryDetail(@RequestParam StudyJavaGoodsInfoVo studyJavaGoodsInfoVo){
       return  ResponseGenerator.generateSuccessResult(studyJavaGoodsInfoService.getStudyJavaGoodsInfoDetail(studyJavaGoodsInfoVo)) ;
     }

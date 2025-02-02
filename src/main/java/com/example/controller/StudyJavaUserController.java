@@ -41,7 +41,6 @@ public class StudyJavaUserController {
     // RequestParam 通常用于获取单个参数
     // ModelAttribute 通常用于获取多个参数
     @GetMapping("/getUserList")
-    @ResponseBody
     public ResponseResult<Map<String,Object>> getUserList(
             @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
             @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
@@ -57,7 +56,6 @@ public class StudyJavaUserController {
     }
 
     @PostMapping("/updateUserInfo")
-    @ResponseBody
     public ResponseResult<Object> updateUserInfo(@RequestBody StudyJavaUserVo studyJavaUser) {
         // 获取用户ID
         Long userId = studyJavaUser.getUserId();
@@ -86,7 +84,6 @@ public class StudyJavaUserController {
         return ResponseGenerator.generateSuccessResult(true);
     }
     @PostMapping("/updateUserAvatar")
-    @ResponseBody
     public ResponseResult<Object> updateUserAvatar(
             @RequestParam("userId") String userId,
             @RequestParam("file") MultipartFile file
@@ -103,7 +100,6 @@ public class StudyJavaUserController {
         }
     }
     @PostMapping("/insertUserInfo")
-    @ResponseBody
     public ResponseResult<Object> insertUserInfo(@RequestBody StudyJavaUserVo studyJavaUser) {
         String nickName = studyJavaUser.getNickName();
         if (!StringUtils.isNoneEmpty(nickName)){
@@ -130,7 +126,6 @@ public class StudyJavaUserController {
         return ResponseGenerator.generateSuccessResult(true);
     }
     @DeleteMapping("/deleteUserInfo")
-    @ResponseBody
     public ResponseResult<Boolean> deleteUserInfo(@RequestBody StudyJavaUserVo studyJavaUser) {
         studyJavaUserService.deleteUserInfo(studyJavaUser);
         // 返回插入结果
@@ -138,7 +133,6 @@ public class StudyJavaUserController {
     }
 
     @PostMapping("/updateUserPassword")
-    @ResponseBody
     public ResponseResult<Boolean> updateUserPassword(@RequestHeader(value = "Authorization", required = false) String authorization,@RequestBody StudyJavaUserVo studyJavaUser) {
         String token = authorization.substring(7);
         String userInfoStr = JwtTokenUtil.getUserInfoFromToken(token);
