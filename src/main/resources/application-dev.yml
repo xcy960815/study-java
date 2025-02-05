@@ -1,32 +1,36 @@
+#启动本地服务配置
 server:
   port: 8082
+
+  servlet:
+#    接口前缀
+    context-path: /api
 
 spring:
   datasource:
     url: jdbc:mysql://localhost:3306/study-java?useUnicode=true&serverTimezone=Asia/Shanghai&characterEncoding=utf8&autoReconnect=true&useSSL=false&allowMultiQueries=true
     username: root
     password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
-# 解释部分作为注释：
-# 1. jdbc:mysql://localhost:3306/study-java
-#    - localhost: 表示本地数据库服务器，端口号为 3306。如果不是本地部署，需更改为实际 IP 地址。
-#    - study-java: 表示要连接的 MySQL 数据库名称。
-# 2. useUnicode=true
-#    - 开启 Unicode 支持，确保 MySQL 正确处理 Unicode 字符。
-# 3. serverTimezone=Asia/Shanghai
-#    - 设置时区为 Asia/Shanghai，解决时区相关问题。
-# 4. characterEncoding=utf8
-#    - 设置数据库的字符编码为 UTF-8。
-# 5. autoReconnect=true
-#    - 允许数据库连接断开后自动重新连接。
-# 6. useSSL=false
-#    - 关闭 SSL 支持，防止因未配置 SSL 而出现连接问题。
-# 7. allowMultiQueries=true
-#    - 允许执行多条 SQL 语句。
+  data:
+    redis:
+      database: 1
+      host: localhost
+      port: 6379
+      timeout: 1800s # 使用时间格式化
+#      password: "123456"
 
-# 示例 SQL:
-# SELECT * FROM users; SELECT * FROM orders;
-# 如果 allowMultiQueries 为 false，则不允许执行多条语句。
 
 mybatis:
   mapper-locations: classpath*:mapper/*.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+
+mybatis-plus:
+  configuration:
+    use-deprecated-executor: false
+  global-config:
+    db-config:
+      id-type: auto
