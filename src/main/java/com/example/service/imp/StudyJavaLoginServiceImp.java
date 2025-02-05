@@ -10,7 +10,7 @@ import com.example.mapper.StudyJavaUserMapper;
 import com.example.service.StudyJavaLoginService;
 import com.example.service.StudyJavaUserService;
 import com.example.component.JwtTokenUtil;
-import com.example.utils.RedisUtil;
+import com.example.component.RedisUtil;
 import com.google.code.kaptcha.Producer;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -23,13 +23,15 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Base64;
-import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
 public class StudyJavaLoginServiceImp implements StudyJavaLoginService {
     // 声明一个静态的固定值
     private final String CAPTCHA_KEY = "captcha";
+
+    @Autowired
+    private RedisUtil redisUtil;
 
     @Autowired
     private Producer kaptchaProducer;
@@ -46,11 +48,11 @@ public class StudyJavaLoginServiceImp implements StudyJavaLoginService {
     @Override
     public StudyJavaLoginDto login(StudyJavaLoginVo studyJavaLoginParams)  {
 
-        if (!RedisUtil.hasKey(CAPTCHA_KEY)) {
+        if (!redisUtil.hasKey(CAPTCHA_KEY)) {
             throw new StudyJavaException("验证码不存在");
         }
 
-        String captcha =  RedisUtil.get(CAPTCHA_KEY,String.class);
+        String captcha =  redisUtil.get(CAPTCHA_KEY,String.class);
 
         if (!captcha.equalsIgnoreCase(studyJavaLoginParams.getCaptcha())) {
             throw new StudyJavaException("验证码错误");
@@ -93,7 +95,7 @@ public class StudyJavaLoginServiceImp implements StudyJavaLoginService {
     public String getCaptcha() throws IOException {
         // 生成验证码文本
         String captchaText = kaptchaProducer.createText();
-        RedisUtil.setWithExpire(CAPTCHA_KEY, captchaText,10, TimeUnit.SECONDS);
+//        RedisUtil.setWithExpire(CAPTCHA_KEY, captchaText,10, TimeUnit.SECONDS);
         BufferedImage captchaImage = kaptchaProducer.createImage(captchaText);
 
         // 将验证码图像转换为 Base64

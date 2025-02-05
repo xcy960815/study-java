@@ -4,6 +4,8 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
@@ -19,6 +21,7 @@ public class StudyJavaUserDao implements Serializable {
     /**
      * 用户主键id
      */
+    @TableId(value = "user_id", type = IdType.AUTO) // 指定主键
     private Long userId;
 
     /**
