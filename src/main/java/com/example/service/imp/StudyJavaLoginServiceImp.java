@@ -11,6 +11,7 @@ import com.example.service.StudyJavaLoginService;
 import com.example.service.StudyJavaUserService;
 import com.example.utils.JwtTokenUtil;
 import com.example.utils.RedisUtil;
+import com.example.utils.ResponseGenerator;
 import com.google.code.kaptcha.Producer;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -45,12 +46,15 @@ public class StudyJavaLoginServiceImp implements StudyJavaLoginService {
 
     @Override
     public StudyJavaLoginDto login(StudyJavaLoginVo studyJavaLoginParams)  {
-        // 账号密码校验
-        if(StringUtils.isBlank(studyJavaLoginParams.getUsername()) ) {
-            throw new StudyJavaException("用户名不能为空");
+
+        if (!RedisUtil.hasKey(CAPTCHA_KEY)) {
+            throw new StudyJavaException("验证码不存在");
         }
-        if(StringUtils.isBlank(studyJavaLoginParams.getPassword())){
-            throw new StudyJavaException("密码不能为空");
+
+        String captcha =  RedisUtil.get(CAPTCHA_KEY,String.class);
+
+        if (!captcha.equalsIgnoreCase(studyJavaLoginParams.getCaptcha())) {
+            throw new StudyJavaException("验证码错误");
         }
         StudyJavaUserVo studyJavaUserVo = new StudyJavaUserVo();
 

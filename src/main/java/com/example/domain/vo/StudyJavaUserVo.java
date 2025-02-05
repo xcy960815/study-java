@@ -2,6 +2,7 @@ package com.example.domain.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 import java.io.Serial;
@@ -21,11 +22,13 @@ public class StudyJavaUserVo implements Serializable {
     /**
      * 用户昵称
      */
+    @NotBlank(message = "用户昵称不能为空")
     private String nickName;
 
     /**
      * 登陆名称(默认为手机号)
      */
+    @NotBlank(message = "登陆名称不能为空")
     private String loginName;
 
     /**

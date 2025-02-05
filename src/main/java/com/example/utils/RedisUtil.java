@@ -33,8 +33,11 @@ public class RedisUtil {
     }
 
     // 获取数据
-    public static Object get(String key) {
-        return redisTemplate.opsForValue().get(key);
+//    public static <T> T get(String key) {
+//        return (T)redisTemplate.opsForValue().get(key);
+//    }
+    public static <T> T get(String key, Class<T> type) {
+        return type.cast(redisTemplate.opsForValue().get(key));
     }
 
     // 删除数据

@@ -26,15 +26,6 @@ public class StudyJavaLoginController {
     @PostMapping("/login")
     public ResponseResult<Object> login(@Valid @RequestBody StudyJavaLoginVo studyJavaLoginParams) {
 
-//        if (!RedisUtil.hasKey(CAPTCHA_KEY)) {
-//            return ResponseGenerator.generateErrorResult("验证码不存在");
-//        }
-//
-//        String captcha = (String) RedisUtil.get(CAPTCHA_KEY);
-//        if (!captcha.equalsIgnoreCase(studyJavaLoginParams.getCaptcha())) {
-//            return ResponseGenerator.generateErrorResult("验证码错误");
-//        }
-
         StudyJavaLoginDto loginResult = studyJavaLoginService.login(studyJavaLoginParams);
         return ResponseGenerator.generateSuccessResult(loginResult);
     }
