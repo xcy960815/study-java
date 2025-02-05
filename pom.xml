@@ -206,6 +206,7 @@
             <id>dev</id>
             <properties>
                 <spring.profile>dev</spring.profile>
+<!--                <server.servlet.context.path>/dev-api</server.servlet.context.path>-->
             </properties>
             <activation>
                 <activeByDefault>true</activeByDefault>
@@ -216,6 +217,7 @@
             <id>pre</id>
             <properties>
                 <spring.profile>pre</spring.profile>
+<!--                <server.servlet.context.path>/pre-api</server.servlet.context.path>-->
             </properties>
             <activation>
                 <activeByDefault>false</activeByDefault>
@@ -226,6 +228,7 @@
             <id>prod</id>
             <properties>
                 <spring.profile>prod</spring.profile>
+<!--                <server.servlet.context.path>/prod-api</server.servlet.context.path>-->
             </properties>
             <activation>
                 <activeByDefault>false</activeByDefault>

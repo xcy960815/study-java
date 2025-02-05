@@ -1,6 +1,9 @@
 server:
   # 端口号
   port: 8084
+  servlet:
+    # 接口前缀
+    context-path: /prod-api
 
 spring:
   datasource:

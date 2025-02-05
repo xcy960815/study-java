@@ -4,7 +4,7 @@ server:
 
   servlet:
 #    接口前缀
-    context-path: /api
+    context-path: /dev-api
 
 spring:
   datasource:

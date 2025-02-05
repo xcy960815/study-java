@@ -2,4 +2,8 @@ spring:
   profiles:
     # 启动哪个环境
     active: @spring.profile@
-#    active: dev
+
+#server:
+#  servlet:
+#    # 接口前缀
+#    context-path: @spring.context.path@
