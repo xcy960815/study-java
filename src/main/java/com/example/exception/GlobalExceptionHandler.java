@@ -35,7 +35,7 @@ public class GlobalExceptionHandler {
 //        return new ResponseEntity<>(response, HttpStatus.OK); // 正常返回 200
 //    }
 
-    @ExceptionHandler({Exception.class})
+    @ExceptionHandler(Exception.class)
     public ResponseEntity<ResponseResult<String>> handleException(Exception e, HttpServletRequest request) {
         // 获取错误堆栈信息
         StackTraceElement[] stackTraceElements = e.getStackTrace();
