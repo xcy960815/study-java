@@ -4,13 +4,13 @@ import com.example.domain.vo.StudyJavaUserVo;
 import com.example.domain.dto.StudyJavaUserDto;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import jakarta.annotation.Resource;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import com.example.utils.ResponseResult;
 import com.example.utils.ResponseGenerator;
 import com.example.service.StudyJavaUserService;
-import com.example.utils.JwtTokenUtil;
+import com.example.component.JwtTokenUtil;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -62,23 +62,23 @@ public class StudyJavaUserController {
         if(userId == null){
             return ResponseGenerator.generateErrorResult("用户ID不能为空");
         }
-        if (!StringUtils.isNoneEmpty(studyJavaUser.getNickName())){
-            return  ResponseGenerator.generateErrorResult("昵称不能为空");
-        }
-        if (!StringUtils.isNoneEmpty(studyJavaUser.getLoginName())){
-            return  ResponseGenerator.generateErrorResult("登录名不能为空");
-        }
-        if (!StringUtils.isNoneEmpty(studyJavaUser.getPasswordMd5())){
-            return  ResponseGenerator.generateErrorResult("密码不能为空");
-        }
-        String introduceSign = studyJavaUser.getIntroduceSign();
-        if (!StringUtils.isNoneEmpty(introduceSign)){
-            return  ResponseGenerator.generateErrorResult("介绍不能为空");
-        }
-        String address = studyJavaUser.getAddress();
-        if (!StringUtils.isNoneEmpty(address)){
-            return  ResponseGenerator.generateErrorResult("地址不能为空");
-        }
+//        if (!StringUtils.isNoneEmpty(studyJavaUser.getNickName())){
+//            return  ResponseGenerator.generateErrorResult("昵称不能为空");
+//        }
+//        if (!StringUtils.isNoneEmpty(studyJavaUser.getLoginName())){
+//            return  ResponseGenerator.generateErrorResult("登录名不能为空");
+//        }
+//        if (!StringUtils.isNoneEmpty(studyJavaUser.getPasswordMd5())){
+//            return  ResponseGenerator.generateErrorResult("密码不能为空");
+//        }
+//        String introduceSign = studyJavaUser.getIntroduceSign();
+//        if (!StringUtils.isNoneEmpty(introduceSign)){
+//            return  ResponseGenerator.generateErrorResult("介绍不能为空");
+//        }
+//        String address = studyJavaUser.getAddress();
+//        if (!StringUtils.isNoneEmpty(address)){
+//            return  ResponseGenerator.generateErrorResult("地址不能为空");
+//        }
         studyJavaUserService.updateUserInfo(studyJavaUser);
         // 返回更新结果
         return ResponseGenerator.generateSuccessResult(true);
@@ -100,27 +100,27 @@ public class StudyJavaUserController {
         }
     }
     @PostMapping("/insertUserInfo")
-    public ResponseResult<Object> insertUserInfo(@RequestBody StudyJavaUserVo studyJavaUser) {
-        String nickName = studyJavaUser.getNickName();
-        if (!StringUtils.isNoneEmpty(nickName)){
-            return  ResponseGenerator.generateErrorResult("昵称不能为空");
-        }
-        String loginName = studyJavaUser.getLoginName();
-        if (!StringUtils.isNoneEmpty(loginName)){
-            return  ResponseGenerator.generateErrorResult("登录名不能为空");
-        }
-        String passwordMd5 = studyJavaUser.getPasswordMd5();
-        if (!StringUtils.isNoneEmpty(passwordMd5)){
-            return  ResponseGenerator.generateErrorResult("密码不能为空");
-        }
-        String introduceSign = studyJavaUser.getIntroduceSign();
-        if (!StringUtils.isNoneEmpty(introduceSign)){
-            return  ResponseGenerator.generateErrorResult("介绍不能为空");
-        }
-        String address = studyJavaUser.getAddress();
-        if (!StringUtils.isNoneEmpty(address)){
-            return  ResponseGenerator.generateErrorResult("地址不能为空");
-        }
+    public ResponseResult<Object> insertUserInfo(@Valid @RequestBody StudyJavaUserVo studyJavaUser) {
+//        String nickName = studyJavaUser.getNickName();
+//        if (!StringUtils.isNoneEmpty(nickName)){
+//            return  ResponseGenerator.generateErrorResult("昵称不能为空");
+//        }
+//        String loginName = studyJavaUser.getLoginName();
+//        if (!StringUtils.isNoneEmpty(loginName)){
+//            return  ResponseGenerator.generateErrorResult("登录名不能为空");
+//        }
+//        String passwordMd5 = studyJavaUser.getPasswordMd5();
+//        if (!StringUtils.isNoneEmpty(passwordMd5)){
+//            return  ResponseGenerator.generateErrorResult("密码不能为空");
+//        }
+//        String introduceSign = studyJavaUser.getIntroduceSign();
+//        if (!StringUtils.isNoneEmpty(introduceSign)){
+//            return  ResponseGenerator.generateErrorResult("介绍不能为空");
+//        }
+//        String address = studyJavaUser.getAddress();
+//        if (!StringUtils.isNoneEmpty(address)){
+//            return  ResponseGenerator.generateErrorResult("地址不能为空");
+//        }
         studyJavaUserService.insertUserInfo(studyJavaUser);
         // 返回插入结果
         return ResponseGenerator.generateSuccessResult(true);

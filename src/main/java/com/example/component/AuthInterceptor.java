@@ -1,4 +1,4 @@
-package com.example.config;
+package com.example.component;
 
 import com.example.domain.enums.ResponseResultEnum;
 import lombok.extern.slf4j.Slf4j;
@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import com.example.utils.JwtTokenUtil;
 
 @Slf4j
 @Component

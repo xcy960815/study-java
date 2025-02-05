@@ -14,6 +14,10 @@ import java.util.Date;
  */
 @Data
 public class StudyJavaUserVo implements Serializable {
+    // 定义验证顺序
+    public interface First {};
+    public interface Second {};
+    public interface Third {};
     /**
      * 用户主键id
      */
@@ -49,11 +53,13 @@ public class StudyJavaUserVo implements Serializable {
     /**
      * 个性签名
      */
+    @NotBlank(message = "个性签名不能为空")
     private String introduceSign;
 
     /**
      * 收货地址
      */
+    @NotBlank(message = "收货地址不能为空")
     private String address;
 
     /**
