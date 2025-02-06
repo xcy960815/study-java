@@ -11,18 +11,20 @@ import reactor.core.publisher.Flux;
 
 import java.time.Duration;
 
-//https://blog.csdn.net/u014390502/article/details/143275309
+// https://blog.csdn.net/u014390502/article/details/143275309
 @RestController
-@RequestMapping("/sse")
-public class StudyJavaSSEController {
+@RequestMapping("/deepseek")
+public class StudyJavaDeepSeekController {
 
-    @GetMapping(value = "/serverSendEvent",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+
+
+    @GetMapping(value = "/query",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<ServerSentEvent<String>> serverSendEvent() {
+
         return Flux.interval(Duration.ofSeconds(1))
                 .map(sequence -> ServerSentEvent.<String>builder()
-//                        .id(String.valueOf(sequence))
-//                        .event("periodic-event")
                         .data(DateUtil.now())
-                        .build());
+                        .build())
+                        .take(Duration.ofSeconds(60));  // 60 秒后自动关闭流
     };
 }

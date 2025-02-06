@@ -10,7 +10,7 @@ import java.security.Key;
 import java.util.Date;
 
 @Component
-public class JwtTokenUtil {
+public class JwtTokenComponent {
     private static final Key SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS512);
 //    private static final long EXPIRATION_TIME = 60000L; // 设置过期时间（1天）
     private static final long EXPIRATION_TIME = 86400000L; // 设置过期时间（1天）

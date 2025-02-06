@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 import java.io.Serial;
@@ -25,16 +26,19 @@ public class StudyJavaAdminUserVo implements Serializable {
     /**
      * 管理员登陆名称
      */
+    @NotBlank(message = "用户名不能为空")
     private String loginUserName;
 
     /**
      * 管理员登陆密码
      */
+    @NotBlank(message = "密码不能为空")
     private String loginPassword;
 
     /**
      * 管理员显示昵称
      */
+    @NotBlank(message = "昵称不能为空")
     private String nickName;
 
     /**

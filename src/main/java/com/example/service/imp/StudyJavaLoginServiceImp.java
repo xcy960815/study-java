@@ -9,8 +9,8 @@ import com.example.domain.vo.StudyJavaUserVo;
 import com.example.mapper.StudyJavaUserMapper;
 import com.example.service.StudyJavaLoginService;
 import com.example.service.StudyJavaUserService;
-import com.example.component.JwtTokenUtil;
-import com.example.component.RedisUtil;
+import com.example.component.JwtTokenComponent;
+import com.example.component.RedisComponent;
 import com.google.code.kaptcha.Producer;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -23,21 +23,23 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Base64;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
 public class StudyJavaLoginServiceImp implements StudyJavaLoginService {
+
     // 声明一个静态的固定值
     private final String CAPTCHA_KEY = "captcha";
 
     @Autowired
-    private RedisUtil redisUtil;
+    private RedisComponent redisComponent;
 
     @Autowired
     private Producer kaptchaProducer;
 
     @Resource
-    private JwtTokenUtil jwtTokenUtil;
+    private JwtTokenComponent jwtTokenComponent;
 
     @Resource
     private StudyJavaUserService studyJavaUserService;
@@ -48,11 +50,11 @@ public class StudyJavaLoginServiceImp implements StudyJavaLoginService {
     @Override
     public StudyJavaLoginDto login(StudyJavaLoginVo studyJavaLoginParams)  {
 
-        if (!redisUtil.hasKey(CAPTCHA_KEY)) {
+        if (!redisComponent.hasKey(CAPTCHA_KEY)) {
             throw new StudyJavaException("验证码不存在");
         }
 
-        String captcha =  redisUtil.get(CAPTCHA_KEY,String.class);
+        String captcha =  redisComponent.get(CAPTCHA_KEY,String.class);
 
         if (!captcha.equalsIgnoreCase(studyJavaLoginParams.getCaptcha())) {
             throw new StudyJavaException("验证码错误");
@@ -83,7 +85,7 @@ public class StudyJavaLoginServiceImp implements StudyJavaLoginService {
         studyJavaLoginDto.setNickName(userInfo.getNickName());
         // 将用户关键信息（能从数据库中查出来的字段保存进去）
         String tokenContent = userInfo.getUserId() + ":" + userInfo.getLoginName() + ":" + userInfo.getNickName();
-        studyJavaLoginDto.setToken(jwtTokenUtil.generateToken(tokenContent));
+        studyJavaLoginDto.setToken(jwtTokenComponent.generateToken(tokenContent));
         return studyJavaLoginDto;
     }
 
@@ -95,7 +97,7 @@ public class StudyJavaLoginServiceImp implements StudyJavaLoginService {
     public String getCaptcha() throws IOException {
         // 生成验证码文本
         String captchaText = kaptchaProducer.createText();
-//        RedisUtil.setWithExpire(CAPTCHA_KEY, captchaText,10, TimeUnit.SECONDS);
+        redisComponent.setWithExpire(CAPTCHA_KEY, captchaText,10, TimeUnit.SECONDS);
         BufferedImage captchaImage = kaptchaProducer.createImage(captchaText);
 
         // 将验证码图像转换为 Base64

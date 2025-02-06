@@ -1,6 +1,6 @@
 package com.example.config;
 
-import com.example.component.AuthInterceptor;
+import com.example.component.AuthInterceptorComponent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -13,7 +13,7 @@ import java.util.List;
 public class AuthInterceptorConfig implements WebMvcConfigurer {
 
     @Autowired
-    private AuthInterceptor authInterceptor;
+    private AuthInterceptorComponent authInterceptorComponent;
 
 
     // 不需要拦截的路径列表
@@ -28,7 +28,7 @@ public class AuthInterceptorConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(authInterceptor)
+        registry.addInterceptor(authInterceptorComponent)
                 .addPathPatterns("/**")
                 .excludePathPatterns(EXCLUDE_PATHS); // 不需要拦截的路径;
     }

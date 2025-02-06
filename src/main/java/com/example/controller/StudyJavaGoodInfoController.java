@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/goodsCategory")
 public class StudyJavaGoodInfoController {
+
     @Resource
     private StudyJavaGoodsInfoService studyJavaGoodsInfoService;
 

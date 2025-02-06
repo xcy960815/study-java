@@ -24,7 +24,7 @@ public class StudyJavaLoginController {
     private StudyJavaLoginService studyJavaLoginService;
 
     @PostMapping("/login")
-    public ResponseResult<Object> login(@Valid @RequestBody StudyJavaLoginVo studyJavaLoginParams) {
+    public ResponseResult<StudyJavaLoginDto> login(@Valid @RequestBody StudyJavaLoginVo studyJavaLoginParams) {
 
         StudyJavaLoginDto loginResult = studyJavaLoginService.login(studyJavaLoginParams);
         return ResponseGenerator.generateSuccessResult(loginResult);

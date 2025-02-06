@@ -9,11 +9,11 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @Slf4j
 @Component
-public class AuthInterceptor implements HandlerInterceptor {
+public class AuthInterceptorComponent implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object handler) throws Exception {
-        log.info("AuthInterceptor triggered for: {}",httpServletRequest.getRequestURI());
+        log.info("AuthInterceptorComponent triggered for: {}",httpServletRequest.getRequestURI());
         String requestURI = httpServletRequest.getRequestURI();
         log.info("当前请求路径是 {}", requestURI);
         String authorization = httpServletRequest.getHeader("Authorization");
@@ -25,7 +25,7 @@ public class AuthInterceptor implements HandlerInterceptor {
         try {
             // 从用户的请求头上获取token
             String token = authorization.substring(7);
-            boolean isTokenExpired = JwtTokenUtil.isTokenExpired(token);
+            boolean isTokenExpired = JwtTokenComponent.isTokenExpired(token);
             if (isTokenExpired) {
                 // 继续让接口请求的通 但是返回指定的code
                 httpServletResponse.setStatus(HttpServletResponse.SC_OK);
@@ -35,12 +35,12 @@ public class AuthInterceptor implements HandlerInterceptor {
 
                 return false;
             }
-            // String userInfoStr = JwtTokenUtil.getUserInfoFromToken(token);
+            // String userInfoStr = JwtTokenComponent.getUserInfoFromToken(token);
             return true;
 
         } catch (Exception e) {
 //            e.printStackTrace(); // 打印错误信息
-            log.error("AuthInterceptor error: " + e);
+            log.error("AuthInterceptorComponent error: " + e);
             httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return false;
         }

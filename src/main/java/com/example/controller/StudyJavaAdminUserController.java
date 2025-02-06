@@ -5,14 +5,13 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.domain.vo.StudyJavaAdminUserVo;
 import com.example.domain.dto.StudyJavaAdminUserDto;
+import com.example.exception.StudyJavaException;
 import com.example.service.StudyJavaAdminUserService;
 import com.example.utils.ResponseGenerator;
 import com.example.utils.ResponseResult;
 import jakarta.annotation.Resource;
-import org.springframework.stereotype.Controller;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,6 +20,7 @@ import java.util.Map;
 public class StudyJavaAdminUserController {
     @Resource
     StudyJavaAdminUserService studyJavaAdminUserService;
+
     @RequestMapping("/getAdminUserList")
     public ResponseResult<Map<String, Object>> getAdminUserList(
             @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
@@ -39,41 +39,28 @@ public class StudyJavaAdminUserController {
     }
 
     @PostMapping("/updateUser")
-    public ResponseResult<Object> updateUser(@RequestBody StudyJavaAdminUserVo studyJavaAdminUser) {
+    public ResponseResult<Boolean> updateUser(@Valid @RequestBody StudyJavaAdminUserVo studyJavaAdminUser) {
         Integer adminUserId = studyJavaAdminUser.getAdminUserId();
         if(adminUserId == null){
-            return ResponseGenerator.generateErrorResult("用户ID不能为空");
+           throw new StudyJavaException("用户ID不能为空");
         }
-
         studyJavaAdminUserService.updateAdminUser(studyJavaAdminUser);
         // 返回更新结果
         return ResponseGenerator.generateSuccessResult(true);
     };
 
     @PostMapping("/insertUser")
-    public ResponseResult<Object> insertUser(@RequestBody StudyJavaAdminUserVo studyJavaAdminUser) {
-        String loginUserName = studyJavaAdminUser.getLoginUserName();
-        if(!StringUtils.isNoneEmpty(loginUserName)){
-            ResponseGenerator.generateErrorResult("用户名不能为空");
-        }
-        String nickName = studyJavaAdminUser.getNickName();
-        if (!StringUtils.isNoneEmpty(nickName)){
-            ResponseGenerator.generateErrorResult("昵称不能为空");
-        }
-        String loginPassWord = studyJavaAdminUser.getLoginPassword();
-        if (!StringUtils.isNoneEmpty(loginPassWord)) {
-            ResponseGenerator.generateErrorResult("密码不能为空");
-        }
-        int insertAdminUserResult = studyJavaAdminUserService.insertAdminUser(studyJavaAdminUser);
+    public ResponseResult<Boolean> insertUser(@Valid @RequestBody StudyJavaAdminUserVo studyJavaAdminUser) {
+        studyJavaAdminUserService.insertAdminUser(studyJavaAdminUser);
         // 返回插入结果
         return ResponseGenerator.generateSuccessResult(true);
     }
 
     @DeleteMapping("/deleteUser")
-    public ResponseResult<Object> deleteUser(@RequestBody StudyJavaAdminUserVo studyJavaAdminUser) {
+    public ResponseResult<Boolean> deleteUser(@RequestBody StudyJavaAdminUserVo studyJavaAdminUser) {
         Integer adminUserId = studyJavaAdminUser.getAdminUserId();
         if(adminUserId == null){
-            return  ResponseGenerator.generateErrorResult("用户ID不能为空");
+            throw new StudyJavaException("用户ID不能为空");
         }
         studyJavaAdminUserService.deleteAdminUser(studyJavaAdminUser);
         // 返回插入结果

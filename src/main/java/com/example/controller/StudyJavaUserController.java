@@ -3,6 +3,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.domain.vo.StudyJavaUserVo;
 import com.example.domain.dto.StudyJavaUserDto;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.example.exception.StudyJavaException;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -10,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import com.example.utils.ResponseResult;
 import com.example.utils.ResponseGenerator;
 import com.example.service.StudyJavaUserService;
-import com.example.component.JwtTokenUtil;
+import com.example.component.JwtTokenComponent;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -28,7 +29,7 @@ public class StudyJavaUserController {
     @GetMapping("/getUserInfo")
     public ResponseResult<StudyJavaUserDto> getUserInfo(@RequestHeader(value = "Authorization", required = false) String authorization){
         String token = authorization.substring(7);
-        String userInfoStr = JwtTokenUtil.getUserInfoFromToken(token);
+        String userInfoStr = JwtTokenComponent.getUserInfoFromToken(token);
         String[] userInfoArr = userInfoStr.split(":");
         Long userId = Long.parseLong(userInfoArr[0]);
         String loginName = userInfoArr[1];
@@ -56,40 +57,23 @@ public class StudyJavaUserController {
     }
 
     @PostMapping("/updateUserInfo")
-    public ResponseResult<Object> updateUserInfo(@RequestBody StudyJavaUserVo studyJavaUser) {
+    public ResponseResult<Boolean> updateUserInfo(@Valid @RequestBody StudyJavaUserVo studyJavaUser) {
         // 获取用户ID
         Long userId = studyJavaUser.getUserId();
         if(userId == null){
-            return ResponseGenerator.generateErrorResult("用户ID不能为空");
+            throw new StudyJavaException("用户ID不能为空");
         }
-//        if (!StringUtils.isNoneEmpty(studyJavaUser.getNickName())){
-//            return  ResponseGenerator.generateErrorResult("昵称不能为空");
-//        }
-//        if (!StringUtils.isNoneEmpty(studyJavaUser.getLoginName())){
-//            return  ResponseGenerator.generateErrorResult("登录名不能为空");
-//        }
-//        if (!StringUtils.isNoneEmpty(studyJavaUser.getPasswordMd5())){
-//            return  ResponseGenerator.generateErrorResult("密码不能为空");
-//        }
-//        String introduceSign = studyJavaUser.getIntroduceSign();
-//        if (!StringUtils.isNoneEmpty(introduceSign)){
-//            return  ResponseGenerator.generateErrorResult("介绍不能为空");
-//        }
-//        String address = studyJavaUser.getAddress();
-//        if (!StringUtils.isNoneEmpty(address)){
-//            return  ResponseGenerator.generateErrorResult("地址不能为空");
-//        }
         studyJavaUserService.updateUserInfo(studyJavaUser);
         // 返回更新结果
         return ResponseGenerator.generateSuccessResult(true);
     }
     @PostMapping("/updateUserAvatar")
-    public ResponseResult<Object> updateUserAvatar(
+    public ResponseResult<String> updateUserAvatar(
             @RequestParam("userId") String userId,
             @RequestParam("file") MultipartFile file
     ) {
         if(userId == null){
-            return ResponseGenerator.generateErrorResult("用户ID不能为空");
+            throw new StudyJavaException("用户ID不能为空");
         }
         try {
            String base64Image = studyJavaUserService.updateUserAvatar(userId,file);
@@ -100,27 +84,7 @@ public class StudyJavaUserController {
         }
     }
     @PostMapping("/insertUserInfo")
-    public ResponseResult<Object> insertUserInfo(@Valid @RequestBody StudyJavaUserVo studyJavaUser) {
-//        String nickName = studyJavaUser.getNickName();
-//        if (!StringUtils.isNoneEmpty(nickName)){
-//            return  ResponseGenerator.generateErrorResult("昵称不能为空");
-//        }
-//        String loginName = studyJavaUser.getLoginName();
-//        if (!StringUtils.isNoneEmpty(loginName)){
-//            return  ResponseGenerator.generateErrorResult("登录名不能为空");
-//        }
-//        String passwordMd5 = studyJavaUser.getPasswordMd5();
-//        if (!StringUtils.isNoneEmpty(passwordMd5)){
-//            return  ResponseGenerator.generateErrorResult("密码不能为空");
-//        }
-//        String introduceSign = studyJavaUser.getIntroduceSign();
-//        if (!StringUtils.isNoneEmpty(introduceSign)){
-//            return  ResponseGenerator.generateErrorResult("介绍不能为空");
-//        }
-//        String address = studyJavaUser.getAddress();
-//        if (!StringUtils.isNoneEmpty(address)){
-//            return  ResponseGenerator.generateErrorResult("地址不能为空");
-//        }
+    public ResponseResult<Boolean> insertUserInfo(@Valid @RequestBody StudyJavaUserVo studyJavaUser) {
         studyJavaUserService.insertUserInfo(studyJavaUser);
         // 返回插入结果
         return ResponseGenerator.generateSuccessResult(true);
@@ -135,7 +99,7 @@ public class StudyJavaUserController {
     @PostMapping("/updateUserPassword")
     public ResponseResult<Boolean> updateUserPassword(@RequestHeader(value = "Authorization", required = false) String authorization,@RequestBody StudyJavaUserVo studyJavaUser) {
         String token = authorization.substring(7);
-        String userInfoStr = JwtTokenUtil.getUserInfoFromToken(token);
+        String userInfoStr = JwtTokenComponent.getUserInfoFromToken(token);
         String[] userInfoArr = userInfoStr.split(":");
         Long userId = Long.parseLong(userInfoArr[0]);
         String loginName = userInfoArr[1];
