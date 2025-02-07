@@ -1,4 +1,9 @@
 package com.example.controller;
+
+
+
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.domain.vo.StudyJavaUserVo;
 import com.example.domain.dto.StudyJavaUserDto;
@@ -13,7 +18,6 @@ import com.example.utils.ResponseGenerator;
 import com.example.service.StudyJavaUserService;
 import com.example.component.JwtTokenComponent;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,10 +33,9 @@ public class StudyJavaUserController {
     @GetMapping("/getUserInfo")
     public ResponseResult<StudyJavaUserDto> getUserInfo(@RequestHeader(value = "Authorization", required = false) String authorization){
         String token = authorization.substring(7);
-        String userInfoStr = JwtTokenComponent.getUserInfoFromToken(token);
-        String[] userInfoArr = userInfoStr.split(":");
-        Long userId = Long.parseLong(userInfoArr[0]);
-        String loginName = userInfoArr[1];
+        JSONObject tokenUserInfo = JSONUtil.parseObj(JwtTokenComponent.getUserInfoFromToken(token));
+        Long userId = Long.parseLong(tokenUserInfo.get("userId").toString());
+        String loginName = tokenUserInfo.get("loginName").toString();
         StudyJavaUserVo studyJavaUserVo = new StudyJavaUserVo();
         studyJavaUserVo.setUserId(userId);
         studyJavaUserVo.setLoginName(loginName);

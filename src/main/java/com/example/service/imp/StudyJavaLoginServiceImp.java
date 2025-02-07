@@ -1,6 +1,6 @@
 package com.example.service.imp;
 
-
+import cn.hutool.json.JSONUtil;
 import com.example.domain.dao.StudyJavaUserDao;
 import com.example.domain.dto.StudyJavaLoginDto;
 import com.example.domain.vo.StudyJavaLoginVo;
@@ -17,12 +17,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+//import org.springframework.security.crypto.password.PasswordEncoder;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
@@ -83,8 +85,11 @@ public class StudyJavaLoginServiceImp implements StudyJavaLoginService {
         studyJavaLoginDto.setCreateTime(userInfo.getCreateTime());
         studyJavaLoginDto.setIntroduceSign(userInfo.getIntroduceSign());
         studyJavaLoginDto.setNickName(userInfo.getNickName());
+        Map<String,String> tokenContentOption = new HashMap<>();
+        tokenContentOption.put("loginName",userInfo.getLoginName());
+        tokenContentOption.put("userId",userInfo.getUserId().toString());
         // 将用户关键信息（能从数据库中查出来的字段保存进去）
-        String tokenContent = userInfo.getUserId() + ":" + userInfo.getLoginName() + ":" + userInfo.getNickName();
+        String tokenContent = JSONUtil.toJsonStr(tokenContentOption);
         studyJavaLoginDto.setToken(jwtTokenComponent.generateToken(tokenContent));
         return studyJavaLoginDto;
     }
@@ -97,15 +102,12 @@ public class StudyJavaLoginServiceImp implements StudyJavaLoginService {
     public String getCaptcha() throws IOException {
         // 生成验证码文本
         String captchaText = kaptchaProducer.createText();
-        redisComponent.setWithExpire(CAPTCHA_KEY, captchaText,10, TimeUnit.SECONDS);
+        log.info("生成验证码文本 {}", captchaText);
+        redisComponent.setWithExpire(CAPTCHA_KEY, captchaText,3, TimeUnit.MINUTES);
         BufferedImage captchaImage = kaptchaProducer.createImage(captchaText);
-
         // 将验证码图像转换为 Base64
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         ImageIO.write(captchaImage, "jpg", byteArrayOutputStream);
-        String base64Image = "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(byteArrayOutputStream.toByteArray());
-        log.info("base64Image{}", base64Image);
-        // 返回 Base64 字符串
-        return base64Image;
+        return  "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(byteArrayOutputStream.toByteArray());
     }
 }

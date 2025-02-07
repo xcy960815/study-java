@@ -1,23 +1,25 @@
 package com.example.component;
 
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-
 import java.security.Key;
 import java.util.Date;
 
+@Slf4j
 @Component
 public class JwtTokenComponent {
+
     private static final Key SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS512);
-//    private static final long EXPIRATION_TIME = 60000L; // 设置过期时间（1天）
+
+    // private static final long EXPIRATION_TIME = 60000L; // 设置过期时间（1分钟）
+
     private static final long EXPIRATION_TIME = 86400000L; // 设置过期时间（1天）
-    // 提供一个 getter 方法来获取 SECRET_KEY
-//    public static Key getSecretKey() {
-//        return SECRET_KEY;
-//    }
+
 
     // 生成 Token
     public static String generateToken(String tokenContent) {
@@ -47,10 +49,8 @@ public class JwtTokenComponent {
     public static boolean isTokenExpired(String token) {
         try {
             Claims claims = getClaimsFromToken(token);
-            boolean expired = claims.getExpiration().before(new Date());
-            return expired;
+            return claims.getExpiration().before(new Date());
         } catch (Exception e) {
-            e.printStackTrace();
             return true; // 解析出错时默认视为过期
         }
     }

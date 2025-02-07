@@ -19,7 +19,7 @@ public class RedisConfig {
 
     @Bean
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
-        log.info("创建@redisTemplate");
+        log.info("redisTemplate 创建成功");
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(connectionFactory);
         // 设置 key 和 value 的序列化器

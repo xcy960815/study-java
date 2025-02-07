@@ -11,38 +11,36 @@ import jakarta.servlet.http.HttpServletResponse;
 @Component
 public class AuthInterceptorComponent implements HandlerInterceptor {
 
+    private final String notTokenContent = "{\"code\": " + ResponseResultEnum.NotToken.getCode() + ", \"message\": \"" + ResponseResultEnum.NotToken.getMessage() + "\"}";
+
+    private final String invalidTokenContent = "{\"code\": " + ResponseResultEnum.InvalidToken.getCode() + ", \"message\": \"" + ResponseResultEnum.InvalidToken.getMessage() + "\"}";
+
+    private final String contentType = "application/json;charset=UTF-8";
+
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object handler) throws Exception {
-        log.info("AuthInterceptorComponent triggered for: {}",httpServletRequest.getRequestURI());
-        String requestURI = httpServletRequest.getRequestURI();
-        log.info("当前请求路径是 {}", requestURI);
+        // 获取请求头上的token
         String authorization = httpServletRequest.getHeader("Authorization");
 
         if (authorization == null || !authorization.startsWith("Bearer ")) {
+            // 如果用户没有携带token，或者不是以 Bearer 开头的token 给用户提示
             httpServletResponse.setStatus(HttpServletResponse.SC_OK);
+            httpServletResponse.setContentType(contentType);
+            httpServletResponse.getWriter().write(notTokenContent);
+
             return false;
         }
-        try {
-            // 从用户的请求头上获取token
-            String token = authorization.substring(7);
-            boolean isTokenExpired = JwtTokenComponent.isTokenExpired(token);
-            if (isTokenExpired) {
-                // 继续让接口请求的通 但是返回指定的code
-                httpServletResponse.setStatus(HttpServletResponse.SC_OK);
-                // 保证汉字到了前端不乱码
-                httpServletResponse.setContentType("application/json;charset=UTF-8");
-                httpServletResponse.getWriter().write("{\"code\": " + ResponseResultEnum.InvalidToken.getCode() + ", \"message\": \"" + ResponseResultEnum.InvalidToken.getMessage() + "\"}");
+        // 从用户的请求头上获取token
+        String token = authorization.substring(7);
 
-                return false;
-            }
-            // String userInfoStr = JwtTokenComponent.getUserInfoFromToken(token);
-            return true;
+        boolean isTokenExpired = JwtTokenComponent.isTokenExpired(token);
 
-        } catch (Exception e) {
-//            e.printStackTrace(); // 打印错误信息
-            log.error("AuthInterceptorComponent error: " + e);
-            httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        if (isTokenExpired) {
+            httpServletResponse.setStatus(HttpServletResponse.SC_OK);
+            httpServletResponse.setContentType(contentType);
+            httpServletResponse.getWriter().write(invalidTokenContent);
             return false;
         }
+        return true;
     }
 }

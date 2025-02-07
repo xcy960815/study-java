@@ -22,8 +22,7 @@ public class AuthInterceptorConfig implements WebMvcConfigurer {
             "/captcha",
             "/vform/test",
             "/vform/test1",
-            "/vform/test2",
-            "/sse/stream"
+            "/vform/test2"
     );
 
     @Override
