@@ -9,5 +9,7 @@ import java.util.List;
 public interface StudyJavaOllamaService {
         public List<Model>getModels();
 
-        public ModelInfo getModelDetail(String modelId);
+        public ModelInfo getModelDetail(String modelName);
+
+        public String generate();
 }

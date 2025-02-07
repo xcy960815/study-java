@@ -100,14 +100,16 @@ public class StudyJavaLoginServiceImp implements StudyJavaLoginService {
     }
 
     public String getCaptcha() throws IOException {
+        long startTime = System.nanoTime(); // 获取开始时间
         // 生成验证码文本
         String captchaText = kaptchaProducer.createText();
-        log.info("生成验证码文本 {}", captchaText);
         redisComponent.setWithExpire(CAPTCHA_KEY, captchaText,3, TimeUnit.MINUTES);
         BufferedImage captchaImage = kaptchaProducer.createImage(captchaText);
         // 将验证码图像转换为 Base64
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         ImageIO.write(captchaImage, "jpg", byteArrayOutputStream);
+        long endTime = System.nanoTime(); // 获取结束时间
+        log.info("生成验证码耗时 {}",  (endTime - startTime) / 1_000_000.0 + " ms"); // 纳秒转毫秒
         return  "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(byteArrayOutputStream.toByteArray());
     }
 }

@@ -24,4 +24,10 @@ public class StudyJavaOllamaController {
         return ResponseGenerator.generateSuccessResult(studyJavaOllamaService.getModels()) ;
     }
 
+    @GetMapping("/generate")
+    public void handleGenerate(){
+        studyJavaOllamaService.generate();
+    }
+
+
 }
