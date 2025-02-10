@@ -6,9 +6,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class JsonUtils {
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    public static String toJson(Object obj) {
+    public static String toJson(Object data) {
         try {
-            return objectMapper.writeValueAsString(obj);
+            return objectMapper.writeValueAsString(data);
         } catch (JsonProcessingException e) {
             throw new RuntimeException("JSON 转换失败", e);
         }

@@ -2,7 +2,7 @@ package com.example.service.imp;
 
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
-import com.example.domain.vo.StudyJavaDeepSeekVo;
+import com.example.domain.vo.StudyJavaOllamaVo;
 import com.example.exception.StudyJavaException;
 import com.example.service.StudyJavaDeepSeekService;
 import java.util.ArrayList;
@@ -24,21 +24,21 @@ public class StudyJavaDeepSeekServiceImp implements StudyJavaDeepSeekService {
     public HttpResponse completions() {
         try {
             // 创建请求对象
-            StudyJavaDeepSeekVo studyJavaDeepSeekVo = new StudyJavaDeepSeekVo();
-            studyJavaDeepSeekVo.setModel("deepseek-chat");
+            StudyJavaOllamaVo studyJavaOllamaVo = new StudyJavaOllamaVo();
+            studyJavaOllamaVo.setModel("deepseek-chat");
             List<Map<String, String>> messages = new ArrayList<>();
             messages.add(new HashMap<String, String>() {{
                 put("role", "user");
                 put("content", "你好");
             }});
-            studyJavaDeepSeekVo.setMessages(messages);
-            studyJavaDeepSeekVo.setStream(true); // 开启流式输出
+            studyJavaOllamaVo.setMessages(messages);
+            studyJavaOllamaVo.setStream(true); // 开启流式输出
 
             // 发送请求，返回 HttpResponse
             HttpResponse response = HttpRequest.post(DEEPSEEK_API_URL)
                     .header("Authorization", DEEPSEEK_API_KEY)
                     .header("Content-Type", "application/json")
-                    .body(JsonUtils.toJson(studyJavaDeepSeekVo))
+                    .body(JsonUtils.toJson(studyJavaOllamaVo))
                     .execute();
 
             return response; // 直接返回响应
