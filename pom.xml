@@ -23,12 +23,6 @@
     </parent>
 
 
-    <repositories>
-        <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-        </repository>
-    </repositories>
     <dependencies>
         <!-- JJWT相关依赖 -->
         <dependency>
@@ -110,6 +104,11 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.33</version>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.mysql</groupId>-->
+<!--            <artifactId>mysql-connector-j</artifactId>-->
+<!--            <version>8.0.33</version>-->
+<!--        </dependency>-->
 
         <!-- Spring Boot Web Starter -->
         <dependency>
@@ -202,20 +201,22 @@
             <artifactId>reactor-netty-core</artifactId>
             <version>1.0.39</version>
         </dependency>
+
+        <dependency>
+            <groupId>io.springboot.ai</groupId>
+            <artifactId>spring-ai-ollama-spring-boot-starter</artifactId>
+<!--            <version>1.0.0</version>-->
+        </dependency>
+
+
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-resolver-dns-native-macos</artifactId>
             <classifier>osx-aarch_64</classifier>
         </dependency>
 
-<!--        ollama-->
 
 
-        <dependency>
-            <groupId>com.github.Asedem</groupId>
-            <artifactId>OllamaJavaAPI</artifactId>
-            <version>master-SNAPSHOT</version>
-        </dependency>
     </dependencies>
 
     <profiles>

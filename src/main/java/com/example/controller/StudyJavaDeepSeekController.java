@@ -30,7 +30,6 @@ public class StudyJavaDeepSeekController {
 
     @PostMapping(value = "/chat/completions",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public ResponseEntity<StreamingResponseBody> completions() {
-        log.info("1111");
         // 获取 Service 返回的 HttpResponse
         HttpResponse response = studyJavaDeepSeekService.completions();
 

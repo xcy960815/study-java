@@ -2,7 +2,8 @@ spring:
   profiles:
     # 启动哪个环境
     active: @spring.profile@
-
+  application:
+    name: study-java
 #server:
 #  servlet:
 #    # 接口前缀
