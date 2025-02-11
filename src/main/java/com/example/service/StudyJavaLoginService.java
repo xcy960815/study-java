@@ -10,6 +10,4 @@ public interface StudyJavaLoginService {
     public StudyJavaLoginDto login(StudyJavaLoginVo studyJavaLogin);
 
     public String getCaptcha() throws IOException;
-
-//    public void logout(StudyJavaLoginVo studyJavaLogin);
 }

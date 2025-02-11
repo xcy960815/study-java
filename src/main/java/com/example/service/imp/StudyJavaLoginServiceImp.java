@@ -15,9 +15,7 @@ import com.google.code.kaptcha.Producer;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-//import org.springframework.security.crypto.password.PasswordEncoder;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
@@ -27,21 +25,27 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+
+
+
 @Slf4j
 @Service
 public class StudyJavaLoginServiceImp implements StudyJavaLoginService {
 
     // 声明一个静态的固定值
-    private final String CAPTCHA_KEY = "captcha";
+    private static final String CAPTCHA_KEY = "captcha";
 
-    @Autowired
-    private RedisComponent redisComponent;
+    private static final int CAPTCHA_EXPIRE_TIME = 5;
 
-    @Autowired
-    private Producer kaptchaProducer;
+    private static final String TOKEN_KEY = "token";
+
+    private static final int TOKEN_EXPIRE_TIME = 24;
 
     @Resource
-    private JwtTokenComponent jwtTokenComponent;
+    private RedisComponent redisComponent;
+
+    @Resource
+    private Producer kaptchaProducer;
 
     @Resource
     private StudyJavaUserService studyJavaUserService;
@@ -59,6 +63,7 @@ public class StudyJavaLoginServiceImp implements StudyJavaLoginService {
         String captcha =  redisComponent.get(CAPTCHA_KEY,String.class);
 
         if (!captcha.equalsIgnoreCase(studyJavaLoginParams.getCaptcha())) {
+
             throw new StudyJavaException("验证码错误");
         }
         StudyJavaUserVo studyJavaUserVo = new StudyJavaUserVo();
@@ -90,7 +95,10 @@ public class StudyJavaLoginServiceImp implements StudyJavaLoginService {
         tokenContentOption.put("userId",userInfo.getUserId().toString());
         // 将用户关键信息（能从数据库中查出来的字段保存进去）
         String tokenContent = JSONUtil.toJsonStr(tokenContentOption);
-        studyJavaLoginDto.setToken(jwtTokenComponent.generateToken(tokenContent));
+        String token = JwtTokenComponent.generateToken(tokenContent);
+        redisComponent.setWithExpire(TOKEN_KEY, token,TOKEN_EXPIRE_TIME, TimeUnit.HOURS);
+        studyJavaLoginDto.setToken(token);
+
         return studyJavaLoginDto;
     }
 
@@ -99,11 +107,16 @@ public class StudyJavaLoginServiceImp implements StudyJavaLoginService {
         // studyJavaUserService.logout(studyJavaLoginParams);
     }
 
+    /**
+     * 生成验证码
+     * @return String
+     * @throws IOException
+     */
     public String getCaptcha() throws IOException {
         long startTime = System.nanoTime(); // 获取开始时间
         // 生成验证码文本
         String captchaText = kaptchaProducer.createText();
-        redisComponent.setWithExpire(CAPTCHA_KEY, captchaText,3, TimeUnit.MINUTES);
+        redisComponent.setWithExpire(CAPTCHA_KEY, captchaText,CAPTCHA_EXPIRE_TIME, TimeUnit.MINUTES);
         BufferedImage captchaImage = kaptchaProducer.createImage(captchaText);
         // 将验证码图像转换为 Base64
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();

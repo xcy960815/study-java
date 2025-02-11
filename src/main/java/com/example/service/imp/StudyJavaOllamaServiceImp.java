@@ -5,13 +5,10 @@ import cn.hutool.http.HttpResponse;
 import cn.hutool.json.JSONObject;
 import com.example.exception.StudyJavaException;
 import com.example.utils.JsonUtils;
-import io.jsonwebtoken.io.IOException;
 import lombok.extern.slf4j.Slf4j;
 import com.example.service.StudyJavaOllamaService;
 import org.springframework.stereotype.Service;
-import java.io.BufferedReader;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,39 +38,54 @@ import java.util.Map;
 @Service
 @Slf4j
 public class StudyJavaOllamaServiceImp implements StudyJavaOllamaService {
-
-//    private static final String DEEPSEEK_API_URL = "https://api.deepseek.com/v1/chat/completions";
-//
-//    private static final String DEEPSEEK_API_KEY = "Bearer sk-e3cfe3854fb0448f8033ad926d454baa";
-
-    // 端口号
+    /**
+     * 端口号
+     */
     private final Integer Ollama_Port = 11434;
 
-    // 域名
+    /**
+     * 域名
+     */
     private final String Ollama_Domain = "http://localhost";
 
-    // generate 接口
+    /**
+     * generate 接口
+     */
     private final String Ollama_Generate_Api = "/api/generate";
 
-    // completions 接口
+    /**
+     * completions 接口
+     */
     private final String Ollama_Completions_Api = "/v1/chat/completions";
 
-    // tags 接口
+    /**
+     * tags 接口
+     */
     private final String Ollama_Tags_Api = "/api/tags";
 
-    // models 接口
+    /**
+     * models 接口
+     */
     private final String Ollama_Models_Api = "/v1/models";
 
-    // 删除模型接口
+    /**
+     * 删除模型接口
+     */
     private final String Ollama_Delete_Models_Api = "/api/delete";
 
-    // 列出运行模型
+    /**
+     * 列出运行模型
+     */
     private final String Ollama_Ps_Api = "/api/ps";
 
-    // 获取模型详情
+    /**
+     * 获取模型详情
+     */
     private final String Ollama_Show_Api = "/v1/show";
 
-    // 超时时间
+    /**
+     * 超时时间
+     */
     private final int Ollama_Timeout = 60*1000;
 
     /**
@@ -90,12 +102,14 @@ public class StudyJavaOllamaServiceImp implements StudyJavaOllamaService {
 //        studyJavaOllamaService.tags();
     }
 
-    @Override
-    public String buildRequestUrl(String url){
+
+    private String buildRequestUrl(String url){
         return Ollama_Domain + ":" + Ollama_Port + url;
     }
 
-
+    /**
+     * 非流式 generate 接口
+     */
     @Override
     public void generate(){
         Map<String, Object> requestBody = new HashMap<>();
@@ -108,6 +122,9 @@ public class StudyJavaOllamaServiceImp implements StudyJavaOllamaService {
         System.out.println(response.getStatus());
     }
 
+    /**
+     * 流式 generate 接口
+     */
     @Override
     public void generateStream() {
             Map<String, Object> requestBody = new HashMap<>();
@@ -118,20 +135,9 @@ public class StudyJavaOllamaServiceImp implements StudyJavaOllamaService {
         if (response.getStatus() == 200) {
             InputStream inputStream = response.bodyStream();
             System.out.println(inputStream);
-            // 这里可以做流式处理，例如逐步读取流
-//            try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
-//                String line;
-//                while ((line = reader.readLine()) != null) {
-//                    // 在这里可以逐步处理响应数据
-//                    System.out.println(line);
-//                }
-//            } catch (IOException e) {
-//                e.printStackTrace();  // 捕获并打印 IOException
-//            }
         } else {
             System.out.println("请求失败，状态码：" + response.getStatus());
         }
-
     }
 
     /**

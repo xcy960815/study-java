@@ -31,7 +31,6 @@ public class StudyJavaDeepSeekController {
     public ResponseEntity<StreamingResponseBody> completions() {
         // 获取 Service 返回的 HttpResponse
         HttpResponse response = studyJavaDeepSeekService.completions();
-
         // 创建 StreamingResponseBody 来逐步返回流
         StreamingResponseBody stream = out -> {
             try (InputStream inputStream = response.bodyStream()) {
@@ -50,6 +49,5 @@ public class StudyJavaDeepSeekController {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Content-Type", "text/event-stream"); // 使用 text/event-stream
         return new ResponseEntity<>(stream, headers, HttpStatus.OK);
-
     }
 }
