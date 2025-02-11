@@ -18,7 +18,9 @@ public class StudyJavaOllamaController {
     private StudyJavaOllamaService studyJavaOllamaService;
 
 
-
+    /**
+     * 获取标签
+     */
     @GetMapping("/tags")
     public ResponseResult<List<Object>> tags() {
         return ResponseGenerator.generateSuccessResult(studyJavaOllamaService.tags());

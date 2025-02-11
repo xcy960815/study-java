@@ -5,9 +5,11 @@ package com.example.component;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
-
 import java.util.concurrent.TimeUnit;
 
+/**
+ * redis 工具类
+ */
 @Component
 public class RedisComponent {
 

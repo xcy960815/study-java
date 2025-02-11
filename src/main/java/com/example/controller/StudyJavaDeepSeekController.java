@@ -3,6 +3,7 @@ package com.example.controller;
 import cn.hutool.http.HttpResponse;
 import com.example.service.StudyJavaDeepSeekService;
 import io.jsonwebtoken.io.IOException;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -19,14 +20,14 @@ import java.io.InputStream;
 
 // https://blog.csdn.net/u014390502/article/details/143275309
 @RestController
-@RequestMapping("/v1")
+@RequestMapping("/deepseek")
 @Slf4j
 public class StudyJavaDeepSeekController {
 
-    @Autowired
+    @Resource
     private StudyJavaDeepSeekService studyJavaDeepSeekService;
 
-    @PostMapping(value = "/chat/completions",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    @PostMapping(value = "/v1/chat/completions",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public ResponseEntity<StreamingResponseBody> completions() {
         // 获取 Service 返回的 HttpResponse
         HttpResponse response = studyJavaDeepSeekService.completions();

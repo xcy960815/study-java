@@ -1,6 +1,7 @@
 package com.example.component;
 
 import com.example.domain.enums.ResponseResultEnum;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -11,14 +12,21 @@ import jakarta.servlet.http.HttpServletResponse;
 @Component
 public class AuthInterceptorComponent implements HandlerInterceptor {
 
+    /**
+     * 没有token的响应
+     */
     private final String notTokenContent = "{\"code\": " + ResponseResultEnum.NotToken.getCode() + ", \"message\": \"" + ResponseResultEnum.NotToken.getMessage() + "\"}";
 
+    /**
+     * token过期的响应
+     */
     private final String invalidTokenContent = "{\"code\": " + ResponseResultEnum.InvalidToken.getCode() + ", \"message\": \"" + ResponseResultEnum.InvalidToken.getMessage() + "\"}";
+
 
     private final String contentType = "application/json;charset=UTF-8";
 
     @Override
-    public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object handler) throws Exception {
+    public boolean preHandle(@NonNull HttpServletRequest httpServletRequest, @NonNull HttpServletResponse httpServletResponse, @NonNull Object handler) throws Exception {
         // 获取请求头上的token
         String authorization = httpServletRequest.getHeader("Authorization");
 
