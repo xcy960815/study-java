@@ -66,10 +66,7 @@ public class StudyJavaDeepSeekServiceImp implements StudyJavaDeepSeekService {
                     .body(JsonUtils.toJson(studyJavaDeepseekVo))
                     .execute();
 
-        } catch (RuntimeException e) {
-            throw new RuntimeException(e.getMessage());
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new StudyJavaException("请求失败");
         }
     }

@@ -1,28 +1,69 @@
 package com.example.component;
 
-import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+//import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import java.util.concurrent.TimeUnit;
+import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
+import java.util.Base64;
 import java.util.Date;
 
 @Slf4j
 @Component
 public class JwtTokenComponent {
 
-    private static final Key SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+    //    从yml文件中获取配置 demo
+    //    @Value("${jwt.secret}")
+    //    private String secretKey; // 注入的 secretKey
 
-    // private static final long EXPIRATION_TIME = 60000L; // 设置过期时间（1分钟）
+    @Resource
+    private RedisComponent redisComponent;
 
-    private static final long EXPIRATION_TIME = 86400000L; // 设置过期时间（1天）
+    /**
+     * 秘钥在redis中的名称
+     */
+    private static final String SECRET_KEY_NAME = "study-java-secret-key";
 
+    /**
+     * 设置过期时间（1天）
+     */
+    private final long EXPIRATION_TIME = 86400000L;
 
-    // 生成 Token
-    public static String generateToken(String tokenContent) {
+    /**
+     * 秘钥
+     */
+    private Key SECRET_KEY;
+
+    /**
+     * 初始化 SECRET_KEY
+     */
+    @PostConstruct
+    public void initSecretKey() {
+        /* 先从redis里面取 */
+        if (redisComponent.hasKey(SECRET_KEY_NAME)) {
+            // 从 Redis 获取字节数组
+             String secretKeyName = redisComponent.get(SECRET_KEY_NAME,String.class);
+            // 通过字节数组构造 Key
+            this.SECRET_KEY = new SecretKeySpec(Base64.getDecoder().decode(secretKeyName), SignatureAlgorithm.HS512.getJcaName());
+        }else {
+            this.SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+            redisComponent.setWithExpire(SECRET_KEY_NAME, Base64.getEncoder().encodeToString(SECRET_KEY.getEncoded()),EXPIRATION_TIME, TimeUnit.MILLISECONDS);
+        }
+    }
+
+    /**
+     * 生成 Token
+     * @param tokenContent String
+     * @return String
+     */
+    public String generateToken(String tokenContent) {
         return Jwts.builder()
                 .setSubject(tokenContent)
                 .setIssuedAt(new Date())
@@ -36,7 +77,7 @@ public class JwtTokenComponent {
      * @param token String
      * @return String
      */
-    public static String getUserInfoFromToken(String token) {
+    public String getUserInfoFromToken(String token) {
         Claims claims = getClaimsFromToken(token);
         return claims.getSubject();
     }
@@ -46,7 +87,7 @@ public class JwtTokenComponent {
      * @param token string
      * @return boolean
      */
-    public static boolean isTokenExpired(String token) {
+    public boolean isTokenExpired(String token) {
         try {
             Claims claims = getClaimsFromToken(token);
             return claims.getExpiration().before(new Date());
@@ -60,7 +101,7 @@ public class JwtTokenComponent {
      * @param token String
      * @return Claims
      */
-    private static Claims getClaimsFromToken(String token) {
+    private Claims getClaimsFromToken(String token) {
         return Jwts.parser()
                 .setSigningKey(SECRET_KEY)
                 .parseClaimsJws(token)

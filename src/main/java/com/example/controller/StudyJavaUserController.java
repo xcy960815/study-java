@@ -25,15 +25,17 @@ import java.util.Map;
 
 @Slf4j
 @RestController
-@RequestMapping("/user") // 前缀
+@RequestMapping("/user")
 public class StudyJavaUserController {
+    @Resource
+    private JwtTokenComponent jwtTokenComponent;
     @Resource
     private StudyJavaUserService studyJavaUserService;
     // 获取用户信息
     @GetMapping("/getUserInfo")
     public ResponseResult<StudyJavaUserDto> getUserInfo(@RequestHeader(value = "Authorization", required = false) String authorization){
         String token = authorization.substring(7);
-        JSONObject tokenUserInfo = JSONUtil.parseObj(JwtTokenComponent.getUserInfoFromToken(token));
+        JSONObject tokenUserInfo = JSONUtil.parseObj(jwtTokenComponent.getUserInfoFromToken(token));
         Long userId = Long.parseLong(tokenUserInfo.get("userId").toString());
         String loginName = tokenUserInfo.get("loginName").toString();
         StudyJavaUserVo studyJavaUserVo = new StudyJavaUserVo();
@@ -102,7 +104,7 @@ public class StudyJavaUserController {
     @PostMapping("/updateUserPassword")
     public ResponseResult<Boolean> updateUserPassword(@RequestHeader(value = "Authorization", required = false) String authorization,@RequestBody StudyJavaUserVo studyJavaUser) {
         String token = authorization.substring(7);
-        String userInfoStr = JwtTokenComponent.getUserInfoFromToken(token);
+        String userInfoStr = jwtTokenComponent.getUserInfoFromToken(token);
         String[] userInfoArr = userInfoStr.split(":");
         Long userId = Long.parseLong(userInfoArr[0]);
         String loginName = userInfoArr[1];

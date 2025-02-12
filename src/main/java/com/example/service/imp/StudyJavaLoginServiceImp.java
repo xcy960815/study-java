@@ -26,8 +26,6 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 
-
-
 @Slf4j
 @Service
 public class StudyJavaLoginServiceImp implements StudyJavaLoginService {
@@ -40,6 +38,9 @@ public class StudyJavaLoginServiceImp implements StudyJavaLoginService {
     private static final String TOKEN_KEY = "token";
 
     private static final int TOKEN_EXPIRE_TIME = 24;
+
+    @Resource
+    private JwtTokenComponent jwtTokenComponent;
 
     @Resource
     private RedisComponent redisComponent;
@@ -95,7 +96,7 @@ public class StudyJavaLoginServiceImp implements StudyJavaLoginService {
         tokenContentOption.put("userId",userInfo.getUserId().toString());
         // 将用户关键信息（能从数据库中查出来的字段保存进去）
         String tokenContent = JSONUtil.toJsonStr(tokenContentOption);
-        String token = JwtTokenComponent.generateToken(tokenContent);
+        String token = jwtTokenComponent.generateToken(tokenContent);
         redisComponent.setWithExpire(TOKEN_KEY, token,TOKEN_EXPIRE_TIME, TimeUnit.HOURS);
         studyJavaLoginDto.setToken(token);
 
