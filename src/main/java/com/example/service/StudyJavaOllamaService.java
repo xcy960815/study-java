@@ -8,7 +8,7 @@ import java.io.InputStream;
 
 public interface StudyJavaOllamaService {
         StudyJavaOllamaGenerateDto generate(StudyJavaOllamaGrenerateVo studyJavaOllamaGrenerateVo);
-        InputStream generateStream();
+        InputStream generateStream(StudyJavaOllamaGrenerateVo studyJavaOllamaGrenerateVo);
         StudyJavaOllamaModelsDto models();
         StudyJavaOllamaVersionDto version();
         StudyJavaOllamaTagsDto tags();

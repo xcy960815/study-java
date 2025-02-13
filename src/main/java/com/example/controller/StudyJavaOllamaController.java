@@ -6,11 +6,17 @@ import com.example.domain.vo.ollama.StudyJavaOllamaGrenerateVo;
 import com.example.service.StudyJavaOllamaService;
 import com.example.utils.ResponseGenerator;
 import com.example.utils.ResponseResult;
+import io.jsonwebtoken.io.IOException;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
-
+import java.io.InputStream;
 
 
 @RestController
@@ -27,10 +33,27 @@ public class StudyJavaOllamaController {
     public ResponseResult<StudyJavaOllamaGenerateDto> generate(@Valid @RequestBody StudyJavaOllamaGrenerateVo studyJavaOllamaGrenerateVo) {
         return ResponseGenerator.generateSuccessResult(studyJavaOllamaService.generate(studyJavaOllamaGrenerateVo));
     }
-//    @PostMapping("/generateStream")
-//    public ResponseResult<InputStream> generateStream() {
-//        return ResponseGenerator.generateSuccessResult(studyJavaOllamaService.generateStream());
-//    }
+    @PostMapping(value ="/generateStream",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public ResponseEntity<StreamingResponseBody> generateStream(@Valid @RequestBody StudyJavaOllamaGrenerateVo studyJavaOllamaGrenerateVo) {
+        StreamingResponseBody streamingResponseBody = out -> {
+            try (InputStream inputStream = studyJavaOllamaService.generateStream(studyJavaOllamaGrenerateVo)) {
+                byte[] buffer = new byte[1024];
+                int bytesRead;
+                while ((bytesRead = inputStream.read(buffer)) != -1) {
+                    out.write(buffer, 0, bytesRead);
+                    out.flush();
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        };
+
+        // 设置响应头
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Content-Type", "text/event-stream"); // 使用 text/event-stream
+        return new ResponseEntity<>(streamingResponseBody, headers, HttpStatus.OK);
+    }
     /**
      * 获取标签
      */

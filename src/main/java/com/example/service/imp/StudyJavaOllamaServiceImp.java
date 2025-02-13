@@ -86,9 +86,9 @@ public class StudyJavaOllamaServiceImp implements StudyJavaOllamaService {
     private final String Ollama_Show_Api = "/api/show";
 
     /**
-     * 超时时间 5分钟
+     * 超时时间 10 分钟
      */
-    private final int Ollama_Timeout = 60*1000*5;
+    private final int Ollama_Timeout = 60*1000*10;
 
     /**
      * version 接口
@@ -135,20 +135,14 @@ public class StudyJavaOllamaServiceImp implements StudyJavaOllamaService {
      * 流式 generate 接口
      */
     @Override
-    public InputStream generateStream() {
-            Map<String, String> requestBody = new HashMap<>();
-            requestBody.put("model", "deepseek-r1:1.5b");
-            requestBody.put("prompt", "为什么天空是蓝色的?");
-            requestBody.put("stream", "true");
+    public InputStream generateStream(StudyJavaOllamaGrenerateVo studyJavaOllamaGrenerateVo) {
             HttpResponse response = HttpRequest
                     .post(buildRequestUrl(Ollama_Generate_Api))
                     .timeout(Ollama_Timeout)
-                    .body(JsonUtils.toJson(requestBody))
+                    .body(JsonUtils.toJson(studyJavaOllamaGrenerateVo))
                     .execute();
         if (response.getStatus() == 200) {
-            InputStream inputStream = response.bodyStream();
-            System.out.println(inputStream);
-            return inputStream;
+            return response.bodyStream();
         } else {
             System.out.println("请求失败，状态码：" + response.getStatus());
             throw new StudyJavaException("请求失败");
