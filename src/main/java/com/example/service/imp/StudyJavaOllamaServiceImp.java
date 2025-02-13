@@ -2,6 +2,7 @@ package com.example.service.imp;
 
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
+import com.example.domain.dto.ollama.StudyJavaOllamaGenerateDto;
 import com.example.domain.dto.ollama.StudyJavaOllamaTagsDto;
 import com.example.domain.dto.ollama.StudyJavaOllamaVersionDto;
 import com.example.exception.StudyJavaException;
@@ -86,7 +87,7 @@ public class StudyJavaOllamaServiceImp implements StudyJavaOllamaService {
     /**
      * 超时时间
      */
-    private final int Ollama_Timeout = 60*1000;
+    private final int Ollama_Timeout = 60*1000*5;
 
     /**
      * version 接口
@@ -111,7 +112,7 @@ public class StudyJavaOllamaServiceImp implements StudyJavaOllamaService {
      * 非流式 generate 接口
      */
     @Override
-    public void generate(){
+    public StudyJavaOllamaGenerateDto generate(){
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("model", "deepseek-r1:14b");
         requestBody.put("prompt", "为什么天空是蓝色的?");
@@ -121,9 +122,9 @@ public class StudyJavaOllamaServiceImp implements StudyJavaOllamaService {
                 .timeout(Ollama_Timeout)
                 .body(JsonUtils.toJson(requestBody))
                 .execute();
-        System.out.println(response.getStatus());
         if(response.getStatus() == 200) {
             System.out.println(response.body());
+            return JsonUtils.fromJson(response.body(), StudyJavaOllamaGenerateDto.class);
         }else {
             throw new StudyJavaException("请求失败");
         }

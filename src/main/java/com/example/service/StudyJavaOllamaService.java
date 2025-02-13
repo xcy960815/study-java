@@ -1,5 +1,6 @@
 package com.example.service;
 
+import com.example.domain.dto.ollama.StudyJavaOllamaGenerateDto;
 import com.example.domain.dto.ollama.StudyJavaOllamaModelsDto;
 import com.example.domain.dto.ollama.StudyJavaOllamaTagsDto;
 import com.example.domain.dto.ollama.StudyJavaOllamaVersionDto;
@@ -7,7 +8,7 @@ import com.example.domain.dto.ollama.StudyJavaOllamaVersionDto;
 import java.io.InputStream;
 
 public interface StudyJavaOllamaService {
-        void generate();
+        StudyJavaOllamaGenerateDto generate();
         InputStream generateStream();
         StudyJavaOllamaModelsDto models();
         StudyJavaOllamaVersionDto version();

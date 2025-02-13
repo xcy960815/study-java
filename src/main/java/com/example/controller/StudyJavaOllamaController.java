@@ -1,5 +1,6 @@
 package com.example.controller;
 
+import com.example.domain.dto.ollama.StudyJavaOllamaGenerateDto;
 import com.example.domain.dto.ollama.StudyJavaOllamaTagsDto;
 import com.example.domain.dto.ollama.StudyJavaOllamaVersionDto;
 import com.example.domain.dto.ollama.StudyJavaOllamaModelsDto;
@@ -8,6 +9,7 @@ import com.example.utils.ResponseGenerator;
 import com.example.utils.ResponseResult;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,6 +21,13 @@ public class StudyJavaOllamaController {
     private StudyJavaOllamaService studyJavaOllamaService;
 
     /**
+     * 生成模型
+     */
+    @PostMapping("/generate")
+    public ResponseResult<StudyJavaOllamaGenerateDto> generate() {
+        return ResponseGenerator.generateSuccessResult(studyJavaOllamaService.generate());
+    }
+    /**
      * 获取标签
      */
     @GetMapping("/tags")
@@ -27,7 +36,7 @@ public class StudyJavaOllamaController {
     }
 
     /**
-     *
+     * 获取所有的模型
      */
     @GetMapping("/models")
     public ResponseResult<StudyJavaOllamaModelsDto> models() {
