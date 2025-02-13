@@ -1,12 +1,19 @@
+
+
 spring:
   profiles:
     # 启动哪个环境
-    active: @spring.profile@
+    active: @spring.profile.active@
   application:
     name: study-java
-#server:
-#  servlet:
-#    # 接口前缀
-#    context-path: @spring.context.path@
+  mvc:
+    async:
+      request-timeout: @spring.mvc.async.request.timeout@  # 设置 Spring MVC 请求超时时间为 5 分钟
+
+server:
+  port: @server.port@
+  servlet:
+    # 接口前缀
+    context-path: @server.servlet.context.path@
 
 

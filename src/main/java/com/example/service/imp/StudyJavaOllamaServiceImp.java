@@ -78,6 +78,9 @@ public class StudyJavaOllamaServiceImp implements StudyJavaOllamaService {
      */
     private final String Ollama_Ps_Api = "/api/ps";
 
+    /**
+     * 拉取模型
+     */
     private final String Ollama_Pull_Api = "/api/ps";
 
     /**
@@ -115,6 +118,8 @@ public class StudyJavaOllamaServiceImp implements StudyJavaOllamaService {
 
     /**
      * 非流式 generate 接口
+     * @param studyJavaOllamaGrenerateVo StudyJavaOllamaGrenerateVo
+     * @return StudyJavaOllamaGenerateDto
      */
     @Override
     public StudyJavaOllamaGenerateDto generate(StudyJavaOllamaGrenerateVo studyJavaOllamaGrenerateVo){
@@ -133,6 +138,8 @@ public class StudyJavaOllamaServiceImp implements StudyJavaOllamaService {
 
     /**
      * 流式 generate 接口
+     * @param studyJavaOllamaGrenerateVo StudyJavaOllamaGrenerateVo
+     * @return InputStream
      */
     @Override
     public InputStream generateStream(StudyJavaOllamaGrenerateVo studyJavaOllamaGrenerateVo) {

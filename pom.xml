@@ -205,7 +205,10 @@
         <profile>
             <id>dev</id>
             <properties>
-                <spring.profile>dev</spring.profile>
+                <server.port>8082</server.port>
+                <spring.profile.active>dev</spring.profile.active>
+                <spring.mvc.async.request.timeout>300000</spring.mvc.async.request.timeout>
+                <server.servlet.context.path>/dev-api</server.servlet.context.path>
             </properties>
             <activation>
                 <activeByDefault>true</activeByDefault>
@@ -215,8 +218,10 @@
         <profile>
             <id>pre</id>
             <properties>
-                <spring.profile>pre</spring.profile>
-<!--                <server.servlet.context.path>/pre-api</server.servlet.context.path>-->
+                <server.port>8083</server.port>
+                <spring.profile.active>pre</spring.profile.active>
+                <spring.mvc.async.request.timeout>300000</spring.mvc.async.request.timeout>
+                <server.servlet.context.path>/pre-api</server.servlet.context.path>
             </properties>
             <activation>
                 <activeByDefault>false</activeByDefault>
@@ -226,8 +231,10 @@
         <profile>
             <id>prod</id>
             <properties>
-                <spring.profile>prod</spring.profile>
-<!--                <server.servlet.context.path>/prod-api</server.servlet.context.path>-->
+                <server.port>8084</server.port>
+                <spring.profile.active>prod</spring.profile.active>
+                <spring.mvc.async.request.timeout>300000</spring.mvc.async.request.timeout>
+                <server.servlet.context.path>/prod-api</server.servlet.context.path>
             </properties>
             <activation>
                 <activeByDefault>false</activeByDefault>
