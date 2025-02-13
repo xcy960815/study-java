@@ -3,6 +3,9 @@ package com.example.domain.dto.ollama;
 import lombok.Data;
 import java.util.List;
 
+/**
+ * generate 接口结果
+ */
 @Data
 public class StudyJavaOllamaGenerateDto {
     private String model;

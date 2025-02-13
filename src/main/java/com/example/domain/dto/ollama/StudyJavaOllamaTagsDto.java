@@ -8,7 +8,7 @@ import java.util.List;
 public class StudyJavaOllamaTagsDto {
 
         private List<Model> models;
-
+        @Data
         public static class Model {
                 private String name;
                 private String model;
@@ -16,7 +16,7 @@ public class StudyJavaOllamaTagsDto {
                 private long size;
                 private String digest;
                 private Details details;
-
+                @Data
                 public static class Details {
                         private String parent_model;
                         private String format;

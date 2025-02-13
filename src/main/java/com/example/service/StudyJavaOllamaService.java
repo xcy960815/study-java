@@ -1,18 +1,19 @@
 package com.example.service;
 
-import com.example.domain.dto.ollama.StudyJavaOllamaGenerateDto;
-import com.example.domain.dto.ollama.StudyJavaOllamaModelsDto;
-import com.example.domain.dto.ollama.StudyJavaOllamaTagsDto;
-import com.example.domain.dto.ollama.StudyJavaOllamaVersionDto;
+import com.example.domain.dto.ollama.*;
+import com.example.domain.vo.ollama.StudyJavaOllamaDeleteVo;
+import com.example.domain.vo.ollama.StudyJavaOllamaGrenerateVo;
 
 import java.io.InputStream;
 
 public interface StudyJavaOllamaService {
-        StudyJavaOllamaGenerateDto generate();
+        StudyJavaOllamaGenerateDto generate(StudyJavaOllamaGrenerateVo studyJavaOllamaGrenerateVo);
         InputStream generateStream();
         StudyJavaOllamaModelsDto models();
         StudyJavaOllamaVersionDto version();
         StudyJavaOllamaTagsDto tags();
-        void deleteModel(String modelName);
-        void ps();
+        Boolean delete(StudyJavaOllamaDeleteVo studyJavaOllamaDeleteVo);
+        StudyJavaOllamaPsDto ps();
+        StudyJavaOllamaShowDto show();
+        void pull();
 }

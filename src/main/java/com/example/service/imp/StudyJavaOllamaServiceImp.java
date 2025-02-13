@@ -2,9 +2,9 @@ package com.example.service.imp;
 
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
-import com.example.domain.dto.ollama.StudyJavaOllamaGenerateDto;
-import com.example.domain.dto.ollama.StudyJavaOllamaTagsDto;
-import com.example.domain.dto.ollama.StudyJavaOllamaVersionDto;
+import com.example.domain.dto.ollama.*;
+import com.example.domain.vo.ollama.StudyJavaOllamaDeleteVo;
+import com.example.domain.vo.ollama.StudyJavaOllamaGrenerateVo;
 import com.example.exception.StudyJavaException;
 import com.example.utils.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
-import com.example.domain.dto.ollama.StudyJavaOllamaModelsDto;
 
 //[GIN-debug] POST   /api/pull                 --> github.com/ollama/ollama/server.(*Server).PullHandler-fm (5 handlers)
 //[GIN-debug] POST   /api/generate             --> github.com/ollama/ollama/server.(*Server).GenerateHandler-fm (5 handlers)
@@ -79,13 +78,15 @@ public class StudyJavaOllamaServiceImp implements StudyJavaOllamaService {
      */
     private final String Ollama_Ps_Api = "/api/ps";
 
+    private final String Ollama_Pull_Api = "/api/ps";
+
     /**
      * 获取模型详情
      */
-    private final String Ollama_Show_Api = "/v1/show";
+    private final String Ollama_Show_Api = "/api/show";
 
     /**
-     * 超时时间
+     * 超时时间 5分钟
      */
     private final int Ollama_Timeout = 60*1000*5;
 
@@ -95,7 +96,7 @@ public class StudyJavaOllamaServiceImp implements StudyJavaOllamaService {
     private final String Ollama_Version_Api = "/api/version";
 
     public static void main(String[] args){
-        StudyJavaOllamaService studyJavaOllamaService = new StudyJavaOllamaServiceImp();
+//        StudyJavaOllamaService studyJavaOllamaService = new StudyJavaOllamaServiceImp();
 //        studyJavaOllamaService.version();
 //        studyJavaOllamaService.generate();
 //        studyJavaOllamaService.generateStream();
@@ -103,7 +104,11 @@ public class StudyJavaOllamaServiceImp implements StudyJavaOllamaService {
 //        studyJavaOllamaService.tags();
     }
 
-
+    /**
+     * 构建请求地址
+     * @param url String
+     * @return String
+     */
     private String buildRequestUrl(String url){
         return Ollama_Domain + ":" + Ollama_Port + url;
     }
@@ -112,15 +117,11 @@ public class StudyJavaOllamaServiceImp implements StudyJavaOllamaService {
      * 非流式 generate 接口
      */
     @Override
-    public StudyJavaOllamaGenerateDto generate(){
-        Map<String, Object> requestBody = new HashMap<>();
-        requestBody.put("model", "deepseek-r1:14b");
-        requestBody.put("prompt", "为什么天空是蓝色的?");
-        requestBody.put("stream", false);
+    public StudyJavaOllamaGenerateDto generate(StudyJavaOllamaGrenerateVo studyJavaOllamaGrenerateVo){
         HttpResponse response = HttpRequest
                 .post(buildRequestUrl(Ollama_Generate_Api))
                 .timeout(Ollama_Timeout)
-                .body(JsonUtils.toJson(requestBody))
+                .body(JsonUtils.toJson(studyJavaOllamaGrenerateVo))
                 .execute();
         if(response.getStatus() == 200) {
             System.out.println(response.body());
@@ -135,10 +136,10 @@ public class StudyJavaOllamaServiceImp implements StudyJavaOllamaService {
      */
     @Override
     public InputStream generateStream() {
-            Map<String, Object> requestBody = new HashMap<>();
-            requestBody.put("model", "deepseek-r1:14b");
+            Map<String, String> requestBody = new HashMap<>();
+            requestBody.put("model", "deepseek-r1:1.5b");
             requestBody.put("prompt", "为什么天空是蓝色的?");
-            requestBody.put("stream", true);
+            requestBody.put("stream", "true");
             HttpResponse response = HttpRequest
                     .post(buildRequestUrl(Ollama_Generate_Api))
                     .timeout(Ollama_Timeout)
@@ -210,19 +211,18 @@ public class StudyJavaOllamaServiceImp implements StudyJavaOllamaService {
 
     /**
      * 删除指定的模型
-     * name 模型名称
+     * modelName 模型名称
      */
     @Override
-    public void deleteModel(String modelName){
-        Map<String, String> requestBody = new HashMap<>();
-        requestBody.put("name", modelName);
+    public Boolean delete(StudyJavaOllamaDeleteVo studyJavaOllamaDeleteVo){
         HttpResponse response = HttpRequest.delete(buildRequestUrl(Ollama_Delete_Models_Api))
                 .header("Content-Type", "application/json")
                 .timeout(Ollama_Timeout)
-                .body(JsonUtils.toJson(requestBody))
+                .body(JsonUtils.toJson(studyJavaOllamaDeleteVo))
                 .execute();
+        System.out.println(response);
         if(response.getStatus() == 200) {
-            System.out.println(response.body());
+            return true;
         } else {
             throw new StudyJavaException("请求失败");
         }
@@ -231,13 +231,33 @@ public class StudyJavaOllamaServiceImp implements StudyJavaOllamaService {
     /**
      * 获取加载到内存中的模型
      */
-    public void ps() {
+    public StudyJavaOllamaPsDto ps() {
         HttpResponse response = HttpRequest.get(buildRequestUrl(Ollama_Ps_Api))
                 .header("Content-Type", "application/json")
                 .timeout(Ollama_Timeout)
                 .execute();
         if (response.getStatus() == 200) {
-            System.out.println(response.body());
+            return JsonUtils.fromJson(response.body(), StudyJavaOllamaPsDto.class);
+        } else {
+            throw new StudyJavaException("请求失败");
+        }
+    }
+
+//    TODO 拉取模型 提示 404 page not found
+    public void pull() {
+        Map<String,String> requestBody = new HashMap<>();
+        requestBody.put("name","deepseek-r1:32b");
+        requestBody.put("insecure","true");
+        requestBody.put("stream","false");
+        HttpResponse response = HttpRequest.post(buildRequestUrl(Ollama_Pull_Api))
+                .header("Content-Type", "application/json")
+                .body(JsonUtils.toJson(requestBody))
+                .timeout(Ollama_Timeout)
+                .execute();
+        System.out.println(response.body());
+        if (response.getStatus() == 200) {
+
+//            return JsonUtils.fromJson(response.body(), StudyJavaOllamaPsDto.class);
         } else {
             throw new StudyJavaException("请求失败");
         }
@@ -246,17 +266,17 @@ public class StudyJavaOllamaServiceImp implements StudyJavaOllamaService {
     /**
      * 获取模型详情
      */
-    public void show(){
-        Map<String,String> requestBody = new HashMap<String,String>();
+    public StudyJavaOllamaShowDto show(){
+        Map<String,String> requestBody = new HashMap<>();
         requestBody.put("name","deepseek-r1:14b");
-
         HttpResponse response = HttpRequest.post(buildRequestUrl(Ollama_Show_Api))
                 .header("Content-Type", "application/json")
                 .body(JsonUtils.toJson(requestBody))
                 .timeout(Ollama_Timeout)
                 .execute();
+        System.out.println(response.body());
         if (response.getStatus() == 200) {
-            System.out.println(response.body());
+            return JsonUtils.fromJson(response.body(), StudyJavaOllamaShowDto.class);
         } else {
             throw new StudyJavaException("请求失败");
         }

@@ -184,6 +184,21 @@
             <classifier>osx-aarch_64</classifier>
         </dependency>
 
+
+        <!-- Jackson Databind (包含 @JsonProperty 注解) -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+<!--            <version>2.13.0</version> &lt;!&ndash; 使用最新的版本 &ndash;&gt;-->
+        </dependency>
+
+        <!-- Jackson Annotations (包含 @JsonProperty) -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+<!--            <version>2.13.0</version> &lt;!&ndash; 使用最新的版本 &ndash;&gt;-->
+        </dependency>
+
     </dependencies>
 
     <profiles>
