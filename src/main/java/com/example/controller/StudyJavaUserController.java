@@ -1,7 +1,5 @@
 package com.example.controller;
 
-
-
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -31,11 +29,15 @@ public class StudyJavaUserController {
     private JwtTokenComponent jwtTokenComponent;
     @Resource
     private StudyJavaUserService studyJavaUserService;
-    // 获取用户信息
+
+    /**
+     * 获取用户信息
+     * @param authorization String
+     * @return ResponseResult<StudyJavaUserDto>
+     */
     @GetMapping("/getUserInfo")
     public ResponseResult<StudyJavaUserDto> getUserInfo(@RequestHeader(value = "Authorization", required = false) String authorization){
-        String token = authorization.substring(7);
-        JSONObject tokenUserInfo = JSONUtil.parseObj(jwtTokenComponent.getUserInfoFromToken(token));
+        JSONObject tokenUserInfo = JSONUtil.parseObj(jwtTokenComponent.getUserInfoFromAuthorization(authorization));
         Long userId = Long.parseLong(tokenUserInfo.get("userId").toString());
         String loginName = tokenUserInfo.get("loginName").toString();
         StudyJavaUserVo studyJavaUserVo = new StudyJavaUserVo();
@@ -44,8 +46,17 @@ public class StudyJavaUserController {
         StudyJavaUserDto userInfo = studyJavaUserService.getUserInfo(studyJavaUserVo);
         return ResponseGenerator.generateSuccessResult(userInfo);
     }
+
     // RequestParam 通常用于获取单个参数
     // ModelAttribute 通常用于获取多个参数
+
+    /**
+     * 获取用户列表
+     * @param pageSize int
+     * @param pageNum int
+     * @param studyJavaUser StudyJavaUserVo
+     * @return ResponseResult<Map<String,Object>>
+     */
     @GetMapping("/getUserList")
     public ResponseResult<Map<String,Object>> getUserList(
             @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
@@ -61,6 +72,11 @@ public class StudyJavaUserController {
         return ResponseGenerator.generateSuccessResult(map);
     }
 
+    /**
+     * 更新用户
+     * @param studyJavaUser StudyJavaUserVo
+     * @return ResponseResult<Boolean>
+     */
     @PostMapping("/updateUserInfo")
     public ResponseResult<Boolean> updateUserInfo(@Valid @RequestBody StudyJavaUserVo studyJavaUser) {
         // 获取用户ID
@@ -72,6 +88,13 @@ public class StudyJavaUserController {
         // 返回更新结果
         return ResponseGenerator.generateSuccessResult(true);
     }
+
+    /**
+     * 更新用户头像
+     * @param userId String
+     * @param file MultipartFile
+     * @return ResponseResult<String>
+     */
     @PostMapping("/updateUserAvatar")
     public ResponseResult<String> updateUserAvatar(
             @RequestParam("userId") String userId,
@@ -85,15 +108,27 @@ public class StudyJavaUserController {
             // 返回更新结果
             return ResponseGenerator.generateSuccessResult(base64Image);
         }catch (IOException error){
-            return ResponseGenerator.generateErrorResult("更新头像失败");
+            throw new StudyJavaException("更新头像失败" + error.getMessage());
         }
     }
+
+    /**
+     * 更新用户信息
+     * @param studyJavaUser StudyJavaUserVo
+     * @return ResponseResult<Boolean>
+     */
     @PostMapping("/insertUserInfo")
     public ResponseResult<Boolean> insertUserInfo(@Valid @RequestBody StudyJavaUserVo studyJavaUser) {
         studyJavaUserService.insertUserInfo(studyJavaUser);
         // 返回插入结果
         return ResponseGenerator.generateSuccessResult(true);
     }
+
+    /**
+     * 删除用户信息
+     * @param studyJavaUser StudyJavaUserVo
+     * @return ResponseResult<Boolean>
+     */
     @DeleteMapping("/deleteUserInfo")
     public ResponseResult<Boolean> deleteUserInfo(@RequestBody StudyJavaUserVo studyJavaUser) {
         studyJavaUserService.deleteUserInfo(studyJavaUser);
@@ -101,6 +136,12 @@ public class StudyJavaUserController {
         return ResponseGenerator.generateSuccessResult(true);
     }
 
+    /**
+     * 更新用户密码
+     * @param authorization String
+     * @param studyJavaUser StudyJavaUserVo
+     * @return ResponseResult<Boolean>
+     */
     @PostMapping("/updateUserPassword")
     public ResponseResult<Boolean> updateUserPassword(@RequestHeader(value = "Authorization", required = false) String authorization,@RequestBody StudyJavaUserVo studyJavaUser) {
         String token = authorization.substring(7);

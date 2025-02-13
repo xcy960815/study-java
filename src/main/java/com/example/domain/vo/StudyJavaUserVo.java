@@ -14,10 +14,6 @@ import java.util.Date;
  */
 @Data
 public class StudyJavaUserVo implements Serializable {
-    // 定义验证顺序
-    public interface First {};
-    public interface Second {};
-    public interface Third {};
     /**
      * 用户主键id
      */

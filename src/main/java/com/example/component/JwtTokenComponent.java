@@ -107,4 +107,23 @@ public class JwtTokenComponent {
                 .parseClaimsJws(token)
                 .getBody();
     }
+
+    /**
+     * 从 authorization 中获取token
+     * @param authorization String
+     * @return String
+     */
+    public String getTokenFromAuthorization(String authorization){
+        return authorization.substring(7);
+    }
+
+    /**
+     * 从 authorization 中获取用户信息
+     * @param authorization String
+     * @return String
+     */
+    public String getUserInfoFromAuthorization(String authorization) {
+        String token = getTokenFromAuthorization(authorization);
+        return getUserInfoFromToken(token);
+    }
 }

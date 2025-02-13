@@ -24,7 +24,8 @@ public class AuthInterceptorConfig implements WebMvcConfigurer {
             "/captcha",
             "/vform/test",
             "/vform/test1",
-            "/vform/test2"
+            "/vform/test2",
+            "/ollama/**" //暂时先不给ollama模块添加 token校验
     );
 
     @Override
