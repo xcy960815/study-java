@@ -202,6 +202,7 @@
     </dependencies>
 
     <profiles>
+<!--    有点类似于前端的script脚本可以启动不同的环境加载不同的配置    -->
         <profile>
             <id>dev</id>
             <properties>

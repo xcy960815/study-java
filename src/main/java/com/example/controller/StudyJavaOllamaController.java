@@ -39,15 +39,16 @@ public class StudyJavaOllamaController {
             try (InputStream inputStream = studyJavaOllamaService.generateStream(studyJavaOllamaGrenerateVo)) {
                 byte[] buffer = new byte[1024];
                 int bytesRead;
+                // 逐步读取并写入响应流
                 while ((bytesRead = inputStream.read(buffer)) != -1) {
-                    out.write(buffer, 0, bytesRead);
-                    out.flush();
+                    out.write(buffer, 0, bytesRead);  // 写入响应流
+                    out.flush();  // 强制将数据写入响应流
                 }
-
             } catch (IOException e) {
                 e.printStackTrace();
             }
         };
+
 
         // 设置响应头
         HttpHeaders headers = new HttpHeaders();
