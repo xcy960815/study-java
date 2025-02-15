@@ -27,12 +27,20 @@ public class StudyJavaOllamaController {
     private StudyJavaOllamaService studyJavaOllamaService;
 
     /**
-     * 生成模型
+     * grenerate
+     * @param studyJavaOllamaGrenerateVo
+     * @return ResponseResult<StudyJavaOllamaGenerateDto> StudyJavaOllamaGrenerateVo
      */
     @PostMapping("/generate")
     public ResponseResult<StudyJavaOllamaGenerateDto> generate(@Valid @RequestBody StudyJavaOllamaGrenerateVo studyJavaOllamaGrenerateVo) {
         return ResponseGenerator.generateSuccessResult(studyJavaOllamaService.generate(studyJavaOllamaGrenerateVo));
     }
+
+    /**
+     * generateStream
+     * @param studyJavaOllamaGrenerateVo StudyJavaOllamaGrenerateVo
+     * @return ResponseEntity<StreamingResponseBody>
+     */
     @PostMapping(value ="/generateStream",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public ResponseEntity<StreamingResponseBody> generateStream(@Valid @RequestBody StudyJavaOllamaGrenerateVo studyJavaOllamaGrenerateVo) {
         StreamingResponseBody streamingResponseBody = out -> {

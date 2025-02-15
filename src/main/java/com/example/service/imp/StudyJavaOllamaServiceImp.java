@@ -192,7 +192,8 @@ public class StudyJavaOllamaServiceImp implements StudyJavaOllamaService {
     }
 
     /**
-     * 列出本地模型
+     * 列出ollama本地模型
+     * @return StudyJavaOllamaTagsDto
      */
     @Override
     public StudyJavaOllamaTagsDto tags(){
@@ -207,8 +208,10 @@ public class StudyJavaOllamaServiceImp implements StudyJavaOllamaService {
             throw new StudyJavaException("请求失败");
         }
     }
+
     /**
-     * 获取ollama的版本
+     * 获取本地ollama的版本
+     * @return StudyJavaOllamaVersionDto
      */
     @Override
     public StudyJavaOllamaVersionDto version() {
@@ -218,11 +221,8 @@ public class StudyJavaOllamaServiceImp implements StudyJavaOllamaService {
                 .timeout(Ollama_Timeout)
                 .execute();
 
-        System.out.println(response.getStatus());
         if(response.getStatus() == 200) {
-            System.out.println(response.body());
             return JsonUtils.fromJson(response.body(), StudyJavaOllamaVersionDto.class);
-
         } else {
             throw new StudyJavaException("请求失败");
         }

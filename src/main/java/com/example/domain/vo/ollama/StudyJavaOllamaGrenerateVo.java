@@ -8,10 +8,18 @@ import lombok.Data;
  */
 @Data
 public class StudyJavaOllamaGrenerateVo {
+    /**
+     * 模型
+     */
     @NotBlank(message = "model不能为空")
     private String model;
-
+    /**
+     * 问题
+     */
     @NotBlank(message = "prompt不能为空")
     private String prompt;
+    /**
+     * 流
+     */
     private Boolean stream;
 }
