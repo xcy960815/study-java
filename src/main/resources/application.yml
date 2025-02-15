@@ -1,16 +1,19 @@
 
+#通用配置
 
 spring:
   profiles:
     # 启动哪个环境
     active: @spring.profile.active@
   application:
+    # 项目名称
     name: study-java
   mvc:
     async:
       request-timeout: @spring.mvc.async.request.timeout@  # 设置 Spring MVC 请求超时时间为 5 分钟
 
 server:
+  # 端口
   port: @server.port@
   servlet:
     # 接口前缀

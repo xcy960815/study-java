@@ -82,7 +82,7 @@ public class StudyJavaOllamaController {
 
     /**
      * 删除模型
-     * @return ResponseResult
+     * @return ResponseResult<Boolean>
      */
     @DeleteMapping("/delete")
     public ResponseResult<Boolean> delete(@RequestBody StudyJavaOllamaDeleteVo studyJavaOllamaDeleteVo) {
@@ -90,8 +90,8 @@ public class StudyJavaOllamaController {
     }
 
     /**
-    * 获取ps
-//        * @return ResponseResult
+    * 获取正在内存中运行的模型
+    * @return ResponseResult<StudyJavaOllamaPsDto>
     */
     @GetMapping("/ps")
     public ResponseResult<StudyJavaOllamaPsDto> ps() {
