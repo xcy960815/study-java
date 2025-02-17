@@ -46,71 +46,63 @@ public class StudyJavaOllamaServiceImp implements StudyJavaOllamaService {
     /**
      * 端口号
      */
-    private final Integer Ollama_Port = 11434;
+    private static final Integer Ollama_Port = 11434;
 
     /**
      * 域名
      */
-    private final String Ollama_Domain = "http://localhost";
+    private static final String Ollama_Domain = "http://localhost";
 
     /**
      * generate 接口
      */
-    private final String Ollama_Generate_Api = "/api/generate";
+    private static final String Ollama_Generate_Api = "/api/generate";
 
     /**
      * completions 接口
      */
-    private final String Ollama_Completions_Api = "/v1/chat/completions";
+    private static final String Ollama_Completions_Api = "/v1/chat/completions";
 
     /**
      * tags 接口
      */
-    private final String Ollama_Tags_Api = "/api/tags";
+    private static final String Ollama_Tags_Api = "/api/tags";
 
     /**
      * models 接口
      */
-    private final String Ollama_Models_Api = "/v1/models";
+    private static final String Ollama_Models_Api = "/v1/models";
 
     /**
      * 删除模型接口
      */
-    private final String Ollama_Delete_Models_Api = "/api/delete";
+    private static final String Ollama_Delete_Models_Api = "/api/delete";
 
     /**
      * 列出运行模型
      */
-    private final String Ollama_Ps_Api = "/api/ps";
+    private static final String Ollama_Ps_Api = "/api/ps";
 
     /**
      * 拉取模型
      */
-    private final String Ollama_Pull_Api = "/api/ps";
+    private static final String Ollama_Pull_Api = "/api/ps";
 
     /**
      * 获取模型详情
      */
-    private final String Ollama_Show_Api = "/api/show";
+    private static final String Ollama_Show_Api = "/api/show";
 
     /**
      * 超时时间 10 分钟
      */
-    private final int Ollama_Timeout = 60*1000*10;
+    private static final int Ollama_Timeout = 60*1000*10;
 
     /**
      * version 接口
      */
-    private final String Ollama_Version_Api = "/api/version";
+    private static final String Ollama_Version_Api = "/api/version";
 
-    public static void main(String[] args){
-//        StudyJavaOllamaService studyJavaOllamaService = new StudyJavaOllamaServiceImp();
-//        studyJavaOllamaService.version();
-//        studyJavaOllamaService.generate();
-//        studyJavaOllamaService.generateStream();
-//        studyJavaOllamaService.models();
-//        studyJavaOllamaService.tags();
-    }
 
     /**
      * 构建请求地址

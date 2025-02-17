@@ -43,11 +43,11 @@ public class RedisComponent {
     /**
      * 获取数据
      * @param key String
-     * @param type Class<T>
+     * @param classType Class<T>
      * @return <T>
      */
-    public <T> T get(String key, Class<T> type) {
-        return type.cast(redisTemplate.opsForValue().get(key));
+    public <T> T get(String key, Class<T> classType) {
+        return classType.cast(redisTemplate.opsForValue().get(key));
     }
 
     /**

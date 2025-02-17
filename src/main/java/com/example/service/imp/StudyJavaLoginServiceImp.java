@@ -30,12 +30,17 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class StudyJavaLoginServiceImp implements StudyJavaLoginService {
 
-    // 声明一个静态的固定值
-    private static final String CAPTCHA_KEY = "captcha";
+    /**
+     * 验证码 key 名
+     */
+    private static final String CAPTCHA_KEY = "study-java-captcha";
 
     private static final int CAPTCHA_EXPIRE_TIME = 5;
 
-    private static final String TOKEN_KEY = "token";
+    /**
+     * token key 名
+     */
+    private static final String TOKEN_KEY = "study-java-token";
 
     private static final int TOKEN_EXPIRE_TIME = 24;
 
