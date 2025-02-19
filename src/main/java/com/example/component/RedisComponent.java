@@ -74,7 +74,7 @@ public class RedisComponent {
      * @param unit TimeUnit
      * @return boolean
      */
-    public boolean expire(String key, long timeout, TimeUnit unit) {
+    public boolean setExpireWithKey(String key, long timeout, TimeUnit unit) {
         return Boolean.TRUE.equals(redisTemplate.expire(key, timeout, unit));
     }
 
@@ -84,7 +84,7 @@ public class RedisComponent {
      * @param unit TimeUnit
      * @return Long
      */
-    public Long getExpire(String key, TimeUnit unit) {
+    public Long getExpireWithKey(String key, TimeUnit unit) {
         return redisTemplate.getExpire(key, unit);
     }
 }

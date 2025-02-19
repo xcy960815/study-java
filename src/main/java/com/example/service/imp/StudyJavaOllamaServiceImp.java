@@ -9,13 +9,8 @@ import com.example.exception.StudyJavaException;
 import com.example.utils.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 import com.example.service.StudyJavaOllamaService;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
-
-import java.io.BufferedReader;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -146,19 +141,6 @@ public class StudyJavaOllamaServiceImp implements StudyJavaOllamaService {
                     .body(JsonUtils.toJson(studyJavaOllamaGrenerateVo))
                     .execute();
         if (response.getStatus() == 200) {
-            // 读取响应参数
-            try(InputStream is = response.bodyStream()){
-                String line;
-                BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
-                while ((line = reader.readLine()) != null) {
-                    if (StringUtils.isBlank(line)) {
-                        continue;
-                    }
-                    System.out.println(line);
-                }
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
             return response.bodyStream();
         } else {
             System.out.println("请求失败，状态码：" + response.getStatus());

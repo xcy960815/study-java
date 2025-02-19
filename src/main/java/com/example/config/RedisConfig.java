@@ -14,7 +14,7 @@ public class RedisConfig {
 
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
-        return new LettuceConnectionFactory();  // 确保有 RedisConnectionFactory Bean
+        return new LettuceConnectionFactory();
     }
 
     @Bean

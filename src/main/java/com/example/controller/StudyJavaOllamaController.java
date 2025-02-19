@@ -6,17 +6,18 @@ import com.example.domain.vo.ollama.StudyJavaOllamaGrenerateVo;
 import com.example.service.StudyJavaOllamaService;
 import com.example.utils.ResponseGenerator;
 import com.example.utils.ResponseResult;
-import io.jsonwebtoken.io.IOException;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
-
+import reactor.core.publisher.Flux;
+import java.io.BufferedReader;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 
 
 @RestController
@@ -29,7 +30,7 @@ public class StudyJavaOllamaController {
     /**
      * grenerate
      * @param studyJavaOllamaGrenerateVo
-     * @return ResponseResult<StudyJavaOllamaGenerateDto> StudyJavaOllamaGrenerateVo
+     * @return ResponseResult<StudyJavaOllamaGenerateDto>
      */
     @PostMapping("/generate")
     public ResponseResult<StudyJavaOllamaGenerateDto> generate(@Valid @RequestBody StudyJavaOllamaGrenerateVo studyJavaOllamaGrenerateVo) {
@@ -41,28 +42,35 @@ public class StudyJavaOllamaController {
      * @param studyJavaOllamaGrenerateVo StudyJavaOllamaGrenerateVo
      * @return ResponseEntity<StreamingResponseBody>
      */
-    @PostMapping(value ="/generateStream",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public ResponseEntity<StreamingResponseBody> generateStream(@Valid @RequestBody StudyJavaOllamaGrenerateVo studyJavaOllamaGrenerateVo) {
-        StreamingResponseBody streamingResponseBody = out -> {
+    @PostMapping(value = "/generateStream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<String> generateStream(@Valid @RequestBody StudyJavaOllamaGrenerateVo studyJavaOllamaGrenerateVo) {
+        return Flux.create(sink -> {
             try (InputStream inputStream = studyJavaOllamaService.generateStream(studyJavaOllamaGrenerateVo)) {
-                byte[] buffer = new byte[1024];
-                int bytesRead;
-                // 逐步读取并写入响应流
-                while ((bytesRead = inputStream.read(buffer)) != -1) {
-                    out.write(buffer, 0, bytesRead);  // 写入响应流
-                    out.flush();  // 强制将数据写入响应流
+                String line;
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+                while ((line = reader.readLine()) != null) {
+                    if (StringUtils.isBlank(line)) {
+                        continue;
+                    }
+
+                    sink.next(line); // 推送数据
+                    Thread.sleep(100);  // 可选：每次读取后稍作等待，模拟逐步处理
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
+                sink.complete();  // 结束流
+            } catch (Exception e) {
+                sink.error(e);  // 出现异常时推送错误
             }
-        };
-
-
-        // 设置响应头
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Content-Type", "text/event-stream"); // 使用 text/event-stream
-        return new ResponseEntity<>(streamingResponseBody, headers, HttpStatus.OK);
+        });
     }
+
+    @GetMapping(value = "/fluxStream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<ServerSentEvent<String>> fluxStream() {
+        return Flux.range(1,10)
+                .map(i ->
+                        ServerSentEvent.builder("ha"+i).id("id"+i).event("event"+i).data("data"+i).build()
+                ).delayElements(Duration.ofMillis(500));
+    }
+
     /**
      * 获取标签
      */

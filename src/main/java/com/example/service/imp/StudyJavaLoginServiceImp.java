@@ -35,6 +35,9 @@ public class StudyJavaLoginServiceImp implements StudyJavaLoginService {
      */
     private static final String CAPTCHA_KEY = "study-java-captcha";
 
+    /**
+     * 验证码过期时间
+     */
     private static final int CAPTCHA_EXPIRE_TIME = 5;
 
     /**
@@ -42,6 +45,9 @@ public class StudyJavaLoginServiceImp implements StudyJavaLoginService {
      */
     private static final String TOKEN_KEY = "study-java-token";
 
+    /**
+     * token 过期时间
+     */
     private static final int TOKEN_EXPIRE_TIME = 24;
 
     @Resource
