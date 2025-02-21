@@ -7,7 +7,7 @@ import lombok.Data;
  * ollama grenerate 接口 入参
  */
 @Data
-public class StudyJavaOllamaGrenerateVo {
+public class StudyJavaOllamaGrenerateVo extends  StudyJavaOllamaBaseVo {
     /**
      * 模型
      */
@@ -22,4 +22,5 @@ public class StudyJavaOllamaGrenerateVo {
      * 流
      */
     private Boolean stream;
+
 }
