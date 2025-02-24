@@ -1,6 +1,10 @@
 package com.example.domain.dto.ollama;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Data;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
@@ -16,9 +20,11 @@ public class StudyJavaOllamaPsDto {
             private long size;
             private String digest;
             private Details details;
+//          @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+//          @JsonDeserialize(using = LocalDateTime.class)  // 使用自定义反序列化器
+//          @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSXXX", timezone = "GMT+8")
             private String expires_at;
             private long size_vram;
-
                 @Data
                 private static class Details {
                     private String parent_model;
