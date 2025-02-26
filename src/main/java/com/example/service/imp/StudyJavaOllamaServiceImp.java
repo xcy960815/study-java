@@ -4,6 +4,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import com.example.domain.dto.ollama.*;
+import com.example.domain.vo.ollama.StudyJavaOllamaChatVo;
 import com.example.domain.vo.ollama.StudyJavaOllamaDeleteVo;
 import com.example.domain.vo.ollama.StudyJavaOllamaGrenerateVo;
 import com.example.domain.vo.ollama.StudyJavaOllamaShowVo;
@@ -91,6 +92,7 @@ public class StudyJavaOllamaServiceImp implements StudyJavaOllamaService {
     private final HttpClient httpClient = HttpClient.newHttpClient();
 
     private final ExecutorService executorService = Executors.newCachedThreadPool();  // 创建线程池
+
     /**
      * 构建请求地址
      * @param url String
@@ -253,6 +255,44 @@ public class StudyJavaOllamaServiceImp implements StudyJavaOllamaService {
                     String line;
                     while ((line = reader.readLine()) != null) {
                         try {
+                            emitter.send(line);
+                        } catch (IOException e) {
+                            emitter.completeWithError(e);
+                            break;
+                        }
+                    }
+                } catch (IOException e) {
+                    log.error("Error reading response stream", e);
+                    emitter.completeWithError(e);
+                } finally {
+                    emitter.complete();
+                }
+            } catch (IOException | InterruptedException e) {
+                log.error("Error during HTTP httpRequest", e);
+                emitter.completeWithError(e);
+            }
+        });
+    }
+
+    /**
+     * 会话接口
+     * @param studyJavaOllamaChatVo StudyJavaOllamaChatVo
+     * @param emitter SseEmitter
+     */
+    public void chat(StudyJavaOllamaChatVo studyJavaOllamaChatVo, SseEmitter emitter) {
+        executorService.submit(() -> {
+            try {
+                HttpRequest httpRequest = generateRequestBuilder(generateRequestUrl(Ollama_Generate_Api))
+                        .POST(studyJavaOllamaChatVo.getBodyPublisher())
+                        .build();
+                HttpResponse<InputStream> response = httpClient.send(httpRequest, BodyHandlers.ofInputStream());
+
+                InputStream responseBodyStream = response.body();
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(responseBodyStream, StandardCharsets.UTF_8))) {
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        try {
+                            log.info("line {}",line);
                             emitter.send(line);
                         } catch (IOException e) {
                             emitter.completeWithError(e);

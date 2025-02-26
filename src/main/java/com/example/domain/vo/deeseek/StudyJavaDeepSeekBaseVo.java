@@ -1,13 +1,17 @@
-package com.example.domain.vo.ollama;
+package com.example.domain.vo.deeseek;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.Getter;
+
 import java.net.http.HttpRequest;
 
-public class StudyJavaOllamaBaseVo {
+
+
+public class StudyJavaDeepSeekBaseVo {
+
     // 静态 ObjectMapper，保证只有一个实例
     @Getter
     private static final ObjectMapper objectMapper = new ObjectMapper();

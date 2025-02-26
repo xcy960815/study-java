@@ -1,9 +1,9 @@
 package com.example.service;
 
 
-import cn.hutool.http.HttpResponse;
-
+import com.example.domain.vo.deeseek.StudyJavaDeepSeekCompletionsVo;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 public interface StudyJavaDeepSeekService {
-        HttpResponse completions();
+        void completions(StudyJavaDeepSeekCompletionsVo studyJavaDeepSeekCompletionsVo, SseEmitter emitter);
 }

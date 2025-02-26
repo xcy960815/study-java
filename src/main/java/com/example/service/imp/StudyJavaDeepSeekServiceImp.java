@@ -1,18 +1,24 @@
 package com.example.service.imp;
 
-import cn.hutool.http.HttpRequest;
-import cn.hutool.http.HttpResponse;
-import com.example.domain.vo.StudyJavaDeepSeekVo;
-import com.example.exception.StudyJavaException;
+import com.example.domain.vo.deeseek.StudyJavaDeepSeekCompletionsVo;
 import com.example.service.StudyJavaDeepSeekService;
-import java.util.ArrayList;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import com.example.utils.JsonUtils;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @Slf4j
 @Service
@@ -20,7 +26,7 @@ public class StudyJavaDeepSeekServiceImp implements StudyJavaDeepSeekService {
     /**
      * api key
      */
-    private static final String DEEPSEEK_API_KEY = "Bearer sk-e3cfe3854fb0448f8033ad926d454baa";
+    private static final String DEEPSEEK_API_KEY = "Bearer sk-600e35e6567848e087294a100277980a";
     /**
      * 域名
      */
@@ -31,45 +37,63 @@ public class StudyJavaDeepSeekServiceImp implements StudyJavaDeepSeekService {
     private static final String DEEPSEEK_COMPLETIONS_URL = "/v1/chat/completions";
 
     /**
+     * 超时时间 10 分钟
+     */
+    private static final int DeepSeek_Timeout = 60 * 1000 * 10;
+
+    private final HttpClient httpClient = HttpClient.newHttpClient();
+
+    private final ExecutorService executorService = Executors.newCachedThreadPool();  // 创建线程池
+    /**
      * 构建请求地址
      * @param url String
      * @return String
      */
-    private static String buildRequestUrl(@NonNull String url){
-        return DEEPSEEK_BASE_URL + url;
-    };
-
-
-    @Override
-    public HttpResponse completions() {
-        try {
-            // 创建请求对象
-            StudyJavaDeepSeekVo studyJavaDeepseekVo = new StudyJavaDeepSeekVo();
-
-            studyJavaDeepseekVo.setModel("deepseek-r1:32b");
-
-            List<Map<String, String>> messages = new ArrayList<>();
-
-            messages.add(new HashMap<String, String>() {{
-                put("role", "user");
-                put("content", "你好");
-            }});
-
-            studyJavaDeepseekVo.setMessages(messages);
-
-            studyJavaDeepseekVo.setStream(true);
-
-            // 发送请求，返回 HttpResponse
-            return HttpRequest.post(buildRequestUrl(DEEPSEEK_COMPLETIONS_URL))
-                    .header("Authorization", DEEPSEEK_API_KEY)
-                    .header("Content-Type", "application/json")
-                    .body(JsonUtils.toJson(studyJavaDeepseekVo))
-                    .execute();
-
-        } catch (Exception e) {
-            throw new StudyJavaException("请求失败");
-        }
+    private static URI buildRequestUrl(@NonNull String url){
+        return URI.create(DEEPSEEK_BASE_URL + url);
+    }
+    /**
+     * 构建请求头
+     * @param uri URI
+     * @return Builder
+     */
+    private HttpRequest.Builder generateRequestBuilder(URI uri) {
+        return HttpRequest.newBuilder(uri)
+                .header("Content-Type", "application/json")
+                .header("Authorization", DEEPSEEK_API_KEY)
+                .timeout(Duration.ofSeconds(DeepSeek_Timeout));
     }
 
+    @Override
+    public void completions(StudyJavaDeepSeekCompletionsVo studyJavaDeepSeekCompletionsVo, SseEmitter emitter) {
+        executorService.submit(() -> {
+            try {
+                HttpRequest httpRequest = generateRequestBuilder(buildRequestUrl(DEEPSEEK_COMPLETIONS_URL))
+                        .POST(studyJavaDeepSeekCompletionsVo.getBodyPublisher())
+                        .build();
+                HttpResponse<InputStream> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofInputStream());
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(response.body(), StandardCharsets.UTF_8))) {
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        try {
+                            log.info("line {}",line);
+                            emitter.send(line);
+                        } catch (IOException e) {
+                            emitter.completeWithError(e);
+                            break;
+                        }
+                    }
+                } catch (IOException e) {
+                    log.error("Error reading response stream", e);
+                    emitter.completeWithError(e);
+                } finally {
+                    emitter.complete();
+                }
+            } catch (IOException | InterruptedException e) {
+                log.error("Error during HTTP httpRequest {}", e.getMessage());
+                emitter.completeWithError(e);
+            }
+        });
+    }
 }
 

@@ -25,8 +25,8 @@ public class AuthInterceptorConfig implements WebMvcConfigurer {
             "/vform/test",
             "/vform/test1",
             "/vform/test2",
-            "/ollama/**", //暂时先不给ollama模块添加 token校验
-            "/deepseek/**"
+            "/ollama/**", // 暂时先不给ollama模块添加 token校验
+            "/v1/chat/completions"
     );
 
     @Override

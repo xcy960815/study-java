@@ -1,8 +1,7 @@
 package com.example.controller;
 
+import com.example.domain.vo.ollama.StudyJavaOllamaChatVo;
 import com.example.domain.vo.ollama.StudyJavaOllamaShowVo;
-import com.example.exception.StudyJavaException;
-import com.example.service.DataCallback;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,8 +17,10 @@ import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-
 import java.io.IOException;
+import java.util.ArrayList;
+import com.example.domain.vo.ollama.StudyJavaOllamaChatVo.Message;
+
 
 @Slf4j
 @RestController
@@ -52,6 +53,23 @@ public class StudyJavaOllamaController {
         SseEmitter emitter = new SseEmitter();
         new Thread(() -> {
             studyJavaOllamaService.generateStream(studyJavaOllamaGrenerateVo, emitter);
+        }).start();
+        return emitter;
+    }
+    @PostMapping(value = "/chat", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public SseEmitter chat() {
+//        @Valid @RequestBody StudyJavaOllamaChatVo studyJavaOllamaChatVo
+        StudyJavaOllamaChatVo studyJavaOllamaChatVo = new StudyJavaOllamaChatVo();
+        studyJavaOllamaChatVo.setModel("deepseek-r1:14b");
+        studyJavaOllamaChatVo.setStream(true);
+        studyJavaOllamaChatVo.setMessages(new ArrayList<>());
+        Message message = new Message();
+        message.setRole("user");
+        message.setContent("天为什么是蓝色的？");
+        studyJavaOllamaChatVo.getMessages().add(message);
+        SseEmitter emitter = new SseEmitter();
+        new Thread(() -> {
+            studyJavaOllamaService.chat(studyJavaOllamaChatVo, emitter);
         }).start();
         return emitter;
     }
