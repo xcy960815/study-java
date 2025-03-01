@@ -12,7 +12,6 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
-import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import lombok.NonNull;
@@ -26,7 +25,7 @@ public class StudyJavaDeepSeekServiceImp implements StudyJavaDeepSeekService {
     /**
      * api key
      */
-    private static final String DEEPSEEK_API_KEY = "Bearer sk-600e35e6567848e087294a100277980a";
+    private static final String DEEPSEEK_API_KEY = "Bearer sk-7f020ffc42704dd58598a8865f149728";
     /**
      * 域名
      */
@@ -41,9 +40,16 @@ public class StudyJavaDeepSeekServiceImp implements StudyJavaDeepSeekService {
      */
     private static final int DeepSeek_Timeout = 60 * 1000 * 10;
 
+    /**
+     * http 客户端
+     */
     private final HttpClient httpClient = HttpClient.newHttpClient();
 
-    private final ExecutorService executorService = Executors.newCachedThreadPool();  // 创建线程池
+    /**
+     * 线程池
+     */
+    private final ExecutorService executorService = Executors.newCachedThreadPool();
+
     /**
      * 构建请求地址
      * @param url String
@@ -76,7 +82,6 @@ public class StudyJavaDeepSeekServiceImp implements StudyJavaDeepSeekService {
                     String line;
                     while ((line = reader.readLine()) != null) {
                         try {
-                            log.info("line {}",line);
                             emitter.send(line);
                         } catch (IOException e) {
                             emitter.completeWithError(e);
@@ -84,7 +89,7 @@ public class StudyJavaDeepSeekServiceImp implements StudyJavaDeepSeekService {
                         }
                     }
                 } catch (IOException e) {
-                    log.error("Error reading response stream", e);
+                    log.error("Error reading response stream {}", e.getMessage());
                     emitter.completeWithError(e);
                 } finally {
                     emitter.complete();

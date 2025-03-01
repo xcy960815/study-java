@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.ArrayList;
@@ -25,18 +26,9 @@ public class StudyJavaDeepSeekController {
     private StudyJavaDeepSeekService studyJavaDeepSeekService;
 
     @PostMapping(value = "/v1/chat/completions",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public SseEmitter completions( ) {
-        StudyJavaDeepSeekCompletionsVo studyJavaDeepSeekCompletionsVo = new StudyJavaDeepSeekCompletionsVo();
-        studyJavaDeepSeekCompletionsVo.setModel("deepseek-r1:32b");
-        studyJavaDeepSeekCompletionsVo.setMessages(new ArrayList<>());
-        studyJavaDeepSeekCompletionsVo.getMessages().add(new HashMap<>() {{
-            put("role", "user");
-            put("content", "你好");
-        }});
+    public ResponseBodyEmitter completions(@RequestBody StudyJavaDeepSeekCompletionsVo studyJavaDeepSeekCompletionsVo ) {
         SseEmitter emitter = new SseEmitter();
-        new Thread(() -> {
-            studyJavaDeepSeekService.completions(studyJavaDeepSeekCompletionsVo, emitter);
-        }).start();
+        new Thread(() -> studyJavaDeepSeekService.completions(studyJavaDeepSeekCompletionsVo, emitter)).start();
         return emitter;
     }
 }

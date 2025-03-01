@@ -251,6 +251,7 @@ public class StudyJavaOllamaServiceImp implements StudyJavaOllamaService {
                         .build();
                 HttpResponse<InputStream> response = httpClient.send(httpRequest, BodyHandlers.ofInputStream());
                 InputStream responseBodyStream = response.body();
+                int statusCode = response.statusCode(); // TODO
                 try (BufferedReader reader = new BufferedReader(new InputStreamReader(responseBodyStream, StandardCharsets.UTF_8))) {
                     String line;
                     while ((line = reader.readLine()) != null) {
