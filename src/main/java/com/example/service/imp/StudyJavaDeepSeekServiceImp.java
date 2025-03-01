@@ -1,6 +1,9 @@
 package com.example.service.imp;
 
+import com.example.domain.dto.deepseek.StudyJavaDeepSeekModelsDto;
+import com.example.domain.dto.ollama.StudyJavaOllamaModelsDto;
 import com.example.domain.vo.deeseek.StudyJavaDeepSeekCompletionsVo;
+import com.example.exception.StudyJavaException;
 import com.example.service.StudyJavaDeepSeekService;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,6 +17,8 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,7 +30,7 @@ public class StudyJavaDeepSeekServiceImp implements StudyJavaDeepSeekService {
     /**
      * api key
      */
-    private static final String DEEPSEEK_API_KEY = "Bearer sk-7f020ffc42704dd58598a8865f149728";
+    private static final String DEEPSEEK_API_KEY = "Bearer sk-1557b40ba18a42eea27ddeb8a2039413";
     /**
      * 域名
      */
@@ -34,6 +39,12 @@ public class StudyJavaDeepSeekServiceImp implements StudyJavaDeepSeekService {
      * completions 接口地址
      */
     private static final String DEEPSEEK_COMPLETIONS_URL = "/v1/chat/completions";
+
+
+    /**
+     * models
+     */
+    private static final String DEEPSEEK_MODELS_URL = "/v1/models";
 
     /**
      * 超时时间 10 分钟
@@ -82,6 +93,7 @@ public class StudyJavaDeepSeekServiceImp implements StudyJavaDeepSeekService {
                     String line;
                     while ((line = reader.readLine()) != null) {
                         try {
+                            log.info("line {}",line);
                             emitter.send(line);
                         } catch (IOException e) {
                             emitter.completeWithError(e);
@@ -99,6 +111,26 @@ public class StudyJavaDeepSeekServiceImp implements StudyJavaDeepSeekService {
                 emitter.completeWithError(e);
             }
         });
+    }
+
+    /**
+     * 获取当前api-key所对应的模型
+     * @return StudyJavaDeepSeekModelsDto
+     */
+    @Override
+    public StudyJavaDeepSeekModelsDto models() throws IOException, InterruptedException {
+        HttpRequest httpRequest = generateRequestBuilder(buildRequestUrl(DEEPSEEK_MODELS_URL))
+                .GET()
+                .build();
+        HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+        log.info("状态码 {}",response.statusCode());
+        log.info("响应体 {}",response.body());
+        if(response.statusCode() == 200) {
+            ObjectMapper objectMapper = new ObjectMapper();
+            return objectMapper.readValue(response.body(), StudyJavaDeepSeekModelsDto.class);
+        } else {
+            throw new StudyJavaException("获取模型失败");
+        }
     }
 }
 

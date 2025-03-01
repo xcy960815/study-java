@@ -124,7 +124,6 @@ public class StudyJavaOllamaServiceImp implements StudyJavaOllamaService {
         // 发送请求并获取响应
         HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
         if (response.statusCode() == 200) {
-            // 假设你用某个库将 JSON 字符串转换为对象（比如 Jackson 或 Gson）
             ObjectMapper objectMapper = new ObjectMapper();
             return objectMapper.readValue(response.body(), StudyJavaOllamaModelsDto.class);
         } else {
