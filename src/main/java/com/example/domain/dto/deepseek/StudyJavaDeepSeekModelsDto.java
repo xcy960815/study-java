@@ -1,6 +1,6 @@
 package com.example.domain.dto.deepseek;
 
-import com.example.domain.dto.ollama.StudyJavaOllamaModelsDto;
+//import com.example.domain.dto.ollama.StudyJavaOllamaModelsDto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
@@ -9,7 +9,7 @@ import java.util.List;
 @Data
 public class StudyJavaDeepSeekModelsDto {
     private String object;
-    private List<StudyJavaOllamaModelsDto.Model> data;
+    private List<Model> data;
 
     @Data
     public static class Model {

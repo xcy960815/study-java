@@ -1,7 +1,6 @@
 package com.example.service.imp;
 
 import com.example.domain.dto.deepseek.StudyJavaDeepSeekModelsDto;
-import com.example.domain.dto.ollama.StudyJavaOllamaModelsDto;
 import com.example.domain.vo.deeseek.StudyJavaDeepSeekCompletionsVo;
 import com.example.exception.StudyJavaException;
 import com.example.service.StudyJavaDeepSeekService;
@@ -17,7 +16,6 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +28,7 @@ public class StudyJavaDeepSeekServiceImp implements StudyJavaDeepSeekService {
     /**
      * api key
      */
-    private static final String DEEPSEEK_API_KEY = "Bearer sk-1557b40ba18a42eea27ddeb8a2039413";
+    private static final String DEEPSEEK_API_KEY = "Bearer sk-d6824f77802e49d7bba8f34ef4dffa44";
     /**
      * 域名
      */
@@ -123,7 +121,6 @@ public class StudyJavaDeepSeekServiceImp implements StudyJavaDeepSeekService {
                 .GET()
                 .build();
         HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
-        log.info("状态码 {}",response.statusCode());
         log.info("响应体 {}",response.body());
         if(response.statusCode() == 200) {
             ObjectMapper objectMapper = new ObjectMapper();
