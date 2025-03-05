@@ -3,6 +3,7 @@ package com.example.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.domain.dto.StudyJavaUserDto;
 import com.example.domain.vo.StudyJavaAdminUserVo;
 import com.example.domain.dto.StudyJavaAdminUserDto;
 import com.example.exception.StudyJavaException;
@@ -17,7 +18,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping ("/adminUser")
-public class StudyJavaAdminUserController {
+public class StudyJavaAdminUserController extends BaseController {
     @Resource
     StudyJavaAdminUserService studyJavaAdminUserService;
 
@@ -25,17 +26,10 @@ public class StudyJavaAdminUserController {
     public ResponseResult<Map<String, Object>> getAdminUserList(
             @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
             @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
-            @ModelAttribute("studyJavaAdminUser") StudyJavaAdminUserVo  studyJavaAdminUser
+            @ModelAttribute("studyJavaAdminUser") StudyJavaAdminUserVo  studyJavaAdminUserVo
     ) {
-        Page<StudyJavaAdminUserVo> adminUserPage = new Page<>(pageNum, pageSize);
-
-        IPage<StudyJavaAdminUserDto> userPage = studyJavaAdminUserService.getAdminUserList(adminUserPage, studyJavaAdminUser);
-        // 返回分页数据和总条数
-        Map<String, Object> map = new HashMap<>();
-        map.put("message","success");
-        map.put("data", userPage.getRecords());
-        map.put("total", userPage.getTotal());
-        return ResponseGenerator.generateSuccessResult(map);
+        IPage<StudyJavaAdminUserDto> adminUserPage = studyJavaAdminUserService.getAdminUserList(startPage(pageNum, pageSize), studyJavaAdminUserVo);
+        return  ResponseGenerator.generateSuccessResult(getPageData(adminUserPage));
     }
 
     @PostMapping("/updateUser")

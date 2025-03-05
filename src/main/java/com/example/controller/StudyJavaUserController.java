@@ -20,16 +20,32 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-
 @Slf4j
 @RestController
 @RequestMapping("/user")
-public class StudyJavaUserController {
+public class StudyJavaUserController extends BaseController {
 
     @Resource
     private JwtTokenComponent jwtTokenComponent;
     @Resource
     private StudyJavaUserService studyJavaUserService;
+
+    /**
+     * 获取用户列表
+     * @param pageSize int
+     * @param pageNum int
+     * @param studyJavaUser StudyJavaUserVo
+     * @return ResponseResult<Map<String,Object>>
+     */
+    @GetMapping("/getUserList")
+    public ResponseResult<Map<String,Object>> getUserList(
+            @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
+            @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
+            @ModelAttribute("studyJavaUser") StudyJavaUserVo  studyJavaUser
+    ) {
+        IPage<StudyJavaUserDto> userPage = studyJavaUserService.getUserList(startPage(pageNum, pageSize), studyJavaUser);
+        return ResponseGenerator.generateSuccessResult(getPageData(userPage));
+    }
 
     /**
      * 获取用户信息
@@ -51,27 +67,27 @@ public class StudyJavaUserController {
     // RequestParam 通常用于获取单个参数
     // ModelAttribute 通常用于获取多个参数
 
-    /**
-     * 获取用户列表
-     * @param pageSize int
-     * @param pageNum int
-     * @param studyJavaUser StudyJavaUserVo
-     * @return ResponseResult<Map<String,Object>>
-     */
-    @GetMapping("/getUserList")
-    public ResponseResult<Map<String,Object>> getUserList(
-            @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
-            @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
-            @ModelAttribute("studyJavaUser") StudyJavaUserVo  studyJavaUser
-    ) {
-        Page<StudyJavaUserVo> page = new Page<>(pageNum, pageSize);
-        IPage<StudyJavaUserDto> userPage = studyJavaUserService.getUserList(page, studyJavaUser);
-        // 返回分页数据和总条数
-        Map<String,Object> map = new HashMap<>();
-        map.put("data",userPage.getRecords());
-        map.put("total",userPage.getTotal());
-        return ResponseGenerator.generateSuccessResult(map);
-    }
+//    /**
+//     * 获取用户列表
+//     * @param pageSize int
+//     * @param pageNum int
+//     * @param studyJavaUser StudyJavaUserVo
+//     * @return ResponseResult<Map<String,Object>>
+//     */
+//    @GetMapping("/getUserList")
+//    public ResponseResult<Map<String,Object>> getUserList(
+//            @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
+//            @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
+//            @ModelAttribute("studyJavaUser") StudyJavaUserVo  studyJavaUser
+//    ) {
+//        Page<StudyJavaUserVo> page = new Page<>(pageNum, pageSize);
+//        IPage<StudyJavaUserDto> userPage = studyJavaUserService.getUserList(page, studyJavaUser);
+//        // 返回分页数据和总条数
+//        Map<String,Object> map = new HashMap<>();
+//        map.put("data",userPage.getRecords());
+//        map.put("total",userPage.getTotal());
+//        return ResponseGenerator.generateSuccessResult(map);
+//    }
 
     /**
      * 更新用户

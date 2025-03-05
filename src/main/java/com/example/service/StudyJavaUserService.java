@@ -2,10 +2,8 @@ package com.example.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.example.domain.dao.StudyJavaUserDao;
 import com.example.domain.dto.StudyJavaUserDto;
 import com.example.domain.vo.StudyJavaUserVo;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -21,17 +19,17 @@ public interface StudyJavaUserService {
     /**
      * 更新用户
      */
-    int updateUserInfo(StudyJavaUserVo studyJavaUser);
+    void updateUserInfo(StudyJavaUserVo studyJavaUser);
 
     String updateUserAvatar(String userId,MultipartFile file) throws IOException;
     /**
      * 添加用户
      */
-    int insertUserInfo(StudyJavaUserVo studyJavaUser);
+    void insertUserInfo(StudyJavaUserVo studyJavaUser);
     /**
      * 删除用户
      */
-    int deleteUserInfo(StudyJavaUserVo studyJavaUser);
+    void deleteUserInfo(StudyJavaUserVo studyJavaUser);
 
 
     String generateBase64Image() throws IOException;

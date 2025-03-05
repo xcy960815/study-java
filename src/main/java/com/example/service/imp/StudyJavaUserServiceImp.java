@@ -72,8 +72,8 @@ public class StudyJavaUserServiceImp implements StudyJavaUserService {
         return studyJavaUserDto;
     };
     @Override
-    public int updateUserInfo(StudyJavaUserVo studyJavaUser) {
-        return studyJavaUserMapper.updateUserInfo(studyJavaUser);
+    public void updateUserInfo(StudyJavaUserVo studyJavaUser) {
+        studyJavaUserMapper.updateUserInfo(studyJavaUser);
     }
 
     @Override
@@ -95,26 +95,26 @@ public class StudyJavaUserServiceImp implements StudyJavaUserService {
 
     /**
      * 创建一条数据
+     *
      * @param studyJavaUser StudyJavaUserVo
-     * @return int
      */
     @Override
-    public int insertUserInfo(StudyJavaUserVo studyJavaUser) {
+    public void insertUserInfo(StudyJavaUserVo studyJavaUser) {
         studyJavaUser.setIsDeleted(0);
         studyJavaUser.setLockedFlag(0);
         Date createTime = new Date();
         studyJavaUser.setCreateTime(createTime);
-        return studyJavaUserMapper.insertUserInfo(studyJavaUser);
+        studyJavaUserMapper.insertUserInfo(studyJavaUser);
     }
 
     /**
      * 删除用户
+     *
      * @param studyJavaUser StudyJavaUserVo
-     * @return int
      */
     @Override
-    public int deleteUserInfo(StudyJavaUserVo studyJavaUser) {
-        return studyJavaUserMapper.deleteUserInfo(studyJavaUser);
+    public void deleteUserInfo(StudyJavaUserVo studyJavaUser) {
+        studyJavaUserMapper.deleteUserInfo(studyJavaUser);
     }
 
     // 在 Service 实现类中抛出 IOException
