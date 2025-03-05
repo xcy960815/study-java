@@ -16,8 +16,6 @@ spring:
 
 
 mybatis-plus:
+  mapper-locations: classpath*:mapper/*.xml
   configuration:
-    use-deprecated-executor: false
-  global-config:
-    db-config:
-      id-type: auto
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

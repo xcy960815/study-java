@@ -25,6 +25,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/user")
 public class StudyJavaUserController {
+
     @Resource
     private JwtTokenComponent jwtTokenComponent;
     @Resource
