@@ -18,7 +18,7 @@ public class StudyJavaGoodsCategoryController extends BaseController {
     @Resource
     private StudyJavaGoodsCategoryService studyJavaGoodsCategoryService;
 
-    @GetMapping("/getGoodsCategoryList")
+    @GetMapping("/list")
     public ResponseResult<Map<String,Object>> getGoodsCategoryList(
             @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
             @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,

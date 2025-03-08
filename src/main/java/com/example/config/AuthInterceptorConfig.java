@@ -17,15 +17,12 @@ public class AuthInterceptorConfig implements WebMvcConfigurer {
     @Resource
     private AuthInterceptorComponent authInterceptorComponent;
 
-
     // 不需要拦截的路径列表
     private static final List<String> EXCLUDE_PATHS = Arrays.asList(
             "/login",
             "/captcha",
-            "/vform/test",
-            "/vform/test1",
-            "/vform/test2",
-            "/ollama/**", // 暂时先不给ollama模块添加 token校验
+            "/vform/**",
+            "/ollama/**",
             "/deepseek/**",
             "/v1/chat/completions"
     );
