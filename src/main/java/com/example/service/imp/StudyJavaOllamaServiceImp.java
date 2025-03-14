@@ -242,6 +242,7 @@ public class StudyJavaOllamaServiceImp implements StudyJavaOllamaService {
      * @param studyJavaOllamaGrenerateVo StudyJavaOllamaGrenerateVo
      * @param emitter SseEmitter
      */
+    @Override
     public void generateStream(StudyJavaOllamaGrenerateVo studyJavaOllamaGrenerateVo, SseEmitter emitter) {
         executorService.submit(() -> {
             try {
@@ -279,6 +280,7 @@ public class StudyJavaOllamaServiceImp implements StudyJavaOllamaService {
      * @param studyJavaOllamaChatVo StudyJavaOllamaChatVo
      * @param emitter SseEmitter
      */
+    @Override
     public void chat(StudyJavaOllamaChatVo studyJavaOllamaChatVo, SseEmitter emitter) {
         executorService.submit(() -> {
             try {

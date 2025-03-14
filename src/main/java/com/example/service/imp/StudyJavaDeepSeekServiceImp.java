@@ -1,5 +1,6 @@
 package com.example.service.imp;
 
+import com.example.config.DeepSeekConfig;
 import com.example.domain.dto.deepseek.StudyJavaDeepSeekModelsDto;
 import com.example.domain.vo.deeseek.StudyJavaDeepSeekCompletionsVo;
 import com.example.exception.StudyJavaException;
@@ -19,12 +20,16 @@ import java.util.concurrent.Executors;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @Slf4j
 @Service
 public class StudyJavaDeepSeekServiceImp implements StudyJavaDeepSeekService {
+    @Autowired
+    private  DeepSeekConfig deepSeekConfig;
+
     /**
      * api key
      */
@@ -73,9 +78,11 @@ public class StudyJavaDeepSeekServiceImp implements StudyJavaDeepSeekService {
      * @return Builder
      */
     private HttpRequest.Builder generateRequestBuilder(URI uri) {
+        log.info("deepSeek ApiKey {}",deepSeekConfig.getApiKey());
+        String Authorization = String.format("Bearer %s", deepSeekConfig.getApiKey());
         return HttpRequest.newBuilder(uri)
                 .header("Content-Type", "application/json")
-                .header("Authorization", DEEPSEEK_API_KEY)
+                .header("Authorization", Authorization)
                 .timeout(Duration.ofSeconds(DeepSeek_Timeout));
     }
 
@@ -128,6 +135,14 @@ public class StudyJavaDeepSeekServiceImp implements StudyJavaDeepSeekService {
         } else {
             throw new StudyJavaException("获取模型失败");
         }
+    }
+
+    public DeepSeekConfig getDeepSeekConfig() {
+        return deepSeekConfig;
+    }
+
+    public void setDeepSeekConfig(DeepSeekConfig deepSeekConfig) {
+        this.deepSeekConfig = deepSeekConfig;
     }
 }
 
