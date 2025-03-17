@@ -56,21 +56,10 @@ public class StudyJavaOllamaController {
         }).start();
         return emitter;
     }
-    @PostMapping(value = "/chat", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public SseEmitter chat() {
-//        @Valid @RequestBody StudyJavaOllamaChatVo studyJavaOllamaChatVo
-        StudyJavaOllamaChatVo studyJavaOllamaChatVo = new StudyJavaOllamaChatVo();
-        studyJavaOllamaChatVo.setModel("deepseek-r1:14b");
-        studyJavaOllamaChatVo.setStream(true);
-        studyJavaOllamaChatVo.setMessages(new ArrayList<>());
-        Message message = new Message();
-        message.setRole("user");
-        message.setContent("天为什么是蓝色的？");
-        studyJavaOllamaChatVo.getMessages().add(message);
+    @PostMapping(value = "/completions", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public SseEmitter completions( @Valid @RequestBody StudyJavaOllamaChatVo studyJavaOllamaChatVo) {
         SseEmitter emitter = new SseEmitter();
-        new Thread(() -> {
-            studyJavaOllamaService.chat(studyJavaOllamaChatVo, emitter);
-        }).start();
+        new Thread(() -> studyJavaOllamaService.completions(studyJavaOllamaChatVo, emitter)).start();
         return emitter;
     }
     /**

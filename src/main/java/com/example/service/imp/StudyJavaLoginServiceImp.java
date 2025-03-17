@@ -125,7 +125,7 @@ public class StudyJavaLoginServiceImp implements StudyJavaLoginService {
      * @throws IOException
      */
     public String getCaptcha() throws IOException {
-        long startTime = System.nanoTime(); // 获取开始时间
+        long startTime = System.currentTimeMillis(); // 获取开始时间(毫秒)
         // 生成验证码文本
         String captchaText = kaptchaProducer.createText();
         redisComponent.setWithExpire(CAPTCHA_KEY, captchaText,CAPTCHA_EXPIRE_TIME, TimeUnit.MINUTES);
@@ -133,8 +133,9 @@ public class StudyJavaLoginServiceImp implements StudyJavaLoginService {
         // 将验证码图像转换为 Base64
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         ImageIO.write(captchaImage, "jpg", byteArrayOutputStream);
-        long endTime = System.nanoTime(); // 获取结束时间
-        log.info("生成验证码耗时 {}",  (endTime - startTime) / 1_000_000.0 + " ms"); // 纳秒转毫秒
+        long endTime = System.currentTimeMillis(); // 获取结束时间(毫秒)
+        // 毫秒转秒 并保留2位小数
+        log.info("生成验证码耗时 {}",String.format("%.2f", (endTime - startTime) / 1000.0) + "秒");
         return  "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(byteArrayOutputStream.toByteArray());
     }
 }

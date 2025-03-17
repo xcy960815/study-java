@@ -252,6 +252,7 @@ public class StudyJavaOllamaServiceImp implements StudyJavaOllamaService {
                 HttpResponse<InputStream> response = httpClient.send(httpRequest, BodyHandlers.ofInputStream());
                 InputStream responseBodyStream = response.body();
                 int statusCode = response.statusCode(); // TODO
+                log.info("statusCode {}",statusCode);
                 try (BufferedReader reader = new BufferedReader(new InputStreamReader(responseBodyStream, StandardCharsets.UTF_8))) {
                     String line;
                     while ((line = reader.readLine()) != null) {
@@ -281,37 +282,72 @@ public class StudyJavaOllamaServiceImp implements StudyJavaOllamaService {
      * @param emitter SseEmitter
      */
     @Override
-    public void chat(StudyJavaOllamaChatVo studyJavaOllamaChatVo, SseEmitter emitter) {
-        executorService.submit(() -> {
-            try {
-                HttpRequest httpRequest = generateRequestBuilder(generateRequestUrl(Ollama_Generate_Api))
-                        .POST(studyJavaOllamaChatVo.getBodyPublisher())
-                        .build();
-                HttpResponse<InputStream> response = httpClient.send(httpRequest, BodyHandlers.ofInputStream());
+    public void completions(StudyJavaOllamaChatVo studyJavaOllamaChatVo, SseEmitter emitter) {
+//        executorService.submit(() -> {
+//            try {
+//                HttpRequest httpRequest = generateRequestBuilder(generateRequestUrl(Ollama_Completions_Api))
+//                        .POST(studyJavaOllamaChatVo.getBodyPublisher())
+//                        .build();
+//                HttpResponse<InputStream> response = httpClient.send(httpRequest, BodyHandlers.ofInputStream());
+//
+//                InputStream responseBodyStream = response.body();
+//                int statusCode = response.statusCode();
+//                try (BufferedReader reader = new BufferedReader(new InputStreamReader(responseBodyStream, StandardCharsets.UTF_8))) {
+//                    String line;
+//                    while ((line = reader.readLine()) != null) {
+//                        try {
+//                            log.info("line {}",line);
+//                            if(statusCode == 200) {
+//                                emitter.send(line);
+//                            }else if(statusCode == 400) {
+//                                emitter.complete();
+//                                throw new StudyJavaException(line);
+//                            }
+//                        } catch (IOException e) {
+//                            emitter.completeWithError(e);
+//                            break;
+//                        }
+//                    }
+//                } catch (IOException e) {
+//                    log.error("Error reading response stream {}", e.getMessage());
+//                    emitter.completeWithError(e);
+//                } finally {
+//                    emitter.complete();
+//                }
+//            } catch (IOException | InterruptedException e) {
+//                log.error("Error during HTTP httpRequest", e);
+//                emitter.completeWithError(e);
+//            }
+//        });
+        try {
+            HttpRequest httpRequest = generateRequestBuilder(generateRequestUrl(Ollama_Completions_Api))
+                    .POST(studyJavaOllamaChatVo.getBodyPublisher())
+                    .build();
+            HttpResponse<InputStream> response = httpClient.send(httpRequest, BodyHandlers.ofInputStream());
+            int statusCode = response.statusCode();
 
-                InputStream responseBodyStream = response.body();
-                try (BufferedReader reader = new BufferedReader(new InputStreamReader(responseBodyStream, StandardCharsets.UTF_8))) {
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        try {
-                            log.info("line {}",line);
-                            emitter.send(line);
-                        } catch (IOException e) {
-                            emitter.completeWithError(e);
-                            break;
-                        }
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(response.body(), StandardCharsets.UTF_8))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    log.info("line: {}", line);
+                    if (statusCode == 200) {
+                        emitter.send(line);
+                    } else {
+//                        TODO未来要细化错误类型
+                        throw new StudyJavaException(line);
                     }
-                } catch (IOException e) {
-                    log.error("Error reading response stream", e);
-                    emitter.completeWithError(e);
-                } finally {
-                    emitter.complete();
                 }
-            } catch (IOException | InterruptedException e) {
-                log.error("Error during HTTP httpRequest", e);
+            } catch (IOException e) {
+                log.error("Error reading response stream: {}", e.getMessage());
                 emitter.completeWithError(e);
+                return;
             }
-        });
+
+            emitter.complete();
+        } catch (IOException | InterruptedException e) {
+            log.error("Error during HTTP request: {}", e.getMessage(), e);
+            emitter.completeWithError(e);
+        }
     }
 ////    TODO 拉取模型 提示 404 page not found
 //    public void pull() {

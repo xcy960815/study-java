@@ -11,7 +11,7 @@ import java.io.IOException;
 public interface StudyJavaOllamaService {
         StudyJavaOllamaGenerateDto generate(StudyJavaOllamaGrenerateVo studyJavaOllamaGrenerateVo) throws IOException, InterruptedException;
         void generateStream(StudyJavaOllamaGrenerateVo studyJavaOllamaGrenerateVo, SseEmitter emitter);
-        void chat(StudyJavaOllamaChatVo studyJavaOllamaChatVo, SseEmitter emitter);
+        void completions(StudyJavaOllamaChatVo studyJavaOllamaChatVo, SseEmitter emitter);
         StudyJavaOllamaModelsDto models() throws IOException, InterruptedException;
         StudyJavaOllamaVersionDto version() throws IOException, InterruptedException;
         StudyJavaOllamaTagsDto tags() throws IOException, InterruptedException;
