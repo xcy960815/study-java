@@ -51,9 +51,7 @@ public class StudyJavaOllamaController {
     @PostMapping(value = "/generateStream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter generateStream(@Valid @RequestBody StudyJavaOllamaGrenerateVo studyJavaOllamaGrenerateVo) {
         SseEmitter emitter = new SseEmitter();
-        new Thread(() -> {
-            studyJavaOllamaService.generateStream(studyJavaOllamaGrenerateVo, emitter);
-        }).start();
+        new Thread(() -> studyJavaOllamaService.generateStream(studyJavaOllamaGrenerateVo, emitter)).start();
         return emitter;
     }
     @PostMapping(value = "/completions", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
