@@ -1,14 +1,11 @@
 package com.example.controller;
 
-import com.example.domain.vo.ollama.StudyJavaOllamaChatVo;
-import com.example.domain.vo.ollama.StudyJavaOllamaShowVo;
+import com.example.domain.vo.ollama.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.example.domain.dto.ollama.*;
-import com.example.domain.vo.ollama.StudyJavaOllamaDeleteVo;
-import com.example.domain.vo.ollama.StudyJavaOllamaGrenerateVo;
 import com.example.service.StudyJavaOllamaService;
 import com.example.utils.ResponseGenerator;
 import com.example.utils.ResponseResult;
@@ -18,8 +15,6 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import java.io.IOException;
-import java.util.ArrayList;
-import com.example.domain.vo.ollama.StudyJavaOllamaChatVo.Message;
 
 
 @Slf4j
@@ -42,7 +37,6 @@ public class StudyJavaOllamaController {
             throw new RuntimeException(e);
         }
     }
-
     /**
      * generateStream
      * @param studyJavaOllamaGrenerateVo StudyJavaOllamaGrenerateVo
@@ -54,10 +48,11 @@ public class StudyJavaOllamaController {
         new Thread(() -> studyJavaOllamaService.generateStream(studyJavaOllamaGrenerateVo, emitter)).start();
         return emitter;
     }
+
     @PostMapping(value = "/completions", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public SseEmitter completions( @Valid @RequestBody StudyJavaOllamaChatVo studyJavaOllamaChatVo) {
+    public SseEmitter completions( @Valid @RequestBody StudyJavaOllamaCompletionsVo studyJavaOllamaCompletionsVo) {
         SseEmitter emitter = new SseEmitter();
-        new Thread(() -> studyJavaOllamaService.completions(studyJavaOllamaChatVo, emitter)).start();
+        new Thread(() -> studyJavaOllamaService.completions(studyJavaOllamaCompletionsVo, emitter)).start();
         return emitter;
     }
     /**
@@ -105,7 +100,8 @@ public class StudyJavaOllamaController {
     @DeleteMapping("/delete")
     public ResponseResult<Boolean> delete(@RequestBody StudyJavaOllamaDeleteVo studyJavaOllamaDeleteVo) {
         try {
-            return ResponseGenerator.generateSuccessResult(studyJavaOllamaService.delete(studyJavaOllamaDeleteVo));
+            studyJavaOllamaService.delete(studyJavaOllamaDeleteVo);
+            return ResponseGenerator.generateSuccessResult();
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -125,9 +121,9 @@ public class StudyJavaOllamaController {
     }
 
     @PostMapping("/pull")
-    public void pull() {
-//        studyJavaOllamaService.pull();
-//        return ResponseGenerator.generateSuccessResult(studyJavaOllamaService.ps());
+    public void pull(StudyJavaOllamaPullVo studyJavaOllamaPullVo) {
+        studyJavaOllamaService.pull(studyJavaOllamaPullVo);
+//         ResponseGenerator.generateSuccessResult();
     }
 
     @PostMapping("/show")

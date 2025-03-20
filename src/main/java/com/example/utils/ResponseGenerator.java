@@ -39,6 +39,19 @@ public class ResponseGenerator {
     }
 
     /**
+     * 生成成功响应
+     * @return ResponseResult
+     */
+    public static <T> ResponseResult<T> generateSuccessResult() {
+        // 创建一个 ResponseResult 对象，指定泛型类型 T
+        ResponseResult<T> responseResult = new ResponseResult<>();
+        responseResult.setCode(SUCCESS_CODE);
+        responseResult.setMessage(SUCCESS_MESSAGE);
+        responseResult.setData(null);
+        return responseResult;
+    }
+
+    /**
      * 生成失败响应
      * message
      * @return ResponseResult

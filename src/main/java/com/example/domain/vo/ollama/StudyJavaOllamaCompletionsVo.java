@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class StudyJavaOllamaChatVo extends StudyJavaOllamaBaseVo {
+public class StudyJavaOllamaCompletionsVo extends StudyJavaOllamaBaseVo {
     private String model;
     private List<Message> messages;
     private Boolean stream;

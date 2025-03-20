@@ -4,10 +4,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import com.example.domain.dto.ollama.*;
-import com.example.domain.vo.ollama.StudyJavaOllamaChatVo;
-import com.example.domain.vo.ollama.StudyJavaOllamaDeleteVo;
-import com.example.domain.vo.ollama.StudyJavaOllamaGrenerateVo;
-import com.example.domain.vo.ollama.StudyJavaOllamaShowVo;
+import com.example.domain.vo.ollama.*;
 import com.example.exception.StudyJavaException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -207,16 +204,13 @@ public class StudyJavaOllamaServiceImp implements StudyJavaOllamaService {
      * @return Boolean
      */
     @Override
-    public Boolean delete(StudyJavaOllamaDeleteVo studyJavaOllamaDeleteVo) throws IOException, InterruptedException {
-//        String requestBody = objectMapper.writeValueAsString(studyJavaOllamaDeleteVo);
+    public void delete(StudyJavaOllamaDeleteVo studyJavaOllamaDeleteVo) throws IOException, InterruptedException {
         HttpRequest httpRequest = generateRequestBuilder(generateRequestUrl(Ollama_Delete_Model_Api))
-                .DELETE()  // 传递请求体
+                .method("DELETE", studyJavaOllamaDeleteVo.getBodyPublisher())
                 .build();
         HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
         log.info("response--response {}",response);
-        if(response.statusCode() == 200) {
-            return true;
-        } else {
+        if(response.statusCode() != 200) {
             throw new StudyJavaException("请求失败");
         }
     }
@@ -244,52 +238,54 @@ public class StudyJavaOllamaServiceImp implements StudyJavaOllamaService {
      */
     @Override
     public void generateStream(StudyJavaOllamaGrenerateVo studyJavaOllamaGrenerateVo, SseEmitter emitter) {
-        executorService.submit(() -> {
+        executorService.execute(() -> {
+            HttpRequest httpRequest = generateRequestBuilder(generateRequestUrl(Ollama_Generate_Api))
+                    .POST(studyJavaOllamaGrenerateVo.getBodyPublisher())
+                    .build();
+
             try {
-                HttpRequest httpRequest = generateRequestBuilder(generateRequestUrl(Ollama_Generate_Api))
-                        .POST(studyJavaOllamaGrenerateVo.getBodyPublisher())
-                        .build();
                 HttpResponse<InputStream> response = httpClient.send(httpRequest, BodyHandlers.ofInputStream());
-                InputStream responseBodyStream = response.body();
-                int statusCode = response.statusCode(); // TODO
-                log.info("statusCode {}",statusCode);
-                try (BufferedReader reader = new BufferedReader(new InputStreamReader(responseBodyStream, StandardCharsets.UTF_8))) {
+                int statusCode = response.statusCode();
+
+                if (statusCode != 200) {
+                    emitter.completeWithError(new StudyJavaException("请求失败，状态码：" + statusCode));
+                    return;
+                }
+
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(response.body(), StandardCharsets.UTF_8))) {
                     String line;
                     while ((line = reader.readLine()) != null) {
                         try {
                             emitter.send(line);
                         } catch (IOException e) {
+                            log.error("SSE 发送数据失败", e);
                             emitter.completeWithError(e);
-                            break;
+                            return;
                         }
                     }
-                } catch (IOException e) {
-                    log.error("Error reading response stream", e);
-                    emitter.completeWithError(e);
-                } finally {
-                    emitter.complete();
                 }
+                emitter.complete();
             } catch (IOException | InterruptedException e) {
-                log.error("Error during HTTP httpRequest", e);
+                log.error("HTTP 请求失败", e);
                 emitter.completeWithError(e);
+                Thread.currentThread().interrupt(); // 保持中断状态
             }
         });
     }
 
     /**
      * 会话接口
-     * @param studyJavaOllamaChatVo StudyJavaOllamaChatVo
+     * @param studyJavaOllamaCompletionsVo StudyJavaOllamaCompletionsVo
      * @param emitter SseEmitter
      */
     @Override
-    public void completions(StudyJavaOllamaChatVo studyJavaOllamaChatVo, SseEmitter emitter) {
+    public void completions(StudyJavaOllamaCompletionsVo studyJavaOllamaCompletionsVo, SseEmitter emitter) {
         try {
             HttpRequest httpRequest = generateRequestBuilder(generateRequestUrl(Ollama_Completions_Api))
-                    .POST(studyJavaOllamaChatVo.getBodyPublisher())
+                    .POST(studyJavaOllamaCompletionsVo.getBodyPublisher())
                     .build();
             HttpResponse<InputStream> response = httpClient.send(httpRequest, BodyHandlers.ofInputStream());
             int statusCode = response.statusCode();
-
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(response.body(), StandardCharsets.UTF_8))) {
                 String line;
                 while ((line = reader.readLine()) != null) {
@@ -306,15 +302,14 @@ public class StudyJavaOllamaServiceImp implements StudyJavaOllamaService {
                 emitter.completeWithError(e);
                 return;
             }
-
             emitter.complete();
         } catch (IOException | InterruptedException e) {
-            log.error("Error during HTTP request: {}", e.getMessage(), e);
+            log.error("Error during HTTP request: {}", e.getMessage());
             emitter.completeWithError(e);
         }
     }
-////    TODO 拉取模型 提示 404 page not found
-//    public void pull() {
+//    TODO 拉取模型 提示 404 page not found
+    public void pull (StudyJavaOllamaPullVo studyJavaOllamaPullVo) {
 //        Map<String,String> httpRequestBody = new HashMap<>();
 //        httpRequestBody.put("name","deepseek-r1:32b");
 //        httpRequestBody.put("insecure","true");
@@ -331,5 +326,5 @@ public class StudyJavaOllamaServiceImp implements StudyJavaOllamaService {
 //        } else {
 //            throw new StudyJavaException("请求失败");
 //        }
-//    }
+    }
 }
