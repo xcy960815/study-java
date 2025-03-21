@@ -1,9 +1,11 @@
 package com.example.domain.vo.ollama;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class StudyJavaOllamaCompletionsVo extends StudyJavaOllamaBaseVo {
     private String model;

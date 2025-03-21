@@ -16,5 +16,4 @@ public class StudyJavaException extends RuntimeException {
         super(errorMessage);
         this.errorMessage = errorMessage;
     }
-
 }

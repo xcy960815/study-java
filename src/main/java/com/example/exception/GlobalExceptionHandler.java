@@ -2,18 +2,14 @@ package com.example.exception;
 
 import com.example.utils.ResponseGenerator;
 import com.example.utils.ResponseResult;
-import io.jsonwebtoken.MalformedJwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import jakarta.servlet.http.HttpServletRequest;
-
-import java.util.List;
 
 @Slf4j
 @ControllerAdvice
@@ -26,6 +22,12 @@ public class GlobalExceptionHandler {
 //            return new ResponseEntity<>(response, HttpStatus.);
 //    }
 
+    // 处理 Ai 系列的抛错
+    @ExceptionHandler({StudyJavaAiException.class})
+    public  ResponseEntity<ResponseResult<String>> handleStudyJavaOllamaException(StudyJavaAiException error) {
+//        return new ResponseEntity<>(error.getErrorMessage(),error.getStatusCode());
+        return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
     // 处理自定义错误类
     @ExceptionHandler({StudyJavaException.class})
     public ResponseEntity<ResponseResult<String>> handleStudyJavaException(StudyJavaException e) {
@@ -60,13 +62,11 @@ public class GlobalExceptionHandler {
             errorDetails.append("File: ").append(element.getFileName())
                     .append(", Line: ").append(element.getLineNumber());
         }
-
         // 获取请求 URL 地址
         String requestUrl = request.getRequestURL().toString();
-
         // 构建错误信息
         String errorMessage = "System Error: " + e.getMessage() + ", " +
-                "At: " + errorDetails.toString() + ", " +
+                "At: " + errorDetails + ", " +
                 "Request URL: " + requestUrl;
 
         log.error(errorMessage, e);

@@ -1,24 +1,26 @@
 package com.example.service.imp;
 
 import com.example.config.DeepSeekConfig;
+import com.example.domain.dto.StudyJavaAiErrorDto;
+import com.example.domain.dto.deepseek.StudyJavaDeepSeekBalanceDto;
 import com.example.domain.dto.deepseek.StudyJavaDeepSeekModelsDto;
 import com.example.domain.vo.deeseek.StudyJavaDeepSeekCompletionsVo;
+import com.example.exception.StudyJavaAiException;
 import com.example.exception.StudyJavaException;
+import com.example.service.StudyJavaAiService;
 import com.example.service.StudyJavaDeepSeekService;
-import java.io.BufferedReader;
+
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.nio.charset.StandardCharsets;
 import java.time.Duration;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,14 +28,11 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @Slf4j
 @Service
-public class StudyJavaDeepSeekServiceImp implements StudyJavaDeepSeekService {
+public class StudyJavaDeepSeekServiceImp extends StudyJavaAiService implements StudyJavaDeepSeekService {
+    @Setter
+    @Getter
     @Autowired
     private  DeepSeekConfig deepSeekConfig;
-
-    /**
-     * api key
-     */
-    private static final String DEEPSEEK_API_KEY = "Bearer sk-d6824f77802e49d7bba8f34ef4dffa44";
     /**
      * 域名
      */
@@ -42,12 +41,14 @@ public class StudyJavaDeepSeekServiceImp implements StudyJavaDeepSeekService {
      * completions 接口地址
      */
     private static final String DEEPSEEK_COMPLETIONS_URL = "/v1/chat/completions";
-
-
     /**
      * models
      */
     private static final String DEEPSEEK_MODELS_URL = "/v1/models";
+    /**
+     * 查询余额接口
+     */
+    private static final String DEEPSEEK_BALANCE_URL = "/user/balance";
 
     /**
      * 超时时间 10 分钟
@@ -62,14 +63,16 @@ public class StudyJavaDeepSeekServiceImp implements StudyJavaDeepSeekService {
     /**
      * 线程池
      */
-    private final ExecutorService executorService = Executors.newCachedThreadPool();
+//    private final ExecutorService executorService = Executors.newCachedThreadPool();
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     /**
      * 构建请求地址
      * @param url String
      * @return String
      */
-    private static URI buildRequestUrl(@NonNull String url){
+    private static URI generateRequestUrl(@NonNull String url){
         return URI.create(DEEPSEEK_BASE_URL + url);
     }
     /**
@@ -78,7 +81,6 @@ public class StudyJavaDeepSeekServiceImp implements StudyJavaDeepSeekService {
      * @return Builder
      */
     private HttpRequest.Builder generateRequestBuilder(URI uri) {
-        log.info("deepSeek ApiKey {}",deepSeekConfig.getApiKey());
         String Authorization = String.format("Bearer %s", deepSeekConfig.getApiKey());
         return HttpRequest.newBuilder(uri)
                 .header("Content-Type", "application/json")
@@ -88,34 +90,16 @@ public class StudyJavaDeepSeekServiceImp implements StudyJavaDeepSeekService {
 
     @Override
     public void completions(StudyJavaDeepSeekCompletionsVo studyJavaDeepSeekCompletionsVo, SseEmitter emitter) {
-        executorService.submit(() -> {
-            try {
-                HttpRequest httpRequest = generateRequestBuilder(buildRequestUrl(DEEPSEEK_COMPLETIONS_URL))
-                        .POST(studyJavaDeepSeekCompletionsVo.getBodyPublisher())
-                        .build();
-                HttpResponse<InputStream> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofInputStream());
-                try (BufferedReader reader = new BufferedReader(new InputStreamReader(response.body(), StandardCharsets.UTF_8))) {
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        try {
-                            log.info("line {}",line);
-                            emitter.send(line);
-                        } catch (IOException e) {
-                            emitter.completeWithError(e);
-                            break;
-                        }
-                    }
-                } catch (IOException e) {
-                    log.error("Error reading response stream {}", e.getMessage());
-                    emitter.completeWithError(e);
-                } finally {
-                    emitter.complete();
-                }
-            } catch (IOException | InterruptedException e) {
-                log.error("Error during HTTP httpRequest {}", e.getMessage());
-                emitter.completeWithError(e);
-            }
-        });
+        try {
+            HttpRequest httpRequest = generateRequestBuilder(generateRequestUrl(DEEPSEEK_COMPLETIONS_URL))
+                    .POST(studyJavaDeepSeekCompletionsVo.getBodyPublisher())
+                    .build();
+            HttpResponse<InputStream> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofInputStream());
+            readResponseLines(response,emitter);
+        } catch (IOException | InterruptedException e) {
+            log.error("Error during HTTP request: {}", e.getMessage());
+            emitter.completeWithError(e);
+        }
     }
 
     /**
@@ -124,25 +108,36 @@ public class StudyJavaDeepSeekServiceImp implements StudyJavaDeepSeekService {
      */
     @Override
     public StudyJavaDeepSeekModelsDto models() throws IOException, InterruptedException {
-        HttpRequest httpRequest = generateRequestBuilder(buildRequestUrl(DEEPSEEK_MODELS_URL))
+        HttpRequest httpRequest = generateRequestBuilder(generateRequestUrl(DEEPSEEK_MODELS_URL))
                 .GET()
                 .build();
         HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
-        log.info("响应体 {}",response.body());
         if(response.statusCode() == 200) {
-            ObjectMapper objectMapper = new ObjectMapper();
             return objectMapper.readValue(response.body(), StudyJavaDeepSeekModelsDto.class);
         } else {
-            throw new StudyJavaException("获取模型失败");
+            StudyJavaAiErrorDto studyJavaAiErrorDto = objectMapper.readValue(response.body(), StudyJavaAiErrorDto.class);
+//            throw new StudyJavaAiException(studyJavaAiErrorDto.getError().getCode(), studyJavaAiErrorDto.getError().getMessage());
+            log.error("获取当前api-key所对应的模型失败，失败原因 {}", studyJavaAiErrorDto.getError().getMessage());
+            throw new StudyJavaException(studyJavaAiErrorDto.getError().getMessage());
         }
     }
 
-    public DeepSeekConfig getDeepSeekConfig() {
-        return deepSeekConfig;
-    }
-
-    public void setDeepSeekConfig(DeepSeekConfig deepSeekConfig) {
-        this.deepSeekConfig = deepSeekConfig;
+    /**
+     * 查询余额
+     * @return StudyJavaDeepSeekBalanceDto
+     */
+    public StudyJavaDeepSeekBalanceDto balance() throws IOException, InterruptedException {
+        HttpRequest httpRequest = generateRequestBuilder(generateRequestUrl(DEEPSEEK_BALANCE_URL))
+                .GET()
+                .build();
+        HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+        if (response.statusCode() == 200) {
+            log.info("查询余额 {}",response.body());
+            return objectMapper.readValue(response.body(), StudyJavaDeepSeekBalanceDto.class);
+        } else {
+            StudyJavaAiErrorDto studyJavaAiErrorDto = objectMapper.readValue(response.body(), StudyJavaAiErrorDto.class);
+            throw new StudyJavaAiException(studyJavaAiErrorDto.getError().getCode(), studyJavaAiErrorDto.getError().getMessage());
+        }
     }
 }
 

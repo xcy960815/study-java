@@ -6,6 +6,8 @@ import java.net.http.HttpResponse.BodyHandlers;
 import com.example.domain.dto.ollama.*;
 import com.example.domain.vo.ollama.*;
 import com.example.exception.StudyJavaException;
+//import com.example.exception.StudyJavaAiException;
+import com.example.service.StudyJavaAiService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import com.example.service.StudyJavaOllamaService;
@@ -23,7 +25,7 @@ import java.util.concurrent.Executors;
 
 @Service
 @Slf4j
-public class StudyJavaOllamaServiceImp implements StudyJavaOllamaService {
+public class StudyJavaOllamaServiceImp extends StudyJavaAiService implements StudyJavaOllamaService  {
     /**
      * 端口号
      */
@@ -169,15 +171,12 @@ public class StudyJavaOllamaServiceImp implements StudyJavaOllamaService {
      */
     @Override
     public StudyJavaOllamaPsDto ps() throws IOException, InterruptedException {
-        // 构建请求
         HttpRequest httpRequest = generateRequestBuilder(generateRequestUrl(Ollama_Ps_Api))
                 .GET()
                 .build();
         HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
         if(response.statusCode() == 200) {
-            StudyJavaOllamaPsDto studyJavaOllamaPsDto = objectMapper.readValue(response.body(), StudyJavaOllamaPsDto.class);
-            log.info(String.valueOf(studyJavaOllamaPsDto.getModels().get(0)));
-            return studyJavaOllamaPsDto;
+            return objectMapper.readValue(response.body(), StudyJavaOllamaPsDto.class);
         } else {
             throw new StudyJavaException("请求失败");
         }
@@ -285,24 +284,7 @@ public class StudyJavaOllamaServiceImp implements StudyJavaOllamaService {
                     .POST(studyJavaOllamaCompletionsVo.getBodyPublisher())
                     .build();
             HttpResponse<InputStream> response = httpClient.send(httpRequest, BodyHandlers.ofInputStream());
-            int statusCode = response.statusCode();
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(response.body(), StandardCharsets.UTF_8))) {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    log.info("line: {}", line);
-                    if (statusCode == 200) {
-                        emitter.send(line);
-                    } else {
-//                        TODO未来要细化错误类型
-                        throw new StudyJavaException(line);
-                    }
-                }
-            } catch (IOException e) {
-                log.error("Error reading response stream: {}", e.getMessage());
-                emitter.completeWithError(e);
-                return;
-            }
-            emitter.complete();
+            readResponseLines(response,emitter);
         } catch (IOException | InterruptedException e) {
             log.error("Error during HTTP request: {}", e.getMessage());
             emitter.completeWithError(e);

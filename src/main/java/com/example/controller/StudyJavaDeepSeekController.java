@@ -1,5 +1,6 @@
 package com.example.controller;
 
+import com.example.domain.dto.deepseek.StudyJavaDeepSeekBalanceDto;
 import com.example.domain.dto.deepseek.StudyJavaDeepSeekModelsDto;
 import com.example.domain.vo.deeseek.StudyJavaDeepSeekCompletionsVo;
 import com.example.exception.StudyJavaException;
@@ -34,6 +35,14 @@ public class StudyJavaDeepSeekController {
     public ResponseResult<StudyJavaDeepSeekModelsDto> models() {
         try {
            return ResponseGenerator.generateSuccessResult(studyJavaDeepSeekService.models());
+        } catch (IOException | InterruptedException e) {
+            throw new StudyJavaException(e.getMessage());
+        }
+    }
+    @GetMapping(value = "/balance")
+    public ResponseResult<StudyJavaDeepSeekBalanceDto> balance() {
+        try {
+            return ResponseGenerator.generateSuccessResult(studyJavaDeepSeekService.balance());
         } catch (IOException | InterruptedException e) {
             throw new StudyJavaException(e.getMessage());
         }

@@ -8,6 +8,7 @@ import com.example.mapper.StudyJavaUserMapper;
 import com.example.service.StudyJavaUserService;
 import jakarta.annotation.Resource;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,6 +25,7 @@ import java.util.Base64;
 import java.util.stream.Collectors;
 
 
+@Slf4j
 @Service
 public class StudyJavaUserServiceImp implements StudyJavaUserService {
 
@@ -61,14 +63,17 @@ public class StudyJavaUserServiceImp implements StudyJavaUserService {
         Random random = new Random();
         Integer age = random.nextInt(100);
         studyJavaUserDto.setAge(age);
-        //        try {
-        //            System.out.print(generateBase64Image());
-        //            userInfoDto.setAvatar(generateBase64Image());  // 调用可能抛出 IOException 的方法
-        //        } catch (IOException e) {
-        //            e.printStackTrace();  // 或者记录日志
-        //            // 根据需要处理异常，可以设定一个默认值
-        //            userInfoDto.setAvatar("");  // 设置默认头像
-        //        }
+        try {
+            if(userInfoDao.getAvatar() != null) {
+                studyJavaUserDto.setAvatar(userInfoDao.getAvatar());
+            } else {
+                // 设置默认头像
+                studyJavaUserDto.setAvatar(generateBase64Image());
+            }
+        } catch (IOException e) {
+            log.error("设置默认头像失败 {}",e.getMessage());
+           throw new StudyJavaException("设置默认头像失败" + e.getMessage());
+        }
         return studyJavaUserDto;
     };
     @Override
