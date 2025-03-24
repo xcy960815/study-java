@@ -3,7 +3,7 @@ package com.example.domain.dto;
 import lombok.Data;
 
 @Data
-public class StudyJavaAiErrorDto {
+public class StudyJavaCompletionsErrorDto {
 
     private Error error;
     @Data

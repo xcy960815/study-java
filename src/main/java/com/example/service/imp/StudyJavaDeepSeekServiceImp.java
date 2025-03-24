@@ -1,7 +1,7 @@
 package com.example.service.imp;
 
 import com.example.config.DeepSeekConfig;
-import com.example.domain.dto.StudyJavaAiErrorDto;
+import com.example.domain.dto.StudyJavaCompletionsErrorDto;
 import com.example.domain.dto.deepseek.StudyJavaDeepSeekBalanceDto;
 import com.example.domain.dto.deepseek.StudyJavaDeepSeekModelsDto;
 import com.example.domain.vo.deeseek.StudyJavaDeepSeekCompletionsVo;
@@ -115,10 +115,10 @@ public class StudyJavaDeepSeekServiceImp extends StudyJavaAiService implements S
         if(response.statusCode() == 200) {
             return objectMapper.readValue(response.body(), StudyJavaDeepSeekModelsDto.class);
         } else {
-            StudyJavaAiErrorDto studyJavaAiErrorDto = objectMapper.readValue(response.body(), StudyJavaAiErrorDto.class);
-//            throw new StudyJavaAiException(studyJavaAiErrorDto.getError().getCode(), studyJavaAiErrorDto.getError().getMessage());
-            log.error("获取当前api-key所对应的模型失败，失败原因 {}", studyJavaAiErrorDto.getError().getMessage());
-            throw new StudyJavaException(studyJavaAiErrorDto.getError().getMessage());
+            StudyJavaCompletionsErrorDto studyJavaCompletionsErrorDto = objectMapper.readValue(response.body(), StudyJavaCompletionsErrorDto.class);
+//            throw new StudyJavaAiException(studyJavaCompletionsErrorDto.getError().getCode(), studyJavaCompletionsErrorDto.getError().getMessage());
+            log.error("获取当前api-key所对应的模型失败，失败原因 {}", studyJavaCompletionsErrorDto.getError().getMessage());
+            throw new StudyJavaException(studyJavaCompletionsErrorDto.getError().getMessage());
         }
     }
 
@@ -132,11 +132,10 @@ public class StudyJavaDeepSeekServiceImp extends StudyJavaAiService implements S
                 .build();
         HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
         if (response.statusCode() == 200) {
-            log.info("查询余额 {}",response.body());
             return objectMapper.readValue(response.body(), StudyJavaDeepSeekBalanceDto.class);
         } else {
-            StudyJavaAiErrorDto studyJavaAiErrorDto = objectMapper.readValue(response.body(), StudyJavaAiErrorDto.class);
-            throw new StudyJavaAiException(studyJavaAiErrorDto.getError().getCode(), studyJavaAiErrorDto.getError().getMessage());
+            StudyJavaCompletionsErrorDto studyJavaCompletionsErrorDto = objectMapper.readValue(response.body(), StudyJavaCompletionsErrorDto.class);
+            throw new StudyJavaAiException(studyJavaCompletionsErrorDto.getError().getCode(), studyJavaCompletionsErrorDto.getError().getMessage());
         }
     }
 }
