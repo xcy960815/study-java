@@ -2,10 +2,12 @@ package com.example.domain.vo.ollama;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * ollama grenerate 接口 入参
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class StudyJavaOllamaGrenerateVo extends  StudyJavaOllamaBaseVo {
     /**

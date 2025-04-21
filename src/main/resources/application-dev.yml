@@ -13,10 +13,11 @@ spring:
     redis:
       database: 1
       host: localhost
-      port: 6379
+      port: 6381
       timeout: 1800s # 使用时间格式化
 #      password: "123456"
-
+      ssl:
+        enabled: true
 
 mybatis-plus:
   mapper-locations: classpath*:mapper/*.xml
