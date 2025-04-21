@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  frontend:
+    image: xcy960815/study-java-web:latest
+    container_name: study-frontend
+    ports:
+      - "80:80" # 宿主机80 -> 容器80
+    restart: always
+
+  backend:
+    image: xcy960815/study-java:1.2
+    container_name: study-backend
+    ports:
+      - "8084:8084" # 宿主机8084 -> 容器8084
+    restart: always
