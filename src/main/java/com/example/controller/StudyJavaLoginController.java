@@ -15,20 +15,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 
-
-
-
 @Slf4j
 @RestController
 @Validated
 public class StudyJavaLoginController {
-
     @Resource
     private StudyJavaLoginService studyJavaLoginService;
 
     @PostMapping("/login")
     public ResponseResult<StudyJavaLoginDto> login(@Valid @RequestBody StudyJavaLoginVo studyJavaLoginParams) {
-
         StudyJavaLoginDto loginResult = studyJavaLoginService.login(studyJavaLoginParams);
         return ResponseGenerator.generateSuccessResult(loginResult);
     }
@@ -45,4 +40,4 @@ public class StudyJavaLoginController {
         return ResponseGenerator.generateSuccessResult(null);
     }
 
-};
+}
