@@ -1,6 +1,16 @@
 package com.example.controller;
 
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.example.component.RedisComponent;
+import com.example.domain.dto.StudyJavaAdminUserDto;
+import com.example.domain.dto.StudyJavaUserDto;
+import com.example.domain.vo.StudyJavaAdminUserVo;
+import com.example.domain.vo.StudyJavaUserVo;
+import com.example.service.StudyJavaAdminUserService;
+import com.example.service.StudyJavaUserService;
+import com.example.utils.ResponseGenerator;
+import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -12,8 +22,8 @@ import java.util.Map;
 
 @Slf4j
 @RestController
-@RequestMapping("/vform")
-public class VformController {
+@RequestMapping("/test")
+public class TestController extends BaseController {
 
     @GetMapping("/test")
     public Map<String, Object> test(HttpServletRequest request){
@@ -123,5 +133,23 @@ public class VformController {
         return result;
     }
 
+    @Resource
+    private RedisComponent redisComponent;
+
+    @GetMapping("/redis")
+    public String testRedis(@RequestParam("value") String value) {
+        redisComponent.set("key", value);
+        log.info("redis 存储成功,存储的值为 {}",value);
+        String redisValue = redisComponent.get("key", String.class);
+        log.info("redis 取值成功,取出的值为 {}",redisValue);
+        return redisValue;
+    }
+    @Resource
+    private StudyJavaAdminUserService studyJavaAdminUserService;
+    @GetMapping("/mysql")
+    public IPage<StudyJavaAdminUserDto> testMysql() {
+        StudyJavaAdminUserVo studyJavaAdminUserVo = new StudyJavaAdminUserVo();
+        return studyJavaAdminUserService.getAdminUserList(startPage(1, 10), studyJavaAdminUserVo);
+    }
 
 }

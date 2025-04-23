@@ -21,7 +21,7 @@ public class AuthInterceptorConfig implements WebMvcConfigurer {
     private static final List<String> EXCLUDE_PATHS = Arrays.asList(
             "/login",
             "/captcha",
-            "/vform/**",
+            "/test/**",
             "/ollama/**",
             "/deepseek/**",
             "/v1/chat/completions"
