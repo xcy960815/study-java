@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.StudyJavaProgressMapper">
+    
+    <resultMap id="BaseResultMap" type="com.example.domain.vo.StudyJavaProgressVo">
+        <id column="id" property="id"/>
+        <result column="score" property="score"/>
+        <result column="level" property="level"/>
+        <result column="consecutive_correct" property="consecutiveCorrect"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, score, level, consecutive_correct, create_time, update_time
+    </sql>
+
+    <select id="findById" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM study_java_progress
+        WHERE id = #{id}
+    </select>
+
+    <insert id="insert">
+        INSERT INTO study_java_progress (
+            id, score, level, consecutive_correct, create_time, update_time
+        ) VALUES (
+            #{id}, #{score}, #{level}, #{consecutiveCorrect}, #{createTime}, #{updateTime}
+        )
+    </insert>
+
+    <update id="update">
+        UPDATE study_java_progress
+        SET score = #{score},
+            level = #{level},
+            consecutive_correct = #{consecutiveCorrect},
+            update_time = #{updateTime}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM study_java_progress WHERE id = #{id}
+    </delete>
+
+</mapper> 
