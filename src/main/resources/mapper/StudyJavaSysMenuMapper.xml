@@ -3,21 +3,96 @@
 <mapper namespace="com.example.mapper.StudyJavaSysMenuMapper">
 
     <resultMap type="com.example.domain.dao.StudyJavaSysMenuDao" id="StudyJavaSysMenuMap">
-        <result property="id" column="id" jdbcType="INTEGER"/>
-        <result property="parentId" column="parent_id" jdbcType="INTEGER"/>
-        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="menuId" column="menu_id" jdbcType="BIGINT"/>
+        <result property="parentId" column="parent_id" jdbcType="BIGINT"/>
+        <result property="menuName" column="menu_name" jdbcType="VARCHAR"/>
         <result property="path" column="path" jdbcType="VARCHAR"/>
+        <result property="component" column="component" jdbcType="VARCHAR"/>
         <result property="icon" column="icon" jdbcType="VARCHAR"/>
-        <result property="type" column="type" jdbcType="INTEGER"/>
+        <result property="menuType" column="menu_type" jdbcType="TINYINT"/>
+        <result property="perms" column="perms" jdbcType="VARCHAR"/>
         <result property="orderNum" column="order_num" jdbcType="INTEGER"/>
-        <result property="visible" column="visible" jdbcType="INTEGER"/>
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
-        <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
-        <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
     </resultMap>
 
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        menu_id, parent_id, menu_name, path, component, icon, menu_type, perms, order_num, create_time, update_time
+    </sql>
 
+    <!-- 查询菜单列表 -->
+    <select id="selectMenuList" resultMap="StudyJavaSysMenuMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM sys_menu
+        <where>
+            <if test="menuName != null and menuName != ''">
+                AND menu_name LIKE CONCAT('%', #{menuName}, '%')
+            </if>
+            <if test="menuType != null">
+                AND menu_type = #{menuType}
+            </if>
+            <if test="parentId != null">
+                AND parent_id = #{parentId}
+            </if>
+        </where>
+        ORDER BY order_num ASC
+    </select>
+
+    <!-- 新增菜单 -->
+    <insert id="insertMenu" parameterType="com.example.domain.dao.StudyJavaSysMenuDao">
+        INSERT INTO sys_menu
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="parentId != null">parent_id,</if>
+            <if test="menuName != null">menu_name,</if>
+            <if test="path != null">path,</if>
+            <if test="component != null">component,</if>
+            <if test="icon != null">icon,</if>
+            <if test="menuType != null">menu_type,</if>
+            <if test="perms != null">perms,</if>
+            <if test="orderNum != null">order_num,</if>
+        </trim>
+        <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
+            <if test="parentId != null">#{parentId},</if>
+            <if test="menuName != null">#{menuName},</if>
+            <if test="path != null">#{path},</if>
+            <if test="component != null">#{component},</if>
+            <if test="icon != null">#{icon},</if>
+            <if test="menuType != null">#{menuType},</if>
+            <if test="perms != null">#{perms},</if>
+            <if test="orderNum != null">#{orderNum},</if>
+        </trim>
+    </insert>
+
+    <!-- 更新菜单 -->
+    <update id="updateMenu" parameterType="com.example.domain.dao.StudyJavaSysMenuDao">
+        UPDATE sys_menu
+        <set>
+            <if test="parentId != null">parent_id = #{parentId},</if>
+            <if test="menuName != null">menu_name = #{menuName},</if>
+            <if test="path != null">path = #{path},</if>
+            <if test="component != null">component = #{component},</if>
+            <if test="icon != null">icon = #{icon},</if>
+            <if test="menuType != null">menu_type = #{menuType},</if>
+            <if test="perms != null">perms = #{perms},</if>
+            <if test="orderNum != null">order_num = #{orderNum},</if>
+        </set>
+        WHERE menu_id = #{menuId}
+    </update>
+
+    <!-- 删除菜单 -->
+    <delete id="deleteMenu" parameterType="java.lang.Long">
+        DELETE FROM sys_menu WHERE menu_id = #{menuId}
+    </delete>
+
+    <!-- 查询菜单详情 -->
+    <select id="selectMenuById" resultMap="StudyJavaSysMenuMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM sys_menu
+        WHERE menu_id = #{menuId}
+    </select>
 
 </mapper>
 
