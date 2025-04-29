@@ -1,9 +1,9 @@
 package com.example.domain.vo;
 
-import jakarta.persistence.*;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -11,11 +11,9 @@ import java.time.LocalDateTime;
  * 系统菜单实体
  */
 @Data
-@Entity
-@Table(name = "study_java_sys_menu")
+@TableName(value = "study_java_sys_menu")
 public class StudyJavaSysMenuVo {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @TableId(type = IdType.AUTO)
     private Long menuId;
 
     /**
@@ -61,12 +59,10 @@ public class StudyJavaSysMenuVo {
     /**
      * 创建时间
      */
-    @CreationTimestamp
     private LocalDateTime createTime;
 
     /**
      * 更新时间
      */
-    @UpdateTimestamp
     private LocalDateTime updateTime;
 } 
