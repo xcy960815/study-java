@@ -1,4 +1,4 @@
-package com.example.service.imp;
+package com.example.service.impl;
 
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;

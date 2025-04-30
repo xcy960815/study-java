@@ -1,4 +1,4 @@
-package com.example.service.imp;
+package com.example.service.impl;
 
 import com.example.config.DeepSeekConfig;
 import com.example.domain.dto.StudyJavaCompletionsErrorDto;

@@ -1,4 +1,4 @@
-package com.example.service.imp;
+package com.example.service.impl;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.example.domain.dao.StudyJavaUserDao;
 import com.example.domain.dto.StudyJavaUserDto;
@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -42,7 +41,6 @@ public class StudyJavaUserServiceImpl implements StudyJavaUserService {
         // 创建新的 IPage 对象
         IPage<StudyJavaUserDto> resultPage = new Page<>(userPageResult.getCurrent(), userPageResult.getSize(), userPageResult.getTotal());
         resultPage.setRecords(userList);
-
         return resultPage;
     }
 
@@ -154,7 +152,8 @@ public class StudyJavaUserServiceImpl implements StudyJavaUserService {
     @Override
     public StudyJavaUserDto getUserInfo(StudyJavaUserVo studyJavaUserVo){
         StudyJavaUserDao userInfoDao = studyJavaUserMapper.getUserInfo(studyJavaUserVo);
-        return makeDaoToDto(userInfoDao);
+//        return makeDaoToDto(userInfoDao);
+        return null;
     }
 
     /**

@@ -1,4 +1,4 @@
-package com.example.service.imp;
+package com.example.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -35,7 +35,7 @@ public class StudyJavaGoodsCategoryServiceImpl extends ServiceImpl<StudyJavaGood
             studyJavaGoodsCategoryDto.setCategoryId(goodsCategory.getCategoryId());
             studyJavaGoodsCategoryDto.setCategoryName(goodsCategory.getCategoryName());
             Integer categoryLevel = goodsCategory.getCategoryLevel();
-            String categoryLevelStr = "";
+            String categoryLevelStr;
             if (categoryLevel == 1) {
                 categoryLevelStr = "一级分类";
             }else if(categoryLevel == 2){

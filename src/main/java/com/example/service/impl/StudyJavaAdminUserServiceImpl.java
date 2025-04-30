@@ -1,4 +1,4 @@
-package com.example.service.imp;
+package com.example.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;

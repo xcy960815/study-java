@@ -1,4 +1,4 @@
-package com.example.service.imp;
+package com.example.service.impl;
 
 import cn.hutool.json.JSONUtil;
 import com.example.domain.dao.StudyJavaUserDao;
@@ -138,4 +138,4 @@ public class StudyJavaLoginServiceImpl implements StudyJavaLoginService {
         log.info("生成验证码耗时 {}",String.format("%.2f", (endTime - startTime) / 1000.0) + "秒");
         return  "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(byteArrayOutputStream.toByteArray());
     }
-} 
+}

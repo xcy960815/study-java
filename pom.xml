@@ -96,7 +96,7 @@
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
@@ -188,7 +188,6 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-<!--            <version>2.13.0</version> &lt;!&ndash; 使用最新的版本 &ndash;&gt;-->
         </dependency>
 
         <!-- Jackson Annotations (包含 @JsonProperty) -->
@@ -282,6 +281,7 @@
                 <includes>
                     <include>**/*.yml</include>
                     <include>**/*.properties</include>
+                    <include>**/*.xml</include>
                 </includes>
             </resource>
         </resources>
