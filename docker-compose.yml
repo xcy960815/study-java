@@ -65,4 +65,5 @@ networks:
   study-java-network:
     driver: bridge
 
-# 执行指令为 docker-compose up -d
+# 执行指令
+#  docker-compose up -d
