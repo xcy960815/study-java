@@ -1,17 +1,17 @@
 /*
  Navicat Premium Dump SQL
 
- Source Server         : study-java链接的数据库
+ Source Server         : study-java-container-docker
  Source Server Type    : MySQL
  Source Server Version : 80402 (8.4.2)
- Source Host           : localhost:3306
- Source Schema         : study-java
+ Source Host           : localhost:3308
+ Source Schema         : study_java
 
  Target Server Type    : MySQL
  Target Server Version : 80402 (8.4.2)
  File Encoding         : 65001
 
- Date: 05/02/2025 10:00:02
+ Date: 02/05/2025 05:05:15
 */
 
 SET NAMES utf8mb4;
@@ -956,6 +956,33 @@ CREATE TABLE `study_java_shopping_cart_item` (
 
 -- ----------------------------
 -- Records of study_java_shopping_cart_item
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
+-- Table structure for study_java_sys_menu
+-- ----------------------------
+DROP TABLE IF EXISTS `study_java_sys_menu`;
+CREATE TABLE `study_java_sys_menu` (
+  `menu_id` bigint NOT NULL AUTO_INCREMENT COMMENT '菜单ID',
+  `parent_id` bigint NOT NULL DEFAULT '0' COMMENT '父菜单ID',
+  `menu_name` varchar(50) NOT NULL COMMENT '菜单名称',
+  `path` varchar(200) DEFAULT NULL COMMENT '菜单路径',
+  `component` varchar(255) DEFAULT NULL COMMENT '组件路径',
+  `icon` varchar(100) DEFAULT NULL COMMENT '菜单图标',
+  `menu_type` tinyint NOT NULL DEFAULT '0' COMMENT '菜单类型（0目录 1菜单 2按钮）',
+  `perms` varchar(100) DEFAULT NULL COMMENT '权限标识',
+  `order_num` int DEFAULT '0' COMMENT '排序',
+  `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`menu_id`),
+  KEY `idx_parent_id` (`parent_id`),
+  KEY `idx_menu_type` (`menu_type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='系统菜单表';
+
+-- ----------------------------
+-- Records of study_java_sys_menu
 -- ----------------------------
 BEGIN;
 COMMIT;
