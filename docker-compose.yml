@@ -13,6 +13,10 @@ services:
   mysql:
     image: mysql:8.4.2
     container_name: study-java-mysql-container
+    command: [
+      "--bind-address=0.0.0.0",
+      "--default-authentication-plugin=mysql_native_password"
+    ]
     environment:
       MYSQL_ROOT_PASSWORD: 123456
       MYSQL_DATABASE: study_java
@@ -24,7 +28,7 @@ services:
       - study-java-network
   # 后端配置
   springboot:
-    image: xcy960815/study-java:1.1
+    image: xcy960815/study-java:latest
     container_name: study-java-container
     depends_on:
       - redis
@@ -45,9 +49,9 @@ services:
       - study-java-network
   # 前端配置
   vue:
-    image: xcy960815/study-java-web:1.1
+    image: xcy960815/study-java-web:latest
     container_name: study-java-web-container
-#    build: ./frontend  # 假设有前端代码的目录
+    #    build: ./frontend  # 假设有前端代码的目录
     ports:
       - "12315:80"
     environment:
