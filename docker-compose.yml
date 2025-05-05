@@ -5,6 +5,9 @@ services:
   redis:
     image: redis:7.2.5
     container_name: study-java-redis-container
+    command: [
+      "redis-server --bind 0.0.0.0"
+    ]
     ports:
       - "6381:6379"
     networks:
@@ -14,8 +17,7 @@ services:
     image: mysql:8.4.2
     container_name: study-java-mysql-container
     command: [
-      "--bind-address=0.0.0.0",
-      "--default-authentication-plugin=mysql_native_password"
+      "--bind-address=0.0.0.0"
     ]
     environment:
       MYSQL_ROOT_PASSWORD: 123456
