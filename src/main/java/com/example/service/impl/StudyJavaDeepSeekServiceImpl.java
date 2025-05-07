@@ -63,7 +63,7 @@ public class StudyJavaDeepSeekServiceImpl extends StudyJavaAiService implements 
     /**
      * 线程池
      */
-//    private final ExecutorService executorService = Executors.newCachedThreadPool();
+    // private final ExecutorService executorService = Executors.newCachedThreadPool();
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -101,7 +101,6 @@ public class StudyJavaDeepSeekServiceImpl extends StudyJavaAiService implements 
             emitter.completeWithError(e);
         }
     }
-
     /**
      * 获取当前api-key所对应的模型
      * @return StudyJavaDeepSeekModelsDto
@@ -113,10 +112,10 @@ public class StudyJavaDeepSeekServiceImpl extends StudyJavaAiService implements 
                 .build();
         HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
         if(response.statusCode() == 200) {
+            log.info("response.statusCode(){}",response.statusCode());
             return objectMapper.readValue(response.body(), StudyJavaDeepSeekModelsDto.class);
         } else {
             StudyJavaCompletionsErrorDto studyJavaCompletionsErrorDto = objectMapper.readValue(response.body(), StudyJavaCompletionsErrorDto.class);
-//            throw new StudyJavaAiException(studyJavaCompletionsErrorDto.getError().getCode(), studyJavaCompletionsErrorDto.getError().getMessage());
             log.error("获取当前api-key所对应的模型失败，失败原因 {}", studyJavaCompletionsErrorDto.getError().getMessage());
             throw new StudyJavaException(studyJavaCompletionsErrorDto.getError().getMessage());
         }
