@@ -22,9 +22,13 @@ import java.net.http.*;
 import java.net.http.HttpRequest.Builder;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
-@Service
+/**
+ * Ollama服务实现类
+ */
 @Slf4j
+@Service
 public class StudyJavaOllamaServiceImpl extends StudyJavaAiService implements StudyJavaOllamaService  {
     /**
      * 端口号
@@ -88,7 +92,9 @@ public class StudyJavaOllamaServiceImpl extends StudyJavaAiService implements St
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    private final HttpClient httpClient = HttpClient.newHttpClient();
+    private final HttpClient httpClient = HttpClient.newBuilder()
+            .connectTimeout(Duration.ofSeconds(30))
+            .build();
 
     private final ExecutorService executorService = Executors.newCachedThreadPool();  // 创建线程池
 
@@ -109,7 +115,7 @@ public class StudyJavaOllamaServiceImpl extends StudyJavaAiService implements St
     private Builder generateRequestBuilder(URI uri) {
         return HttpRequest.newBuilder(uri)
                 .header("Content-Type", "application/json")
-                .timeout(Duration.ofSeconds(Ollama_Timeout));
+                .timeout(Duration.ofMillis(Ollama_Timeout));
     }
 
     /**
@@ -122,13 +128,7 @@ public class StudyJavaOllamaServiceImpl extends StudyJavaAiService implements St
                 .build();
         // 发送请求并获取响应
         HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
-        if (response.statusCode() == 200) {
-            ObjectMapper objectMapper = new ObjectMapper();
-            return objectMapper.readValue(response.body(), StudyJavaOllamaModelsDto.class);
-        } else {
-            // 处理错误响应
-            throw new IOException("Request failed with status code: " + response.statusCode());
-        }
+        return handleResponse(response, StudyJavaOllamaModelsDto.class);
     }
 
     /**
@@ -142,12 +142,7 @@ public class StudyJavaOllamaServiceImpl extends StudyJavaAiService implements St
                 .GET()
                 .build();
         HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
-        if (response.statusCode() == 200) {
-            return objectMapper.readValue(response.body(), StudyJavaOllamaTagsDto.class);
-        }else {
-            // 处理错误响应
-            throw new IOException("Request failed with status code: " + response.statusCode());
-        }
+        return handleResponse(response, StudyJavaOllamaTagsDto.class);
     }
 
     /**
@@ -160,11 +155,7 @@ public class StudyJavaOllamaServiceImpl extends StudyJavaAiService implements St
                 .GET()
                 .build();
         HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
-        if(response.statusCode() == 200) {
-            return objectMapper.readValue(response.body(), StudyJavaOllamaVersionDto.class);
-        } else {
-            throw new StudyJavaException("请求失败");
-        }
+        return handleResponse(response, StudyJavaOllamaVersionDto.class);
     }
     /**
      * 获取加载到内存中的模型
@@ -175,11 +166,7 @@ public class StudyJavaOllamaServiceImpl extends StudyJavaAiService implements St
                 .GET()
                 .build();
         HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
-        if(response.statusCode() == 200) {
-            return objectMapper.readValue(response.body(), StudyJavaOllamaPsDto.class);
-        } else {
-            throw new StudyJavaException("请求失败");
-        }
+        return handleResponse(response, StudyJavaOllamaPsDto.class);
     }
 
     /**
@@ -191,11 +178,7 @@ public class StudyJavaOllamaServiceImpl extends StudyJavaAiService implements St
                 .POST(studyJavaOllamaShowVo.getBodyPublisher())
                 .build();
         HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
-        if (response.statusCode() == 200) {
-            return objectMapper.readValue(response.body(), StudyJavaOllamaShowDto.class);
-        } else {
-            throw new StudyJavaException("请求失败");
-        }
+        return handleResponse(response, StudyJavaOllamaShowDto.class);
     }
     /**
      * 删除指定的模型
@@ -224,11 +207,7 @@ public class StudyJavaOllamaServiceImpl extends StudyJavaAiService implements St
                 .POST(studyJavaOllamaGrenerateVo.getBodyPublisher())
                 .build();
         HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
-        if(response.statusCode() == 200) {
-            return objectMapper.readValue(response.body(), StudyJavaOllamaGenerateDto.class);
-        }else {
-            throw new StudyJavaException("请求失败");
-        }
+        return handleResponse(response, StudyJavaOllamaGenerateDto.class);
     }
     /**
      * 流式 generate 接口
@@ -251,19 +230,7 @@ public class StudyJavaOllamaServiceImpl extends StudyJavaAiService implements St
                     return;
                 }
 
-                try (BufferedReader reader = new BufferedReader(new InputStreamReader(response.body(), StandardCharsets.UTF_8))) {
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        try {
-                            emitter.send(line);
-                        } catch (IOException e) {
-                            log.error("SSE 发送数据失败", e);
-                            emitter.completeWithError(e);
-                            return;
-                        }
-                    }
-                }
-                emitter.complete();
+                handleStreamResponse(response, emitter);
             } catch (IOException | InterruptedException e) {
                 log.error("HTTP 请求失败", e);
                 emitter.completeWithError(e);
@@ -284,7 +251,7 @@ public class StudyJavaOllamaServiceImpl extends StudyJavaAiService implements St
                     .POST(studyJavaOllamaCompletionsVo.getBodyPublisher())
                     .build();
             HttpResponse<InputStream> response = httpClient.send(httpRequest, BodyHandlers.ofInputStream());
-            readResponseLines(response,emitter);
+            handleStreamResponse(response, emitter);
         } catch (IOException | InterruptedException e) {
             log.error("Error during HTTP request: {}", e.getMessage());
             emitter.completeWithError(e);
@@ -308,5 +275,46 @@ public class StudyJavaOllamaServiceImpl extends StudyJavaAiService implements St
 //        } else {
 //            throw new StudyJavaException("请求失败");
 //        }
+    }
+
+    /**
+     * 处理HTTP响应
+     */
+    private <T> T handleResponse(HttpResponse<String> response, Class<T> responseType) throws IOException {
+        if (response.statusCode() == 200) {
+            return objectMapper.readValue(response.body(), responseType);
+        }
+        throw new StudyJavaException(String.format("请求失败，状态码：%d", response.statusCode()));
+    }
+
+    /**
+     * 处理流式响应
+     */
+    private void handleStreamResponse(HttpResponse<InputStream> response, SseEmitter emitter) throws IOException {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(response.body(), StandardCharsets.UTF_8))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                emitter.send(line);
+            }
+            emitter.complete();
+        } catch (IOException e) {
+            log.error("处理流式响应失败", e);
+            emitter.completeWithError(e);
+        }
+    }
+
+    /**
+     * 关闭资源
+     */
+    public void shutdown() {
+        try {
+            executorService.shutdown();
+            if (!executorService.awaitTermination(60, TimeUnit.SECONDS)) {
+                executorService.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            executorService.shutdownNow();
+            Thread.currentThread().interrupt();
+        }
     }
 }
