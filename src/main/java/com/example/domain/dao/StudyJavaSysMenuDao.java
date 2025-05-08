@@ -1,11 +1,12 @@
-package com.example.domain.dto;
+package com.example.domain.dao;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Date;
+import lombok.Data;
 
 /**
  * 系统菜单表
@@ -13,7 +14,7 @@ import java.util.Date;
  */
 @TableName(value ="study_java_sys_menu")
 @Data
-public class StudyJavaSysMenuDto {
+public class StudyJavaSysMenuDao implements Serializable {
     /**
      * 菜单ID
      */
@@ -69,4 +70,10 @@ public class StudyJavaSysMenuDto {
      * 更新时间
      */
     private Date updateTime;
+
+    /**
+     * 是否删除：0-未删除，1-已删除
+     */
+    private Integer isDeleted = 0;
+
 }

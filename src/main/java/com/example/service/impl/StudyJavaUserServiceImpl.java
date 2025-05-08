@@ -152,8 +152,7 @@ public class StudyJavaUserServiceImpl implements StudyJavaUserService {
     @Override
     public StudyJavaUserDto getUserInfo(StudyJavaUserVo studyJavaUserVo){
         StudyJavaUserDao userInfoDao = studyJavaUserMapper.getUserInfo(studyJavaUserVo);
-//        return makeDaoToDto(userInfoDao);
-        return null;
+        return makeDaoToDto(userInfoDao);
     }
 
     /**

@@ -2,8 +2,6 @@ package com.example.controller;
 
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.example.domain.dto.StudyJavaUserDto;
 import com.example.domain.vo.StudyJavaAdminUserVo;
 import com.example.domain.dto.StudyJavaAdminUserDto;
 import com.example.exception.StudyJavaException;
@@ -13,7 +11,6 @@ import com.example.utils.ResponseResult;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
-import java.util.HashMap;
 import java.util.Map;
 
 @RestController

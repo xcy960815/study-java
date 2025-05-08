@@ -1,19 +1,15 @@
 package com.example.domain.vo;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
+import java.io.Serial;
+import java.io.Serializable;
+import java.util.Date;
 
-import java.time.LocalDateTime;
-
-/**
- * 系统菜单实体
- */
 @Data
-@TableName(value = "study_java_sys_menu")
-public class StudyJavaSysMenuVo {
-    @TableId(type = IdType.AUTO)
+public class StudyJavaSysMenuVo implements Serializable {
+    /**
+     * 菜单ID
+     */
     private Long menuId;
 
     /**
@@ -59,10 +55,13 @@ public class StudyJavaSysMenuVo {
     /**
      * 创建时间
      */
-    private LocalDateTime createTime;
+    private Date createTime;
 
     /**
      * 更新时间
      */
-    private LocalDateTime updateTime;
-} 
+    private Date updateTime;
+
+    @Serial
+    private static final long serialVersionUID = 1L;
+}
