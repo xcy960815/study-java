@@ -106,5 +106,4 @@
         </set>
         where   order_id = #{orderId,jdbcType=BIGINT}
     </update>
-
 </mapper>

@@ -10,8 +10,8 @@ import com.example.domain.vo.StudyJavaAdminUserVo;
 
 public interface StudyJavaAdminUserService {
 
-   IPage<StudyJavaAdminUserDto> getAdminUserList(Page<StudyJavaAdminUserVo> page, StudyJavaAdminUserVo studyJavaAdminUser);
-   int updateAdminUser(StudyJavaAdminUserVo studyJavaAdminUser);
-   int insertAdminUser(StudyJavaAdminUserVo studyJavaAdminUser);
-   int deleteAdminUser(StudyJavaAdminUserVo studyJavaAdminUser);
+   IPage<StudyJavaAdminUserVo> getAdminUserList(Page<StudyJavaAdminUserDto> page, StudyJavaAdminUserDto studyJavaAdminUser);
+   int updateAdminUser(StudyJavaAdminUserDto studyJavaAdminUser);
+   int insertAdminUser(StudyJavaAdminUserDto studyJavaAdminUser);
+   int deleteAdminUser(StudyJavaAdminUserDto studyJavaAdminUser);
 }

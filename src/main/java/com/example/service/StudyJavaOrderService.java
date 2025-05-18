@@ -9,5 +9,4 @@ import com.baomidou.mybatisplus.extension.service.IService;
 * @createDate 2025-01-18 23:36:52
 */
 public interface StudyJavaOrderService extends IService<StudyJavaOrderDao> {
-
 }

@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.domain.dao.StudyJavaAdminUserDao;
-import com.example.domain.vo.StudyJavaAdminUserVo;
+import com.example.domain.dto.StudyJavaAdminUserDto;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -15,14 +15,14 @@ import org.apache.ibatis.annotations.Param;
 */
 public interface StudyJavaAdminUserMapper extends BaseMapper<StudyJavaAdminUserDao> {
     // 获取所有的超级管理员列表
-    IPage<StudyJavaAdminUserDao> getAdminUserList(@Param("page") Page<StudyJavaAdminUserVo> page, @Param("studyJavaAdminUser") StudyJavaAdminUserVo studyJavaAdminUser);
+    IPage<StudyJavaAdminUserDao> getAdminUserList(@Param("page") Page<StudyJavaAdminUserDto> page, @Param("studyJavaAdminUser") StudyJavaAdminUserDto studyJavaAdminUser);
 
     // 更新管理员信息
-    int updateAdminUser(@Param("studyJavaAdminUser") StudyJavaAdminUserVo studyJavaAdminUser);
+    int updateAdminUser(@Param("studyJavaAdminUser") StudyJavaAdminUserDto studyJavaAdminUser);
 
     // 添加管理员
-    int insertAdminUser(@Param("studyJavaAdminUser") StudyJavaAdminUserVo studyJavaAdminUser);
+    int insertAdminUser(@Param("studyJavaAdminUser") StudyJavaAdminUserDto studyJavaAdminUser);
 
     // 软删除管理员
-    int deleteAdminUser(@Param("studyJavaAdminUser") StudyJavaAdminUserVo studyJavaAdminUser);
+    int deleteAdminUser(@Param("studyJavaAdminUser") StudyJavaAdminUserDto studyJavaAdminUser);
 }

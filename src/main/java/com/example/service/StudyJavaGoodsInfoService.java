@@ -13,5 +13,5 @@ import com.example.domain.vo.StudyJavaGoodsInfoVo;
 * @createDate 2025-01-24 10:59:26
 */
 public interface StudyJavaGoodsInfoService extends IService<StudyJavaGoodsInfoDao> {
-    public StudyJavaGoodsInfoDto getStudyJavaGoodsInfoDetail(StudyJavaGoodsInfoVo studyJavaGoodsInfo);
+    public StudyJavaGoodsInfoVo getStudyJavaGoodsInfoDetail(StudyJavaGoodsInfoDto studyJavaGoodsInfoDto);
 }

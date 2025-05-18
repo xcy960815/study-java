@@ -147,9 +147,9 @@ public class TestController extends BaseController {
     @Resource
     private StudyJavaAdminUserService studyJavaAdminUserService;
     @GetMapping("/mysql")
-    public IPage<StudyJavaAdminUserDto> testMysql() {
-        StudyJavaAdminUserVo studyJavaAdminUserVo = new StudyJavaAdminUserVo();
-        return studyJavaAdminUserService.getAdminUserList(startPage(1, 10), studyJavaAdminUserVo);
+    public IPage<StudyJavaAdminUserVo> testMysql() {
+        StudyJavaAdminUserDto studyJavaAdminUserDto = new StudyJavaAdminUserDto();
+        return studyJavaAdminUserService.getAdminUserList(startPage(1, 10), studyJavaAdminUserDto);
     }
 
 }

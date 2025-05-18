@@ -1,11 +1,11 @@
 package com.example.controller;
 
 import com.example.domain.vo.ollama.*;
+import com.example.domain.dto.ollama.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.example.domain.dto.ollama.*;
 import com.example.service.StudyJavaOllamaService;
 import com.example.utils.ResponseGenerator;
 import com.example.utils.ResponseResult;
@@ -26,13 +26,13 @@ public class StudyJavaOllamaController {
 
     /**
      * generate
-     * @param studyJavaOllamaGrenerateVo StudyJavaOllamaGrenerateVo
-     * @return ResponseResult<StudyJavaOllamaGenerateDto>
+     * @param studyJavaOllamaGenerateDto StudyJavaOllamaGenerateDto
+     * @return ResponseResult<StudyJavaOllamaGenerateResponseVo>
      */
     @PostMapping("/generate")
-    public ResponseResult<StudyJavaOllamaGenerateDto> generate(@Valid @RequestBody StudyJavaOllamaGrenerateVo studyJavaOllamaGrenerateVo) {
+    public ResponseResult<StudyJavaOllamaGenerateResponseVo> generate(@Valid @RequestBody StudyJavaOllamaGenerateDto studyJavaOllamaGenerateDto) {
         try {
-            return ResponseGenerator.generateSuccessResult(studyJavaOllamaService.generate(studyJavaOllamaGrenerateVo));
+            return ResponseGenerator.generateSuccessResult(studyJavaOllamaService.generate(studyJavaOllamaGenerateDto));
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }

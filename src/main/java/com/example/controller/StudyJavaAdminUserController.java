@@ -2,8 +2,8 @@ package com.example.controller;
 
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.example.domain.vo.StudyJavaAdminUserVo;
 import com.example.domain.dto.StudyJavaAdminUserDto;
+import com.example.domain.vo.StudyJavaAdminUserVo;
 import com.example.exception.StudyJavaException;
 import com.example.service.StudyJavaAdminUserService;
 import com.example.utils.ResponseGenerator;
@@ -23,14 +23,14 @@ public class StudyJavaAdminUserController extends BaseController {
     public ResponseResult<Map<String, Object>> getAdminUserList(
             @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
             @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
-            @ModelAttribute("studyJavaAdminUser") StudyJavaAdminUserVo  studyJavaAdminUserVo
+            @ModelAttribute("studyJavaAdminUser") StudyJavaAdminUserDto studyJavaAdminUserDto
     ) {
-        IPage<StudyJavaAdminUserDto> adminUserPage = studyJavaAdminUserService.getAdminUserList(startPage(pageNum, pageSize), studyJavaAdminUserVo);
+        IPage<StudyJavaAdminUserVo> adminUserPage = studyJavaAdminUserService.getAdminUserList(startPage(pageNum, pageSize), studyJavaAdminUserDto);
         return  ResponseGenerator.generateSuccessResult(getPageData(adminUserPage));
     }
 
     @PostMapping("/updateUser")
-    public ResponseResult<Boolean> updateUser(@Valid @RequestBody StudyJavaAdminUserVo studyJavaAdminUser) {
+    public ResponseResult<Boolean> updateUser(@Valid @RequestBody StudyJavaAdminUserDto studyJavaAdminUser) {
         Integer adminUserId = studyJavaAdminUser.getAdminUserId();
         if(adminUserId == null){
            throw new StudyJavaException("用户ID不能为空");
@@ -41,14 +41,14 @@ public class StudyJavaAdminUserController extends BaseController {
     };
 
     @PostMapping("/insertUser")
-    public ResponseResult<Boolean> insertUser(@Valid @RequestBody StudyJavaAdminUserVo studyJavaAdminUser) {
+    public ResponseResult<Boolean> insertUser(@Valid @RequestBody StudyJavaAdminUserDto studyJavaAdminUser) {
         studyJavaAdminUserService.insertAdminUser(studyJavaAdminUser);
         // 返回插入结果
         return ResponseGenerator.generateSuccessResult(true);
     }
 
     @DeleteMapping("/deleteUser")
-    public ResponseResult<Boolean> deleteUser(@RequestBody StudyJavaAdminUserVo studyJavaAdminUser) {
+    public ResponseResult<Boolean> deleteUser(@RequestBody StudyJavaAdminUserDto studyJavaAdminUser) {
         Integer adminUserId = studyJavaAdminUser.getAdminUserId();
         if(adminUserId == null){
             throw new StudyJavaException("用户ID不能为空");

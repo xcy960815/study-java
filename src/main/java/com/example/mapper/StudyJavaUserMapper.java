@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.domain.dao.StudyJavaUserDao;
-import com.example.domain.vo.StudyJavaUserVo;
+import com.example.domain.dto.StudyJavaUserDto;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -19,15 +19,15 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface StudyJavaUserMapper extends BaseMapper<StudyJavaUserDao> {
     // 获取用户列表
-    IPage<StudyJavaUserDao> getUserList(@Param("page") Page<StudyJavaUserVo> page, @Param("studyJavaUser") StudyJavaUserVo studyJavaUser);
+    IPage<StudyJavaUserDao> getUserList(@Param("page") Page<StudyJavaUserDto> page, @Param("studyJavaUser") StudyJavaUserDto studyJavaUser);
     // 更新用户
-    int updateUserInfo( @Param("studyJavaUser") StudyJavaUserVo studyJavaUser);
+    int updateUserInfo(@Param("studyJavaUser") StudyJavaUserDto studyJavaUser);
     // 添加用户
-    int insertUserInfo( @Param("studyJavaUser") StudyJavaUserVo studyJavaUser);
+    int insertUserInfo(@Param("studyJavaUser") StudyJavaUserDto studyJavaUser);
     // 删除用户
-    int deleteUserInfo( @Param("studyJavaUser") StudyJavaUserVo studyJavaUser);
+    int deleteUserInfo(@Param("studyJavaUser") StudyJavaUserDto studyJavaUser);
     // 更新用户头像
-    int updateUserAvatar(@Param("userId") String userId, @Param("base64ImageUrl") String base64ImageUrl) ;
+    int updateUserAvatar(@Param("userId") String userId, @Param("base64ImageUrl") String base64ImageUrl);
     // 查找用户信息
-    StudyJavaUserDao getUserInfo(@Param("studyJavaUser") StudyJavaUserVo studyJavaUser);
+    StudyJavaUserDao getUserInfo(@Param("studyJavaUser") StudyJavaUserDto studyJavaUser);
 }

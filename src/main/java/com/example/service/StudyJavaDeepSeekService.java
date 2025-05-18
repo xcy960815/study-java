@@ -3,7 +3,9 @@ package com.example.service;
 
 import com.example.domain.dto.deepseek.StudyJavaDeepSeekBalanceDto;
 import com.example.domain.dto.deepseek.StudyJavaDeepSeekModelsDto;
-import com.example.domain.vo.deeseek.StudyJavaDeepSeekCompletionsVo;
+import com.example.domain.vo.deepseek.StudyJavaDeepSeekBalanceVo;
+import com.example.domain.vo.deepseek.StudyJavaDeepSeekCompletionsVo;
+import com.example.domain.vo.deepseek.StudyJavaDeepSeekModelsVo;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;

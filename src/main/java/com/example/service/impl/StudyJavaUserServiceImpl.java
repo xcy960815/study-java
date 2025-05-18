@@ -2,7 +2,6 @@ package com.example.service.impl;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.example.domain.dao.StudyJavaUserDao;
 import com.example.domain.dto.StudyJavaUserDto;
-import com.example.domain.vo.StudyJavaUserVo;
 import com.example.exception.StudyJavaException;
 import com.example.mapper.StudyJavaUserMapper;
 import com.example.service.StudyJavaUserService;
@@ -35,8 +34,8 @@ public class StudyJavaUserServiceImpl implements StudyJavaUserService {
      * 查询所有用户
      */
     @Override
-    public IPage<StudyJavaUserDto> getUserList(Page<StudyJavaUserVo> page ,StudyJavaUserVo userQueryData) {
-        IPage<StudyJavaUserDao> userPageResult = studyJavaUserMapper.getUserList(page,userQueryData);
+    public IPage<StudyJavaUserDto> getUserList(Page<StudyJavaUserDto> page, StudyJavaUserDto userQueryData) {
+        IPage<StudyJavaUserDao> userPageResult = studyJavaUserMapper.getUserList(page, userQueryData);
         List<StudyJavaUserDto> userList = userPageResult.getRecords().stream().map(this::makeDaoToDto).collect(Collectors.toList());
         // 创建新的 IPage 对象
         IPage<StudyJavaUserDto> resultPage = new Page<>(userPageResult.getCurrent(), userPageResult.getSize(), userPageResult.getTotal());
@@ -75,7 +74,7 @@ public class StudyJavaUserServiceImpl implements StudyJavaUserService {
         return studyJavaUserDto;
     };
     @Override
-    public void updateUserInfo(StudyJavaUserVo studyJavaUser) {
+    public void updateUserInfo(StudyJavaUserDto studyJavaUser) {
         studyJavaUserMapper.updateUserInfo(studyJavaUser);
     }
 
@@ -99,10 +98,10 @@ public class StudyJavaUserServiceImpl implements StudyJavaUserService {
     /**
      * 创建一条数据
      *
-     * @param studyJavaUser StudyJavaUserVo
+     * @param studyJavaUser StudyJavaUserDto
      */
     @Override
-    public void insertUserInfo(StudyJavaUserVo studyJavaUser) {
+    public void insertUserInfo(StudyJavaUserDto studyJavaUser) {
         studyJavaUser.setIsDeleted(0);
         studyJavaUser.setLockedFlag(0);
         Date createTime = new Date();
@@ -113,10 +112,10 @@ public class StudyJavaUserServiceImpl implements StudyJavaUserService {
     /**
      * 删除用户
      *
-     * @param studyJavaUser StudyJavaUserVo
+     * @param studyJavaUser StudyJavaUserDto
      */
     @Override
-    public void deleteUserInfo(StudyJavaUserVo studyJavaUser) {
+    public void deleteUserInfo(StudyJavaUserDto studyJavaUser) {
         studyJavaUserMapper.deleteUserInfo(studyJavaUser);
     }
 
@@ -150,21 +149,21 @@ public class StudyJavaUserServiceImpl implements StudyJavaUserService {
     }
 
     @Override
-    public StudyJavaUserDto getUserInfo(StudyJavaUserVo studyJavaUserVo){
-        StudyJavaUserDao userInfoDao = studyJavaUserMapper.getUserInfo(studyJavaUserVo);
+    public StudyJavaUserDto getUserInfo(StudyJavaUserDto studyJavaUserDto){
+        StudyJavaUserDao userInfoDao = studyJavaUserMapper.getUserInfo(studyJavaUserDto);
         return makeDaoToDto(userInfoDao);
     }
 
     /**
      * 更新用户密码
-     * @param studyJavaUserVo StudyJavaUserVo
+     * @param studyJavaUserDto StudyJavaUserDto
      */
     @Override
-    public void updateUserPassword(StudyJavaUserVo studyJavaUserVo) {
-        StudyJavaUserDao studyJavaUserDao = studyJavaUserMapper.getUserInfo(studyJavaUserVo);
+    public void updateUserPassword(StudyJavaUserDto studyJavaUserDto) {
+        StudyJavaUserDao studyJavaUserDao = studyJavaUserMapper.getUserInfo(studyJavaUserDto);
         String passwordMd5 = studyJavaUserDao.getPasswordMd5();
-        String newPasswordMd5 = studyJavaUserVo.getNewPasswordMd5();
-        String confirmNewPasswordMd5 = studyJavaUserVo.getConfirmNewPasswordMd5();
+        String newPasswordMd5 = studyJavaUserDto.getNewPasswordMd5();
+        String confirmNewPasswordMd5 = studyJavaUserDto.getConfirmNewPasswordMd5();
         if (!newPasswordMd5.equals(confirmNewPasswordMd5)) {
             throw new StudyJavaException("两次密码不一致");
         }
@@ -172,8 +171,8 @@ public class StudyJavaUserServiceImpl implements StudyJavaUserService {
             throw new StudyJavaException("原密码不正确");
         }
 
-        studyJavaUserVo.setPasswordMd5(newPasswordMd5);
+        studyJavaUserDto.setPasswordMd5(newPasswordMd5);
 
-        studyJavaUserMapper.updateUserInfo(studyJavaUserVo);
+        studyJavaUserMapper.updateUserInfo(studyJavaUserDto);
     }
 }

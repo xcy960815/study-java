@@ -1,11 +1,14 @@
-package com.example.domain.dto.deepseek;
+package com.example.domain.vo.deepseek;
 
 import lombok.Data;
 
 import java.util.List;
 
+/**
+ * DeepSeek AI 账户余额响应
+ */
 @Data
-public class StudyJavaDeepSeekBalanceDto {
+public class StudyJavaDeepSeekBalanceVo {
     private Boolean is_available;
 
     private List<BalanceInfo> balance_infos;
@@ -17,4 +20,4 @@ public class StudyJavaDeepSeekBalanceDto {
         private String granted_balance;
         private String topped_up_balance;
     }
-}
+} 

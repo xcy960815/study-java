@@ -4,7 +4,7 @@ import com.example.config.DeepSeekConfig;
 import com.example.domain.dto.StudyJavaCompletionsErrorDto;
 import com.example.domain.dto.deepseek.StudyJavaDeepSeekBalanceDto;
 import com.example.domain.dto.deepseek.StudyJavaDeepSeekModelsDto;
-import com.example.domain.vo.deeseek.StudyJavaDeepSeekCompletionsVo;
+import com.example.domain.vo.deepseek.StudyJavaDeepSeekCompletionsVo;
 import com.example.exception.StudyJavaAiException;
 import com.example.exception.StudyJavaException;
 import com.example.service.StudyJavaAiService;

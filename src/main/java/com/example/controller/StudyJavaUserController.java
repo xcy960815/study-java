@@ -2,7 +2,6 @@ package com.example.controller;
 
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
-import com.example.domain.vo.StudyJavaUserVo;
 import com.example.domain.dto.StudyJavaUserDto;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.example.exception.StudyJavaException;
@@ -32,14 +31,14 @@ public class StudyJavaUserController extends BaseController {
      * 获取用户列表
      * @param pageSize int
      * @param pageNum int
-     * @param studyJavaUser StudyJavaUserVo
+     * @param studyJavaUser StudyJavaUserDto
      * @return ResponseResult<Map<String,Object>>
      */
     @GetMapping("/getUserList")
     public ResponseResult<Map<String,Object>> getUserList(
             @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
             @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
-            @ModelAttribute("studyJavaUser") StudyJavaUserVo  studyJavaUser
+            @ModelAttribute("studyJavaUser") StudyJavaUserDto studyJavaUser
     ) {
         IPage<StudyJavaUserDto> userPage = studyJavaUserService.getUserList(startPage(pageNum, pageSize), studyJavaUser);
         return ResponseGenerator.generateSuccessResult(getPageData(userPage));
@@ -55,10 +54,10 @@ public class StudyJavaUserController extends BaseController {
         JSONObject tokenUserInfo = JSONUtil.parseObj(jwtTokenComponent.getUserInfoFromAuthorization(authorization));
         Long userId = Long.parseLong(tokenUserInfo.get("userId").toString());
         String loginName = tokenUserInfo.get("loginName").toString();
-        StudyJavaUserVo studyJavaUserVo = new StudyJavaUserVo();
-        studyJavaUserVo.setUserId(userId);
-        studyJavaUserVo.setLoginName(loginName);
-        StudyJavaUserDto userInfo = studyJavaUserService.getUserInfo(studyJavaUserVo);
+        StudyJavaUserDto studyJavaUserDto = new StudyJavaUserDto();
+        studyJavaUserDto.setUserId(userId);
+        studyJavaUserDto.setLoginName(loginName);
+        StudyJavaUserDto userInfo = studyJavaUserService.getUserInfo(studyJavaUserDto);
         return ResponseGenerator.generateSuccessResult(userInfo);
     }
 
@@ -66,11 +65,11 @@ public class StudyJavaUserController extends BaseController {
     // ModelAttribute 通常用于获取多个参数
     /**
      * 更新用户
-     * @param studyJavaUser StudyJavaUserVo
+     * @param studyJavaUser StudyJavaUserDto
      * @return ResponseResult<Boolean>
      */
     @PostMapping("/updateUserInfo")
-    public ResponseResult<Boolean> updateUserInfo(@Valid @RequestBody StudyJavaUserVo studyJavaUser) {
+    public ResponseResult<Boolean> updateUserInfo(@Valid @RequestBody StudyJavaUserDto studyJavaUser) {
         // 获取用户ID
         Long userId = studyJavaUser.getUserId();
         if(userId == null){
@@ -106,11 +105,11 @@ public class StudyJavaUserController extends BaseController {
 
     /**
      * 更新用户信息
-     * @param studyJavaUser StudyJavaUserVo
+     * @param studyJavaUser StudyJavaUserDto
      * @return ResponseResult<Boolean>
      */
     @PostMapping("/insertUserInfo")
-    public ResponseResult<Boolean> insertUserInfo(@Valid @RequestBody StudyJavaUserVo studyJavaUser) {
+    public ResponseResult<Boolean> insertUserInfo(@Valid @RequestBody StudyJavaUserDto studyJavaUser) {
         studyJavaUserService.insertUserInfo(studyJavaUser);
         // 返回插入结果
         return ResponseGenerator.generateSuccessResult(true);
@@ -118,11 +117,11 @@ public class StudyJavaUserController extends BaseController {
 
     /**
      * 删除用户信息
-     * @param studyJavaUser StudyJavaUserVo
+     * @param studyJavaUser StudyJavaUserDto
      * @return ResponseResult<Boolean>
      */
     @DeleteMapping("/deleteUserInfo")
-    public ResponseResult<Boolean> deleteUserInfo(@RequestBody StudyJavaUserVo studyJavaUser) {
+    public ResponseResult<Boolean> deleteUserInfo(@RequestBody StudyJavaUserDto studyJavaUser) {
         studyJavaUserService.deleteUserInfo(studyJavaUser);
         // 返回插入结果
         return ResponseGenerator.generateSuccessResult(true);
@@ -131,11 +130,11 @@ public class StudyJavaUserController extends BaseController {
     /**
      * 更新用户密码
      * @param authorization String
-     * @param studyJavaUser StudyJavaUserVo
+     * @param studyJavaUser StudyJavaUserDto
      * @return ResponseResult<Boolean>
      */
     @PostMapping("/updateUserPassword")
-    public ResponseResult<Boolean> updateUserPassword(@RequestHeader(value = "Authorization", required = false) String authorization,@RequestBody StudyJavaUserVo studyJavaUser) {
+    public ResponseResult<Boolean> updateUserPassword(@RequestHeader(value = "Authorization", required = false) String authorization,@RequestBody StudyJavaUserDto studyJavaUser) {
         String token = authorization.substring(7);
         String userInfoStr = jwtTokenComponent.getUserInfoFromToken(token);
         String[] userInfoArr = userInfoStr.split(":");

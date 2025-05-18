@@ -18,38 +18,39 @@ public class StudyJavaAdminUserServiceImpl implements StudyJavaAdminUserService{
     StudyJavaAdminUserMapper studyJavaAdminUserMapper;
 
     @Override
-    public IPage<StudyJavaAdminUserDto> getAdminUserList(Page<StudyJavaAdminUserVo> page, StudyJavaAdminUserVo studyJavaAdminUser) {
+    public IPage<StudyJavaAdminUserVo> getAdminUserList(Page<StudyJavaAdminUserDto> page, StudyJavaAdminUserDto studyJavaAdminUser) {
 
         // 调用 Mapper 获取分页结果
         IPage<StudyJavaAdminUserDao> adminUserPageResult = studyJavaAdminUserMapper.getAdminUserList(page, studyJavaAdminUser);
 
-        // 将 StudyJavaAdminUserDao 转换成 StudyJavaAdminUserDto
-        List<StudyJavaAdminUserDto> userList = adminUserPageResult.getRecords().stream().map(user -> {
-            StudyJavaAdminUserDto studyJavaAdminUserDto = new StudyJavaAdminUserDto();
-            studyJavaAdminUserDto.setAdminUserId(user.getAdminUserId());
-            studyJavaAdminUserDto.setLoginUserName(user.getLoginUserName());
-            studyJavaAdminUserDto.setNickName(user.getNickName());
-            return studyJavaAdminUserDto;
+        // 将 StudyJavaAdminUserDao 转换成 StudyJavaAdminUserVo
+        List<StudyJavaAdminUserVo> userList = adminUserPageResult.getRecords().stream().map(user -> {
+            StudyJavaAdminUserVo studyJavaAdminUserVo = new StudyJavaAdminUserVo();
+            studyJavaAdminUserVo.setAdminUserId(user.getAdminUserId());
+            studyJavaAdminUserVo.setLoginUserName(user.getLoginUserName());
+            studyJavaAdminUserVo.setNickName(user.getNickName());
+            studyJavaAdminUserVo.setLocked(user.getLocked());
+            return studyJavaAdminUserVo;
         }).toList();
 
         // 创建新的 IPage 对象
-        IPage<StudyJavaAdminUserDto> resultPage = new Page<>(adminUserPageResult.getCurrent(), adminUserPageResult.getSize(), adminUserPageResult.getTotal());
+        IPage<StudyJavaAdminUserVo> resultPage = new Page<>(adminUserPageResult.getCurrent(), adminUserPageResult.getSize(), adminUserPageResult.getTotal());
         resultPage.setRecords(userList);
 
         return resultPage;
     }
     @Override
-    public int updateAdminUser(StudyJavaAdminUserVo studyJavaAdminUser){
+    public int updateAdminUser(StudyJavaAdminUserDto studyJavaAdminUser){
         return studyJavaAdminUserMapper.updateAdminUser(studyJavaAdminUser);
     }
 
     @Override
-    public int insertAdminUser(StudyJavaAdminUserVo studyJavaAdminUser) {
+    public int insertAdminUser(StudyJavaAdminUserDto studyJavaAdminUser) {
         return studyJavaAdminUserMapper.insertAdminUser(studyJavaAdminUser);
     }
 
     @Override
-    public int deleteAdminUser(StudyJavaAdminUserVo studyJavaAdminUser) {
+    public int deleteAdminUser(StudyJavaAdminUserDto studyJavaAdminUser) {
         return studyJavaAdminUserMapper.deleteAdminUser(studyJavaAdminUser);
     }
 }

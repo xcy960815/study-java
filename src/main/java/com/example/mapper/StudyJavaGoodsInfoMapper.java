@@ -2,7 +2,7 @@ package com.example.mapper;
 
 import com.example.domain.dao.StudyJavaGoodsInfoDao;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.example.domain.vo.StudyJavaGoodsInfoVo;
+import com.example.domain.dto.StudyJavaGoodsInfoDto;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -13,7 +13,7 @@ import org.apache.ibatis.annotations.Param;
 */
 public interface StudyJavaGoodsInfoMapper extends BaseMapper<StudyJavaGoodsInfoDao> {
 
-    public StudyJavaGoodsInfoDao getStudyJavaGoodsInfoDetail(@Param("studyJavaGoodsInfo") StudyJavaGoodsInfoVo studyJavaGoodsInfo);
+    public StudyJavaGoodsInfoDao getStudyJavaGoodsInfoDetail(@Param("studyJavaGoodsInfo") StudyJavaGoodsInfoDto studyJavaGoodsInfo);
 }
 
 

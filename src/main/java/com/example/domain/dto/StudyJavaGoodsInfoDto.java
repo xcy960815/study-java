@@ -4,13 +4,15 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
 
 /**
- *
+ * 商品信息DTO，用于接收请求参数
  * @TableName study_java_goods_info
  */
 @TableName(value ="study_java_goods_info")
@@ -25,6 +27,7 @@ public class StudyJavaGoodsInfoDto implements Serializable {
     /**
      * 商品名
      */
+    @NotBlank(message = "商品名不能为空")
     private String goodsName;
 
     /**
@@ -35,6 +38,7 @@ public class StudyJavaGoodsInfoDto implements Serializable {
     /**
      * 关联分类id
      */
+    @NotNull(message = "分类ID不能为空")
     private Long goodsCategoryId;
 
     /**

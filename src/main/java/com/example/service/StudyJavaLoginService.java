@@ -7,7 +7,7 @@ import java.io.IOException;
 
 public interface StudyJavaLoginService {
 
-    StudyJavaLoginDto login(StudyJavaLoginVo studyJavaLogin);
+    StudyJavaLoginVo login(StudyJavaLoginDto studyJavaLogin);
 
     String getCaptcha() throws IOException;
 }

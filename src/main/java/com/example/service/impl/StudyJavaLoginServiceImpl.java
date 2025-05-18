@@ -3,6 +3,7 @@ package com.example.service.impl;
 import cn.hutool.json.JSONUtil;
 import com.example.domain.dao.StudyJavaUserDao;
 import com.example.domain.dto.StudyJavaLoginDto;
+import com.example.domain.dto.StudyJavaUserDto;
 import com.example.domain.vo.StudyJavaLoginVo;
 import com.example.exception.StudyJavaException;
 import com.example.domain.vo.StudyJavaUserVo;
@@ -66,7 +67,7 @@ public class StudyJavaLoginServiceImpl implements StudyJavaLoginService {
     private StudyJavaUserMapper studyJavaUserMapper;
 
     @Override
-    public StudyJavaLoginDto login(StudyJavaLoginVo studyJavaLoginParams)  {
+    public StudyJavaLoginVo login(StudyJavaLoginDto studyJavaLoginParams)  {
 
         if (!redisComponent.hasKey(CAPTCHA_KEY)) {
             throw new StudyJavaException("验证码不存在");
@@ -78,11 +79,11 @@ public class StudyJavaLoginServiceImpl implements StudyJavaLoginService {
 
             throw new StudyJavaException("验证码错误");
         }
-        StudyJavaUserVo studyJavaUserVo = new StudyJavaUserVo();
+        StudyJavaUserDto studyJavaUserDto = new StudyJavaUserDto();
 
-        studyJavaUserVo.setLoginName(studyJavaLoginParams.getUsername());
+        studyJavaUserDto.setLoginName(studyJavaLoginParams.getUsername());
 
-        StudyJavaUserDao userInfo = studyJavaUserMapper.getUserInfo(studyJavaUserVo);
+        StudyJavaUserDao userInfo = studyJavaUserMapper.getUserInfo(studyJavaUserDto);
 
         if (userInfo == null) {
             throw new StudyJavaException("用户不存在");
@@ -95,13 +96,13 @@ public class StudyJavaLoginServiceImpl implements StudyJavaLoginService {
                 throw new StudyJavaException("密码错误");
             }
         }
-        StudyJavaLoginDto studyJavaLoginDto = new StudyJavaLoginDto();
-        studyJavaLoginDto.setUserId(userInfo.getUserId());
-        studyJavaLoginDto.setLoginName(userInfo.getLoginName());
-        studyJavaLoginDto.setAddress(userInfo.getAddress());
-        studyJavaLoginDto.setCreateTime(userInfo.getCreateTime());
-        studyJavaLoginDto.setIntroduceSign(userInfo.getIntroduceSign());
-        studyJavaLoginDto.setNickName(userInfo.getNickName());
+        StudyJavaLoginVo studyJavaLoginVo = new StudyJavaLoginVo();
+        studyJavaLoginVo.setUserId(userInfo.getUserId());
+        studyJavaLoginVo.setLoginName(userInfo.getLoginName());
+        studyJavaLoginVo.setAddress(userInfo.getAddress());
+        studyJavaLoginVo.setCreateTime(userInfo.getCreateTime());
+        studyJavaLoginVo.setIntroduceSign(userInfo.getIntroduceSign());
+        studyJavaLoginVo.setNickName(userInfo.getNickName());
         Map<String,String> tokenContentOption = new HashMap<>();
         tokenContentOption.put("loginName",userInfo.getLoginName());
         tokenContentOption.put("userId",userInfo.getUserId().toString());
@@ -109,13 +110,13 @@ public class StudyJavaLoginServiceImpl implements StudyJavaLoginService {
         String tokenContent = JSONUtil.toJsonStr(tokenContentOption);
         String token = jwtTokenComponent.generateToken(tokenContent);
         redisComponent.setWithExpire(TOKEN_KEY, token,TOKEN_EXPIRE_TIME, TimeUnit.HOURS);
-        studyJavaLoginDto.setToken(token);
+        studyJavaLoginVo.setToken(token);
 
-        return studyJavaLoginDto;
+        return studyJavaLoginVo;
     }
 
 
-    public void logout(StudyJavaLoginVo studyJavaLoginParams) {
+    public void logout(StudyJavaLoginDto studyJavaLoginParams) {
         // studyJavaUserService.logout(studyJavaLoginParams);
     }
 

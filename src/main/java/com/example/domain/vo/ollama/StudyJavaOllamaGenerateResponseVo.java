@@ -1,31 +1,14 @@
-package com.example.domain.dto.ollama;
+package com.example.domain.vo.ollama;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import java.util.List;
 
 /**
- * generate 接口请求参数和结果
+ * generate 接口返回结果
  */
 @Data
-public class StudyJavaOllamaGenerateDto extends StudyJavaOllamaBaseDto {
-    /**
-     * 模型
-     */
-    @NotBlank(message = "model不能为空")
+public class StudyJavaOllamaGenerateResponseVo {
     private String model;
-    
-    /**
-     * 问题
-     */
-    @NotBlank(message = "prompt不能为空")
-    private String prompt;
-    
-    /**
-     * 流
-     */
-    private Boolean stream;
-    
     private String created_at;
     /**
      * 如果响应被流式传输，则为空，如果没有流式传输，这将包含完整的响应
@@ -40,25 +23,25 @@ public class StudyJavaOllamaGenerateDto extends StudyJavaOllamaBaseDto {
     /**
      * 生成响应所花费的时间
      */
-    private long  total_duration;
+    private long total_duration;
     /**
      * 加载模型所花费的时间
      */
-    private long  load_duration;
+    private long load_duration;
     /**
      * 提示中的令牌数量
      */
-    private long  prompt_eval_count;
+    private long prompt_eval_count;
     /**
      * 以纳秒为单位评估提示所花费的时间
      */
-    private long  prompt_eval_duration;
+    private long prompt_eval_duration;
     /**
      * 响应中的令牌数量
      */
-    private long  eval_count;
+    private long eval_count;
     /**
      * 以纳秒为单位的时间产生响应
      */
-    private long  eval_duration;
-}
+    private long eval_duration;
+} 

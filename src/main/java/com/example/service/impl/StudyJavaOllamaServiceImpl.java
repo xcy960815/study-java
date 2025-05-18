@@ -198,16 +198,41 @@ public class StudyJavaOllamaServiceImpl extends StudyJavaAiService implements St
     }
     /**
      * 非流式 generate 接口
-     * @param studyJavaOllamaGrenerateVo StudyJavaOllamaGrenerateVo
-     * @return StudyJavaOllamaGenerateDto
+     * @param studyJavaOllamaGenerateDto StudyJavaOllamaGenerateDto
+     * @return StudyJavaOllamaGenerateResponseVo
      */
     @Override
-    public StudyJavaOllamaGenerateDto generate(StudyJavaOllamaGrenerateVo studyJavaOllamaGrenerateVo) throws IOException, InterruptedException {
+    public StudyJavaOllamaGenerateResponseVo generate(StudyJavaOllamaGenerateDto studyJavaOllamaGenerateDto) throws IOException, InterruptedException {
+        // 转换请求DTO为原有的VO对象
+        StudyJavaOllamaGrenerateVo studyJavaOllamaGrenerateVo = new StudyJavaOllamaGrenerateVo();
+        studyJavaOllamaGrenerateVo.setModel(studyJavaOllamaGenerateDto.getModel());
+        studyJavaOllamaGrenerateVo.setPrompt(studyJavaOllamaGenerateDto.getPrompt());
+        studyJavaOllamaGrenerateVo.setStream(studyJavaOllamaGenerateDto.getStream());
+        
         HttpRequest httpRequest = generateRequestBuilder(generateRequestUrl(Ollama_Generate_Api))
                 .POST(studyJavaOllamaGrenerateVo.getBodyPublisher())
                 .build();
         HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
-        return handleResponse(response, StudyJavaOllamaGenerateDto.class);
+        
+        // 将原有DTO转换为新的VO返回
+        StudyJavaOllamaGenerateDto dto = handleResponse(response, StudyJavaOllamaGenerateDto.class);
+        StudyJavaOllamaGenerateResponseVo responseVo = new StudyJavaOllamaGenerateResponseVo();
+        
+        // 复制属性
+        responseVo.setModel(dto.getModel());
+        responseVo.setCreated_at(dto.getCreated_at());
+        responseVo.setResponse(dto.getResponse());
+        responseVo.setDone(dto.isDone());
+        responseVo.setDone_reason(dto.getDone_reason());
+        responseVo.setContext(dto.getContext());
+        responseVo.setTotal_duration(dto.getTotal_duration());
+        responseVo.setLoad_duration(dto.getLoad_duration());
+        responseVo.setPrompt_eval_count(dto.getPrompt_eval_count());
+        responseVo.setPrompt_eval_duration(dto.getPrompt_eval_duration());
+        responseVo.setEval_count(dto.getEval_count());
+        responseVo.setEval_duration(dto.getEval_duration());
+        
+        return responseVo;
     }
     /**
      * 流式 generate 接口

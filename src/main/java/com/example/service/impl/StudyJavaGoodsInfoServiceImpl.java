@@ -21,18 +21,24 @@ public class StudyJavaGoodsInfoServiceImpl extends ServiceImpl<StudyJavaGoodsInf
     @Resource
     private StudyJavaGoodsInfoMapper studyJavaGoodsInfoMapper;
     @Override
-    public StudyJavaGoodsInfoDto getStudyJavaGoodsInfoDetail(StudyJavaGoodsInfoVo studyJavaGoodsInfo) {
-        StudyJavaGoodsInfoDao studyJavaGoodsInfoDao =  studyJavaGoodsInfoMapper.getStudyJavaGoodsInfoDetail(studyJavaGoodsInfo);
-        StudyJavaGoodsInfoDto studyJavaGoodsInfoDto = new StudyJavaGoodsInfoDto();
-        studyJavaGoodsInfoDto.setGoodsId(studyJavaGoodsInfoDao.getGoodsId());
-        studyJavaGoodsInfoDto.setGoodsName(studyJavaGoodsInfoDao.getGoodsName());
-        studyJavaGoodsInfoDto.setGoodsIntro(studyJavaGoodsInfoDao.getGoodsIntro());
-        studyJavaGoodsInfoDto.setGoodsCategoryId(studyJavaGoodsInfoDao.getGoodsCategoryId());
-        studyJavaGoodsInfoDto.setGoodsCoverImg(studyJavaGoodsInfoDao.getGoodsCoverImg());
-        studyJavaGoodsInfoDto.setGoodsCarousel(studyJavaGoodsInfoDao.getGoodsCarousel());
-        studyJavaGoodsInfoDto.setGoodsDetailContent(studyJavaGoodsInfoDao.getGoodsDetailContent());
-        studyJavaGoodsInfoDto.setOriginalPrice(studyJavaGoodsInfoDao.getOriginalPrice());
-        return studyJavaGoodsInfoDto;
+    public StudyJavaGoodsInfoVo getStudyJavaGoodsInfoDetail(StudyJavaGoodsInfoDto studyJavaGoodsInfoDto) {
+        StudyJavaGoodsInfoDao studyJavaGoodsInfoDao = studyJavaGoodsInfoMapper.getStudyJavaGoodsInfoDetail(studyJavaGoodsInfoDto);
+        StudyJavaGoodsInfoVo studyJavaGoodsInfoVo = new StudyJavaGoodsInfoVo();
+        studyJavaGoodsInfoVo.setGoodsId(studyJavaGoodsInfoDao.getGoodsId());
+        studyJavaGoodsInfoVo.setGoodsName(studyJavaGoodsInfoDao.getGoodsName());
+        studyJavaGoodsInfoVo.setGoodsIntro(studyJavaGoodsInfoDao.getGoodsIntro());
+        studyJavaGoodsInfoVo.setGoodsCategoryId(studyJavaGoodsInfoDao.getGoodsCategoryId());
+        studyJavaGoodsInfoVo.setGoodsCoverImg(studyJavaGoodsInfoDao.getGoodsCoverImg());
+        studyJavaGoodsInfoVo.setGoodsCarousel(studyJavaGoodsInfoDao.getGoodsCarousel());
+        studyJavaGoodsInfoVo.setGoodsDetailContent(studyJavaGoodsInfoDao.getGoodsDetailContent());
+        studyJavaGoodsInfoVo.setOriginalPrice(studyJavaGoodsInfoDao.getOriginalPrice());
+        studyJavaGoodsInfoVo.setSellingPrice(studyJavaGoodsInfoDao.getSellingPrice());
+        studyJavaGoodsInfoVo.setStockNum(studyJavaGoodsInfoDao.getStockNum());
+        studyJavaGoodsInfoVo.setTag(studyJavaGoodsInfoDao.getTag());
+        studyJavaGoodsInfoVo.setGoodsSellStatus(studyJavaGoodsInfoDao.getGoodsSellStatus());
+        studyJavaGoodsInfoVo.setCreateTime(studyJavaGoodsInfoDao.getCreateTime());
+        studyJavaGoodsInfoVo.setUpdateTime(studyJavaGoodsInfoDao.getUpdateTime());
+        return studyJavaGoodsInfoVo;
     }
 }
 
