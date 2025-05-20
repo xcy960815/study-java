@@ -12,7 +12,13 @@ import java.io.Serializable;
 * @createDate 2025-05-07 17:46:58
 */
 public interface StudyJavaSysMenuService {
-    IPage<StudyJavaSysMenuDto> list (Page<StudyJavaSysMenuVo> page, StudyJavaSysMenuVo menuQueryData);
+    /**
+     * 获取菜单列表
+     * @param page
+     * @param studyJavaSysMenuDto
+     * @return
+     */
+    IPage<StudyJavaSysMenuVo> getMenuList (Page<StudyJavaSysMenuDto> page, StudyJavaSysMenuDto studyJavaSysMenuDto);
 
     /**
      * 通过主键查询单条数据
@@ -20,23 +26,23 @@ public interface StudyJavaSysMenuService {
      * @param id 主键
      * @return 单条数据
      */
-    StudyJavaSysMenuDto getDetail(Serializable id);
+    StudyJavaSysMenuVo getMenuDetail(Serializable id);
 
     /**
      * 新增菜单
      *
-     * @param studyJavaSysMenuVo 菜单信息
+     * @param studyJavaSysMenuDto 菜单信息
      * @return 新增结果
      */
-    Boolean addMenu(StudyJavaSysMenuVo studyJavaSysMenuVo);
+    Boolean addMenu(StudyJavaSysMenuDto studyJavaSysMenuDto);
 
     /**
      * 更新菜单
      *
-     * @param studyJavaSysMenuVo 菜单信息
+     * @param studyJavaSysMenuDto 菜单信息
      * @return 更新结果
      */
-    Boolean updateMenu(StudyJavaSysMenuVo studyJavaSysMenuVo);
+    Boolean updateMenu(StudyJavaSysMenuDto studyJavaSysMenuDto);
 
     /**
      * 删除菜单（软删除）

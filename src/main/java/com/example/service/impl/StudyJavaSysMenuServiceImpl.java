@@ -11,9 +11,7 @@ import com.example.exception.StudyJavaException;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
-
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -27,7 +25,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class StudyJavaSysMenuServiceImpl implements StudyJavaSysMenuService {
-    
+
     @Resource
     private StudyJavaSysMenuMapper studyJavaSysMenuMapper;
 
@@ -40,7 +38,6 @@ public class StudyJavaSysMenuServiceImpl implements StudyJavaSysMenuService {
         if (menuDao == null) {
             return null;
         }
-        
         StudyJavaSysMenuDto dto = new StudyJavaSysMenuDto();
         dto.setMenuId(menuDao.getMenuId());
         dto.setMenuName(menuDao.getMenuName());
@@ -53,40 +50,56 @@ public class StudyJavaSysMenuServiceImpl implements StudyJavaSysMenuService {
     }
 
     /**
-     * 将 VO 对象转换为 DAO 对象
-     * @param vo VO对象
+     * 将 Dto 对象转换为 DAO 对象
+     * @param studyJavaSysMenuDto VO对象
      * @return DAO对象
      */
-    private StudyJavaSysMenuDao convertToDao(StudyJavaSysMenuVo vo) {
-        if (vo == null) {
+    private StudyJavaSysMenuDao convertToDao(StudyJavaSysMenuDto studyJavaSysMenuDto) {
+        if (studyJavaSysMenuDto == null) {
             return null;
         }
+        StudyJavaSysMenuDao studyJavaSysMenuDao = new StudyJavaSysMenuDao();
+        studyJavaSysMenuDao.setMenuName(studyJavaSysMenuDto.getMenuName());
+        studyJavaSysMenuDao.setParentId(studyJavaSysMenuDto.getParentId());
+        studyJavaSysMenuDao.setPath(studyJavaSysMenuDto.getPath());
+        studyJavaSysMenuDao.setComponent(studyJavaSysMenuDto.getComponent());
+        studyJavaSysMenuDao.setIcon(studyJavaSysMenuDto.getIcon());
+        studyJavaSysMenuDao.setMenuType(studyJavaSysMenuDto.getMenuType());
+        studyJavaSysMenuDao.setPerms(studyJavaSysMenuDto.getPerms());
+        studyJavaSysMenuDao.setOrderNum(studyJavaSysMenuDto.getOrderNum());
+        return studyJavaSysMenuDao;
+    }
 
-        StudyJavaSysMenuDao dao = new StudyJavaSysMenuDao();
-        dao.setMenuName(vo.getMenuName());
-        dao.setParentId(vo.getParentId());
-        dao.setPath(vo.getPath());
-        dao.setComponent(vo.getComponent());
-        dao.setIcon(vo.getIcon());
-        dao.setMenuType(vo.getMenuType());
-        dao.setPerms(vo.getPerms());
-        dao.setOrderNum(vo.getOrderNum());
-        return dao;
+    private StudyJavaSysMenuVo convertToVo(StudyJavaSysMenuDao studyJavaSysMenuDao) {
+        if (studyJavaSysMenuDao == null) {
+            return null;
+        }
+        StudyJavaSysMenuVo studyJavaSysMenuVo = new StudyJavaSysMenuVo();
+        studyJavaSysMenuVo.setMenuId(studyJavaSysMenuDao.getMenuId());
+        studyJavaSysMenuVo.setMenuName(studyJavaSysMenuDao.getMenuName());
+        studyJavaSysMenuVo.setParentId(studyJavaSysMenuDao.getParentId());
+        studyJavaSysMenuVo.setPath(studyJavaSysMenuDao.getPath());
+        studyJavaSysMenuVo.setComponent(studyJavaSysMenuDao.getComponent());
+        studyJavaSysMenuVo.setIcon(studyJavaSysMenuDao.getIcon());
+        studyJavaSysMenuVo.setMenuType(studyJavaSysMenuDao.getMenuType());
+        studyJavaSysMenuVo.setPerms(studyJavaSysMenuDao.getPerms());
+        studyJavaSysMenuVo.setOrderNum(studyJavaSysMenuDao.getOrderNum());
+        return studyJavaSysMenuVo;
     }
 
     @Override
-    public IPage<StudyJavaSysMenuDto> list(Page<StudyJavaSysMenuVo> page, StudyJavaSysMenuVo studyJavaSysMenuVo) {
+    public IPage<StudyJavaSysMenuVo> getMenuList(Page<StudyJavaSysMenuDto> page, StudyJavaSysMenuDto studyJavaSysMenuDto) {
         try {
-            IPage<StudyJavaSysMenuDao> menuDaoIPage = studyJavaSysMenuMapper.list(page, studyJavaSysMenuVo);
-            List<StudyJavaSysMenuDto> menuDtoList = menuDaoIPage.getRecords().stream()
-                    .map(this::convertToDto)
+            Page<StudyJavaSysMenuDao> studyJavaSysMenuDaoPage = new Page<>(page.getCurrent(), page.getSize(),page.getTotal());
+            StudyJavaSysMenuDao studyJavaSysMenuDao = convertToDao(studyJavaSysMenuDto);
+            IPage<StudyJavaSysMenuDao> menuDaoIPage = studyJavaSysMenuMapper.getMenuList(studyJavaSysMenuDaoPage, studyJavaSysMenuDao);
+            List<StudyJavaSysMenuVo> menuVoList = menuDaoIPage.getRecords().stream()
+                    .map(this::convertToVo)
                     .filter(Objects::nonNull)
                     .collect(Collectors.toList());
-
-            IPage<StudyJavaSysMenuDto> menuDtoIPage = new Page<>(menuDaoIPage.getCurrent(), 
-                    menuDaoIPage.getSize(), menuDaoIPage.getTotal());
-            menuDtoIPage.setRecords(menuDtoList);
-            return menuDtoIPage;
+            Page<StudyJavaSysMenuVo> studyJavaSysMenuVoPage = new Page<>(page.getCurrent(), page.getSize(),page.getTotal());
+            studyJavaSysMenuVoPage.setRecords(menuVoList);
+            return studyJavaSysMenuVoPage;
         } catch (Exception e) {
             log.error("获取菜单列表失败", e);
             throw new StudyJavaException("获取菜单列表失败");
@@ -94,11 +107,11 @@ public class StudyJavaSysMenuServiceImpl implements StudyJavaSysMenuService {
     }
 
     @Override
-    public StudyJavaSysMenuDto getDetail(Serializable id) {
+    public StudyJavaSysMenuVo getMenuDetail(Serializable id) {
         Assert.notNull(id, "菜单ID不能为空");
         try {
-            StudyJavaSysMenuDao menuDao = studyJavaSysMenuMapper.getDetail(id);
-            return convertToDto(menuDao);
+            StudyJavaSysMenuDao studyJavaSysMenuDao = studyJavaSysMenuMapper.getMenuDetail(id);
+            return convertToVo(studyJavaSysMenuDao);
         } catch (Exception e) {
             log.error("获取菜单详情失败, id: {}", id, e);
             throw new StudyJavaException("获取菜单详情失败");
@@ -106,15 +119,13 @@ public class StudyJavaSysMenuServiceImpl implements StudyJavaSysMenuService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
-    public Boolean addMenu(StudyJavaSysMenuVo studyJavaSysMenuVo) {
-        Assert.notNull(studyJavaSysMenuVo, "菜单信息不能为空");
+    public Boolean addMenu(StudyJavaSysMenuDto studyJavaSysMenuDto) {
+        Assert.notNull(studyJavaSysMenuDto, "菜单信息不能为空");
         try {
-            StudyJavaSysMenuDao menuDao = convertToDao(studyJavaSysMenuVo);
+            StudyJavaSysMenuDao menuDao = convertToDao(studyJavaSysMenuDto);
             menuDao.setCreateTime(new Date());
             menuDao.setUpdateTime(new Date());
             menuDao.setIsDeleted(0);
-
             return studyJavaSysMenuMapper.addMenu(menuDao) > 0;
         } catch (Exception e) {
             log.error("添加菜单失败", e);
@@ -123,33 +134,30 @@ public class StudyJavaSysMenuServiceImpl implements StudyJavaSysMenuService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
-    public Boolean updateMenu(StudyJavaSysMenuVo studyJavaSysMenuVo) {
-        Assert.notNull(studyJavaSysMenuVo, "菜单信息不能为空");
-        Assert.notNull(studyJavaSysMenuVo.getMenuId(), "菜单ID不能为空");
+    public Boolean updateMenu(StudyJavaSysMenuDto studyJavaSysMenuDto) {
+        Assert.notNull(studyJavaSysMenuDto, "菜单信息不能为空");
+        Assert.notNull(studyJavaSysMenuDto.getMenuId(), "菜单ID不能为空");
         try {
-            StudyJavaSysMenuDao menuDao = convertToDao(studyJavaSysMenuVo);
-            menuDao.setMenuId(studyJavaSysMenuVo.getMenuId());
+            StudyJavaSysMenuDao menuDao = convertToDao(studyJavaSysMenuDto);
+            menuDao.setMenuId(studyJavaSysMenuDto.getMenuId());
             menuDao.setUpdateTime(new Date());
-
             return studyJavaSysMenuMapper.updateMenu(menuDao) > 0;
         } catch (Exception e) {
-            log.error("更新菜单失败, id: {}", studyJavaSysMenuVo.getMenuId(), e);
+            log.error("更新菜单失败, id: {}", studyJavaSysMenuDto.getMenuId(), e);
             throw new StudyJavaException("更新菜单失败");
         }
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public Boolean deleteMenu(Serializable id) {
         Assert.notNull(id, "菜单ID不能为空");
         try {
-            StudyJavaSysMenuDao menuDao = new StudyJavaSysMenuDao();
-            menuDao.setMenuId((Long) id);
-            menuDao.setIsDeleted(1);
-            menuDao.setUpdateTime(new Date());
+            StudyJavaSysMenuDao studyJavaSysMenuDao = new StudyJavaSysMenuDao();
+            studyJavaSysMenuDao.setMenuId((Long) id);
+            studyJavaSysMenuDao.setIsDeleted(1);
+            studyJavaSysMenuDao.setUpdateTime(new Date());
 
-            return studyJavaSysMenuMapper.deleteMenu(menuDao) > 0;
+            return studyJavaSysMenuMapper.deleteMenu(studyJavaSysMenuDao) > 0;
         } catch (Exception e) {
             log.error("删除菜单失败, id: {}", id, e);
             throw new StudyJavaException("删除菜单失败");

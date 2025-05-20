@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.domain.dao.StudyJavaSysMenuDao;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.example.domain.dto.StudyJavaSysMenuDto;
 import com.example.domain.vo.StudyJavaSysMenuVo;
 import org.apache.ibatis.annotations.Param;
 import java.io.Serializable;
@@ -15,7 +16,8 @@ import java.io.Serializable;
 * @Entity com.example.domain.dao.StudyJavaSysMenuDao
 */
 public interface StudyJavaSysMenuMapper extends BaseMapper<StudyJavaSysMenuDao> {
-    IPage<StudyJavaSysMenuDao>list(Page<StudyJavaSysMenuVo> page, @Param("studyJavaSysMenuVo") StudyJavaSysMenuVo studyJavaSysMenuVo);
+
+    IPage<StudyJavaSysMenuDao>getMenuList(Page<StudyJavaSysMenuDao> page, @Param("studyJavaSysMenuDao") StudyJavaSysMenuDao studyJavaSysMenuDao);
 
     /**
      * 通过主键查询单条数据
@@ -23,31 +25,31 @@ public interface StudyJavaSysMenuMapper extends BaseMapper<StudyJavaSysMenuDao> 
      * @param id 主键
      * @return 单条数据
      */
-    StudyJavaSysMenuDao getDetail(@Param("id") Serializable id);
+    StudyJavaSysMenuDao getMenuDetail(@Param("id") Serializable id);
 
     /**
      * 新增菜单
      *
-     * @param menuDao 菜单信息
+     * @param studyJavaSysMenuDao 菜单信息
      * @return 新增结果
      */
-    int addMenu(@Param("menu") StudyJavaSysMenuDao menuDao);
+    int addMenu(@Param("studyJavaSysMenuDao") StudyJavaSysMenuDao studyJavaSysMenuDao);
 
     /**
      * 更新菜单
      *
-     * @param menuDao 菜单信息
+     * @param studyJavaSysMenuDao 菜单信息
      * @return 更新结果
      */
-    int updateMenu(@Param("menu") StudyJavaSysMenuDao menuDao);
+    int updateMenu(@Param("studyJavaSysMenuDao") StudyJavaSysMenuDao studyJavaSysMenuDao);
 
     /**
      * 删除菜单（软删除）
      *
-     * @param menu 菜单信息
+     * @param studyJavaSysMenuDao 菜单信息
      * @return 删除结果
      */
-    int deleteMenu(@Param("menu") StudyJavaSysMenuDao menu);
+    int deleteMenu(@Param("studyJavaSysMenuDao") StudyJavaSysMenuDao studyJavaSysMenuDao);
 }
 
 

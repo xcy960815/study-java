@@ -9,9 +9,7 @@ import com.example.utils.ResponseResult;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
-
 import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -36,20 +34,16 @@ public class StudyJavaSysMenuController extends BaseController {
      * 获取菜单列表
      * @param pageSize 每页大小
      * @param pageNum 页码
-     * @param menuDto 查询条件
+     * @param studyJavaSysMenuDto 查询条件
      * @return 菜单列表
      */
-    @GetMapping("/list")
-    public ResponseResult<Map<String,Object>> list(
+    @GetMapping("/getMenuList")
+    public ResponseResult<Map<String,Object>> getMenuList(
             @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
             @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
-            @ModelAttribute StudyJavaSysMenuDto menuDto
+            @ModelAttribute StudyJavaSysMenuDto studyJavaSysMenuDto
     ) {
-        // 将DTO转换为VO用于查询
-        StudyJavaSysMenuVo menuVo = new StudyJavaSysMenuVo();
-        BeanUtils.copyProperties(menuDto, menuVo);
-
-        IPage<StudyJavaSysMenuDto> menuPage = studyJavaSysMenuService.list(startPage(pageNum, pageSize), menuVo);
+        IPage<StudyJavaSysMenuVo> menuPage = studyJavaSysMenuService.getMenuList(startPage(pageNum, pageSize), studyJavaSysMenuDto);
         return ResponseGenerator.generateSuccessResult(getPageData(menuPage));
     }
 
@@ -59,40 +53,28 @@ public class StudyJavaSysMenuController extends BaseController {
      * @param id 主键
      * @return 菜单详情
      */
-    @GetMapping("/getDetail/{id}")
-    public ResponseResult<StudyJavaSysMenuVo> getDetail(@PathVariable Serializable id) {
-        StudyJavaSysMenuDto menuDto = studyJavaSysMenuService.getDetail(id);
-        if (menuDto == null) {
+    @GetMapping("/getMenuDetail/{id}")
+    public ResponseResult<StudyJavaSysMenuVo> getMenuDetail(@PathVariable Serializable id) {
+        StudyJavaSysMenuVo studyJavaSysMenuVo = studyJavaSysMenuService.getMenuDetail(id);
+        if (studyJavaSysMenuVo == null) {
 //            return ResponseGenerator.generateErrorResult("菜单不存在");
         }
-
-        // 将DTO转换为VO
-        StudyJavaSysMenuVo menuVo = new StudyJavaSysMenuVo();
-        BeanUtils.copyProperties(menuDto, menuVo);
-
-        return ResponseGenerator.generateSuccessResult(menuVo);
+        return ResponseGenerator.generateSuccessResult(studyJavaSysMenuVo);
     }
 
     /**
      * 新增菜单
      *
-     * @param menuDto 菜单信息
+     * @param studyJavaSysMenuDto 菜单信息
      * @return 新增结果
      */
     @PostMapping("/addMenu")
-    public ResponseResult<StudyJavaSysMenuVo> addMenu(@Valid @RequestBody StudyJavaSysMenuDto menuDto) {
-        // 将DTO转换为VO
-        StudyJavaSysMenuVo menuVo = new StudyJavaSysMenuVo();
-        BeanUtils.copyProperties(menuDto, menuVo);
-
-        Boolean result = studyJavaSysMenuService.addMenu(menuVo);
-
+    public ResponseResult<StudyJavaSysMenuVo> addMenu(@Valid @RequestBody StudyJavaSysMenuDto studyJavaSysMenuDto) {
+        Boolean result = studyJavaSysMenuService.addMenu(studyJavaSysMenuDto);
         if (result) {
             // 获取新增的菜单信息
-            StudyJavaSysMenuDto newMenuDto = studyJavaSysMenuService.getDetail(menuVo.getMenuId());
-            StudyJavaSysMenuVo newMenuVo = new StudyJavaSysMenuVo();
-            BeanUtils.copyProperties(newMenuDto, newMenuVo);
-            return ResponseGenerator.generateSuccessResult(newMenuVo);
+            StudyJavaSysMenuVo studyJavaSysMenuVo = studyJavaSysMenuService.getMenuDetail(studyJavaSysMenuDto.getMenuId());
+            return ResponseGenerator.generateSuccessResult(studyJavaSysMenuVo);
         } else {
 //            return ResponseGenerator.<StudyJavaSysMenuVo>generateErrorResult("新增菜单失败");
             return null;
@@ -102,27 +84,19 @@ public class StudyJavaSysMenuController extends BaseController {
     /**
      * 更新菜单
      *
-     * @param menuDto 菜单信息
+     * @param studyJavaSysMenuDto 菜单信息
      * @return 更新结果
      */
     @PutMapping("/updateMenu")
-    public ResponseResult<StudyJavaSysMenuVo> updateMenu(@Valid @RequestBody StudyJavaSysMenuDto menuDto) {
-        if (menuDto.getMenuId() == null) {
+    public ResponseResult<StudyJavaSysMenuVo> updateMenu(@Valid @RequestBody StudyJavaSysMenuDto studyJavaSysMenuDto) {
+        if (studyJavaSysMenuDto.getMenuId() == null) {
 //            return ResponseGenerator.<StudyJavaSysMenuVo>generateErrorResult("菜单ID不能为空");
         }
-
-        // 将DTO转换为VO
-        StudyJavaSysMenuVo menuVo = new StudyJavaSysMenuVo();
-        BeanUtils.copyProperties(menuDto, menuVo);
-
-        Boolean result = studyJavaSysMenuService.updateMenu(menuVo);
-
+        Boolean result = studyJavaSysMenuService.updateMenu(studyJavaSysMenuDto);
         if (result) {
             // 获取更新后的菜单信息
-            StudyJavaSysMenuDto updatedMenuDto = studyJavaSysMenuService.getDetail(menuDto.getMenuId());
-            StudyJavaSysMenuVo updatedMenuVo = new StudyJavaSysMenuVo();
-            BeanUtils.copyProperties(updatedMenuDto, updatedMenuVo);
-            return ResponseGenerator.generateSuccessResult(updatedMenuVo);
+            StudyJavaSysMenuVo studyJavaSysMenuVo = studyJavaSysMenuService.getMenuDetail(studyJavaSysMenuDto.getMenuId());
+            return ResponseGenerator.generateSuccessResult(studyJavaSysMenuVo);
         } else {
 //            return ResponseGenerator.generateErrorResult("更新菜单失败");
             return null;
@@ -131,7 +105,6 @@ public class StudyJavaSysMenuController extends BaseController {
 
     /**
      * 删除菜单（软删除）
-     *
      * @param id 菜单ID
      * @return 删除结果
      */
@@ -153,8 +126,8 @@ public class StudyJavaSysMenuController extends BaseController {
     @GetMapping("/tree")
     public ResponseResult<List<Map<String, Object>>> getMenuTree() {
         // 获取所有菜单
-        IPage<StudyJavaSysMenuDto> allMenus = studyJavaSysMenuService.list(new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(1, 1000), new StudyJavaSysMenuVo());
-        List<StudyJavaSysMenuDto> menuList = allMenus.getRecords();
+        IPage<StudyJavaSysMenuVo> allMenus = studyJavaSysMenuService.getMenuList(startPage(1, 9999), new StudyJavaSysMenuDto());
+        List<StudyJavaSysMenuVo> menuList = allMenus.getRecords();
 
         // 构建树形结构
         List<Map<String, Object>> menuTree = buildMenuTree(menuList, 0L);
@@ -167,7 +140,7 @@ public class StudyJavaSysMenuController extends BaseController {
      * @param parentId 父菜单ID
      * @return 菜单树
      */
-    private List<Map<String, Object>> buildMenuTree(List<StudyJavaSysMenuDto> menuList, Long parentId) {
+    private List<Map<String, Object>> buildMenuTree(List<StudyJavaSysMenuVo> menuList, Long parentId) {
         return menuList.stream()
                 .filter(menu -> Objects.equals(menu.getParentId(), parentId))
                 .map(menu -> {

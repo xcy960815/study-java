@@ -26,32 +26,32 @@
         create_time,update_time,is_deleted
     </sql>
 
-    <select id="list" resultMap="BaseResultMap">
+    <select id="getMenuList" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List" />
         FROM
         study_java_sys_menu
         <where>
             (is_deleted = 0 OR is_deleted IS NULL)
-            <if test="studyJavaSysMenuVo != null">
-                <if test="studyJavaSysMenuVo.menuName != null and studyJavaSysMenuVo.menuName != ''">
-                    AND menu_name LIKE CONCAT('%', #{studyJavaSysMenuVo.menuName}, '%')
+            <if test="studyJavaSysMenuDao != null">
+                <if test="studyJavaSysMenuDao.menuName != null and studyJavaSysMenuDao.menuName != ''">
+                    AND menu_name LIKE CONCAT('%', #{studyJavaSysMenuDao.menuName}, '%')
                 </if>
-                <if test="studyJavaSysMenuVo.menuType != null">
-                    AND menu_type = #{studyJavaSysMenuVo.menuType}
+                <if test="studyJavaSysMenuDao.menuType != null">
+                    AND menu_type = #{studyJavaSysMenuDao.menuType}
                 </if>
-                <if test="studyJavaSysMenuVo.parentId != null">
-                    AND parent_id = #{studyJavaSysMenuVo.parentId}
+                <if test="studyJavaSysMenuDao.parentId != null">
+                    AND parent_id = #{studyJavaSysMenuDao.parentId}
                 </if>
-                <if test="studyJavaSysMenuVo.perms != null and studyJavaSysMenuVo.perms != ''">
-                    AND perms LIKE CONCAT('%', #{studyJavaSysMenuVo.perms}, '%')
+                <if test="studyJavaSysMenuDao.perms != null and studyJavaSysMenuDao.perms != ''">
+                    AND perms LIKE CONCAT('%', #{studyJavaSysMenuDao.perms}, '%')
                 </if>
             </if>
         </where>
         ORDER BY order_num ASC
     </select>
 
-    <select id="getDetail" resultMap="BaseResultMap">
+    <select id="getMenuDetail" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List" />
         FROM
@@ -64,46 +64,46 @@
         INSERT INTO study_java_sys_menu
         (parent_id, menu_name, path, component, icon, menu_type, perms, order_num, create_time, update_time, is_deleted)
         VALUES
-        (#{menu.parentId}, #{menu.menuName}, #{menu.path}, #{menu.component}, #{menu.icon}, 
-        #{menu.menuType}, #{menu.perms}, #{menu.orderNum}, #{menu.createTime}, #{menu.updateTime}, #{menu.isDeleted})
+        (#{studyJavaSysMenuDao.parentId}, #{studyJavaSysMenuDao.menuName}, #{studyJavaSysMenuDao.path}, #{studyJavaSysMenuDao.component}, #{studyJavaSysMenuDao.icon},
+        #{studyJavaSysMenuDao.menuType}, #{studyJavaSysMenuDao.perms}, #{studyJavaSysMenuDao.orderNum}, #{studyJavaSysMenuDao.createTime}, #{studyJavaSysMenuDao.updateTime}, #{studyJavaSysMenuDao.isDeleted})
     </insert>
 
     <update id="updateMenu" parameterType="com.example.domain.dao.StudyJavaSysMenuDao">
         UPDATE study_java_sys_menu
         <set>
-            <if test="menu.menuName != null and menu.menuName != ''">
-                menu_name = #{menu.menuName},
+            <if test="studyJavaSysMenuDao.menuName != null and studyJavaSysMenuDao.menuName != ''">
+                menu_name = #{studyJavaSysMenuDao.menuName},
             </if>
-            <if test="menu.parentId != null">
-                parent_id = #{menu.parentId},
+            <if test="studyJavaSysMenuDao.parentId != null">
+                parent_id = #{studyJavaSysMenuDao.parentId},
             </if>
-            <if test="menu.path != null">
-                path = #{menu.path},
+            <if test="studyJavaSysMenuDao.path != null">
+                path = #{studyJavaSysMenuDao.path},
             </if>
-            <if test="menu.component != null">
-                component = #{menu.component},
+            <if test="studyJavaSysMenuDao.component != null">
+                component = #{studyJavaSysMenuDao.component},
             </if>
-            <if test="menu.icon != null">
-                icon = #{menu.icon},
+            <if test="studyJavaSysMenuDao.icon != null">
+                icon = #{studyJavaSysMenuDao.icon},
             </if>
-            <if test="menu.menuType != null">
-                menu_type = #{menu.menuType},
+            <if test="studyJavaSysMenuDao.menuType != null">
+                menu_type = #{studyJavaSysMenuDao.menuType},
             </if>
-            <if test="menu.perms != null">
-                perms = #{menu.perms},
+            <if test="studyJavaSysMenuDao.perms != null">
+                perms = #{studyJavaSysMenuDao.perms},
             </if>
-            <if test="menu.orderNum != null">
-                order_num = #{menu.orderNum},
+            <if test="studyJavaSysMenuDao.orderNum != null">
+                order_num = #{studyJavaSysMenuDao.orderNum},
             </if>
-            update_time = #{menu.updateTime}
+            update_time = #{studyJavaSysMenuDao.updateTime}
         </set>
-        WHERE menu_id = #{menu.menuId}
+        WHERE menu_id = #{studyJavaSysMenuDao.menuId}
     </update>
 
     <update id="deleteMenu" parameterType="com.example.domain.dao.StudyJavaSysMenuDao">
         UPDATE study_java_sys_menu
-        SET is_deleted = #{menu.isDeleted},
-            update_time = #{menu.updateTime}
-        WHERE menu_id = #{menu.menuId}
+        SET is_deleted = #{studyJavaSysMenuDao.isDeleted},
+            update_time = #{studyJavaSysMenuDao.updateTime}
+        WHERE menu_id = #{studyJavaSysMenuDao.menuId}
     </update>
 </mapper>
