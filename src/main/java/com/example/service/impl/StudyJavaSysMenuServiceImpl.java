@@ -25,29 +25,12 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class StudyJavaSysMenuServiceImpl implements StudyJavaSysMenuService {
+    private final int ISMENUDELETE = 1;
+    private final int ISMENUEDIT = 0;
 
     @Resource
     private StudyJavaSysMenuMapper studyJavaSysMenuMapper;
 
-    /**
-     * 将 DAO 对象转换为 DTO 对象
-     * @param menuDao DAO对象
-     * @return DTO对象
-     */
-    private StudyJavaSysMenuDto convertToDto(StudyJavaSysMenuDao menuDao) {
-        if (menuDao == null) {
-            return null;
-        }
-        StudyJavaSysMenuDto dto = new StudyJavaSysMenuDto();
-        dto.setMenuId(menuDao.getMenuId());
-        dto.setMenuName(menuDao.getMenuName());
-        dto.setComponent(menuDao.getComponent());
-        dto.setMenuType(menuDao.getMenuType());
-        dto.setIcon(menuDao.getIcon());
-        dto.setCreateTime(menuDao.getCreateTime());
-        dto.setOrderNum(menuDao.getOrderNum());
-        return dto;
-    }
 
     /**
      * 将 Dto 对象转换为 DAO 对象
@@ -67,9 +50,16 @@ public class StudyJavaSysMenuServiceImpl implements StudyJavaSysMenuService {
         studyJavaSysMenuDao.setMenuType(studyJavaSysMenuDto.getMenuType());
         studyJavaSysMenuDao.setPerms(studyJavaSysMenuDto.getPerms());
         studyJavaSysMenuDao.setOrderNum(studyJavaSysMenuDto.getOrderNum());
+//        studyJavaSysMenuDao.setCreateTime(studyJavaSysMenuDto.getCreateTime());
+//        studyJavaSysMenuDao.setUpdateTime(studyJavaSysMenuDto.getUpdateTime());
         return studyJavaSysMenuDao;
     }
 
+    /**
+     * 将 DAO 对象转换为 VO 对象
+     * @param studyJavaSysMenuDao
+     * @return VO对象
+     */
     private StudyJavaSysMenuVo convertToVo(StudyJavaSysMenuDao studyJavaSysMenuDao) {
         if (studyJavaSysMenuDao == null) {
             return null;
@@ -84,6 +74,8 @@ public class StudyJavaSysMenuServiceImpl implements StudyJavaSysMenuService {
         studyJavaSysMenuVo.setMenuType(studyJavaSysMenuDao.getMenuType());
         studyJavaSysMenuVo.setPerms(studyJavaSysMenuDao.getPerms());
         studyJavaSysMenuVo.setOrderNum(studyJavaSysMenuDao.getOrderNum());
+        studyJavaSysMenuVo.setCreateTime(studyJavaSysMenuDao.getCreateTime());
+        studyJavaSysMenuVo.setUpdateTime(studyJavaSysMenuDao.getUpdateTime());
         return studyJavaSysMenuVo;
     }
 
@@ -120,13 +112,13 @@ public class StudyJavaSysMenuServiceImpl implements StudyJavaSysMenuService {
 
     @Override
     public Boolean addMenu(StudyJavaSysMenuDto studyJavaSysMenuDto) {
-        Assert.notNull(studyJavaSysMenuDto, "菜单信息不能为空");
+//        Assert.notNull(studyJavaSysMenuDto, "菜单信息不能为空");
         try {
-            StudyJavaSysMenuDao menuDao = convertToDao(studyJavaSysMenuDto);
-            menuDao.setCreateTime(new Date());
-            menuDao.setUpdateTime(new Date());
-            menuDao.setIsDeleted(0);
-            return studyJavaSysMenuMapper.addMenu(menuDao) > 0;
+            StudyJavaSysMenuDao studyJavaSysMenuDao = convertToDao(studyJavaSysMenuDto);
+            studyJavaSysMenuDao.setCreateTime(new Date());
+            studyJavaSysMenuDao.setUpdateTime(new Date());
+            studyJavaSysMenuDao.setIsDeleted(0);
+            return studyJavaSysMenuMapper.addMenu(studyJavaSysMenuDao) > 0;
         } catch (Exception e) {
             log.error("添加菜单失败", e);
             throw new StudyJavaException("添加菜单失败");
@@ -138,10 +130,10 @@ public class StudyJavaSysMenuServiceImpl implements StudyJavaSysMenuService {
         Assert.notNull(studyJavaSysMenuDto, "菜单信息不能为空");
         Assert.notNull(studyJavaSysMenuDto.getMenuId(), "菜单ID不能为空");
         try {
-            StudyJavaSysMenuDao menuDao = convertToDao(studyJavaSysMenuDto);
-            menuDao.setMenuId(studyJavaSysMenuDto.getMenuId());
-            menuDao.setUpdateTime(new Date());
-            return studyJavaSysMenuMapper.updateMenu(menuDao) > 0;
+            StudyJavaSysMenuDao studyJavaSysMenuDao = convertToDao(studyJavaSysMenuDto);
+            studyJavaSysMenuDao.setMenuId(studyJavaSysMenuDto.getMenuId());
+            studyJavaSysMenuDao.setUpdateTime(new Date());
+            return studyJavaSysMenuMapper.updateMenu(studyJavaSysMenuDao) > 0;
         } catch (Exception e) {
             log.error("更新菜单失败, id: {}", studyJavaSysMenuDto.getMenuId(), e);
             throw new StudyJavaException("更新菜单失败");
@@ -152,11 +144,11 @@ public class StudyJavaSysMenuServiceImpl implements StudyJavaSysMenuService {
     public Boolean deleteMenu(Serializable id) {
         Assert.notNull(id, "菜单ID不能为空");
         try {
+            Long menuId = Long.valueOf(id.toString());
             StudyJavaSysMenuDao studyJavaSysMenuDao = new StudyJavaSysMenuDao();
-            studyJavaSysMenuDao.setMenuId((Long) id);
-            studyJavaSysMenuDao.setIsDeleted(1);
+            studyJavaSysMenuDao.setMenuId(menuId);
+            studyJavaSysMenuDao.setIsDeleted(ISMENUDELETE);
             studyJavaSysMenuDao.setUpdateTime(new Date());
-
             return studyJavaSysMenuMapper.deleteMenu(studyJavaSysMenuDao) > 0;
         } catch (Exception e) {
             log.error("删除菜单失败, id: {}", id, e);

@@ -1,9 +1,11 @@
 package com.example.domain.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @Data
 public class StudyJavaSysMenuVo implements Serializable {
@@ -55,12 +57,16 @@ public class StudyJavaSysMenuVo implements Serializable {
     /**
      * 创建时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date createTime;
 
     /**
      * 更新时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date updateTime;
+
+    private List<StudyJavaSysMenuVo> children;
 
     @Serial
     private static final long serialVersionUID = 1L;

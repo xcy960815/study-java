@@ -1,66 +1,79 @@
 package com.example.utils;
 
-
-
 import com.example.domain.enums.ResponseResultEnum;
+import java.util.List;
 
 /**
- * 该类是生成响应的工具类
+ * 响应生成工具类
+ * 用于统一生成API响应结果
  */
 public class ResponseGenerator {
-    /**
-     * 成功 code
-     */
     private static final int SUCCESS_CODE = ResponseResultEnum.SUCCESS.getCode();
-    /**
-     * 错误 code
-     */
     private static final int ERROR_CODE = ResponseResultEnum.ERROR.getCode();
-    /**
-     * 成功 message
-     */
     private static final String SUCCESS_MESSAGE = ResponseResultEnum.SUCCESS.getMessage();
-    /**
-     * 错误 message
-     */
     private static final String ERROR_MESSAGE = ResponseResultEnum.ERROR.getMessage();
+
+    private ResponseGenerator() {
+        throw new IllegalStateException("Utility class");
+    }
+
+    /**
+     * 生成基础响应对象
+     * @param code 状态码
+     * @param message 消息
+     * @param data 数据
+     * @return ResponseResult
+     */
+    private static <T> ResponseResult<T> createResponse(int code, String message, T data) {
+        ResponseResult<T> response = new ResponseResult<>();
+        response.setCode(code);
+        response.setMessage(message);
+        response.setData(data);
+        return response;
+    }
 
     /**
      * 生成成功响应
+     * @param data 响应数据
      * @return ResponseResult
      */
     public static <T> ResponseResult<T> generateSuccessResult(T data) {
-        // 创建一个 ResponseResult 对象，指定泛型类型 T
-        ResponseResult<T> responseResult = new ResponseResult<>();
-        responseResult.setCode(SUCCESS_CODE);
-        responseResult.setMessage(SUCCESS_MESSAGE);
-        responseResult.setData(data);
-        return responseResult;
+        return createResponse(SUCCESS_CODE, SUCCESS_MESSAGE, data);
     }
 
     /**
-     * 生成成功响应
+     * 生成无数据的成功响应
      * @return ResponseResult
      */
     public static <T> ResponseResult<T> generateSuccessResult() {
-        // 创建一个 ResponseResult 对象，指定泛型类型 T
-        ResponseResult<T> responseResult = new ResponseResult<>();
-        responseResult.setCode(SUCCESS_CODE);
-        responseResult.setMessage(SUCCESS_MESSAGE);
-        responseResult.setData(null);
-        return responseResult;
+        return generateSuccessResult(null);
     }
 
     /**
-     * 生成失败响应
-     * message
+     * 生成错误响应
+     * @param message 错误信息
      * @return ResponseResult
      */
     public static <T> ResponseResult<T> generateErrorResult(T message) {
-        ResponseResult<T> responseResult = new ResponseResult<>();
-        responseResult.setCode(ERROR_CODE);
-        responseResult.setData(null);
-        responseResult.setMessage(String.valueOf(message));
-        return responseResult;
+        return createResponse(ERROR_CODE, String.valueOf(message), null);
+    }
+
+    /**
+     * 生成列表响应
+     * @param data 数据列表
+     * @param total 总数
+     * @return ResponseListResult
+     */
+    public static <T> ResponseListResult<T> generateListResult(List<T> data, long total) {
+        ResponseListResult<T> response = new ResponseListResult<>();
+        response.setCode(SUCCESS_CODE);
+        response.setMessage(SUCCESS_MESSAGE);
+
+        ResponseListResult.DataWrapper<T> wrapper = new ResponseListResult.DataWrapper<>();
+        wrapper.setData(data);
+        wrapper.setTotal(total);
+        response.setData(wrapper);
+
+        return response;
     }
 }
