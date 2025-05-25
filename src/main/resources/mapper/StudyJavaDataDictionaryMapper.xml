@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.StudyJavaDataDictionaryMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.domain.dao.StudyJavaDataDictionaryDao">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="dictType" column="dict_type" jdbcType="VARCHAR"/>
+            <result property="dictCode" column="dict_code" jdbcType="VARCHAR"/>
+            <result property="dictName" column="dict_name" jdbcType="VARCHAR"/>
+            <result property="dictValue" column="dict_value" jdbcType="VARCHAR"/>
+            <result property="sortOrder" column="sort_order" jdbcType="INTEGER"/>
+            <result property="status" column="status" jdbcType="TINYINT"/>
+            <result property="remark" column="remark" jdbcType="VARCHAR"/>
+            <result property="createdBy" column="created_by" jdbcType="VARCHAR"/>
+            <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+            <result property="updatedBy" column="updated_by" jdbcType="VARCHAR"/>
+            <result property="updatedTime" column="updated_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,dict_type,dict_code,
+        dict_name,dict_value,sort_order,
+        status,remark,created_by,
+        created_time,updated_by,updated_time
+    </sql>
+
+    <select id="dataDictionaryList" resultMap="BaseResultMap">
+        SELECT
+            <include refid="Base_Column_List" />
+        FROM study_java_data_dictionary
+        <where>
+            <if test="studyJavaDataDictionaryDao != null and studyJavaDataDictionaryDao.dictType != null and studyJavaDataDictionaryDao.dictType != ''">
+                AND dict_type = #{studyJavaDataDictionaryDao.dictType}
+            </if>
+            <if test="studyJavaDataDictionaryDao != null and studyJavaDataDictionaryDao.dictCode != null and studyJavaDataDictionaryDao.dictCode != ''">
+                AND dict_code = #{studyJavaDataDictionaryDao.dictCode}
+            </if>
+            <if test="studyJavaDataDictionaryDao != null and studyJavaDataDictionaryDao.dictName != null and studyJavaDataDictionaryDao.dictName != ''">
+                AND dict_name LIKE CONCAT('%', #{studyJavaDataDictionaryDao.dictName}, '%')
+            </if>
+            <if test="studyJavaDataDictionaryDao != null and studyJavaDataDictionaryDao.status != null and studyJavaDataDictionaryDao.status != ''" >
+                AND status = #{studyJavaDataDictionaryDao.status}
+            </if>
+        </where>
+        ORDER BY sort_order DESC
+    </select>
+
+    <insert id="addDataDictionary" parameterType="com.example.domain.dao.StudyJavaDataDictionaryDao">
+        INSERT INTO study_java_data_dictionary
+        (dict_type,dict_code,dict_name,dict_value,sort_order,status,remark,created_by,created_time,updated_by,updated_time)
+        VALUES
+        (#{studyJavaDataDictionaryDao.dictType},#{studyJavaDataDictionaryDao.dictCode},#{studyJavaDataDictionaryDao.dictName},#{studyJavaDataDictionaryDao.dictValue},#{studyJavaDataDictionaryDao.sortOrder},#{studyJavaDataDictionaryDao.status},#{studyJavaDataDictionaryDao.remark},#{studyJavaDataDictionaryDao.createdBy},#{studyJavaDataDictionaryDao.createdTime},#{studyJavaDataDictionaryDao.updatedBy},#{studyJavaDataDictionaryDao.updatedTime})
+    </insert>
+
+    <update id="updateDataDictionary" parameterType="com.example.domain.dao.StudyJavaDataDictionaryDao">
+        UPDATE study_java_data_dictionary
+        <set>
+            <if test="studyJavaDataDictionaryDao.dictType != null">dict_type = #{studyJavaDataDictionaryDao.dictType},</if>
+            <if test="studyJavaDataDictionaryDao.dictCode != null">dict_code = #{studyJavaDataDictionaryDao.dictCode},</if>
+            <if test="studyJavaDataDictionaryDao.dictName != null">dict_name = #{studyJavaDataDictionaryDao.dictName},</if>
+            <if test="studyJavaDataDictionaryDao.dictValue != null">dict_value = #{studyJavaDataDictionaryDao.dictValue},</if>
+            <if test="studyJavaDataDictionaryDao.sortOrder != null">sort_order = #{studyJavaDataDictionaryDao.sortOrder},</if>
+            <if test="studyJavaDataDictionaryDao.status != null">status = #{studyJavaDataDictionaryDao.status},</if>
+            <if test="studyJavaDataDictionaryDao.remark != null">remark = #{studyJavaDataDictionaryDao.remark},</if>
+            <if test="studyJavaDataDictionaryDao.updatedBy != null">updated_by = #{studyJavaDataDictionaryDao.updatedBy},</if>
+            <if test="studyJavaDataDictionaryDao.updatedTime != null">updated_time = #{studyJavaDataDictionaryDao.updatedTime},</if>
+        </set>
+        WHERE id = #{studyJavaDataDictionaryDao.id}
+    </update>
+
+    <update id="deleteDataDictionary" parameterType="java.lang.Long">
+        UPDATE study_java_data_dictionary
+        SET status = 0
+        WHERE id = #{id}
+    </update>
+
+    <select id="dataDictionaryDetail" resultMap="BaseResultMap">
+        SELECT
+            <include refid="Base_Column_List" />
+        FROM study_java_data_dictionary
+        WHERE id = #{id}
+    </select>
+</mapper>

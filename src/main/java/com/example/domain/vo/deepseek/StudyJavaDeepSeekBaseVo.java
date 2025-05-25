@@ -1,5 +1,6 @@
 package com.example.domain.vo.deepseek;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
@@ -17,6 +18,7 @@ public class StudyJavaDeepSeekBaseVo {
      * 获取请求体
      * @return HttpRequest.BodyPublisher
      */
+    @JsonIgnore
     public HttpRequest.BodyPublisher getBodyPublisher() {
         try {
             String json = objectMapper.writeValueAsString(this);

@@ -10,7 +10,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * TableName  study_java_user
+ * TableName study_java_user
  */
 @Data
 public class StudyJavaUserVo implements Serializable {
@@ -69,6 +69,16 @@ public class StudyJavaUserVo implements Serializable {
      */
     @JsonIgnore
     private Integer lockedFlag;
+
+    /**
+     * 用户头像
+     */
+    private String avatar;
+
+    /**
+     * 年龄
+     */
+    private Integer age;
 
     /**
      * 注册时间，格式化为 "yyyy-MM-dd"

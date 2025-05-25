@@ -90,14 +90,45 @@ public class StudyJavaDeepSeekServiceImpl extends StudyJavaAiService implements 
 
     @Override
     public void completions(StudyJavaDeepSeekCompletionsVo studyJavaDeepSeekCompletionsVo, SseEmitter emitter) {
+        log.info("开始处理DeepSeek AI对话请求，请求参数：model={}, stream={}, messages.size={}",
+            studyJavaDeepSeekCompletionsVo.getModel(),
+            studyJavaDeepSeekCompletionsVo.getStream(),
+            studyJavaDeepSeekCompletionsVo.getMessages() != null ? studyJavaDeepSeekCompletionsVo.getMessages().size() : 0);
+
         try {
-            HttpRequest httpRequest = generateRequestBuilder(generateRequestUrl(DEEPSEEK_COMPLETIONS_URL))
-                    .POST(studyJavaDeepSeekCompletionsVo.getBodyPublisher())
+            // 构建请求URL
+            URI requestUrl = generateRequestUrl(DEEPSEEK_COMPLETIONS_URL);
+            log.debug("构建请求URL：{}", requestUrl);
+
+            // 构建请求体
+            HttpRequest.BodyPublisher bodyPublisher = studyJavaDeepSeekCompletionsVo.getBodyPublisher();
+            log.debug("构建请求体完成");
+
+            // 构建HTTP请求
+            HttpRequest httpRequest = generateRequestBuilder(requestUrl)
+                    .POST(bodyPublisher)
                     .build();
+            log.debug("构建HTTP请求完成，请求头：Content-Type=application/json, Authorization=Bearer ****");
+
+            // 发送请求
+            log.info("开始发送HTTP请求到DeepSeek AI");
             HttpResponse<InputStream> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofInputStream());
-            readResponseLines(response,emitter);
-        } catch (IOException | InterruptedException e) {
-            log.error("Error during HTTP request: {}", e.getMessage());
+            log.info("收到DeepSeek AI响应，状态码：{}", response.statusCode());
+
+            // 处理响应
+            log.debug("开始处理响应数据流");
+            readResponseLines(response, emitter);
+            log.info("响应数据处理完成");
+
+        } catch (IOException e) {
+            log.error("DeepSeek AI对话请求IO异常：{}", e.getMessage(), e);
+            emitter.completeWithError(e);
+        } catch (InterruptedException e) {
+            log.error("DeepSeek AI对话请求被中断：{}", e.getMessage(), e);
+            Thread.currentThread().interrupt(); // 保持中断状态
+            emitter.completeWithError(e);
+        } catch (Exception e) {
+            log.error("DeepSeek AI对话请求发生未知异常：{}", e.getMessage(), e);
             emitter.completeWithError(e);
         }
     }

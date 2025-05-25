@@ -1,10 +1,10 @@
 package com.example.controller;
 
-import cn.hutool.json.JSONObject;
-import cn.hutool.json.JSONUtil;
 import com.example.domain.dto.StudyJavaUserDto;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.example.domain.vo.StudyJavaUserVo;
 import com.example.exception.StudyJavaException;
+import com.example.utils.ResponseListResult;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -12,18 +12,16 @@ import org.springframework.web.bind.annotation.*;
 import com.example.utils.ResponseResult;
 import com.example.utils.ResponseGenerator;
 import com.example.service.StudyJavaUserService;
-import com.example.component.JwtTokenComponent;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
-import java.util.Map;
 
 @Slf4j
 @RestController
 @RequestMapping("/user")
 public class StudyJavaUserController extends BaseController {
 
-    @Resource
-    private JwtTokenComponent jwtTokenComponent;
+//    @Resource
+//    private JwtTokenComponent jwtTokenComponent;
     @Resource
     private StudyJavaUserService studyJavaUserService;
 
@@ -35,30 +33,22 @@ public class StudyJavaUserController extends BaseController {
      * @return ResponseResult<Map<String,Object>>
      */
     @GetMapping("/getUserList")
-    public ResponseResult<Map<String,Object>> getUserList(
+    public ResponseListResult<StudyJavaUserVo> getUserList(
             @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
             @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
             @ModelAttribute("studyJavaUser") StudyJavaUserDto studyJavaUser
     ) {
-        IPage<StudyJavaUserDto> userPage = studyJavaUserService.getUserList(startPage(pageNum, pageSize), studyJavaUser);
-        return ResponseGenerator.generateSuccessResult(getPageData(userPage));
+        IPage<StudyJavaUserVo> userVoPage = studyJavaUserService.getUserList(startPage(pageNum, pageSize), studyJavaUser);
+        return ResponseGenerator.generateListResult(userVoPage.getRecords(),userVoPage.getTotal());
     }
 
     /**
      * 获取用户信息
-     * @param authorization String
-     * @return ResponseResult<StudyJavaUserDto>
+     * @return ResponseResult<StudyJavaUserVo>
      */
     @GetMapping("/getUserInfo")
-    public ResponseResult<StudyJavaUserDto> getUserInfo(@RequestHeader(value = "Authorization", required = false) String authorization){
-        JSONObject tokenUserInfo = JSONUtil.parseObj(jwtTokenComponent.getUserInfoFromAuthorization(authorization));
-        Long userId = Long.parseLong(tokenUserInfo.get("userId").toString());
-        String loginName = tokenUserInfo.get("loginName").toString();
-        StudyJavaUserDto studyJavaUserDto = new StudyJavaUserDto();
-        studyJavaUserDto.setUserId(userId);
-        studyJavaUserDto.setLoginName(loginName);
-        StudyJavaUserDto userInfo = studyJavaUserService.getUserInfo(studyJavaUserDto);
-        return ResponseGenerator.generateSuccessResult(userInfo);
+    public ResponseResult<StudyJavaUserVo> getUserInfo(){
+        return ResponseGenerator.generateSuccessResult(studyJavaUserService.getUserInfo());
     }
 
     // RequestParam 通常用于获取单个参数
@@ -110,9 +100,8 @@ public class StudyJavaUserController extends BaseController {
      */
     @PostMapping("/insertUserInfo")
     public ResponseResult<Boolean> insertUserInfo(@Valid @RequestBody StudyJavaUserDto studyJavaUser) {
-        studyJavaUserService.insertUserInfo(studyJavaUser);
         // 返回插入结果
-        return ResponseGenerator.generateSuccessResult(true);
+        return ResponseGenerator.generateSuccessResult(studyJavaUserService.insertUserInfo(studyJavaUser));
     }
 
     /**
@@ -122,28 +111,17 @@ public class StudyJavaUserController extends BaseController {
      */
     @DeleteMapping("/deleteUserInfo")
     public ResponseResult<Boolean> deleteUserInfo(@RequestBody StudyJavaUserDto studyJavaUser) {
-        studyJavaUserService.deleteUserInfo(studyJavaUser);
         // 返回插入结果
-        return ResponseGenerator.generateSuccessResult(true);
+        return ResponseGenerator.generateSuccessResult(studyJavaUserService.deleteUserInfo(studyJavaUser));
     }
 
     /**
      * 更新用户密码
-     * @param authorization String
-     * @param studyJavaUser StudyJavaUserDto
      * @return ResponseResult<Boolean>
      */
     @PostMapping("/updateUserPassword")
-    public ResponseResult<Boolean> updateUserPassword(@RequestHeader(value = "Authorization", required = false) String authorization,@RequestBody StudyJavaUserDto studyJavaUser) {
-        String token = authorization.substring(7);
-        String userInfoStr = jwtTokenComponent.getUserInfoFromToken(token);
-        String[] userInfoArr = userInfoStr.split(":");
-        Long userId = Long.parseLong(userInfoArr[0]);
-        String loginName = userInfoArr[1];
-        studyJavaUser.setUserId(userId);
-        studyJavaUser.setLoginName(loginName);
-        studyJavaUserService.updateUserPassword(studyJavaUser);
+    public ResponseResult<Boolean> updateUserPassword(@RequestBody StudyJavaUserDto studyJavaUserDto) {
         // 返回插入结果
-        return ResponseGenerator.generateSuccessResult(true);
+        return ResponseGenerator.generateSuccessResult(studyJavaUserService.updateUserPassword(studyJavaUserDto));
     }
 }

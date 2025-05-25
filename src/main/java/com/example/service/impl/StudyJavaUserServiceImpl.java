@@ -1,15 +1,22 @@
 package com.example.service.impl;
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.example.component.JwtTokenComponent;
 import com.example.domain.dao.StudyJavaUserDao;
 import com.example.domain.dto.StudyJavaUserDto;
+import com.example.domain.vo.StudyJavaUserVo;
 import com.example.exception.StudyJavaException;
 import com.example.mapper.StudyJavaUserMapper;
 import com.example.service.StudyJavaUserService;
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.Date;
 import java.util.List;
@@ -30,49 +37,54 @@ public class StudyJavaUserServiceImpl implements StudyJavaUserService {
     @Resource
     private StudyJavaUserMapper studyJavaUserMapper;
 
+    @Resource
+    private JwtTokenComponent jwtTokenComponent;
+
     /**
      * 查询所有用户
      */
     @Override
-    public IPage<StudyJavaUserDto> getUserList(Page<StudyJavaUserDto> page, StudyJavaUserDto userQueryData) {
-        IPage<StudyJavaUserDao> userPageResult = studyJavaUserMapper.getUserList(page, userQueryData);
-        List<StudyJavaUserDto> userList = userPageResult.getRecords().stream().map(this::makeDaoToDto).collect(Collectors.toList());
+    public IPage<StudyJavaUserVo> getUserList(Page<StudyJavaUserDto> page, StudyJavaUserDto userQueryData) {
+        IPage<StudyJavaUserDao> userDaoResult = studyJavaUserMapper.getUserList(page, userQueryData);
+        List<StudyJavaUserVo> userVoList = userDaoResult.getRecords().stream().map(this::makeDaoToVo).collect(Collectors.toList());
         // 创建新的 IPage 对象
-        IPage<StudyJavaUserDto> resultPage = new Page<>(userPageResult.getCurrent(), userPageResult.getSize(), userPageResult.getTotal());
-        resultPage.setRecords(userList);
+        IPage<StudyJavaUserVo> resultPage = new Page<>(userDaoResult.getCurrent(), userDaoResult.getSize(), userDaoResult.getTotal());
+        resultPage.setRecords(userVoList);
         return resultPage;
     }
 
     /**
-     * dao 2 dto
+     * dao 2 vo
      * @param userInfoDao StudyJavaUserDao
      * @return StudyJavaUserDto
      */
-    private StudyJavaUserDto makeDaoToDto(StudyJavaUserDao userInfoDao) {
-        StudyJavaUserDto studyJavaUserDto = new StudyJavaUserDto();
-        studyJavaUserDto.setUserId(userInfoDao.getUserId());
-        studyJavaUserDto.setAddress(userInfoDao.getAddress());
-        studyJavaUserDto.setNickName(userInfoDao.getNickName());
-        studyJavaUserDto.setLoginName(userInfoDao.getLoginName());
-        studyJavaUserDto.setIntroduceSign(userInfoDao.getIntroduceSign());
-        studyJavaUserDto.setCreateTime(userInfoDao.getCreateTime());
+    private StudyJavaUserVo makeDaoToVo(StudyJavaUserDao userInfoDao) {
+        StudyJavaUserVo studyJavaUserVo = new StudyJavaUserVo();
+        studyJavaUserVo.setUserId(userInfoDao.getUserId());
+        studyJavaUserVo.setAddress(userInfoDao.getAddress());
+        studyJavaUserVo.setNickName(userInfoDao.getNickName());
+        studyJavaUserVo.setLoginName(userInfoDao.getLoginName());
+        studyJavaUserVo.setIntroduceSign(userInfoDao.getIntroduceSign());
+        studyJavaUserVo.setCreateTime(userInfoDao.getCreateTime());
         // 年龄 随机生成
         Random random = new Random();
         Integer age = random.nextInt(100);
-        studyJavaUserDto.setAge(age);
+        studyJavaUserVo.setAge(age);
         try {
             if(userInfoDao.getAvatar() != null) {
-                studyJavaUserDto.setAvatar(userInfoDao.getAvatar());
+                studyJavaUserVo.setAvatar(userInfoDao.getAvatar());
             } else {
                 // 设置默认头像
-                studyJavaUserDto.setAvatar(generateBase64Image());
+                studyJavaUserVo.setAvatar(generateBase64Image());
             }
         } catch (IOException e) {
             log.error("设置默认头像失败 {}",e.getMessage());
            throw new StudyJavaException("设置默认头像失败" + e.getMessage());
         }
-        return studyJavaUserDto;
-    };
+        return studyJavaUserVo;
+    }
+
+
     @Override
     public void updateUserInfo(StudyJavaUserDto studyJavaUser) {
         studyJavaUserMapper.updateUserInfo(studyJavaUser);
@@ -93,7 +105,7 @@ public class StudyJavaUserServiceImpl implements StudyJavaUserService {
         studyJavaUserMapper.updateUserAvatar(userId, base64ImageUrl);
 
         return base64ImageUrl;
-    };
+    }
 
     /**
      * 创建一条数据
@@ -101,12 +113,11 @@ public class StudyJavaUserServiceImpl implements StudyJavaUserService {
      * @param studyJavaUser StudyJavaUserDto
      */
     @Override
-    public void insertUserInfo(StudyJavaUserDto studyJavaUser) {
+    public Boolean insertUserInfo(StudyJavaUserDto studyJavaUser) {
         studyJavaUser.setIsDeleted(0);
         studyJavaUser.setLockedFlag(0);
-        Date createTime = new Date();
-        studyJavaUser.setCreateTime(createTime);
-        studyJavaUserMapper.insertUserInfo(studyJavaUser);
+        studyJavaUser.setCreateTime(new Date());
+        return studyJavaUserMapper.insertUserInfo(studyJavaUser) > 0;
     }
 
     /**
@@ -115,8 +126,8 @@ public class StudyJavaUserServiceImpl implements StudyJavaUserService {
      * @param studyJavaUser StudyJavaUserDto
      */
     @Override
-    public void deleteUserInfo(StudyJavaUserDto studyJavaUser) {
-        studyJavaUserMapper.deleteUserInfo(studyJavaUser);
+    public Boolean deleteUserInfo(StudyJavaUserDto studyJavaUser) {
+        return studyJavaUserMapper.deleteUserInfo(studyJavaUser) > 0;
     }
 
     // 在 Service 实现类中抛出 IOException
@@ -149,9 +160,21 @@ public class StudyJavaUserServiceImpl implements StudyJavaUserService {
     }
 
     @Override
-    public StudyJavaUserDto getUserInfo(StudyJavaUserDto studyJavaUserDto){
+    public StudyJavaUserVo getUserInfo(){
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        if (attributes == null) {
+            return null;
+        }
+        HttpServletRequest request = attributes.getRequest();
+        String authorization =  request.getHeader("Authorization");
+        JSONObject tokenUserInfo = JSONUtil.parseObj(jwtTokenComponent.getUserInfoFromAuthorization(authorization));
+        Long userId = Long.parseLong(tokenUserInfo.get("userId").toString());
+        String loginName = tokenUserInfo.get("loginName").toString();
+        StudyJavaUserDto studyJavaUserDto = new StudyJavaUserDto();
+        studyJavaUserDto.setUserId(userId);
+        studyJavaUserDto.setLoginName(loginName);
         StudyJavaUserDao userInfoDao = studyJavaUserMapper.getUserInfo(studyJavaUserDto);
-        return makeDaoToDto(userInfoDao);
+        return makeDaoToVo(userInfoDao);
     }
 
     /**
@@ -159,8 +182,8 @@ public class StudyJavaUserServiceImpl implements StudyJavaUserService {
      * @param studyJavaUserDto StudyJavaUserDto
      */
     @Override
-    public void updateUserPassword(StudyJavaUserDto studyJavaUserDto) {
-        StudyJavaUserDao studyJavaUserDao = studyJavaUserMapper.getUserInfo(studyJavaUserDto);
+    public Boolean updateUserPassword(StudyJavaUserDto studyJavaUserDto) {
+        StudyJavaUserVo studyJavaUserDao = this.getUserInfo();
         String passwordMd5 = studyJavaUserDao.getPasswordMd5();
         String newPasswordMd5 = studyJavaUserDto.getNewPasswordMd5();
         String confirmNewPasswordMd5 = studyJavaUserDto.getConfirmNewPasswordMd5();
@@ -170,9 +193,8 @@ public class StudyJavaUserServiceImpl implements StudyJavaUserService {
         if (!newPasswordMd5.equals(passwordMd5)) {
             throw new StudyJavaException("原密码不正确");
         }
-
         studyJavaUserDto.setPasswordMd5(newPasswordMd5);
 
-        studyJavaUserMapper.updateUserInfo(studyJavaUserDto);
+     return    studyJavaUserMapper.updateUserInfo(studyJavaUserDto) > 0;
     }
 }
