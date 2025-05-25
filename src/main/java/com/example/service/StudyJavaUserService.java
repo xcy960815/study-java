@@ -18,7 +18,7 @@ public interface StudyJavaUserService {
     /**
      * 更新用户
      */
-    void updateUserInfo(StudyJavaUserDto studyJavaUser);
+    Boolean updateUserInfo(StudyJavaUserDto studyJavaUser);
 
     String updateUserAvatar(String userId,MultipartFile file) throws IOException;
     /**

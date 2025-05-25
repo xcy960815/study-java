@@ -19,15 +19,15 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface StudyJavaUserMapper extends BaseMapper<StudyJavaUserDao> {
     // 获取用户列表
-    IPage<StudyJavaUserDao> getUserList(@Param("page") Page<StudyJavaUserDto> page, @Param("studyJavaUser") StudyJavaUserDto studyJavaUser);
+    IPage<StudyJavaUserDao> getUserList(@Param("page") Page<StudyJavaUserDto> page, @Param("studyJavaUserDao") StudyJavaUserDao studyJavaUserDao);
     // 更新用户
-    int updateUserInfo(@Param("studyJavaUser") StudyJavaUserDto studyJavaUser);
+    int updateUserInfo(@Param("studyJavaUserDao") StudyJavaUserDao studyJavaUserDao);
     // 添加用户
-    int insertUserInfo(@Param("studyJavaUser") StudyJavaUserDto studyJavaUser);
+    int insertUserInfo(@Param("studyJavaUserDao") StudyJavaUserDao studyJavaUserDao);
     // 删除用户
-    int deleteUserInfo(@Param("studyJavaUser") StudyJavaUserDto studyJavaUser);
+    int deleteUserInfo(@Param("studyJavaUserDao") StudyJavaUserDao studyJavaUserDao);
     // 更新用户头像
     int updateUserAvatar(@Param("userId") String userId, @Param("base64ImageUrl") String base64ImageUrl);
     // 查找用户信息
-    StudyJavaUserDao getUserInfo(@Param("studyJavaUser") StudyJavaUserDto studyJavaUser);
+    StudyJavaUserDao getUserInfo(@Param("studyJavaUserDao") StudyJavaUserDao studyJavaUserDao);
 }

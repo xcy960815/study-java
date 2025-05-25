@@ -63,8 +63,8 @@ public class StudyJavaLoginServiceImpl implements StudyJavaLoginService {
     @Resource
     private StudyJavaUserService studyJavaUserService;
 
-    @Resource
-    private StudyJavaUserMapper studyJavaUserMapper;
+//    @Resource
+//    private StudyJavaUserMapper studyJavaUserMapper;
 
     @Override
     public StudyJavaLoginVo login(StudyJavaLoginDto studyJavaLoginParams)  {
@@ -83,29 +83,29 @@ public class StudyJavaLoginServiceImpl implements StudyJavaLoginService {
 
         studyJavaUserDto.setLoginName(studyJavaLoginParams.getUsername());
 
-        StudyJavaUserDao userInfo = studyJavaUserMapper.getUserInfo(studyJavaUserDto);
+        StudyJavaUserVo userInfoVo = studyJavaUserService.getUserInfo();
 
-        if (userInfo == null) {
+        if (userInfoVo == null) {
             throw new StudyJavaException("用户不存在");
         }
 
-        if(!StringUtils.isBlank(userInfo.getPasswordMd5()) && !StringUtils.isBlank(studyJavaLoginParams.getPassword())) {
-            String dataBasePassword = userInfo.getPasswordMd5();
+        if(!StringUtils.isBlank(userInfoVo.getPasswordMd5()) && !StringUtils.isBlank(studyJavaLoginParams.getPassword())) {
+            String dataBasePassword = userInfoVo.getPasswordMd5();
             String loginPassword = studyJavaLoginParams.getPassword();
             if(!dataBasePassword.equals(loginPassword)){
                 throw new StudyJavaException("密码错误");
             }
         }
         StudyJavaLoginVo studyJavaLoginVo = new StudyJavaLoginVo();
-        studyJavaLoginVo.setUserId(userInfo.getUserId());
-        studyJavaLoginVo.setLoginName(userInfo.getLoginName());
-        studyJavaLoginVo.setAddress(userInfo.getAddress());
-        studyJavaLoginVo.setCreateTime(userInfo.getCreateTime());
-        studyJavaLoginVo.setIntroduceSign(userInfo.getIntroduceSign());
-        studyJavaLoginVo.setNickName(userInfo.getNickName());
+        studyJavaLoginVo.setUserId(userInfoVo.getUserId());
+        studyJavaLoginVo.setLoginName(userInfoVo.getLoginName());
+        studyJavaLoginVo.setAddress(userInfoVo.getAddress());
+        studyJavaLoginVo.setCreateTime(userInfoVo.getCreateTime());
+        studyJavaLoginVo.setIntroduceSign(userInfoVo.getIntroduceSign());
+        studyJavaLoginVo.setNickName(userInfoVo.getNickName());
         Map<String,String> tokenContentOption = new HashMap<>();
-        tokenContentOption.put("loginName",userInfo.getLoginName());
-        tokenContentOption.put("userId",userInfo.getUserId().toString());
+        tokenContentOption.put("loginName",userInfoVo.getLoginName());
+        tokenContentOption.put("userId",userInfoVo.getUserId().toString());
         // 将用户关键信息（能从数据库中查出来的字段保存进去）
         String tokenContent = JSONUtil.toJsonStr(tokenContentOption);
         String token = jwtTokenComponent.generateToken(tokenContent);

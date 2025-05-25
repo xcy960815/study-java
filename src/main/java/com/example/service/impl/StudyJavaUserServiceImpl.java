@@ -1,4 +1,8 @@
 package com.example.service.impl;
+
+
+
+
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -13,6 +17,7 @@ import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -40,12 +45,23 @@ public class StudyJavaUserServiceImpl implements StudyJavaUserService {
     @Resource
     private JwtTokenComponent jwtTokenComponent;
 
+    private StudyJavaUserDao makeDto2Dao(StudyJavaUserDto studyJavaUserDto){
+        StudyJavaUserDao studyJavaUserDao = new StudyJavaUserDao();
+        BeanUtils.copyProperties(studyJavaUserDto, studyJavaUserDao);
+        return studyJavaUserDao;
+    }
+
+//    private StudyJavaUserVo makeDaoToVo(StudyJavaUserDao userInfoDao) {
+//        StudyJavaUserVo studyJavaUserVo = new StudyJavaUserVo();
+//        BeanUtils.copyProperties(userInfoDao, studyJavaUserVo);
+//        return studyJavaUserVo;
+//    }
     /**
      * 查询所有用户
      */
     @Override
-    public IPage<StudyJavaUserVo> getUserList(Page<StudyJavaUserDto> page, StudyJavaUserDto userQueryData) {
-        IPage<StudyJavaUserDao> userDaoResult = studyJavaUserMapper.getUserList(page, userQueryData);
+    public IPage<StudyJavaUserVo> getUserList(Page<StudyJavaUserDto> page, StudyJavaUserDto studyJavaUserDto) {
+        IPage<StudyJavaUserDao> userDaoResult = studyJavaUserMapper.getUserList(page,makeDto2Dao(studyJavaUserDto));
         List<StudyJavaUserVo> userVoList = userDaoResult.getRecords().stream().map(this::makeDaoToVo).collect(Collectors.toList());
         // 创建新的 IPage 对象
         IPage<StudyJavaUserVo> resultPage = new Page<>(userDaoResult.getCurrent(), userDaoResult.getSize(), userDaoResult.getTotal());
@@ -86,8 +102,8 @@ public class StudyJavaUserServiceImpl implements StudyJavaUserService {
 
 
     @Override
-    public void updateUserInfo(StudyJavaUserDto studyJavaUser) {
-        studyJavaUserMapper.updateUserInfo(studyJavaUser);
+    public Boolean updateUserInfo(StudyJavaUserDto studyJavaUserDto) {
+       return studyJavaUserMapper.updateUserInfo(makeDto2Dao(studyJavaUserDto)) > 0;
     }
 
     @Override
@@ -109,25 +125,23 @@ public class StudyJavaUserServiceImpl implements StudyJavaUserService {
 
     /**
      * 创建一条数据
-     *
-     * @param studyJavaUser StudyJavaUserDto
      */
     @Override
-    public Boolean insertUserInfo(StudyJavaUserDto studyJavaUser) {
-        studyJavaUser.setIsDeleted(0);
-        studyJavaUser.setLockedFlag(0);
-        studyJavaUser.setCreateTime(new Date());
-        return studyJavaUserMapper.insertUserInfo(studyJavaUser) > 0;
+    public Boolean insertUserInfo(StudyJavaUserDto studyJavaUserDto) {
+        StudyJavaUserDao studyJavaUserDao = makeDto2Dao(studyJavaUserDto);
+        studyJavaUserDao.setIsDeleted(0);
+        studyJavaUserDao.setLockedFlag(0);
+        studyJavaUserDao.setCreateTime(new Date());
+        return studyJavaUserMapper.insertUserInfo(studyJavaUserDao) > 0;
     }
 
     /**
      * 删除用户
-     *
-     * @param studyJavaUser StudyJavaUserDto
      */
     @Override
-    public Boolean deleteUserInfo(StudyJavaUserDto studyJavaUser) {
-        return studyJavaUserMapper.deleteUserInfo(studyJavaUser) > 0;
+    public Boolean deleteUserInfo(StudyJavaUserDto studyJavaUserDto) {
+        StudyJavaUserDao studyJavaUserDao = makeDto2Dao(studyJavaUserDto);
+        return studyJavaUserMapper.deleteUserInfo(studyJavaUserDao) > 0;
     }
 
     // 在 Service 实现类中抛出 IOException
@@ -173,7 +187,7 @@ public class StudyJavaUserServiceImpl implements StudyJavaUserService {
         StudyJavaUserDto studyJavaUserDto = new StudyJavaUserDto();
         studyJavaUserDto.setUserId(userId);
         studyJavaUserDto.setLoginName(loginName);
-        StudyJavaUserDao userInfoDao = studyJavaUserMapper.getUserInfo(studyJavaUserDto);
+        StudyJavaUserDao userInfoDao = studyJavaUserMapper.getUserInfo(makeDto2Dao(studyJavaUserDto));
         return makeDaoToVo(userInfoDao);
     }
 
@@ -195,6 +209,6 @@ public class StudyJavaUserServiceImpl implements StudyJavaUserService {
         }
         studyJavaUserDto.setPasswordMd5(newPasswordMd5);
 
-     return    studyJavaUserMapper.updateUserInfo(studyJavaUserDto) > 0;
+     return studyJavaUserMapper.updateUserInfo(makeDto2Dao(studyJavaUserDto)) > 0;
     }
 }
