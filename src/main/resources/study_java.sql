@@ -11,7 +11,7 @@
  Target Server Version : 80402 (8.4.2)
  File Encoding         : 65001
 
- Date: 02/05/2025 05:05:15
+ Date: 25/05/2025 16:04:38
 */
 
 SET NAMES utf8mb4;
@@ -62,6 +62,35 @@ CREATE TABLE `study_java_carousel` (
 BEGIN;
 INSERT INTO `study_java_carousel` (`carousel_id`, `carousel_url`, `redirect_url`, `carousel_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (2, 'https://newbee-mall.oss-cn-beijing.aliyuncs.com/images/banner1.png', 'https://juejin.im/book/5da2f9d4f265da5b81794d48/section/5da2f9d6f265da5b794f2189', 13, 0, '2019-11-29 00:00:00', 0, '2019-11-29 00:00:00', 0);
 INSERT INTO `study_java_carousel` (`carousel_id`, `carousel_url`, `redirect_url`, `carousel_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (5, 'https://newbee-mall.oss-cn-beijing.aliyuncs.com/images/banner2.png', 'https://juejin.im/book/5da2f9d4f265da5b81794d48/section/5da2f9d6f265da5b794f2189', 0, 0, '2019-11-29 00:00:00', 0, '2019-11-29 00:00:00', 0);
+COMMIT;
+
+-- ----------------------------
+-- Table structure for study_java_data_dictionary
+-- ----------------------------
+DROP TABLE IF EXISTS `study_java_data_dictionary`;
+CREATE TABLE `study_java_data_dictionary` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `dict_type` varchar(50) NOT NULL COMMENT '字典类型',
+  `dict_code` varchar(50) NOT NULL COMMENT '字典编码',
+  `dict_name` varchar(100) NOT NULL COMMENT '字典名称',
+  `dict_value` varchar(100) NOT NULL COMMENT '字典值',
+  `sort_order` int DEFAULT '0' COMMENT '排序号',
+  `status` tinyint DEFAULT '1' COMMENT '状态（0-禁用，1-启用）',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `created_by` varchar(50) DEFAULT NULL COMMENT '创建人',
+  `created_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_by` varchar(50) DEFAULT NULL COMMENT '更新人',
+  `updated_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_dict_type_code` (`dict_type`,`dict_code`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='数据字典表';
+
+-- ----------------------------
+-- Records of study_java_data_dictionary
+-- ----------------------------
+BEGIN;
+INSERT INTO `study_java_data_dictionary` (`id`, `dict_type`, `dict_code`, `dict_name`, `dict_value`, `sort_order`, `status`, `remark`, `created_by`, `created_time`, `updated_by`, `updated_time`) VALUES (1, '1', '1', '1', '1', 0, 1, '1', NULL, '2025-05-25 14:24:24', '13700002703', '2025-05-25 15:26:20');
+INSERT INTO `study_java_data_dictionary` (`id`, `dict_type`, `dict_code`, `dict_name`, `dict_value`, `sort_order`, `status`, `remark`, `created_by`, `created_time`, `updated_by`, `updated_time`) VALUES (2, '2', '2', '2', '2', 0, 1, '2', '13700002703', '2025-05-25 15:26:26', '13700002703', '2025-05-25 15:26:26');
 COMMIT;
 
 -- ----------------------------
@@ -976,15 +1005,19 @@ CREATE TABLE `study_java_sys_menu` (
   `order_num` int DEFAULT '0' COMMENT '排序',
   `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `is_deleted` tinyint(1) DEFAULT '0' COMMENT '是否删除：0-未删除，1-已删除',
   PRIMARY KEY (`menu_id`),
   KEY `idx_parent_id` (`parent_id`),
   KEY `idx_menu_type` (`menu_type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='系统菜单表';
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='系统菜单表';
 
 -- ----------------------------
 -- Records of study_java_sys_menu
 -- ----------------------------
 BEGIN;
+INSERT INTO `study_java_sys_menu` (`menu_id`, `parent_id`, `menu_name`, `path`, `component`, `icon`, `menu_type`, `perms`, `order_num`, `create_time`, `update_time`, `is_deleted`) VALUES (1, 0, 'deepseek', '/deepseek', 'components/layout/index.vue', 'Abdominal', 0, '', 0, '2025-05-20 17:43:59', '2025-05-20 23:18:22', 0);
+INSERT INTO `study_java_sys_menu` (`menu_id`, `parent_id`, `menu_name`, `path`, `component`, `icon`, `menu_type`, `perms`, `order_num`, `create_time`, `update_time`, `is_deleted`) VALUES (2, 0, 'deepseek', '/deepseek', 'components/layout/index.vue', '', 0, '', 0, '2025-05-20 17:45:53', '2025-05-20 17:57:59', 1);
+INSERT INTO `study_java_sys_menu` (`menu_id`, `parent_id`, `menu_name`, `path`, `component`, `icon`, `menu_type`, `perms`, `order_num`, `create_time`, `update_time`, `is_deleted`) VALUES (3, 1, '模型列表', 'deepseek/models', 'views/deepseek/models/index.vue', 'Acoustic', 1, '', 0, '2025-05-20 23:53:34', '2025-05-20 23:53:34', 0);
 COMMIT;
 
 -- ----------------------------
