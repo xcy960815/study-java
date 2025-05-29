@@ -67,7 +67,7 @@ public class StudyJavaLoginServiceImpl implements StudyJavaLoginService {
 //    private StudyJavaUserMapper studyJavaUserMapper;
 
     @Override
-    public StudyJavaLoginVo login(StudyJavaLoginDto studyJavaLoginParams)  {
+    public StudyJavaLoginVo login(StudyJavaLoginDto studyJavaLoginDto)  {
 
         if (!redisComponent.hasKey(CAPTCHA_KEY)) {
             throw new StudyJavaException("验证码不存在");
@@ -75,23 +75,25 @@ public class StudyJavaLoginServiceImpl implements StudyJavaLoginService {
 
         String captcha =  redisComponent.get(CAPTCHA_KEY,String.class);
 
-        if (!captcha.equalsIgnoreCase(studyJavaLoginParams.getCaptcha())) {
+        if (!captcha.equalsIgnoreCase(studyJavaLoginDto.getCaptcha())) {
 
             throw new StudyJavaException("验证码错误");
         }
         StudyJavaUserDto studyJavaUserDto = new StudyJavaUserDto();
 
-        studyJavaUserDto.setLoginName(studyJavaLoginParams.getUsername());
+        studyJavaUserDto.setLoginName(studyJavaLoginDto.getUsername());
 
-        StudyJavaUserVo userInfoVo = studyJavaUserService.getUserInfo();
+
+
+        StudyJavaUserVo userInfoVo = studyJavaUserService.getUserInfo(studyJavaLoginDto);
 
         if (userInfoVo == null) {
             throw new StudyJavaException("用户不存在");
         }
 
-        if(!StringUtils.isBlank(userInfoVo.getPasswordMd5()) && !StringUtils.isBlank(studyJavaLoginParams.getPassword())) {
+        if(!StringUtils.isBlank(userInfoVo.getPasswordMd5()) && !StringUtils.isBlank(studyJavaLoginDto.getPassword())) {
             String dataBasePassword = userInfoVo.getPasswordMd5();
-            String loginPassword = studyJavaLoginParams.getPassword();
+            String loginPassword = studyJavaLoginDto.getPassword();
             if(!dataBasePassword.equals(loginPassword)){
                 throw new StudyJavaException("密码错误");
             }
