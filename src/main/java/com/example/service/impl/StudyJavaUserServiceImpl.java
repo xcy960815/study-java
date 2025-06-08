@@ -8,6 +8,7 @@ import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.example.component.JwtTokenComponent;
 import com.example.domain.dao.StudyJavaUserDao;
+import com.example.domain.dto.StudyJavaLoginDto;
 import com.example.domain.dto.StudyJavaUserDto;
 import com.example.domain.vo.StudyJavaUserVo;
 import com.example.exception.StudyJavaException;
@@ -186,6 +187,17 @@ public class StudyJavaUserServiceImpl implements StudyJavaUserService {
         String loginName = tokenUserInfo.get("loginName").toString();
         StudyJavaUserDto studyJavaUserDto = new StudyJavaUserDto();
         studyJavaUserDto.setUserId(userId);
+        studyJavaUserDto.setLoginName(loginName);
+        StudyJavaUserDao userInfoDao = studyJavaUserMapper.getUserInfo(makeDto2Dao(studyJavaUserDto));
+        return makeDaoToVo(userInfoDao);
+    }
+
+    @Override
+    public StudyJavaUserVo getUserInfo(StudyJavaLoginDto studyJavaLoginDto){
+        String loginName = studyJavaLoginDto.getUsername();
+//        String passwordMd5 = studyJavaLoginDto.getPasswordMd5();
+        StudyJavaUserDto studyJavaUserDto = new StudyJavaUserDto();
+//        studyJavaUserDto.setPasswordMd5(passwordMd5);
         studyJavaUserDto.setLoginName(loginName);
         StudyJavaUserDao userInfoDao = studyJavaUserMapper.getUserInfo(makeDto2Dao(studyJavaUserDto));
         return makeDaoToVo(userInfoDao);
