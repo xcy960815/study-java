@@ -5,9 +5,7 @@ services:
   redis:
     image: redis:7.2.5
     container_name: study-java-redis-container
-    command: [
-      "redis-server --bind 0.0.0.0"
-    ]
+    command: redis-server --bind 0.0.0.0
     ports:
       - "6381:6379"
     networks:
@@ -63,6 +61,7 @@ services:
 
 volumes:
   mysql-data:
+    name: study-java-mysql-data
 
 networks:
   study-java-network:
@@ -70,3 +69,4 @@ networks:
 
 # 执行指令
 #  docker-compose up -d
+# docker-compose -f study-java-docker-compose.yml up -d

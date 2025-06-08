@@ -36,3 +36,7 @@
 - 完成adminUser模块接口的增删改查
 - 在userController层添加必填项的校验
 - 在adminUserController层添加必填项的校验
+
+### 其他更新
+
+- 添加了Docker配置、Redis配置、Ollama模块、大文件切片上传、AI模块功能开发等。
