@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.mapper.StudyJavaUserMapper">
 
-    <resultMap id="BaseResultMap" type="com.example.domain.dao.StudyJavaUserDao">
+    <resultMap id="BaseResultMap" type="com.example.domain.dao.StudyJavaSysUserDao">
             <id property="userId" column="user_id" jdbcType="BIGINT"/>
             <result property="nickName" column="nick_name" jdbcType="VARCHAR"/>
             <result property="loginName" column="login_name" jdbcType="VARCHAR"/>
@@ -24,47 +24,47 @@
     </sql>
 
     <!--  根据条件查询所有的用户  -->
-    <select id="getUserList" resultMap="BaseResultMap" resultType="com.example.domain.dao.StudyJavaUserDao">
+    <select id="getUserList" resultMap="BaseResultMap" resultType="com.example.domain.dao.StudyJavaSysUserDao">
         SELECT
         <include refid="Base_Column_List" />
         FROM
-        study_java_user
+        study_java_sys_user
         <where>
             is_deleted = 0
-            <if test="studyJavaUserDao != null and studyJavaUserDao.userId != null and studyJavaUserDao.userId != ''">
-                AND user_id = #{studyJavaUserDao.userId}
+            <if test="studyJavaSysUserDao != null and studyJavaSysUserDao.userId != null and studyJavaSysUserDao.userId != ''">
+                AND user_id = #{studyJavaSysUserDao.userId}
             </if>
-            <if test="studyJavaUserDao != null and studyJavaUserDao.nickName != null and studyJavaUserDao.nickName != ''">
-                AND nick_name LIKE CONCAT('%', #{studyJavaUserDao.nickName}, '%')
+            <if test="studyJavaSysUserDao != null and studyJavaSysUserDao.nickName != null and studyJavaSysUserDao.nickName != ''">
+                AND nick_name LIKE CONCAT('%', #{studyJavaSysUserDao.nickName}, '%')
             </if>
-            <if test="studyJavaUserDao != null and studyJavaUserDao.loginName != null and studyJavaUserDao.loginName != ''">
-                AND login_name LIKE CONCAT('%', #{studyJavaUserDao.loginName},'%')
+            <if test="studyJavaSysUserDao != null and studyJavaSysUserDao.loginName != null and studyJavaSysUserDao.loginName != ''">
+                AND login_name LIKE CONCAT('%', #{studyJavaSysUserDao.loginName},'%')
             </if>
-            <if test="studyJavaUserDao != null and studyJavaUserDao.introduceSign != null and studyJavaUserDao.introduceSign != ''">
-                AND introduce_sign LIKE CONCAT('%', #{studyJavaUserDao.introduceSign},'%')
+            <if test="studyJavaSysUserDao != null and studyJavaSysUserDao.introduceSign != null and studyJavaSysUserDao.introduceSign != ''">
+                AND introduce_sign LIKE CONCAT('%', #{studyJavaSysUserDao.introduceSign},'%')
             </if>
-            <if test="studyJavaUserDao != null and studyJavaUserDao.address != null and studyJavaUserDao.address != ''">
-                AND address LIKE CONCA('%',#{studyJavaUserDao.address},'%')
+            <if test="studyJavaSysUserDao != null and studyJavaSysUserDao.address != null and studyJavaSysUserDao.address != ''">
+                AND address LIKE CONCA('%',#{studyJavaSysUserDao.address},'%')
             </if>
         </where>
     </select>
 
     <!--  新增用户数据  -->
-    <insert id="insertUserInfo" keyColumn="user_id" keyProperty="userId" parameterType="com.example.domain.vo.StudyJavaUserVo" useGeneratedKeys="true">
-        insert into study_java_user
+    <insert id="insertUserInfo" keyColumn="user_id" keyProperty="userId" parameterType="com.example.domain.vo.StudyJavaSysUserVo" useGeneratedKeys="true">
+        insert into study_java_sys_user
         ( user_id,nick_name,login_name
         ,password_md5,introduce_sign,address
         ,is_deleted,locked_flag,create_time
         )
-        values (#{studyJavaUserDao.userId,jdbcType=BIGINT},#{studyJavaUserDao.nickName,jdbcType=VARCHAR},#{studyJavaUserDao.loginName,jdbcType=VARCHAR}
-        ,#{studyJavaUserDao.passwordMd5,jdbcType=VARCHAR},#{studyJavaUserDao.introduceSign,jdbcType=VARCHAR},#{studyJavaUserDao.address,jdbcType=VARCHAR}
-        ,#{studyJavaUserDao.isDeleted,jdbcType=TINYINT},#{studyJavaUserDao.lockedFlag,jdbcType=TINYINT},#{studyJavaUserDao.createTime,jdbcType=TIMESTAMP}
+        values (#{studyJavaSysUserDao.userId,jdbcType=BIGINT},#{studyJavaSysUserDao.nickName,jdbcType=VARCHAR},#{studyJavaSysUserDao.loginName,jdbcType=VARCHAR}
+        ,#{studyJavaSysUserDao.passwordMd5,jdbcType=VARCHAR},#{studyJavaSysUserDao.introduceSign,jdbcType=VARCHAR},#{studyJavaSysUserDao.address,jdbcType=VARCHAR}
+        ,#{studyJavaSysUserDao.isDeleted,jdbcType=TINYINT},#{studyJavaSysUserDao.lockedFlag,jdbcType=TINYINT},#{studyJavaSysUserDao.createTime,jdbcType=TIMESTAMP}
         )
     </insert>
 
     <!--  更新用户头像  -->
     <update id="updateUserAvatar">
-        update study_java_user
+        update study_java_sys_user
         <set>
             avatar = #{base64ImageUrl,jdbcType=VARCHAR},
         </set>
@@ -74,66 +74,66 @@
     </update>
 
     <!--  删除用户 软删除  -->
-    <update id="deleteUserInfo" parameterType="com.example.domain.dao.StudyJavaUserDao">
-        update study_java_user
+    <update id="deleteUserInfo" parameterType="com.example.domain.dao.StudyJavaSysUserDao">
+        update study_java_sys_user
         <set>
             is_deleted = 1
         </set>
         where
-            `user_id` = #{studyJavaUserDao.userId,jdbcType=BIGINT}
+            `user_id` = #{studyJavaSysUserDao.userId,jdbcType=BIGINT}
     </update>
 
     <!--  更新用户数据  -->
-    <update id="updateUserInfo" parameterType="com.example.domain.dao.StudyJavaUserDao">
-        update study_java_user
+    <update id="updateUserInfo" parameterType="com.example.domain.dao.StudyJavaSysUserDao">
+        update study_java_sys_user
         <set>
-            <if test="studyJavaUserDao.nickName != null and studyJavaUserDao.nickName != ''">
-                nick_name = #{studyJavaUserDao.nickName,jdbcType=VARCHAR},
+            <if test="studyJavaSysUserDao.nickName != null and studyJavaSysUserDao.nickName != ''">
+                nick_name = #{studyJavaSysUserDao.nickName,jdbcType=VARCHAR},
             </if>
-            <if test="studyJavaUserDao.loginName != null and studyJavaUserDao.loginName != ''">
-                login_name = #{studyJavaUserDao.loginName,jdbcType=VARCHAR},
+            <if test="studyJavaSysUserDao.loginName != null and studyJavaSysUserDao.loginName != ''">
+                login_name = #{studyJavaSysUserDao.loginName,jdbcType=VARCHAR},
             </if>
-            <if test="studyJavaUserDao.introduceSign != null and studyJavaUserDao.introduceSign != ''">
-                introduce_sign = #{studyJavaUserDao.introduceSign,jdbcType=VARCHAR},
+            <if test="studyJavaSysUserDao.introduceSign != null and studyJavaSysUserDao.introduceSign != ''">
+                introduce_sign = #{studyJavaSysUserDao.introduceSign,jdbcType=VARCHAR},
             </if>
-            <if test="studyJavaUserDao.address != null and studyJavaUserDao.address != ''">
-                address = #{studyJavaUserDao.address,jdbcType=VARCHAR},
+            <if test="studyJavaSysUserDao.address != null and studyJavaSysUserDao.address != ''">
+                address = #{studyJavaSysUserDao.address,jdbcType=VARCHAR},
             </if>
-            <if test="studyJavaUserDao.passwordMd5 != null and studyJavaUserDao.passwordMd5 != ''">
-                password_md5 = #{studyJavaUserDao.passwordMd5,jdbcType=VARCHAR},
+            <if test="studyJavaSysUserDao.passwordMd5 != null and studyJavaSysUserDao.passwordMd5 != ''">
+                password_md5 = #{studyJavaSysUserDao.passwordMd5,jdbcType=VARCHAR},
             </if>
         </set>
         where
         is_deleted = 0
-        and `user_id` = #{studyJavaUserDao.userId,jdbcType=BIGINT}
+        and `user_id` = #{studyJavaSysUserDao.userId,jdbcType=BIGINT}
     </update>
     <!--  获取用户信息  -->
-    <select id="getUserInfo" parameterType="com.example.domain.dao.StudyJavaUserDao" resultMap="BaseResultMap">
+    <select id="getUserInfo" parameterType="com.example.domain.dao.StudyJavaSysUserDao" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"></include>
-        from study_java_user
+        from study_java_sys_user
         <where>
             is_deleted = 0
-            <if test="studyJavaUserDao != null and studyJavaUserDao.userId != null and studyJavaUserDao.userId != ''">
-                AND user_id = #{studyJavaUserDao.userId}
+            <if test="studyJavaSysUserDao != null and studyJavaSysUserDao.userId != null and studyJavaSysUserDao.userId != ''">
+                AND user_id = #{studyJavaSysUserDao.userId}
             </if>
-            <if test="studyJavaUserDao != null and studyJavaUserDao.loginName != null and studyJavaUserDao.loginName != ''">
-                AND login_name = #{studyJavaUserDao.loginName}
+            <if test="studyJavaSysUserDao != null and studyJavaSysUserDao.loginName != null and studyJavaSysUserDao.loginName != ''">
+                AND login_name = #{studyJavaSysUserDao.loginName}
             </if>
-            <if test="studyJavaUserDao != null and studyJavaUserDao.nickName != null and studyJavaUserDao.nickName != ''">
-                AND nick_name = #{studyJavaUserDao.nickName}
+            <if test="studyJavaSysUserDao != null and studyJavaSysUserDao.nickName != null and studyJavaSysUserDao.nickName != ''">
+                AND nick_name = #{studyJavaSysUserDao.nickName}
             </if>
-            <if test="studyJavaUserDao != null and studyJavaUserDao.passwordMd5 != null and studyJavaUserDao.passwordMd5 != ''">
-                AND password_md5 = #{studyJavaUserDao.passwordMd5}
+            <if test="studyJavaSysUserDao != null and studyJavaSysUserDao.passwordMd5 != null and studyJavaSysUserDao.passwordMd5 != ''">
+                AND password_md5 = #{studyJavaSysUserDao.passwordMd5}
             </if>
-            <if test="studyJavaUserDao != null and studyJavaUserDao.introduceSign != null and studyJavaUserDao.introduceSign != ''">
-                AND introduce_sign = #{studyJavaUserDao.introduceSign}
+            <if test="studyJavaSysUserDao != null and studyJavaSysUserDao.introduceSign != null and studyJavaSysUserDao.introduceSign != ''">
+                AND introduce_sign = #{studyJavaSysUserDao.introduceSign}
             </if>
-            <if test="studyJavaUserDao != null and studyJavaUserDao.address != null and studyJavaUserDao.address != ''">
-                AND address = #{studyJavaUserDao.address}
+            <if test="studyJavaSysUserDao != null and studyJavaSysUserDao.address != null and studyJavaSysUserDao.address != ''">
+                AND address = #{studyJavaSysUserDao.address}
             </if>
-            <if test="studyJavaUserDao != null and studyJavaUserDao.lockedFlag != null and studyJavaUserDao.lockedFlag != ''">
-                AND locked_flag = #{studyJavaUserDao.lockedFlag}
+            <if test="studyJavaSysUserDao != null and studyJavaSysUserDao.lockedFlag != null and studyJavaSysUserDao.lockedFlag != ''">
+                AND locked_flag = #{studyJavaSysUserDao.lockedFlag}
             </if>
         </where>
         Limit 1

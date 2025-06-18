@@ -1,0 +1,46 @@
+package com.example.service;
+
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.domain.dto.StudyJavaLoginDto;
+import com.example.domain.dto.StudyJavaSysUserDto;
+import com.example.domain.vo.StudyJavaSysUserVo;
+import org.springframework.web.multipart.MultipartFile;
+import java.io.IOException;
+
+public interface StudyJavaSysUserService {
+
+    /**
+    * 查询所有用户
+    * @return IPage<StudyJavaSysUserDto>
+    */
+    IPage<StudyJavaSysUserVo> getUserList(Page<StudyJavaSysUserDto> page, StudyJavaSysUserDto userQueryData);
+
+    /**
+     * 更新用户
+     */
+    Boolean updateUserInfo(StudyJavaSysUserDto studyJavaUser);
+
+    String updateUserAvatar(String userId,MultipartFile file) throws IOException;
+    /**
+     * 添加用户
+     */
+    Boolean insertUserInfo(StudyJavaSysUserDto studyJavaUser);
+
+    /**
+     * 删除用户
+     */
+    Boolean deleteUserInfo(StudyJavaSysUserDto studyJavaUser);
+
+    String generateBase64Image() throws IOException;
+
+    /**
+     * 通过token获取用户信息
+     * @return StudyJavaSysUserDto
+     */
+    StudyJavaSysUserVo getUserInfo();
+
+    StudyJavaSysUserVo getUserInfo(StudyJavaLoginDto studyJavaLoginDto);
+
+    Boolean updateUserPassword(StudyJavaSysUserDto studyJavaSysUserDto);
+}

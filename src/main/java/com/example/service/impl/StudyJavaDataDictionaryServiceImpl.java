@@ -5,11 +5,11 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.domain.dao.StudyJavaDataDictionaryDao;
 import com.example.domain.dto.StudyJavaDataDictionaryDto;
 import com.example.domain.vo.StudyJavaDataDictionaryVo;
-import com.example.domain.vo.StudyJavaUserVo;
+import com.example.domain.vo.StudyJavaSysUserVo;
 import com.example.service.StudyJavaDataDictionaryService;
 import com.example.mapper.StudyJavaDataDictionaryMapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.example.service.StudyJavaUserService;
+import com.example.service.StudyJavaSysUserService;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.BeanUtils;
@@ -29,7 +29,7 @@ public class StudyJavaDataDictionaryServiceImpl extends ServiceImpl<StudyJavaDat
     private StudyJavaDataDictionaryMapper studyJavaDataDictionaryMapper;
 
     @Resource
-    private StudyJavaUserService studyJavaUserService;
+    private StudyJavaSysUserService studyJavaSysUserService;
     private StudyJavaDataDictionaryDao dto2Dao(StudyJavaDataDictionaryDto studyJavaDataDictionaryDto){
         StudyJavaDataDictionaryDao studyJavaDataDictionaryDao = new StudyJavaDataDictionaryDao();
         BeanUtils.copyProperties(studyJavaDataDictionaryDto, studyJavaDataDictionaryDao);
@@ -58,9 +58,9 @@ public class StudyJavaDataDictionaryServiceImpl extends ServiceImpl<StudyJavaDat
         StudyJavaDataDictionaryDao studyJavaDataDictionaryDao = dto2Dao(studyJavaDataDictionaryDto);
         studyJavaDataDictionaryDao.setUpdatedTime(new Date());
         studyJavaDataDictionaryDao.setCreatedTime(new Date());
-        StudyJavaUserVo studyJavaUserVo = studyJavaUserService.getUserInfo();
-        studyJavaDataDictionaryDao.setCreatedBy(studyJavaUserVo.getLoginName());
-        studyJavaDataDictionaryDao.setUpdatedBy(studyJavaUserVo.getLoginName());
+        StudyJavaSysUserVo studyJavaSysUserVo = studyJavaSysUserService.getUserInfo();
+        studyJavaDataDictionaryDao.setCreatedBy(studyJavaSysUserVo.getLoginName());
+        studyJavaDataDictionaryDao.setUpdatedBy(studyJavaSysUserVo.getLoginName());
         return studyJavaDataDictionaryMapper.addDataDictionary(studyJavaDataDictionaryDao);
     }
 
@@ -69,9 +69,9 @@ public class StudyJavaDataDictionaryServiceImpl extends ServiceImpl<StudyJavaDat
         StudyJavaDataDictionaryDao studyJavaDataDictionaryDao = dto2Dao(studyJavaDataDictionaryDto);
         BeanUtils.copyProperties(studyJavaDataDictionaryDto, studyJavaDataDictionaryDao);
         studyJavaDataDictionaryDao.setUpdatedTime(new Date());
-        StudyJavaUserVo studyJavaUserVo = studyJavaUserService.getUserInfo();
-        studyJavaDataDictionaryDao.setCreatedBy(studyJavaUserVo.getLoginName());
-        studyJavaDataDictionaryDao.setUpdatedBy(studyJavaUserVo.getLoginName());
+        StudyJavaSysUserVo studyJavaSysUserVo = studyJavaSysUserService.getUserInfo();
+        studyJavaDataDictionaryDao.setCreatedBy(studyJavaSysUserVo.getLoginName());
+        studyJavaDataDictionaryDao.setUpdatedBy(studyJavaSysUserVo.getLoginName());
         return studyJavaDataDictionaryMapper.updateDataDictionary(studyJavaDataDictionaryDao);
     }
 

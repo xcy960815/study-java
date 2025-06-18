@@ -1,7 +1,7 @@
 package com.example.controller;
 
 import com.example.domain.dto.StudyJavaLoginDto;
-import com.example.domain.vo.StudyJavaLoginVo;
+import com.example.domain.vo.StudyJavaSysLoginVo;
 import com.example.service.StudyJavaLoginService;
 import com.example.utils.ResponseGenerator;
 import com.example.utils.ResponseResult;
@@ -23,8 +23,8 @@ public class StudyJavaLoginController {
     private StudyJavaLoginService studyJavaLoginService;
 
     @PostMapping("/login")
-    public ResponseResult<StudyJavaLoginVo> login(@Valid @RequestBody StudyJavaLoginDto studyJavaLoginDto) {
-        StudyJavaLoginVo loginResult = studyJavaLoginService.login(studyJavaLoginDto);
+    public ResponseResult<StudyJavaSysLoginVo> login(@Valid @RequestBody StudyJavaLoginDto studyJavaLoginDto) {
+        StudyJavaSysLoginVo loginResult = studyJavaLoginService.login(studyJavaLoginDto);
         return ResponseGenerator.generateSuccessResult(loginResult);
     }
 

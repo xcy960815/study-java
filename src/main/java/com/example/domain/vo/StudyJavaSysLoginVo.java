@@ -5,6 +5,6 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class StudyJavaLoginVo extends StudyJavaUserVo {
+public class StudyJavaSysLoginVo extends StudyJavaSysUserVo {
     private String token;
 }

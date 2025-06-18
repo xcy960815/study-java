@@ -13,7 +13,7 @@ import java.util.Date;
  * TableName study_java_user
  */
 @Data
-public class StudyJavaUserVo implements Serializable {
+public class StudyJavaSysUserVo implements Serializable {
     /**
      * 用户主键id
      */

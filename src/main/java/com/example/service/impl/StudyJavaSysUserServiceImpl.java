@@ -7,13 +7,13 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.example.component.JwtTokenComponent;
-import com.example.domain.dao.StudyJavaUserDao;
+import com.example.domain.dao.StudyJavaSysUserDao;
 import com.example.domain.dto.StudyJavaLoginDto;
-import com.example.domain.dto.StudyJavaUserDto;
-import com.example.domain.vo.StudyJavaUserVo;
+import com.example.domain.dto.StudyJavaSysUserDto;
+import com.example.domain.vo.StudyJavaSysUserVo;
 import com.example.exception.StudyJavaException;
 import com.example.mapper.StudyJavaUserMapper;
-import com.example.service.StudyJavaUserService;
+import com.example.service.StudyJavaSysUserService;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.NonNull;
@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-public class StudyJavaUserServiceImpl implements StudyJavaUserService {
+public class StudyJavaSysUserServiceImpl implements StudyJavaSysUserService {
 
     @Resource
     private StudyJavaUserMapper studyJavaUserMapper;
@@ -46,14 +46,14 @@ public class StudyJavaUserServiceImpl implements StudyJavaUserService {
     @Resource
     private JwtTokenComponent jwtTokenComponent;
 
-    private StudyJavaUserDao makeDto2Dao(StudyJavaUserDto studyJavaUserDto){
-        StudyJavaUserDao studyJavaUserDao = new StudyJavaUserDao();
-        BeanUtils.copyProperties(studyJavaUserDto, studyJavaUserDao);
-        return studyJavaUserDao;
+    private StudyJavaSysUserDao makeDto2Dao(StudyJavaSysUserDto studyJavaSysUserDto){
+        StudyJavaSysUserDao studyJavaSysUserDao = new StudyJavaSysUserDao();
+        BeanUtils.copyProperties(studyJavaSysUserDto, studyJavaSysUserDao);
+        return studyJavaSysUserDao;
     }
 
-//    private StudyJavaUserVo makeDaoToVo(StudyJavaUserDao userInfoDao) {
-//        StudyJavaUserVo studyJavaUserVo = new StudyJavaUserVo();
+//    private StudyJavaSysUserVo makeDaoToVo(StudyJavaSysUserDao userInfoDao) {
+//        StudyJavaSysUserVo studyJavaUserVo = new StudyJavaSysUserVo();
 //        BeanUtils.copyProperties(userInfoDao, studyJavaUserVo);
 //        return studyJavaUserVo;
 //    }
@@ -61,50 +61,50 @@ public class StudyJavaUserServiceImpl implements StudyJavaUserService {
      * 查询所有用户
      */
     @Override
-    public IPage<StudyJavaUserVo> getUserList(Page<StudyJavaUserDto> page, StudyJavaUserDto studyJavaUserDto) {
-        IPage<StudyJavaUserDao> userDaoResult = studyJavaUserMapper.getUserList(page,makeDto2Dao(studyJavaUserDto));
-        List<StudyJavaUserVo> userVoList = userDaoResult.getRecords().stream().map(this::makeDaoToVo).collect(Collectors.toList());
+    public IPage<StudyJavaSysUserVo> getUserList(Page<StudyJavaSysUserDto> page, StudyJavaSysUserDto studyJavaSysUserDto) {
+        IPage<StudyJavaSysUserDao> userDaoResult = studyJavaUserMapper.getUserList(page,makeDto2Dao(studyJavaSysUserDto));
+        List<StudyJavaSysUserVo> userVoList = userDaoResult.getRecords().stream().map(this::makeDaoToVo).collect(Collectors.toList());
         // 创建新的 IPage 对象
-        IPage<StudyJavaUserVo> resultPage = new Page<>(userDaoResult.getCurrent(), userDaoResult.getSize(), userDaoResult.getTotal());
+        IPage<StudyJavaSysUserVo> resultPage = new Page<>(userDaoResult.getCurrent(), userDaoResult.getSize(), userDaoResult.getTotal());
         resultPage.setRecords(userVoList);
         return resultPage;
     }
 
     /**
      * dao 2 vo
-     * @param userInfoDao StudyJavaUserDao
-     * @return StudyJavaUserDto
+     * @param userInfoDao StudyJavaSysUserDao
+     * @return StudyJavaSysUserDto
      */
-    private StudyJavaUserVo makeDaoToVo(StudyJavaUserDao userInfoDao) {
-        StudyJavaUserVo studyJavaUserVo = new StudyJavaUserVo();
-        studyJavaUserVo.setUserId(userInfoDao.getUserId());
-        studyJavaUserVo.setAddress(userInfoDao.getAddress());
-        studyJavaUserVo.setNickName(userInfoDao.getNickName());
-        studyJavaUserVo.setLoginName(userInfoDao.getLoginName());
-        studyJavaUserVo.setIntroduceSign(userInfoDao.getIntroduceSign());
-        studyJavaUserVo.setCreateTime(userInfoDao.getCreateTime());
+    private StudyJavaSysUserVo makeDaoToVo(StudyJavaSysUserDao userInfoDao) {
+        StudyJavaSysUserVo studyJavaSysUserVo = new StudyJavaSysUserVo();
+        studyJavaSysUserVo.setUserId(userInfoDao.getUserId());
+        studyJavaSysUserVo.setAddress(userInfoDao.getAddress());
+        studyJavaSysUserVo.setNickName(userInfoDao.getNickName());
+        studyJavaSysUserVo.setLoginName(userInfoDao.getLoginName());
+        studyJavaSysUserVo.setIntroduceSign(userInfoDao.getIntroduceSign());
+        studyJavaSysUserVo.setCreateTime(userInfoDao.getCreateTime());
         // 年龄 随机生成
         Random random = new Random();
         Integer age = random.nextInt(100);
-        studyJavaUserVo.setAge(age);
+        studyJavaSysUserVo.setAge(age);
         try {
             if(userInfoDao.getAvatar() != null) {
-                studyJavaUserVo.setAvatar(userInfoDao.getAvatar());
+                studyJavaSysUserVo.setAvatar(userInfoDao.getAvatar());
             } else {
                 // 设置默认头像
-                studyJavaUserVo.setAvatar(generateBase64Image());
+                studyJavaSysUserVo.setAvatar(generateBase64Image());
             }
         } catch (IOException e) {
             log.error("设置默认头像失败 {}",e.getMessage());
            throw new StudyJavaException("设置默认头像失败" + e.getMessage());
         }
-        return studyJavaUserVo;
+        return studyJavaSysUserVo;
     }
 
 
     @Override
-    public Boolean updateUserInfo(StudyJavaUserDto studyJavaUserDto) {
-       return studyJavaUserMapper.updateUserInfo(makeDto2Dao(studyJavaUserDto)) > 0;
+    public Boolean updateUserInfo(StudyJavaSysUserDto studyJavaSysUserDto) {
+       return studyJavaUserMapper.updateUserInfo(makeDto2Dao(studyJavaSysUserDto)) > 0;
     }
 
     @Override
@@ -128,21 +128,21 @@ public class StudyJavaUserServiceImpl implements StudyJavaUserService {
      * 创建一条数据
      */
     @Override
-    public Boolean insertUserInfo(StudyJavaUserDto studyJavaUserDto) {
-        StudyJavaUserDao studyJavaUserDao = makeDto2Dao(studyJavaUserDto);
-        studyJavaUserDao.setIsDeleted(0);
-        studyJavaUserDao.setLockedFlag(0);
-        studyJavaUserDao.setCreateTime(new Date());
-        return studyJavaUserMapper.insertUserInfo(studyJavaUserDao) > 0;
+    public Boolean insertUserInfo(StudyJavaSysUserDto studyJavaSysUserDto) {
+        StudyJavaSysUserDao studyJavaSysUserDao = makeDto2Dao(studyJavaSysUserDto);
+        studyJavaSysUserDao.setIsDeleted(0);
+        studyJavaSysUserDao.setLockedFlag(0);
+        studyJavaSysUserDao.setCreateTime(new Date());
+        return studyJavaUserMapper.insertUserInfo(studyJavaSysUserDao) > 0;
     }
 
     /**
      * 删除用户
      */
     @Override
-    public Boolean deleteUserInfo(StudyJavaUserDto studyJavaUserDto) {
-        StudyJavaUserDao studyJavaUserDao = makeDto2Dao(studyJavaUserDto);
-        return studyJavaUserMapper.deleteUserInfo(studyJavaUserDao) > 0;
+    public Boolean deleteUserInfo(StudyJavaSysUserDto studyJavaSysUserDto) {
+        StudyJavaSysUserDao studyJavaSysUserDao = makeDto2Dao(studyJavaSysUserDto);
+        return studyJavaUserMapper.deleteUserInfo(studyJavaSysUserDao) > 0;
     }
 
     // 在 Service 实现类中抛出 IOException
@@ -175,7 +175,7 @@ public class StudyJavaUserServiceImpl implements StudyJavaUserService {
     }
 
     @Override
-    public StudyJavaUserVo getUserInfo(){
+    public StudyJavaSysUserVo getUserInfo(){
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         if (attributes == null) {
             return null;
@@ -185,42 +185,42 @@ public class StudyJavaUserServiceImpl implements StudyJavaUserService {
         JSONObject tokenUserInfo = JSONUtil.parseObj(jwtTokenComponent.getUserInfoFromAuthorization(authorization));
         Long userId = Long.parseLong(tokenUserInfo.get("userId").toString());
         String loginName = tokenUserInfo.get("loginName").toString();
-        StudyJavaUserDto studyJavaUserDto = new StudyJavaUserDto();
-        studyJavaUserDto.setUserId(userId);
-        studyJavaUserDto.setLoginName(loginName);
-        StudyJavaUserDao userInfoDao = studyJavaUserMapper.getUserInfo(makeDto2Dao(studyJavaUserDto));
+        StudyJavaSysUserDto studyJavaSysUserDto = new StudyJavaSysUserDto();
+        studyJavaSysUserDto.setUserId(userId);
+        studyJavaSysUserDto.setLoginName(loginName);
+        StudyJavaSysUserDao userInfoDao = studyJavaUserMapper.getUserInfo(makeDto2Dao(studyJavaSysUserDto));
         return makeDaoToVo(userInfoDao);
     }
 
     @Override
-    public StudyJavaUserVo getUserInfo(StudyJavaLoginDto studyJavaLoginDto){
+    public StudyJavaSysUserVo getUserInfo(StudyJavaLoginDto studyJavaLoginDto){
         String loginName = studyJavaLoginDto.getUsername();
 //        String passwordMd5 = studyJavaLoginDto.getPasswordMd5();
-        StudyJavaUserDto studyJavaUserDto = new StudyJavaUserDto();
-//        studyJavaUserDto.setPasswordMd5(passwordMd5);
-        studyJavaUserDto.setLoginName(loginName);
-        StudyJavaUserDao userInfoDao = studyJavaUserMapper.getUserInfo(makeDto2Dao(studyJavaUserDto));
+        StudyJavaSysUserDto studyJavaSysUserDto = new StudyJavaSysUserDto();
+//        studyJavaSysUserDto.setPasswordMd5(passwordMd5);
+        studyJavaSysUserDto.setLoginName(loginName);
+        StudyJavaSysUserDao userInfoDao = studyJavaUserMapper.getUserInfo(makeDto2Dao(studyJavaSysUserDto));
         return makeDaoToVo(userInfoDao);
     }
 
     /**
      * 更新用户密码
-     * @param studyJavaUserDto StudyJavaUserDto
+     * @param studyJavaSysUserDto StudyJavaSysUserDto
      */
     @Override
-    public Boolean updateUserPassword(StudyJavaUserDto studyJavaUserDto) {
-        StudyJavaUserVo studyJavaUserDao = this.getUserInfo();
+    public Boolean updateUserPassword(StudyJavaSysUserDto studyJavaSysUserDto) {
+        StudyJavaSysUserVo studyJavaUserDao = this.getUserInfo();
         String passwordMd5 = studyJavaUserDao.getPasswordMd5();
-        String newPasswordMd5 = studyJavaUserDto.getNewPasswordMd5();
-        String confirmNewPasswordMd5 = studyJavaUserDto.getConfirmNewPasswordMd5();
+        String newPasswordMd5 = studyJavaSysUserDto.getNewPasswordMd5();
+        String confirmNewPasswordMd5 = studyJavaSysUserDto.getConfirmNewPasswordMd5();
         if (!newPasswordMd5.equals(confirmNewPasswordMd5)) {
             throw new StudyJavaException("两次密码不一致");
         }
         if (!newPasswordMd5.equals(passwordMd5)) {
             throw new StudyJavaException("原密码不正确");
         }
-        studyJavaUserDto.setPasswordMd5(newPasswordMd5);
+        studyJavaSysUserDto.setPasswordMd5(newPasswordMd5);
 
-     return studyJavaUserMapper.updateUserInfo(makeDto2Dao(studyJavaUserDto)) > 0;
+     return studyJavaUserMapper.updateUserInfo(makeDto2Dao(studyJavaSysUserDto)) > 0;
     }
 }

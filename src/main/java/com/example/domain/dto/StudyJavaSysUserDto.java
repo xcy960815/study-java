@@ -10,7 +10,7 @@ import java.util.Date;
 import java.io.Serializable;
 
 @Data
-public class StudyJavaUserDto implements Serializable {
+public class StudyJavaSysUserDto implements Serializable {
     /**
      * 用户主键id
      */
@@ -55,7 +55,7 @@ public class StudyJavaUserDto implements Serializable {
      * 密码
      */
     private String passwordMd5;
-    
+
     /**
      * 新密码 用于修改密码
      */
@@ -65,7 +65,7 @@ public class StudyJavaUserDto implements Serializable {
      * 新密码的确认密码 用于修改密码
      */
     private String confirmNewPasswordMd5;
-    
+
     /**
      * 头像
      */

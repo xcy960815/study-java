@@ -1,15 +1,13 @@
 package com.example.service.impl;
 
 import cn.hutool.json.JSONUtil;
-import com.example.domain.dao.StudyJavaUserDao;
 import com.example.domain.dto.StudyJavaLoginDto;
-import com.example.domain.dto.StudyJavaUserDto;
-import com.example.domain.vo.StudyJavaLoginVo;
+import com.example.domain.dto.StudyJavaSysUserDto;
+import com.example.domain.vo.StudyJavaSysLoginVo;
+import com.example.domain.vo.StudyJavaSysUserVo;
 import com.example.exception.StudyJavaException;
-import com.example.domain.vo.StudyJavaUserVo;
-import com.example.mapper.StudyJavaUserMapper;
 import com.example.service.StudyJavaLoginService;
-import com.example.service.StudyJavaUserService;
+import com.example.service.StudyJavaSysUserService;
 import com.example.component.JwtTokenComponent;
 import com.example.component.RedisComponent;
 import com.google.code.kaptcha.Producer;
@@ -61,13 +59,13 @@ public class StudyJavaLoginServiceImpl implements StudyJavaLoginService {
     private Producer kaptchaProducer;
 
     @Resource
-    private StudyJavaUserService studyJavaUserService;
+    private StudyJavaSysUserService studyJavaSysUserService;
 
 //    @Resource
 //    private StudyJavaUserMapper studyJavaUserMapper;
 
     @Override
-    public StudyJavaLoginVo login(StudyJavaLoginDto studyJavaLoginDto)  {
+    public StudyJavaSysLoginVo login(StudyJavaLoginDto studyJavaLoginDto)  {
 
         if (!redisComponent.hasKey(CAPTCHA_KEY)) {
             throw new StudyJavaException("验证码不存在");
@@ -79,13 +77,13 @@ public class StudyJavaLoginServiceImpl implements StudyJavaLoginService {
 
             throw new StudyJavaException("验证码错误");
         }
-        StudyJavaUserDto studyJavaUserDto = new StudyJavaUserDto();
+        StudyJavaSysUserDto studyJavaSysUserDto = new StudyJavaSysUserDto();
 
-        studyJavaUserDto.setLoginName(studyJavaLoginDto.getUsername());
+        studyJavaSysUserDto.setLoginName(studyJavaLoginDto.getUsername());
 
 
 
-        StudyJavaUserVo userInfoVo = studyJavaUserService.getUserInfo(studyJavaLoginDto);
+        StudyJavaSysUserVo userInfoVo = studyJavaSysUserService.getUserInfo(studyJavaLoginDto);
 
         if (userInfoVo == null) {
             throw new StudyJavaException("用户不存在");
@@ -98,7 +96,7 @@ public class StudyJavaLoginServiceImpl implements StudyJavaLoginService {
                 throw new StudyJavaException("密码错误");
             }
         }
-        StudyJavaLoginVo studyJavaLoginVo = new StudyJavaLoginVo();
+        StudyJavaSysLoginVo studyJavaLoginVo = new StudyJavaSysLoginVo();
         studyJavaLoginVo.setUserId(userInfoVo.getUserId());
         studyJavaLoginVo.setLoginName(userInfoVo.getLoginName());
         studyJavaLoginVo.setAddress(userInfoVo.getAddress());
@@ -119,7 +117,7 @@ public class StudyJavaLoginServiceImpl implements StudyJavaLoginService {
 
 
     public void logout(StudyJavaLoginDto studyJavaLoginParams) {
-        // studyJavaUserService.logout(studyJavaLoginParams);
+        // studyJavaSysUserService.logout(studyJavaLoginParams);
     }
 
     /**
