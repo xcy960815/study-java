@@ -24,35 +24,41 @@ public class StudyJavaOllamaController {
     @Resource
     private StudyJavaOllamaService studyJavaOllamaService;
 
-    /**
-     * generate
-     * @param studyJavaOllamaGenerateDto StudyJavaOllamaGenerateDto
-     * @return ResponseResult<StudyJavaOllamaGenerateResponseVo>
-     */
-    @PostMapping("/generate")
-    public ResponseResult<StudyJavaOllamaGenerateResponseVo> generate(@Valid @RequestBody StudyJavaOllamaGenerateDto studyJavaOllamaGenerateDto) {
-        try {
-            return ResponseGenerator.generateSuccessResult(studyJavaOllamaService.generate(studyJavaOllamaGenerateDto));
-        } catch (IOException | InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-    }
-    /**
-     * generateStream
-     * @param studyJavaOllamaGrenerateVo StudyJavaOllamaGrenerateVo
-     * @return ResponseEntity<StreamingResponseBody>
-     */
-    @PostMapping(value = "/generateStream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public SseEmitter generateStream(@Valid @RequestBody StudyJavaOllamaGrenerateVo studyJavaOllamaGrenerateVo) {
-        SseEmitter emitter = new SseEmitter();
-        new Thread(() -> studyJavaOllamaService.generateStream(studyJavaOllamaGrenerateVo, emitter)).start();
-        return emitter;
-    }
-
     @PostMapping(value = "/completions", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter completions( @Valid @RequestBody StudyJavaOllamaCompletionsVo studyJavaOllamaCompletionsVo) {
-        SseEmitter emitter = new SseEmitter();
-        new Thread(() -> studyJavaOllamaService.completions(studyJavaOllamaCompletionsVo, emitter)).start();
+        // 设置超时时间为5分钟
+        SseEmitter emitter = new SseEmitter(300000L);
+        
+        // 添加超时处理
+        emitter.onTimeout(() -> {
+            log.warn("SSE连接超时");
+            emitter.complete();
+        });
+        
+        // 添加完成处理
+        emitter.onCompletion(() -> {
+            log.info("SSE连接完成");
+        });
+        
+        // 添加错误处理 - 区分Broken pipe和其他错误
+        emitter.onError((ex) -> {
+            // 检查是否是Broken pipe错误，这是正常的客户端断开连接
+            if (ex instanceof IOException && 
+                ex.getCause() instanceof java.io.IOException && 
+                ex.getCause().getMessage().contains("Broken pipe")) {
+                log.info("客户端正常断开连接");
+            } else {
+                log.error("SSE连接发生错误", ex);
+            }
+        });
+        
+        try {
+            studyJavaOllamaService.completions(studyJavaOllamaCompletionsVo, emitter);
+        } catch (Exception e) {
+            log.error("启动completions流式处理失败", e);
+            emitter.completeWithError(e);
+        }
+        
         return emitter;
     }
     /**

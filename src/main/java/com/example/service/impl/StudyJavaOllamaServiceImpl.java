@@ -41,11 +41,6 @@ public class StudyJavaOllamaServiceImpl extends StudyJavaAiService implements St
     private static final String Ollama_Domain = "http://localhost";
 
     /**
-     * generate 接口
-     */
-    private static final String Ollama_Generate_Api = "/api/generate";
-
-    /**
      * completions 接口
      */
     private static final String Ollama_Completions_Api = "/v1/chat/completions";
@@ -197,90 +192,40 @@ public class StudyJavaOllamaServiceImpl extends StudyJavaAiService implements St
         }
     }
     /**
-     * 非流式 generate 接口
-     * @param studyJavaOllamaGenerateDto StudyJavaOllamaGenerateDto
-     * @return StudyJavaOllamaGenerateResponseVo
-     */
-    @Override
-    public StudyJavaOllamaGenerateResponseVo generate(StudyJavaOllamaGenerateDto studyJavaOllamaGenerateDto) throws IOException, InterruptedException {
-        // 转换请求DTO为原有的VO对象
-        StudyJavaOllamaGrenerateVo studyJavaOllamaGrenerateVo = new StudyJavaOllamaGrenerateVo();
-        studyJavaOllamaGrenerateVo.setModel(studyJavaOllamaGenerateDto.getModel());
-        studyJavaOllamaGrenerateVo.setPrompt(studyJavaOllamaGenerateDto.getPrompt());
-        studyJavaOllamaGrenerateVo.setStream(studyJavaOllamaGenerateDto.getStream());
-        
-        HttpRequest httpRequest = generateRequestBuilder(generateRequestUrl(Ollama_Generate_Api))
-                .POST(studyJavaOllamaGrenerateVo.getBodyPublisher())
-                .build();
-        HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
-        
-        // 将原有DTO转换为新的VO返回
-        StudyJavaOllamaGenerateDto dto = handleResponse(response, StudyJavaOllamaGenerateDto.class);
-        StudyJavaOllamaGenerateResponseVo responseVo = new StudyJavaOllamaGenerateResponseVo();
-        
-        // 复制属性
-        responseVo.setModel(dto.getModel());
-        responseVo.setCreated_at(dto.getCreated_at());
-        responseVo.setResponse(dto.getResponse());
-        responseVo.setDone(dto.isDone());
-        responseVo.setDone_reason(dto.getDone_reason());
-        responseVo.setContext(dto.getContext());
-        responseVo.setTotal_duration(dto.getTotal_duration());
-        responseVo.setLoad_duration(dto.getLoad_duration());
-        responseVo.setPrompt_eval_count(dto.getPrompt_eval_count());
-        responseVo.setPrompt_eval_duration(dto.getPrompt_eval_duration());
-        responseVo.setEval_count(dto.getEval_count());
-        responseVo.setEval_duration(dto.getEval_duration());
-        
-        return responseVo;
-    }
-    /**
-     * 流式 generate 接口
-     * @param studyJavaOllamaGrenerateVo StudyJavaOllamaGrenerateVo
-     * @param emitter SseEmitter
-     */
-    @Override
-    public void generateStream(StudyJavaOllamaGrenerateVo studyJavaOllamaGrenerateVo, SseEmitter emitter) {
-        executorService.execute(() -> {
-            HttpRequest httpRequest = generateRequestBuilder(generateRequestUrl(Ollama_Generate_Api))
-                    .POST(studyJavaOllamaGrenerateVo.getBodyPublisher())
-                    .build();
-
-            try {
-                HttpResponse<InputStream> response = httpClient.send(httpRequest, BodyHandlers.ofInputStream());
-                int statusCode = response.statusCode();
-
-                if (statusCode != 200) {
-                    emitter.completeWithError(new StudyJavaException("请求失败，状态码：" + statusCode));
-                    return;
-                }
-
-                handleStreamResponse(response, emitter);
-            } catch (IOException | InterruptedException e) {
-                log.error("HTTP 请求失败", e);
-                emitter.completeWithError(e);
-                Thread.currentThread().interrupt(); // 保持中断状态
-            }
-        });
-    }
-
-    /**
      * 会话接口
      * @param studyJavaOllamaCompletionsVo StudyJavaOllamaCompletionsVo
      * @param emitter SseEmitter
      */
     @Override
     public void completions(StudyJavaOllamaCompletionsVo studyJavaOllamaCompletionsVo, SseEmitter emitter) {
-        try {
-            HttpRequest httpRequest = generateRequestBuilder(generateRequestUrl(Ollama_Completions_Api))
-                    .POST(studyJavaOllamaCompletionsVo.getBodyPublisher())
-                    .build();
-            HttpResponse<InputStream> response = httpClient.send(httpRequest, BodyHandlers.ofInputStream());
-            handleStreamResponse(response, emitter);
-        } catch (IOException | InterruptedException e) {
-            log.error("Error during HTTP request: {}", e.getMessage());
-            emitter.completeWithError(e);
-        }
+        executorService.execute(() -> {
+            try {
+                HttpRequest httpRequest = generateRequestBuilder(generateRequestUrl(Ollama_Completions_Api))
+                        .POST(studyJavaOllamaCompletionsVo.getBodyPublisher())
+                        .build();
+                HttpResponse<InputStream> response = httpClient.send(httpRequest, BodyHandlers.ofInputStream());
+                
+                int statusCode = response.statusCode();
+                if (statusCode != 200) {
+                    try {
+                        emitter.completeWithError(new StudyJavaException("请求失败，状态码：" + statusCode));
+                    } catch (Exception e) {
+                        log.info("发送错误信号时连接已断开");
+                    }
+                    return;
+                }
+                
+                handleStreamResponse(response, emitter);
+            } catch (IOException | InterruptedException e) {
+                log.error("Error during HTTP request: {}", e.getMessage());
+                try {
+                    emitter.completeWithError(e);
+                } catch (Exception ex) {
+                    log.info("发送错误信号时连接已断开");
+                }
+                Thread.currentThread().interrupt(); // 保持中断状态
+            }
+        });
     }
 //    TODO 拉取模型 提示 404 page not found
     public void pull (StudyJavaOllamaPullVo studyJavaOllamaPullVo) {
@@ -319,12 +264,33 @@ public class StudyJavaOllamaServiceImpl extends StudyJavaAiService implements St
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(response.body(), StandardCharsets.UTF_8))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                emitter.send(line);
+                // 检查客户端连接状态 - SseEmitter没有isCompleted方法，我们通过try-catch来处理
+                try {
+                    emitter.send(line);
+                } catch (IOException e) {
+                    // 捕获发送失败异常，通常是客户端断开连接
+                    if (e.getCause() instanceof java.io.IOException && 
+                        e.getCause().getMessage().contains("Broken pipe")) {
+                        log.info("客户端连接已断开，停止发送数据");
+                        return; // 直接返回，不继续处理
+                    }
+                    throw e;
+                }
             }
-            emitter.complete();
+            // 只有在连接仍然活跃时才完成
+            try {
+                emitter.complete();
+            } catch (Exception e) {
+                log.info("发送完成信号时连接已断开");
+            }
         } catch (IOException e) {
             log.error("处理流式响应失败", e);
-            emitter.completeWithError(e);
+            // 只有在连接仍然活跃时才发送错误
+            try {
+                emitter.completeWithError(e);
+            } catch (Exception ex) {
+                log.info("发送错误信号时连接已断开");
+            }
         }
     }
 

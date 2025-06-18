@@ -27,6 +27,7 @@
         <include refid="Base_Column_List"/>
         FROM study_java_sys_role
         <where>
+            del_flag = 0
             <if test="studyJavaSysRoleDao != null and studyJavaSysRoleDao.roleName != null and studyJavaSysRoleDao.roleName != ''">
                 AND role_name LIKE CONCAT('%', #{studyJavaSysRoleDao.roleName},'%')
             </if>

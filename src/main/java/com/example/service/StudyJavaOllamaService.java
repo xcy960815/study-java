@@ -6,8 +6,6 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import java.io.IOException;
 
 public interface StudyJavaOllamaService {
-        StudyJavaOllamaGenerateResponseVo generate(StudyJavaOllamaGenerateDto studyJavaOllamaGenerateDto) throws IOException, InterruptedException;
-        void generateStream(StudyJavaOllamaGrenerateVo studyJavaOllamaGrenerateVo, SseEmitter emitter);
         void completions(StudyJavaOllamaCompletionsVo studyJavaOllamaCompletionsVo, SseEmitter emitter);
         StudyJavaOllamaModelsDto models() throws IOException, InterruptedException;
         StudyJavaOllamaVersionDto version() throws IOException, InterruptedException;
