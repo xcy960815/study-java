@@ -14,7 +14,12 @@ public class StudyJavaSysUserDto implements Serializable {
     /**
      * 用户主键id
      */
-    private Long userId;
+    private Long id;
+
+    /**
+     * 角色ID
+     */
+    private Long roleId;
 
     /**
      * 用户昵称

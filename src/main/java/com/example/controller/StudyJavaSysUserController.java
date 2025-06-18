@@ -53,17 +53,17 @@ public class StudyJavaSysUserController extends BaseController {
     // ModelAttribute 通常用于获取多个参数
     /**
      * 更新用户
-     * @param studyJavaUser StudyJavaSysUserDto
+     * @param studyJavaSysUser StudyJavaSysUserDto
      * @return ResponseResult<Boolean>
      */
     @PostMapping("/updateUserInfo")
-    public ResponseResult<Boolean> updateUserInfo(@Valid @RequestBody StudyJavaSysUserDto studyJavaUser) {
+    public ResponseResult<Boolean> updateUserInfo(@Valid @RequestBody StudyJavaSysUserDto studyJavaSysUser) {
         // 获取用户ID
-        Long userId = studyJavaUser.getUserId();
+        Long userId = studyJavaSysUser.getId();
         if(userId == null){
             throw new StudyJavaException("用户ID不能为空");
         }
-        studyJavaSysUserService.updateUserInfo(studyJavaUser);
+        studyJavaSysUserService.updateUserInfo(studyJavaSysUser);
         // 返回更新结果
         return ResponseGenerator.generateSuccessResult(true);
     }

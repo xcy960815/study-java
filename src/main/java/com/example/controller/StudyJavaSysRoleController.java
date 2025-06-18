@@ -36,10 +36,10 @@ public class StudyJavaSysRoleController {
     /**
      * 获取所有角色列表（不分页）
      */
-    @GetMapping("/listAll")
-    public ResponseListResult<StudyJavaSysRoleVo> listAll() {
+    @GetMapping("/getAllRoleList")
+    public ResponseListResult<StudyJavaSysRoleVo> getAllRoleList() {
         List<StudyJavaSysRoleVo> list = studyJavaSysRoleService.getAllRoleList();
-        return ResponseGenerator.generateListResult(list, (long) list.size());
+        return ResponseGenerator.generateListResult(list, list.size());
     }
 
     /**

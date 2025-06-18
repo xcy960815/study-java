@@ -22,15 +22,12 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.Date;
-import java.util.List;
-import java.util.Random;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Base64;
-import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -46,58 +43,24 @@ public class StudyJavaSysUserServiceImpl implements StudyJavaSysUserService {
     private StudyJavaSysUserDao makeDto2Dao(StudyJavaSysUserDto studyJavaSysUserDto){
         StudyJavaSysUserDao studyJavaSysUserDao = new StudyJavaSysUserDao();
         BeanUtils.copyProperties(studyJavaSysUserDto, studyJavaSysUserDao);
+        // 手动映射userId到id
+        if (studyJavaSysUserDto.getId() != null) {
+            studyJavaSysUserDao.setId(studyJavaSysUserDto.getId());
+        }
+        // 手动映射roleId
+        if (studyJavaSysUserDto.getRoleId() != null) {
+            studyJavaSysUserDao.setRoleId(studyJavaSysUserDto.getRoleId());
+        }
         return studyJavaSysUserDao;
     }
 
-//    private StudyJavaSysUserVo makeDaoToVo(StudyJavaSysUserDao userInfoDao) {
-//        StudyJavaSysUserVo studyJavaUserVo = new StudyJavaSysUserVo();
-//        BeanUtils.copyProperties(userInfoDao, studyJavaUserVo);
-//        return studyJavaUserVo;
-//    }
     /**
      * 查询所有用户
      */
     @Override
     public IPage<StudyJavaSysUserVo> getUserList(Page<StudyJavaSysUserDto> page, StudyJavaSysUserDto studyJavaSysUserDto) {
-        IPage<StudyJavaSysUserDao> userDaoResult = studyJavaSysUserMapper.getUserList(page,makeDto2Dao(studyJavaSysUserDto));
-        List<StudyJavaSysUserVo> userVoList = userDaoResult.getRecords().stream().map(this::makeDaoToVo).collect(Collectors.toList());
-        // 创建新的 IPage 对象
-        IPage<StudyJavaSysUserVo> resultPage = new Page<>(userDaoResult.getCurrent(), userDaoResult.getSize(), userDaoResult.getTotal());
-        resultPage.setRecords(userVoList);
-        return resultPage;
+        return studyJavaSysUserMapper.getUserList(page,makeDto2Dao(studyJavaSysUserDto));
     }
-
-    /**
-     * dao 2 vo
-     * @param userInfoDao StudyJavaSysUserDao
-     * @return StudyJavaSysUserDto
-     */
-    private StudyJavaSysUserVo makeDaoToVo(StudyJavaSysUserDao userInfoDao) {
-        StudyJavaSysUserVo studyJavaSysUserVo = new StudyJavaSysUserVo();
-        studyJavaSysUserVo.setUserId(userInfoDao.getUserId());
-        studyJavaSysUserVo.setAddress(userInfoDao.getAddress());
-        studyJavaSysUserVo.setNickName(userInfoDao.getNickName());
-        studyJavaSysUserVo.setLoginName(userInfoDao.getLoginName());
-        studyJavaSysUserVo.setIntroduceSign(userInfoDao.getIntroduceSign());
-        studyJavaSysUserVo.setCreateTime(userInfoDao.getCreateTime());
-        // 年龄 随机生成
-        Random random = new Random();
-        Integer age = random.nextInt(100);
-        studyJavaSysUserVo.setAge(age);
-        try {
-            if(userInfoDao.getAvatar() != null) {
-                studyJavaSysUserVo.setAvatar(userInfoDao.getAvatar());
-            } else {
-                // 设置默认头像
-                studyJavaSysUserVo.setAvatar(generateBase64Image());
-            }
-        } catch (IOException e) {
-            log.error("设置默认头像失败 {}",e.getMessage());
-           throw new StudyJavaException("设置默认头像失败" + e.getMessage());
-        }
-        return studyJavaSysUserVo;
-    }
-
 
     @Override
     public Boolean updateUserInfo(StudyJavaSysUserDto studyJavaSysUserDto) {
@@ -183,10 +146,9 @@ public class StudyJavaSysUserServiceImpl implements StudyJavaSysUserService {
         Long userId = Long.parseLong(tokenUserInfo.get("userId").toString());
         String loginName = tokenUserInfo.get("loginName").toString();
         StudyJavaSysUserDto studyJavaSysUserDto = new StudyJavaSysUserDto();
-        studyJavaSysUserDto.setUserId(userId);
+        studyJavaSysUserDto.setId(userId);
         studyJavaSysUserDto.setLoginName(loginName);
-        StudyJavaSysUserDao userInfoDao = studyJavaSysUserMapper.getUserInfo(makeDto2Dao(studyJavaSysUserDto));
-        return makeDaoToVo(userInfoDao);
+       return studyJavaSysUserMapper.getUserInfo(makeDto2Dao(studyJavaSysUserDto));
     }
 
     @Override
@@ -196,8 +158,7 @@ public class StudyJavaSysUserServiceImpl implements StudyJavaSysUserService {
         StudyJavaSysUserDto studyJavaSysUserDto = new StudyJavaSysUserDto();
 //        studyJavaSysUserDto.setPasswordMd5(passwordMd5);
         studyJavaSysUserDto.setLoginName(loginName);
-        StudyJavaSysUserDao userInfoDao = studyJavaSysUserMapper.getUserInfo(makeDto2Dao(studyJavaSysUserDto));
-        return makeDaoToVo(userInfoDao);
+        return studyJavaSysUserMapper.getUserInfo(makeDto2Dao(studyJavaSysUserDto));
     }
 
     /**

@@ -10,14 +10,29 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * TableName study_java_user
+ * TableName study_java_sys_user
  */
 @Data
 public class StudyJavaSysUserVo implements Serializable {
     /**
      * 用户主键id
      */
-    private Long userId;
+    private Long id;
+
+    /**
+     * 角色ID
+     */
+    private Long roleId;
+
+    /**
+     * 角色名称
+     */
+    private String roleName;
+
+    /**
+     * 角色编码
+     */
+    private String roleCode;
 
     /**
      * 用户昵称

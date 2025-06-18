@@ -10,15 +10,20 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 /**
- * TableName  study_java_user
+ * TableName  study_java_sys_user
  */
 @Data
 public class StudyJavaSysUserDao implements Serializable {
     /**
      * 用户主键id
      */
-    @TableId(value = "user_id", type = IdType.AUTO) // 指定主键
-    private Long userId;
+    @TableId(value = "id", type = IdType.AUTO) // 指定主键
+    private Long id;
+
+    /**
+     * 角色ID
+     */
+    private Long roleId;
 
     /**
      * 用户昵称

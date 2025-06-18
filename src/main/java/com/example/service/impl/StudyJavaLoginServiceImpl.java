@@ -97,7 +97,7 @@ public class StudyJavaLoginServiceImpl implements StudyJavaLoginService {
             }
         }
         StudyJavaSysLoginVo studyJavaLoginVo = new StudyJavaSysLoginVo();
-        studyJavaLoginVo.setUserId(userInfoVo.getUserId());
+        studyJavaLoginVo.setId(userInfoVo.getId());
         studyJavaLoginVo.setLoginName(userInfoVo.getLoginName());
         studyJavaLoginVo.setAddress(userInfoVo.getAddress());
         studyJavaLoginVo.setCreateTime(userInfoVo.getCreateTime());
@@ -105,7 +105,7 @@ public class StudyJavaLoginServiceImpl implements StudyJavaLoginService {
         studyJavaLoginVo.setNickName(userInfoVo.getNickName());
         Map<String,String> tokenContentOption = new HashMap<>();
         tokenContentOption.put("loginName",userInfoVo.getLoginName());
-        tokenContentOption.put("userId",userInfoVo.getUserId().toString());
+        tokenContentOption.put("userId",userInfoVo.getId().toString());
         // 将用户关键信息（能从数据库中查出来的字段保存进去）
         String tokenContent = JSONUtil.toJsonStr(tokenContentOption);
         String token = jwtTokenComponent.generateToken(tokenContent);

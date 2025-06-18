@@ -19,7 +19,7 @@ public interface StudyJavaSysUserService {
     /**
      * 更新用户
      */
-    Boolean updateUserInfo(StudyJavaSysUserDto studyJavaUser);
+    Boolean updateUserInfo(StudyJavaSysUserDto studyJavaSysUser);
 
     String updateUserAvatar(String userId,MultipartFile file) throws IOException;
     /**
