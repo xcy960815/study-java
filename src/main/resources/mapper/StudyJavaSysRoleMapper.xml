@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.StudyJavaSysRoleMapper">
+
+    <sql id="Base_Column_List">
+        id, role_name, role_code, role_sort, status, menu_check_strictly, remark,
+        create_by, create_time, update_by, update_time, del_flag
+    </sql>
+
+    <sql id="Base_Where_Clause">
+        <where>
+            del_flag = 0
+            <if test="studyJavaSysRoleDao.roleName != null and studyJavaSysRoleDao.roleName != ''">
+                AND role_name LIKE CONCAT('%', #{studyJavaSysRoleDao.roleName}, '%')
+            </if>
+            <if test="studyJavaSysRoleDao.roleCode != null and studyJavaSysRoleDao.roleCode != ''">
+                AND role_code LIKE CONCAT('%', #{studyJavaSysRoleDao.roleCode}, '%')
+            </if>
+            <if test="studyJavaSysRoleDao.status != null">
+                AND status = #{studyJavaSysRoleDao.status}
+            </if>
+        </where>
+    </sql>
+    
+    <select id="getRoleList" resultType="com.example.domain.dao.StudyJavaSysRoleDao">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM study_java_sys_role
+        <where>
+            <if test="studyJavaSysRoleDao != null and studyJavaSysRoleDao.roleName != null and studyJavaSysRoleDao.roleName != ''">
+                AND role_name LIKE CONCAT('%', #{studyJavaSysRoleDao.roleName},'%')
+            </if>
+            <if test="studyJavaSysRoleDao != null and studyJavaSysRoleDao.roleCode != null and studyJavaSysRoleDao.roleCode != ''">
+                AND role_code = #{studyJavaSysRoleDao.roleCode}
+            </if>
+            <if test="studyJavaSysRoleDao != null and studyJavaSysRoleDao.status != null">
+                AND status = #{studyJavaSysRoleDao.status}
+            </if>
+        </where>
+        ORDER BY role_sort ASC
+    </select>
+
+    <select id="getAllRoleList" resultType="com.example.domain.dao.StudyJavaSysRoleDao">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM study_java_sys_role
+        WHERE del_flag = 0
+        ORDER BY role_sort ASC
+    </select>
+
+</mapper>

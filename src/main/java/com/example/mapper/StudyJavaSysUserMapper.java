@@ -17,7 +17,7 @@ import org.springframework.stereotype.Repository;
 */
 
 @Repository
-public interface StudyJavaUserMapper extends BaseMapper<StudyJavaSysUserDao> {
+public interface StudyJavaSysUserMapper extends BaseMapper<StudyJavaSysUserDao> {
     // 获取用户列表
     IPage<StudyJavaSysUserDao> getUserList(@Param("page") Page<StudyJavaSysUserDto> page, @Param("studyJavaSysUserDao") StudyJavaSysUserDao studyJavaSysUserDao);
     // 更新用户

@@ -62,7 +62,7 @@ public class StudyJavaLoginServiceImpl implements StudyJavaLoginService {
     private StudyJavaSysUserService studyJavaSysUserService;
 
 //    @Resource
-//    private StudyJavaUserMapper studyJavaUserMapper;
+//    private StudyJavaSysUserMapper studyJavaUserMapper;
 
     @Override
     public StudyJavaSysLoginVo login(StudyJavaLoginDto studyJavaLoginDto)  {

@@ -1,8 +1,5 @@
 package com.example.service.impl;
 
-
-
-
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -12,7 +9,7 @@ import com.example.domain.dto.StudyJavaLoginDto;
 import com.example.domain.dto.StudyJavaSysUserDto;
 import com.example.domain.vo.StudyJavaSysUserVo;
 import com.example.exception.StudyJavaException;
-import com.example.mapper.StudyJavaUserMapper;
+import com.example.mapper.StudyJavaSysUserMapper;
 import com.example.service.StudyJavaSysUserService;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
@@ -41,7 +38,7 @@ import java.util.stream.Collectors;
 public class StudyJavaSysUserServiceImpl implements StudyJavaSysUserService {
 
     @Resource
-    private StudyJavaUserMapper studyJavaUserMapper;
+    private StudyJavaSysUserMapper studyJavaSysUserMapper;
 
     @Resource
     private JwtTokenComponent jwtTokenComponent;
@@ -62,7 +59,7 @@ public class StudyJavaSysUserServiceImpl implements StudyJavaSysUserService {
      */
     @Override
     public IPage<StudyJavaSysUserVo> getUserList(Page<StudyJavaSysUserDto> page, StudyJavaSysUserDto studyJavaSysUserDto) {
-        IPage<StudyJavaSysUserDao> userDaoResult = studyJavaUserMapper.getUserList(page,makeDto2Dao(studyJavaSysUserDto));
+        IPage<StudyJavaSysUserDao> userDaoResult = studyJavaSysUserMapper.getUserList(page,makeDto2Dao(studyJavaSysUserDto));
         List<StudyJavaSysUserVo> userVoList = userDaoResult.getRecords().stream().map(this::makeDaoToVo).collect(Collectors.toList());
         // 创建新的 IPage 对象
         IPage<StudyJavaSysUserVo> resultPage = new Page<>(userDaoResult.getCurrent(), userDaoResult.getSize(), userDaoResult.getTotal());
@@ -104,7 +101,7 @@ public class StudyJavaSysUserServiceImpl implements StudyJavaSysUserService {
 
     @Override
     public Boolean updateUserInfo(StudyJavaSysUserDto studyJavaSysUserDto) {
-       return studyJavaUserMapper.updateUserInfo(makeDto2Dao(studyJavaSysUserDto)) > 0;
+       return studyJavaSysUserMapper.updateUserInfo(makeDto2Dao(studyJavaSysUserDto)) > 0;
     }
 
     @Override
@@ -119,7 +116,7 @@ public class StudyJavaSysUserServiceImpl implements StudyJavaSysUserService {
         // 将字节数组转成 Base64 编码的字符串
         String base64Image = Base64.getEncoder().encodeToString(fileBytes);
         String base64ImageUrl = "data:image/jpeg;base64," + base64Image;
-        studyJavaUserMapper.updateUserAvatar(userId, base64ImageUrl);
+        studyJavaSysUserMapper.updateUserAvatar(userId, base64ImageUrl);
 
         return base64ImageUrl;
     }
@@ -133,7 +130,7 @@ public class StudyJavaSysUserServiceImpl implements StudyJavaSysUserService {
         studyJavaSysUserDao.setIsDeleted(0);
         studyJavaSysUserDao.setLockedFlag(0);
         studyJavaSysUserDao.setCreateTime(new Date());
-        return studyJavaUserMapper.insertUserInfo(studyJavaSysUserDao) > 0;
+        return studyJavaSysUserMapper.insertUserInfo(studyJavaSysUserDao) > 0;
     }
 
     /**
@@ -142,7 +139,7 @@ public class StudyJavaSysUserServiceImpl implements StudyJavaSysUserService {
     @Override
     public Boolean deleteUserInfo(StudyJavaSysUserDto studyJavaSysUserDto) {
         StudyJavaSysUserDao studyJavaSysUserDao = makeDto2Dao(studyJavaSysUserDto);
-        return studyJavaUserMapper.deleteUserInfo(studyJavaSysUserDao) > 0;
+        return studyJavaSysUserMapper.deleteUserInfo(studyJavaSysUserDao) > 0;
     }
 
     // 在 Service 实现类中抛出 IOException
@@ -188,7 +185,7 @@ public class StudyJavaSysUserServiceImpl implements StudyJavaSysUserService {
         StudyJavaSysUserDto studyJavaSysUserDto = new StudyJavaSysUserDto();
         studyJavaSysUserDto.setUserId(userId);
         studyJavaSysUserDto.setLoginName(loginName);
-        StudyJavaSysUserDao userInfoDao = studyJavaUserMapper.getUserInfo(makeDto2Dao(studyJavaSysUserDto));
+        StudyJavaSysUserDao userInfoDao = studyJavaSysUserMapper.getUserInfo(makeDto2Dao(studyJavaSysUserDto));
         return makeDaoToVo(userInfoDao);
     }
 
@@ -199,7 +196,7 @@ public class StudyJavaSysUserServiceImpl implements StudyJavaSysUserService {
         StudyJavaSysUserDto studyJavaSysUserDto = new StudyJavaSysUserDto();
 //        studyJavaSysUserDto.setPasswordMd5(passwordMd5);
         studyJavaSysUserDto.setLoginName(loginName);
-        StudyJavaSysUserDao userInfoDao = studyJavaUserMapper.getUserInfo(makeDto2Dao(studyJavaSysUserDto));
+        StudyJavaSysUserDao userInfoDao = studyJavaSysUserMapper.getUserInfo(makeDto2Dao(studyJavaSysUserDto));
         return makeDaoToVo(userInfoDao);
     }
 
@@ -221,6 +218,6 @@ public class StudyJavaSysUserServiceImpl implements StudyJavaSysUserService {
         }
         studyJavaSysUserDto.setPasswordMd5(newPasswordMd5);
 
-     return studyJavaUserMapper.updateUserInfo(makeDto2Dao(studyJavaSysUserDto)) > 0;
+     return studyJavaSysUserMapper.updateUserInfo(makeDto2Dao(studyJavaSysUserDto)) > 0;
     }
 }
