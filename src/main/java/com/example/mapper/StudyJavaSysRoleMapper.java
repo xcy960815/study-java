@@ -1,11 +1,9 @@
 package com.example.mapper;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.example.domain.dao.StudyJavaSysRoleDao;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-
 import java.util.List;
 
 @Mapper
@@ -24,27 +22,27 @@ public interface StudyJavaSysRoleMapper {
     /**
      * 新增角色
      */
-    int addRole(StudyJavaSysRoleDao roleDao);
+    int addRole(@Param("roleDao") StudyJavaSysRoleDao roleDao);
 
     /**
      * 修改角色
      */
-    int updateRole(StudyJavaSysRoleDao roleDao);
+    int updateRole(@Param("roleDao") StudyJavaSysRoleDao roleDao);
 
     /**
      * 删除角色
      */
-    int deleteRole(Long id);
+    int deleteRole(@Param("roleId") Long roleId);
 
     /**
      * 修改角色状态
      */
-    int updateRoleStatus(StudyJavaSysRoleDao roleDao);
+    int updateRoleStatus(@Param("roleDao") StudyJavaSysRoleDao roleDao);
 
     /**
      * 根据ID获取角色
      */
-    StudyJavaSysRoleDao getRoleById(Long id);
+    StudyJavaSysRoleDao getRoleById(@Param("roleId") Long roleId);
 
     /**
      * 删除角色-菜单关联

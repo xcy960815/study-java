@@ -63,9 +63,9 @@ public class StudyJavaSysUserServiceImpl implements StudyJavaSysUserService {
 
     @Override
     @Transactional
-    public Boolean updateUserInfo(StudyJavaSysUserDto studyJavaSysUserDto) {
+    public Boolean updateUser(StudyJavaSysUserDto studyJavaSysUserDto) {
         // 1. 更新用户主表
-        boolean userUpdate = studyJavaSysUserMapper.updateUserInfo(makeDto2Dao(studyJavaSysUserDto)) > 0;
+        boolean userUpdate = studyJavaSysUserMapper.updateUser(makeDto2Dao(studyJavaSysUserDto)) > 0;
 
         // 2. 删除旧的角色关系
         studyJavaSysUserMapper.deleteUserRolesByUserId(studyJavaSysUserDto.getId());
@@ -98,12 +98,12 @@ public class StudyJavaSysUserServiceImpl implements StudyJavaSysUserService {
      * 创建一条数据
      */
     @Override
-    public Boolean insertUserInfo(StudyJavaSysUserDto studyJavaSysUserDto) {
+    public Boolean insertUser(StudyJavaSysUserDto studyJavaSysUserDto) {
         StudyJavaSysUserDao studyJavaSysUserDao = makeDto2Dao(studyJavaSysUserDto);
         studyJavaSysUserDao.setIsDeleted(0);
         studyJavaSysUserDao.setLockedFlag(0);
         studyJavaSysUserDao.setCreateTime(new Date());
-        return studyJavaSysUserMapper.insertUserInfo(studyJavaSysUserDao) > 0;
+        return studyJavaSysUserMapper.insertUser(studyJavaSysUserDao) > 0;
     }
 
     /**
@@ -111,12 +111,12 @@ public class StudyJavaSysUserServiceImpl implements StudyJavaSysUserService {
      */
     @Override
     @Transactional
-    public Boolean deleteUserInfo(StudyJavaSysUserDto studyJavaSysUserDto) {
+    public Boolean deleteUser(StudyJavaSysUserDto studyJavaSysUserDto) {
         StudyJavaSysUserDao studyJavaSysUserDao = makeDto2Dao(studyJavaSysUserDto);
-        boolean userDelete = studyJavaSysUserMapper.deleteUserInfo(studyJavaSysUserDao) > 0;
+
         // 删除用户角色关联
         studyJavaSysUserMapper.deleteUserRolesByUserId(studyJavaSysUserDto.getId());
-        return userDelete;
+        return studyJavaSysUserMapper.deleteUser(studyJavaSysUserDao) > 0;
     }
 
     // 在 Service 实现类中抛出 IOException
@@ -193,6 +193,6 @@ public class StudyJavaSysUserServiceImpl implements StudyJavaSysUserService {
         }
         studyJavaSysUserDto.setPasswordMd5(newPasswordMd5);
 
-     return studyJavaSysUserMapper.updateUserInfo(makeDto2Dao(studyJavaSysUserDto)) > 0;
+     return studyJavaSysUserMapper.updateUser(makeDto2Dao(studyJavaSysUserDto)) > 0;
     }
 }

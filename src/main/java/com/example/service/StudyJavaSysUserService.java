@@ -19,18 +19,18 @@ public interface StudyJavaSysUserService {
     /**
      * 更新用户
      */
-    Boolean updateUserInfo(StudyJavaSysUserDto studyJavaSysUser);
+    Boolean updateUser(StudyJavaSysUserDto studyJavaSysUser);
 
     String updateUserAvatar(String userId,MultipartFile file) throws IOException;
     /**
      * 添加用户
      */
-    Boolean insertUserInfo(StudyJavaSysUserDto studyJavaUser);
+    Boolean insertUser(StudyJavaSysUserDto studyJavaUser);
 
     /**
      * 删除用户
      */
-    Boolean deleteUserInfo(StudyJavaSysUserDto studyJavaUser);
+    Boolean deleteUser(StudyJavaSysUserDto studyJavaSysUserDto);
 
     String generateBase64Image() throws IOException;
 

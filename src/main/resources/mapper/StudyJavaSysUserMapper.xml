@@ -85,7 +85,7 @@
     </select>
 
     <!--  新增用户数据  -->
-    <insert id="insertUserInfo" keyColumn="id" keyProperty="id" parameterType="com.example.domain.vo.StudyJavaSysUserVo" useGeneratedKeys="true">
+    <insert id="insertUser" keyColumn="id" keyProperty="id" parameterType="com.example.domain.vo.StudyJavaSysUserVo" useGeneratedKeys="true">
         insert into study_java_sys_user
         (nick_name,login_name
         ,password_md5,introduce_sign,address
@@ -109,7 +109,7 @@
     </update>
 
     <!--  删除用户 软删除  -->
-    <update id="deleteUserInfo" parameterType="com.example.domain.dao.StudyJavaSysUserDao">
+    <update id="deleteUser" parameterType="com.example.domain.dao.StudyJavaSysUserDao">
         update study_java_sys_user
         <set>
             is_deleted = 1
@@ -119,7 +119,7 @@
     </update>
 
     <!--  更新用户数据  -->
-    <update id="updateUserInfo" parameterType="com.example.domain.dao.StudyJavaSysUserDao">
+    <update id="updateUser" parameterType="com.example.domain.dao.StudyJavaSysUserDao">
         update study_java_sys_user
         <set>
             <if test="studyJavaSysUserDao.nickName != null and studyJavaSysUserDao.nickName != ''">
@@ -143,7 +143,7 @@
         and `id` = #{studyJavaSysUserDao.id,jdbcType=BIGINT}
     </update>
 
-    
+
     <!--  获取用户信息  -->
     <select id="getUserInfo" parameterType="com.example.domain.dao.StudyJavaSysUserDao" resultMap="UserWithRoleResultMap">
         select

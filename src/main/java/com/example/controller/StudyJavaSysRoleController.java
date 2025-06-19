@@ -46,15 +46,9 @@ public class StudyJavaSysRoleController {
     /**
      * 获取角色详细信息
      */
-    @GetMapping("/getRoleInfo")
-    public ResponseResult<StudyJavaSysRoleVo> getRoleInfo(@RequestParam Long id) {
-        StudyJavaSysRoleDao role = studyJavaSysRoleService.getRoleById(id);
-        if (role == null) {
-            return null;
-        }
-        StudyJavaSysRoleVo vo = new StudyJavaSysRoleVo();
-        BeanUtils.copyProperties(role, vo);
-        return ResponseGenerator.generateSuccessResult(vo);
+    @GetMapping("/getRoleById")
+    public ResponseResult<StudyJavaSysRoleVo> getRoleById(@RequestParam Long id) {
+        return ResponseGenerator.generateSuccessResult(studyJavaSysRoleService.getRoleById(id));
     }
 
     /**
@@ -74,18 +68,36 @@ public class StudyJavaSysRoleController {
     }
 
     /**
-     * 删除角色
+     * 停用角色
      */
     @DeleteMapping("/deleteRole")
-    public ResponseResult<Boolean> remove(@RequestParam Long id) {
-        return ResponseGenerator.generateSuccessResult(studyJavaSysRoleService.deleteRole(id));
+    public ResponseResult<Boolean> deleteRole(@RequestBody StudyJavaSysRoleDto roleDto) {
+        return ResponseGenerator.generateSuccessResult(studyJavaSysRoleService.deleteRole(roleDto));
     }
 
     /**
-     * 修改角色状态
+     * 启用角色
      */
-    @PutMapping("/changeStatus")
-    public ResponseResult<Boolean> changeStatus(@RequestBody StudyJavaSysRoleDto roleDto) {
+    @PostMapping("/enableRole")
+    public ResponseResult<Boolean> enableRole(@RequestBody StudyJavaSysRoleDto roleDto) {
+        roleDto.setStatus(1);
         return ResponseGenerator.generateSuccessResult(studyJavaSysRoleService.updateRoleStatus(roleDto));
     }
+
+    /**
+     * 禁用角色
+     */
+    @PostMapping("/disableRole")
+    public ResponseResult<Boolean> disableRole(@RequestBody StudyJavaSysRoleDto roleDto) {
+        roleDto.setStatus(0);
+        return ResponseGenerator.generateSuccessResult(studyJavaSysRoleService.updateRoleStatus(roleDto));
+    }
+
+//    /**
+//     * 修改角色状态
+//     */
+//    @PutMapping("/changeStatus")
+//    public ResponseResult<Boolean> changeStatus(@RequestBody StudyJavaSysRoleDto roleDto) {
+//        return ResponseGenerator.generateSuccessResult(studyJavaSysRoleService.updateRoleStatus(roleDto));
+//    }
 }

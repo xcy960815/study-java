@@ -22,11 +22,11 @@ public interface StudyJavaSysUserMapper extends BaseMapper<StudyJavaSysUserDao> 
     // 获取用户列表
     IPage<StudyJavaSysUserVo> getUserList(@Param("page") Page<StudyJavaSysUserDto> page, @Param("studyJavaSysUserDao") StudyJavaSysUserDao studyJavaSysUserDao);
     // 更新用户
-    int updateUserInfo(@Param("studyJavaSysUserDao") StudyJavaSysUserDao studyJavaSysUserDao);
+    int updateUser(@Param("studyJavaSysUserDao") StudyJavaSysUserDao studyJavaSysUserDao);
     // 添加用户
-    int insertUserInfo(@Param("studyJavaSysUserDao") StudyJavaSysUserDao studyJavaSysUserDao);
+    int insertUser(@Param("studyJavaSysUserDao") StudyJavaSysUserDao studyJavaSysUserDao);
     // 删除用户
-    int deleteUserInfo(@Param("studyJavaSysUserDao") StudyJavaSysUserDao studyJavaSysUserDao);
+    int deleteUser(@Param("studyJavaSysUserDao") StudyJavaSysUserDao studyJavaSysUserDao);
     // 更新用户头像
     int updateUserAvatar(@Param("userId") String userId, @Param("base64ImageUrl") String base64ImageUrl);
     // 查找用户信息

@@ -33,7 +33,7 @@ public interface StudyJavaSysRoleService {
     /**
      * 删除角色
      */
-    boolean deleteRole(Long id);
+    boolean deleteRole(StudyJavaSysRoleDto roleDto);
 
     /**
      * 修改角色状态
@@ -43,5 +43,5 @@ public interface StudyJavaSysRoleService {
     /**
      * 根据ID获取角色
      */
-    StudyJavaSysRoleDao getRoleById(Long id);
+    StudyJavaSysRoleVo getRoleById(Long id);
 }

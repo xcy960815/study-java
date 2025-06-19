@@ -2,7 +2,6 @@ package com.example.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.domain.dao.StudyJavaSysRoleDao;
 import com.example.domain.dto.StudyJavaSysRoleDto;
 import com.example.domain.vo.StudyJavaSysRoleVo;
@@ -82,13 +81,13 @@ public class StudyJavaSysRoleServiceImpl implements StudyJavaSysRoleService {
 
     @Override
     @Transactional
-    public boolean deleteRole(Long id) {
+    public boolean deleteRole(StudyJavaSysRoleDto roleDto) {
         // 先删除角色-菜单关联
-        studyJavaSysRoleMapper.deleteRoleMenusByRoleId(id);
+        studyJavaSysRoleMapper.deleteRoleMenusByRoleId(roleDto.getId());
         // 再删除用户-角色关联
-        studyJavaSysRoleMapper.deleteUserRolesByRoleId(id);
+        studyJavaSysRoleMapper.deleteUserRolesByRoleId(roleDto.getId());
         // 最后删除角色主表
-        return studyJavaSysRoleMapper.deleteRole(id) > 0;
+        return studyJavaSysRoleMapper.deleteRole(roleDto.getId()) > 0;
     }
 
     @Override
@@ -98,8 +97,8 @@ public class StudyJavaSysRoleServiceImpl implements StudyJavaSysRoleService {
     }
 
     @Override
-    public StudyJavaSysRoleDao getRoleById(Long id) {
-        return studyJavaSysRoleMapper.getRoleById(id);
+    public StudyJavaSysRoleVo getRoleById(Long id) {
+        return convertToVo(studyJavaSysRoleMapper.getRoleById(id));
     }
 
     /**
