@@ -50,6 +50,11 @@ public interface StudyJavaSysMenuMapper extends BaseMapper<StudyJavaSysMenuDao> 
      * @return 删除结果
      */
     int deleteMenu(@Param("studyJavaSysMenuDao") StudyJavaSysMenuDao studyJavaSysMenuDao);
+
+    /**
+     * 删除角色-菜单关联（根据菜单ID）
+     */
+    int deleteRoleMenusByMenuId(@Param("menuId") Long menuId);
 }
 
 

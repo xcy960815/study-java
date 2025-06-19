@@ -142,6 +142,8 @@
         is_deleted = 0
         and `id` = #{studyJavaSysUserDao.id,jdbcType=BIGINT}
     </update>
+
+    
     <!--  获取用户信息  -->
     <select id="getUserInfo" parameterType="com.example.domain.dao.StudyJavaSysUserDao" resultMap="UserWithRoleResultMap">
         select

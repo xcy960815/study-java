@@ -3,7 +3,7 @@
 <mapper namespace="com.example.mapper.StudyJavaSysRoleMapper">
 
     <sql id="Base_Column_List">
-        id, role_name, role_code, role_sort, status, menu_check_strictly, remark,
+        id, role_name, role_code, role_sort, status, remark,
         create_by, create_time, update_by, update_time, del_flag
     </sql>
 
@@ -22,10 +22,31 @@
         </where>
     </sql>
     
-    <select id="getRoleList" resultType="com.example.domain.dao.StudyJavaSysRoleDao">
+    <resultMap id="RoleWithMenuResultMap" type="com.example.domain.dao.StudyJavaSysRoleDao">
+        <id property="id" column="id"/>
+        <result property="roleName" column="role_name"/>
+        <result property="roleCode" column="role_code"/>
+        <result property="roleSort" column="role_sort"/>
+        <result property="status" column="status"/>
+        <result property="remark" column="remark"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="menuIds" column="ids" typeHandler="com.example.typehandler.LongListTypeHandler"/>
+        <result property="menuNames" column="menu_names" typeHandler="com.example.typehandler.StringListTypeHandler"/>
+    </resultMap>
+
+    <select id="getRoleList" resultMap="RoleWithMenuResultMap">
         SELECT
-        <include refid="Base_Column_List"/>
-        FROM study_java_sys_role
+        r1.id, r1.role_name, r1.role_code, r1.role_sort, r1.status, r1.remark,
+        r1.create_by, r1.create_time, r1.update_by, r1.update_time, r1.del_flag,
+        GROUP_CONCAT(DISTINCT r3.id) AS ids,
+        GROUP_CONCAT(DISTINCT r3.menu_name) AS menu_names
+        FROM study_java_sys_role r1
+        LEFT JOIN study_java_sys_role_menus m ON r1.id = m.role_id
+        LEFT JOIN study_java_sys_menu r3 ON r3.id = m.menu_id
         <where>
             del_flag = 0
             <if test="studyJavaSysRoleDao != null and studyJavaSysRoleDao.roleName != null and studyJavaSysRoleDao.roleName != ''">
@@ -38,22 +59,26 @@
                 AND status = #{studyJavaSysRoleDao.status}
             </if>
         </where>
-        ORDER BY role_sort ASC
+        GROUP BY r1.id
+        ORDER BY r1.role_sort ASC
     </select>
 
     <select id="getAllRoleList" resultType="com.example.domain.dao.StudyJavaSysRoleDao">
         SELECT
-        <include refid="Base_Column_List"/>
-        FROM study_java_sys_role
-        WHERE del_flag = 0
-        ORDER BY role_sort ASC
+            r1.id, r1.role_name, r1.role_code, r1.role_sort, r1.status, r1.remark,
+            r1.create_by, r1.create_time, r1.update_by, r1.update_time, r1.del_flag
+        FROM study_java_sys_role r1
+        <!-- LEFT JOIN study_java_sys_user_roles r2 ON r2.id = r1.id
+        LEFT JOIN study_java_sys_user u ON r2.user_id = u.id -->
+        WHERE r1.del_flag = 0
+        ORDER BY r1.role_sort ASC
     </select>
 
     <insert id="addRole" parameterType="com.example.domain.dao.StudyJavaSysRoleDao">
         INSERT INTO study_java_sys_role
-        (role_name, role_code, role_sort, status, menu_check_strictly, remark, create_by, create_time, update_by, update_time, del_flag)
+        (role_name, role_code, role_sort, status, remark, create_by, create_time, update_by, update_time, del_flag)
         VALUES
-        (#{roleName}, #{roleCode}, #{roleSort}, #{status}, #{menuCheckStrictly}, #{remark}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime}, #{delFlag})
+        (#{roleName}, #{roleCode}, #{roleSort}, #{status}, #{remark}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime}, #{delFlag})
     </insert>
 
     <update id="updateRole" parameterType="com.example.domain.dao.StudyJavaSysRoleDao">
@@ -63,7 +88,6 @@
             <if test="roleCode != null">role_code = #{roleCode},</if>
             <if test="roleSort != null">role_sort = #{roleSort},</if>
             <if test="status != null">status = #{status},</if>
-            <if test="menuCheckStrictly != null">menu_check_strictly = #{menuCheckStrictly},</if>
             <if test="remark != null">remark = #{remark},</if>
             <if test="updateBy != null">update_by = #{updateBy},</if>
             <if test="updateTime != null">update_time = #{updateTime},</if>
@@ -93,5 +117,25 @@
         FROM study_java_sys_role
         WHERE id = #{id} AND del_flag = 0
     </select>
+
+    <select id="getMenuIdsByRoleId" resultType="java.lang.Long">
+        SELECT menu_id FROM study_java_sys_role_menus WHERE role_id = #{roleId}
+    </select>
+
+    <insert id="insertRoleMenus">
+        INSERT INTO study_java_sys_role_menus (role_id, menu_id)
+        VALUES
+        <foreach collection="menuIds" item="menuId" separator=",">
+            (#{roleId}, #{menuId})
+        </foreach>
+    </insert>
+
+    <delete id="deleteRoleMenusByRoleId">
+        DELETE FROM study_java_sys_role_menus WHERE role_id = #{roleId}
+    </delete>
+
+    <delete id="deleteUserRolesByRoleId">
+        DELETE FROM study_java_sys_user_roles WHERE role_id = #{roleId}
+    </delete>
 
 </mapper>

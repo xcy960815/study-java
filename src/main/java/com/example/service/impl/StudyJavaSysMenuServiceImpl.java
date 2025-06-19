@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 系统菜单服务实现类
@@ -65,7 +66,7 @@ public class StudyJavaSysMenuServiceImpl implements StudyJavaSysMenuService {
             return null;
         }
         StudyJavaSysMenuVo studyJavaSysMenuVo = new StudyJavaSysMenuVo();
-        studyJavaSysMenuVo.setMenuId(studyJavaSysMenuDao.getMenuId());
+        studyJavaSysMenuVo.setId(studyJavaSysMenuDao.getId());
         studyJavaSysMenuVo.setMenuName(studyJavaSysMenuDao.getMenuName());
         studyJavaSysMenuVo.setParentId(studyJavaSysMenuDao.getParentId());
         studyJavaSysMenuVo.setPath(studyJavaSysMenuDao.getPath());
@@ -128,25 +129,28 @@ public class StudyJavaSysMenuServiceImpl implements StudyJavaSysMenuService {
     @Override
     public Boolean updateMenu(StudyJavaSysMenuDto studyJavaSysMenuDto) {
         Assert.notNull(studyJavaSysMenuDto, "菜单信息不能为空");
-        Assert.notNull(studyJavaSysMenuDto.getMenuId(), "菜单ID不能为空");
+        Assert.notNull(studyJavaSysMenuDto.getId(), "菜单ID不能为空");
         try {
             StudyJavaSysMenuDao studyJavaSysMenuDao = convertToDao(studyJavaSysMenuDto);
-            studyJavaSysMenuDao.setMenuId(studyJavaSysMenuDto.getMenuId());
+            studyJavaSysMenuDao.setId(studyJavaSysMenuDto.getId());
             studyJavaSysMenuDao.setUpdateTime(new Date());
             return studyJavaSysMenuMapper.updateMenu(studyJavaSysMenuDao) > 0;
         } catch (Exception e) {
-            log.error("更新菜单失败, id: {}", studyJavaSysMenuDto.getMenuId(), e);
+            log.error("更新菜单失败, id: {}", studyJavaSysMenuDto.getId(), e);
             throw new StudyJavaException("更新菜单失败");
         }
     }
 
     @Override
+    @Transactional
     public Boolean deleteMenu(Serializable id) {
         Assert.notNull(id, "菜单ID不能为空");
         try {
             Long menuId = Long.valueOf(id.toString());
+            // 先删除角色-菜单关联
+            studyJavaSysMenuMapper.deleteRoleMenusByMenuId(menuId);
             StudyJavaSysMenuDao studyJavaSysMenuDao = new StudyJavaSysMenuDao();
-            studyJavaSysMenuDao.setMenuId(menuId);
+            studyJavaSysMenuDao.setId(menuId);
             studyJavaSysMenuDao.setIsDeleted(ISMENUDELETE);
             studyJavaSysMenuDao.setUpdateTime(new Date());
             return studyJavaSysMenuMapper.deleteMenu(studyJavaSysMenuDao) > 0;

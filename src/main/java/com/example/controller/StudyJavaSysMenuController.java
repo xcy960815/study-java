@@ -83,7 +83,7 @@ public class StudyJavaSysMenuController extends BaseController {
      */
     @PutMapping("/updateMenu")
     public ResponseResult<Boolean> updateMenu(@Valid @RequestBody StudyJavaSysMenuDto studyJavaSysMenuDto) {
-        if (studyJavaSysMenuDto.getMenuId() == null) {
+        if (studyJavaSysMenuDto.getId() == null) {
             throw new StudyJavaException("菜单ID不能为空");
         }
        return ResponseGenerator.generateSuccessResult(studyJavaSysMenuService.updateMenu(studyJavaSysMenuDto));
@@ -131,7 +131,7 @@ public class StudyJavaSysMenuController extends BaseController {
                     StudyJavaSysMenuVo studyJavaSysMenuVo = new StudyJavaSysMenuVo();
                     BeanUtils.copyProperties(menuOption, studyJavaSysMenuVo);
                     // 构建子菜单
-                    List<StudyJavaSysMenuVo> children = buildMenuTree(menuList, menuOption.getMenuId());
+                    List<StudyJavaSysMenuVo> children = buildMenuTree(menuList, menuOption.getId());
                     if (!children.isEmpty()) {
                         studyJavaSysMenuVo.setChildren(children);
                     }

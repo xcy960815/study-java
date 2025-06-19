@@ -21,8 +21,6 @@ public class StudyJavaSysRoleDao {
 
     private Integer status;
 
-    private Integer menuCheckStrictly;
-
     private String remark;
 
     private String createBy;
@@ -34,4 +32,7 @@ public class StudyJavaSysRoleDao {
     private LocalDateTime updateTime;
 
     private Integer delFlag;
+
+    private java.util.List<Long> menuIds;
+    private java.util.List<String> menuNames;
 }

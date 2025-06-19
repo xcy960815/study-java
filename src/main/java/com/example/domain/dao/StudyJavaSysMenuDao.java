@@ -19,7 +19,7 @@ public class StudyJavaSysMenuDao implements Serializable {
      * 菜单ID
      */
     @TableId(type = IdType.AUTO)
-    private Long menuId;
+    private Long id;
 
     /**
      * 父菜单ID
@@ -75,5 +75,13 @@ public class StudyJavaSysMenuDao implements Serializable {
      * 是否删除：0-未删除，1-已删除
      */
     private Integer isDeleted = 0;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
 }

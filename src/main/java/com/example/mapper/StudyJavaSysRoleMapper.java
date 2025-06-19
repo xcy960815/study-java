@@ -45,4 +45,19 @@ public interface StudyJavaSysRoleMapper {
      * 根据ID获取角色
      */
     StudyJavaSysRoleDao getRoleById(Long id);
+
+    /**
+     * 删除角色-菜单关联
+     */
+    int deleteRoleMenusByRoleId(@Param("roleId") Long roleId);
+
+    /**
+     * 批量插入角色-菜单关联
+     */
+    int insertRoleMenus(@Param("roleId") Long roleId, @Param("menuIds") List<Long> menuIds);
+
+    /**
+     * 删除用户-角色关联
+     */
+    int deleteUserRolesByRoleId(@Param("roleId") Long roleId);
 }

@@ -5,7 +5,7 @@
 <mapper namespace="com.example.mapper.StudyJavaSysMenuMapper">
 
     <resultMap id="BaseResultMap" type="com.example.domain.dao.StudyJavaSysMenuDao">
-            <id property="menuId" column="menu_id" jdbcType="BIGINT"/>
+            <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="parentId" column="parent_id" jdbcType="BIGINT"/>
             <result property="menuName" column="menu_name" jdbcType="VARCHAR"/>
             <result property="path" column="path" jdbcType="VARCHAR"/>
@@ -20,7 +20,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        menu_id,parent_id,menu_name,
+        id,parent_id,menu_name,
         path,component,icon,
         menu_type,perms,order_num,
         create_time,update_time,is_deleted
@@ -56,7 +56,7 @@
         <include refid="Base_Column_List" />
         FROM
         study_java_sys_menu
-        WHERE menu_id = #{id}
+        WHERE id = #{id}
         AND (is_deleted = 0 OR is_deleted IS NULL)
     </select>
 
@@ -97,13 +97,17 @@
             </if>
             update_time = #{studyJavaSysMenuDao.updateTime}
         </set>
-        WHERE menu_id = #{studyJavaSysMenuDao.menuId}
+        WHERE id = #{studyJavaSysMenuDao.id}
     </update>
 
     <update id="deleteMenu" parameterType="com.example.domain.dao.StudyJavaSysMenuDao">
         UPDATE study_java_sys_menu
         SET is_deleted = #{studyJavaSysMenuDao.isDeleted},
             update_time = #{studyJavaSysMenuDao.updateTime}
-        WHERE menu_id = #{studyJavaSysMenuDao.menuId}
+        WHERE id = #{studyJavaSysMenuDao.id}
     </update>
+
+    <delete id="deleteRoleMenusByMenuId">
+        DELETE FROM study_java_sys_role_menus WHERE menu_id = #{menuId}
+    </delete>
 </mapper>

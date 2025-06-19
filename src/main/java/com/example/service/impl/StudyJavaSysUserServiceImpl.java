@@ -110,9 +110,13 @@ public class StudyJavaSysUserServiceImpl implements StudyJavaSysUserService {
      * 删除用户
      */
     @Override
+    @Transactional
     public Boolean deleteUserInfo(StudyJavaSysUserDto studyJavaSysUserDto) {
         StudyJavaSysUserDao studyJavaSysUserDao = makeDto2Dao(studyJavaSysUserDto);
-        return studyJavaSysUserMapper.deleteUserInfo(studyJavaSysUserDao) > 0;
+        boolean userDelete = studyJavaSysUserMapper.deleteUserInfo(studyJavaSysUserDao) > 0;
+        // 删除用户角色关联
+        studyJavaSysUserMapper.deleteUserRolesByUserId(studyJavaSysUserDto.getId());
+        return userDelete;
     }
 
     // 在 Service 实现类中抛出 IOException

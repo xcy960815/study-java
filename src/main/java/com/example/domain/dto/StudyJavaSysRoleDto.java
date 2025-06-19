@@ -1,9 +1,6 @@
 package com.example.domain.dto;
 
 import lombok.Data;
-//import jakarta.validation.constraints.NotBlank;
-//import jakarta.validation.constraints.NotNull;
-//import jakarta.validation.constraints.Size;
 
 @Data
 public class StudyJavaSysRoleDto  {
@@ -37,23 +34,14 @@ public class StudyJavaSysRoleDto  {
     private Integer status;
 
     /**
-     * 菜单树选择项是否关联显示
-     */
-    private Integer menuCheckStrictly;
-
-    /**
      * 备注
      */
 //    @Size(max = 500, message = "备注长度不能超过500个字符")
     private String remark;
 
-//    /**
-//     * 当前页码
-//     */
-//    private Long pageNum = 1L;
-//
-//    /**
-//     * 每页显示记录数
-//     */
-//    private Long pageSize = 10L;
+    /**
+     * 角色对应的菜单ID集合
+     */
+    private java.util.List<Long> menuIds;
+
 }

@@ -12,7 +12,7 @@ public class StudyJavaSysMenuVo implements Serializable {
     /**
      * 菜单ID
      */
-    private Long menuId;
+    private Long id;
 
     /**
      * 父菜单ID
@@ -70,4 +70,12 @@ public class StudyJavaSysMenuVo implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 }

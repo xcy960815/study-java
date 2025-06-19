@@ -11,6 +11,7 @@ import com.example.service.StudyJavaSysRoleService;
 import jakarta.annotation.Resource;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -63,13 +64,30 @@ public class StudyJavaSysRoleServiceImpl implements StudyJavaSysRoleService {
     }
 
     @Override
+    @Transactional
     public boolean updateRole(StudyJavaSysRoleDto roleDto) {
         StudyJavaSysRoleDao role = convertToDao(roleDto);
-        return studyJavaSysRoleMapper.updateRole(role) > 0;
+        // 1. 更新角色主表
+        boolean roleUpdate = studyJavaSysRoleMapper.updateRole(role) > 0;
+
+        // 2. 删除旧的角色-菜单关系
+        studyJavaSysRoleMapper.deleteRoleMenusByRoleId(roleDto.getId());
+
+        // 3. 批量插入新的角色-菜单关系
+        if (roleDto.getMenuIds() != null && !roleDto.getMenuIds().isEmpty()) {
+            studyJavaSysRoleMapper.insertRoleMenus(roleDto.getId(), roleDto.getMenuIds());
+        }
+        return roleUpdate;
     }
 
     @Override
+    @Transactional
     public boolean deleteRole(Long id) {
+        // 先删除角色-菜单关联
+        studyJavaSysRoleMapper.deleteRoleMenusByRoleId(id);
+        // 再删除用户-角色关联
+        studyJavaSysRoleMapper.deleteUserRolesByRoleId(id);
+        // 最后删除角色主表
         return studyJavaSysRoleMapper.deleteRole(id) > 0;
     }
 

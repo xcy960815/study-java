@@ -11,7 +11,6 @@ public class StudyJavaSysRoleVo {
     private String roleCode;
     private Integer roleSort;
     private Integer status;
-    private Integer menuCheckStrictly;
     private String remark;
     private String createBy;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
@@ -19,4 +18,6 @@ public class StudyJavaSysRoleVo {
     private String updateBy;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime updateTime;
+    private java.util.List<Long> menuIds;
+    private java.util.List<String> menuNames;
 }
