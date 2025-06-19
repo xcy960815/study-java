@@ -5,9 +5,11 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.domain.dao.StudyJavaSysMenuDao;
 import com.example.domain.dto.StudyJavaSysMenuDto;
 import com.example.domain.vo.StudyJavaSysMenuVo;
+import com.example.domain.vo.StudyJavaSysUserVo;
 import com.example.service.StudyJavaSysMenuService;
 import com.example.mapper.StudyJavaSysMenuMapper;
 import com.example.exception.StudyJavaException;
+import com.example.service.StudyJavaSysUserService;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -27,11 +29,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class StudyJavaSysMenuServiceImpl implements StudyJavaSysMenuService {
     private final int ISMENUDELETE = 1;
-    private final int ISMENUEDIT = 0;
 
     @Resource
     private StudyJavaSysMenuMapper studyJavaSysMenuMapper;
 
+    @Resource
+    private StudyJavaSysUserService studyJavaSysUserService;
 
     /**
      * 将 Dto 对象转换为 DAO 对象
@@ -58,7 +61,7 @@ public class StudyJavaSysMenuServiceImpl implements StudyJavaSysMenuService {
 
     /**
      * 将 DAO 对象转换为 VO 对象
-     * @param studyJavaSysMenuDao
+     * @param studyJavaSysMenuDao StudyJavaSysMenuDao
      * @return VO对象
      */
     private StudyJavaSysMenuVo convertToVo(StudyJavaSysMenuDao studyJavaSysMenuDao) {
@@ -109,6 +112,20 @@ public class StudyJavaSysMenuServiceImpl implements StudyJavaSysMenuService {
             log.error("获取菜单详情失败, id: {}", id, e);
             throw new StudyJavaException("获取菜单详情失败");
         }
+    }
+
+    /**
+     * 获取当前用户下面所对应的菜单
+     * @return List<StudyJavaSysMenuVo>
+     */
+    @Override
+    public List<StudyJavaSysMenuVo> getRoutes() {
+        StudyJavaSysUserVo studyJavaSysUserVo = studyJavaSysUserService.getUserInfo();
+        List<StudyJavaSysMenuDao> studyJavaSysMenuDaoList = studyJavaSysMenuMapper.getRoutes(studyJavaSysUserVo.getId());
+        return studyJavaSysMenuDaoList.stream()
+                .map(this::convertToVo)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
     }
 
     @Override

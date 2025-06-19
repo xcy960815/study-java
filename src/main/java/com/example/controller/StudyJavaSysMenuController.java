@@ -50,9 +50,13 @@ public class StudyJavaSysMenuController extends BaseController {
         return ResponseGenerator.generateListResult(menuPage.getRecords(),menuPage.getTotal());
     }
 
+    @GetMapping("/getRoutes")
+    public ResponseResult<StudyJavaSysMenuVo> getRoutes(){
+        return ResponseGenerator.generateSuccessResult(studyJavaSysMenuService.getRoutes());
+    }
+
     /**
      * 通过主键查询单条数据
-     *
      * @param id 主键
      * @return 菜单详情
      */
@@ -67,7 +71,6 @@ public class StudyJavaSysMenuController extends BaseController {
 
     /**
      * 新增菜单
-     *
      * @param studyJavaSysMenuDto 菜单信息
      * @return 新增结果
      */

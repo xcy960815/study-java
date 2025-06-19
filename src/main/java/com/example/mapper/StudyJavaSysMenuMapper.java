@@ -8,6 +8,7 @@ import com.example.domain.dto.StudyJavaSysMenuDto;
 import com.example.domain.vo.StudyJavaSysMenuVo;
 import org.apache.ibatis.annotations.Param;
 import java.io.Serializable;
+import java.util.List;
 
 /**
 * @author opera
@@ -26,6 +27,13 @@ public interface StudyJavaSysMenuMapper extends BaseMapper<StudyJavaSysMenuDao> 
      * @return 单条数据
      */
     StudyJavaSysMenuDao getMenuDetail(@Param("id") Serializable id);
+
+    /**
+     * 获取当前用户所拥有的菜单
+     * @param userId Long
+     * @return List<StudyJavaSysMenuDao>
+     */
+    List<StudyJavaSysMenuDao> getRoutes(@Param("userId") Long userId);
 
     /**
      * 新增菜单

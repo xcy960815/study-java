@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.domain.dto.StudyJavaSysMenuDto;
 import com.example.domain.vo.StudyJavaSysMenuVo;
 import java.io.Serializable;
+import java.util.List;
 
 /**
 * @author opera
@@ -28,6 +29,10 @@ public interface StudyJavaSysMenuService {
      */
     StudyJavaSysMenuVo getMenuDetail(Serializable id);
 
+    /**
+     * 获取当前登录用户所拥有的路由
+     */
+    List<StudyJavaSysMenuVo>getRoutes();
     /**
      * 新增菜单
      *

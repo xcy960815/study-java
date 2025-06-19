@@ -59,6 +59,20 @@
         WHERE id = #{id}
         AND (is_deleted = 0 OR is_deleted IS NULL)
     </select>
+    <!-- userId 当前登录用户id -->
+    <select id="getRoutes" resultMap="BaseResultMap">
+        SELECT
+            <include refid="Base_Column_List" />
+        FROM
+            study_java_sys_menu m
+        INNER JOIN study_java_sys_role_menus rm ON m.id = rm.menu_id
+        INNER JOIN study_java_sys_user_roles ur ON rm.role_id = ur.role_id
+        WHERE
+            ur.user_id = #{userId}
+            AND (m.is_deleted = 0 OR m.is_deleted IS NULL)
+        ORDER BY
+            m.order_num ASC
+    </select>
 
     <insert id="addMenu" parameterType="com.example.domain.dao.StudyJavaSysMenuDao">
         INSERT INTO study_java_sys_menu
