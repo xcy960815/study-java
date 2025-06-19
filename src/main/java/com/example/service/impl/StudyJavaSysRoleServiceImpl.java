@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class StudyJavaSysRoleServiceImpl extends ServiceImpl<StudyJavaSysRoleMapper, StudyJavaSysRoleDao> implements StudyJavaSysRoleService {
+public class StudyJavaSysRoleServiceImpl implements StudyJavaSysRoleService {
 
     @Resource
     private StudyJavaSysRoleMapper studyJavaSysRoleMapper;
@@ -57,26 +57,31 @@ public class StudyJavaSysRoleServiceImpl extends ServiceImpl<StudyJavaSysRoleMap
     }
 
     @Override
-    public boolean insertRole(StudyJavaSysRoleDto roleDto) {
+    public boolean addRole(StudyJavaSysRoleDto roleDto) {
         StudyJavaSysRoleDao role = convertToDao(roleDto);
-        return save(role);
+        return studyJavaSysRoleMapper.addRole(role) > 0;
     }
 
     @Override
     public boolean updateRole(StudyJavaSysRoleDto roleDto) {
         StudyJavaSysRoleDao role = convertToDao(roleDto);
-        return updateById(role);
+        return studyJavaSysRoleMapper.updateRole(role) > 0;
     }
 
     @Override
     public boolean deleteRole(Long id) {
-        return removeById(id);
+        return studyJavaSysRoleMapper.deleteRole(id) > 0;
     }
 
     @Override
     public boolean updateRoleStatus(StudyJavaSysRoleDto roleDto) {
         StudyJavaSysRoleDao role = convertToDao(roleDto);
-        return updateById(role);
+        return studyJavaSysRoleMapper.updateRoleStatus(role) > 0;
+    }
+
+    @Override
+    public StudyJavaSysRoleDao getRoleById(Long id) {
+        return studyJavaSysRoleMapper.getRoleById(id);
     }
 
     /**

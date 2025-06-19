@@ -6,7 +6,6 @@
 
     <resultMap id="BaseResultMap" type="com.example.domain.dao.StudyJavaSysUserDao">
             <id property="id" column="id" jdbcType="BIGINT"/>
-            <result property="roleId" column="role_id" jdbcType="BIGINT"/>
             <result property="nickName" column="nick_name" jdbcType="VARCHAR"/>
             <result property="loginName" column="login_name" jdbcType="VARCHAR"/>
             <result property="passwordMd5" column="password_md5" jdbcType="VARCHAR"/>
@@ -19,24 +18,24 @@
 
     <!-- 用户和角色联合查询的resultMap -->
     <resultMap id="UserWithRoleResultMap" type="com.example.domain.vo.StudyJavaSysUserVo">
-            <id property="id" column="id" jdbcType="BIGINT"/>
-            <result property="roleId" column="role_id" jdbcType="BIGINT"/>
-            <result property="roleName" column="role_name" jdbcType="VARCHAR"/>
-            <result property="roleCode" column="role_code" jdbcType="VARCHAR"/>
-            <result property="nickName" column="nick_name" jdbcType="VARCHAR"/>
-            <result property="loginName" column="login_name" jdbcType="VARCHAR"/>
-            <result property="passwordMd5" column="password_md5" jdbcType="VARCHAR"/>
-            <result property="introduceSign" column="introduce_sign" jdbcType="VARCHAR"/>
-            <result property="address" column="address" jdbcType="VARCHAR"/>
-            <result property="isDeleted" column="is_deleted" jdbcType="TINYINT"/>
-            <result property="lockedFlag" column="locked_flag" jdbcType="TINYINT"/>
-            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
-            <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="roleIds" column="role_ids" jdbcType="VARCHAR" typeHandler="com.example.typehandler.LongListTypeHandler"/>
+        <result property="roleNames" column="role_names" jdbcType="VARCHAR" typeHandler="com.example.typehandler.StringListTypeHandler"/>
+        <result property="roleCodes" column="role_codes" jdbcType="VARCHAR" typeHandler="com.example.typehandler.StringListTypeHandler"/>
+        <result property="nickName" column="nick_name" jdbcType="VARCHAR"/>
+        <result property="loginName" column="login_name" jdbcType="VARCHAR"/>
+        <result property="passwordMd5" column="password_md5" jdbcType="VARCHAR"/>
+        <result property="introduceSign" column="introduce_sign" jdbcType="VARCHAR"/>
+        <result property="address" column="address" jdbcType="VARCHAR"/>
+        <result property="isDeleted" column="is_deleted" jdbcType="TINYINT"/>
+        <result property="lockedFlag" column="locked_flag" jdbcType="TINYINT"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
     </resultMap>
 
     <!-- 基础列 -->
     <sql id="Base_Column_List">
-        id,role_id,nick_name,login_name,
+        id,nick_name,login_name,
         password_md5,introduce_sign,address,
         is_deleted,locked_flag,create_time,avatar
     </sql>
@@ -44,20 +43,21 @@
     <!--  根据条件查询所有的用户  -->
     <select id="getUserList" resultMap="UserWithRoleResultMap" resultType="com.example.domain.vo.StudyJavaSysUserVo">
         SELECT
-        u.id,u.role_id,u.nick_name,u.login_name,
+        u.id,
+        GROUP_CONCAT(DISTINCT r2.id) AS role_ids,
+        GROUP_CONCAT(DISTINCT r2.role_name) AS role_names,
+        GROUP_CONCAT(DISTINCT r2.role_code) AS role_codes,
+        u.nick_name,u.login_name,
         u.password_md5,u.introduce_sign,u.address,
-        u.is_deleted,u.locked_flag,u.create_time,u.avatar,
-        r.role_name,r.role_code
+        u.is_deleted,u.locked_flag,u.create_time,u.avatar
         FROM
         study_java_sys_user u
-        LEFT JOIN study_java_sys_role r ON u.role_id = r.id
+        LEFT JOIN study_java_sys_user_roles r ON u.id = r.user_id
+        LEFT JOIN study_java_sys_role r2 ON r.role_id = r2.id
         <where>
             u.is_deleted = 0
             <if test="studyJavaSysUserDao != null and studyJavaSysUserDao.id != null and studyJavaSysUserDao.id != ''">
                 AND u.id = #{studyJavaSysUserDao.id}
-            </if>
-            <if test="studyJavaSysUserDao != null and studyJavaSysUserDao.roleId != null and studyJavaSysUserDao.roleId != ''">
-                AND u.role_id = #{studyJavaSysUserDao.roleId}
             </if>
             <if test="studyJavaSysUserDao != null and studyJavaSysUserDao.nickName != null and studyJavaSysUserDao.nickName != ''">
                 AND u.nick_name LIKE CONCAT('%', #{studyJavaSysUserDao.nickName}, '%')
@@ -69,19 +69,29 @@
                 AND u.introduce_sign LIKE CONCAT('%', #{studyJavaSysUserDao.introduceSign},'%')
             </if>
             <if test="studyJavaSysUserDao != null and studyJavaSysUserDao.address != null and studyJavaSysUserDao.address != ''">
-                AND u.address LIKE CONCA('%',#{studyJavaSysUserDao.address},'%')
+                AND u.address LIKE CONCAT('%',#{studyJavaSysUserDao.address},'%')
+            </if>
+            <if test="studyJavaSysUserDao != null and studyJavaSysUserDao.roleIds != null and studyJavaSysUserDao.roleIds.size > 0">
+                AND u.id IN (
+                    SELECT user_id FROM study_java_sys_user_roles WHERE role_id IN
+                    <foreach collection="studyJavaSysUserDao.roleIds" item="roleId" open="(" separator="," close=")">
+                        #{roleId}
+                    </foreach>
+                )
             </if>
         </where>
+        GROUP BY u.id
+        ORDER BY u.create_time DESC
     </select>
 
     <!--  新增用户数据  -->
     <insert id="insertUserInfo" keyColumn="id" keyProperty="id" parameterType="com.example.domain.vo.StudyJavaSysUserVo" useGeneratedKeys="true">
         insert into study_java_sys_user
-        ( role_id,nick_name,login_name
+        (nick_name,login_name
         ,password_md5,introduce_sign,address
         ,is_deleted,locked_flag,create_time
         )
-        values (#{studyJavaSysUserDao.roleId,jdbcType=BIGINT},#{studyJavaSysUserDao.nickName,jdbcType=VARCHAR},#{studyJavaSysUserDao.loginName,jdbcType=VARCHAR}
+        values (#{studyJavaSysUserDao.nickName,jdbcType=VARCHAR},#{studyJavaSysUserDao.loginName,jdbcType=VARCHAR}
         ,#{studyJavaSysUserDao.passwordMd5,jdbcType=VARCHAR},#{studyJavaSysUserDao.introduceSign,jdbcType=VARCHAR},#{studyJavaSysUserDao.address,jdbcType=VARCHAR}
         ,#{studyJavaSysUserDao.isDeleted,jdbcType=TINYINT},#{studyJavaSysUserDao.lockedFlag,jdbcType=TINYINT},#{studyJavaSysUserDao.createTime,jdbcType=TIMESTAMP}
         )
@@ -112,9 +122,6 @@
     <update id="updateUserInfo" parameterType="com.example.domain.dao.StudyJavaSysUserDao">
         update study_java_sys_user
         <set>
-            <if test="studyJavaSysUserDao.roleId != null and studyJavaSysUserDao.roleId != ''">
-                role_id = #{studyJavaSysUserDao.roleId,jdbcType=BIGINT},
-            </if>
             <if test="studyJavaSysUserDao.nickName != null and studyJavaSysUserDao.nickName != ''">
                 nick_name = #{studyJavaSysUserDao.nickName,jdbcType=VARCHAR},
             </if>
@@ -138,39 +145,39 @@
     <!--  获取用户信息  -->
     <select id="getUserInfo" parameterType="com.example.domain.dao.StudyJavaSysUserDao" resultMap="UserWithRoleResultMap">
         select
-        u.id,u.role_id,u.nick_name,u.login_name,
-        u.password_md5,u.introduce_sign,u.address,
-        u.is_deleted,u.locked_flag,u.create_time,u.avatar,
-        r.role_name,r.role_code
+        u.id, u.nick_name, u.login_name,
+        u.password_md5, u.introduce_sign, u.address,
+        u.is_deleted, u.locked_flag, u.create_time, u.avatar,
+        GROUP_CONCAT(DISTINCT r2.id) AS role_ids,
+        GROUP_CONCAT(DISTINCT r2.role_name) AS role_names,
+        GROUP_CONCAT(DISTINCT r2.role_code) AS role_codes
         from study_java_sys_user u
-        LEFT JOIN study_java_sys_role r ON u.role_id = r.id
+        LEFT JOIN study_java_sys_user_roles r ON u.id = r.user_id
+        LEFT JOIN study_java_sys_role r2 ON r.role_id = r2.id
         <where>
             u.is_deleted = 0
             <if test="studyJavaSysUserDao != null and studyJavaSysUserDao.id != null and studyJavaSysUserDao.id != ''">
                 AND u.id = #{studyJavaSysUserDao.id}
             </if>
-            <if test="studyJavaSysUserDao != null and studyJavaSysUserDao.roleId != null and studyJavaSysUserDao.roleId != ''">
-                AND u.role_id = #{studyJavaSysUserDao.roleId}
-            </if>
             <if test="studyJavaSysUserDao != null and studyJavaSysUserDao.loginName != null and studyJavaSysUserDao.loginName != ''">
                 AND u.login_name = #{studyJavaSysUserDao.loginName}
             </if>
-            <if test="studyJavaSysUserDao != null and studyJavaSysUserDao.nickName != null and studyJavaSysUserDao.nickName != ''">
-                AND u.nick_name = #{studyJavaSysUserDao.nickName}
-            </if>
-            <if test="studyJavaSysUserDao != null and studyJavaSysUserDao.passwordMd5 != null and studyJavaSysUserDao.passwordMd5 != ''">
-                AND u.password_md5 = #{studyJavaSysUserDao.passwordMd5}
-            </if>
-            <if test="studyJavaSysUserDao != null and studyJavaSysUserDao.introduceSign != null and studyJavaSysUserDao.introduceSign != ''">
-                AND u.introduce_sign = #{studyJavaSysUserDao.introduceSign}
-            </if>
-            <if test="studyJavaSysUserDao != null and studyJavaSysUserDao.address != null and studyJavaSysUserDao.address != ''">
-                AND u.address = #{studyJavaSysUserDao.address}
-            </if>
-            <if test="studyJavaSysUserDao != null and studyJavaSysUserDao.lockedFlag != null and studyJavaSysUserDao.lockedFlag != ''">
-                AND u.locked_flag = #{studyJavaSysUserDao.lockedFlag}
-            </if>
         </where>
-        Limit 1
+        GROUP BY u.id
+        LIMIT 1
     </select>
+
+    <!-- 删除用户所有角色 -->
+    <delete id="deleteUserRolesByUserId">
+        DELETE FROM study_java_sys_user_roles WHERE user_id = #{userId}
+    </delete>
+
+    <!-- 批量插入用户角色 -->
+    <insert id="insertUserRolesBatch">
+        INSERT INTO study_java_sys_user_roles (user_id, role_id)
+        VALUES
+        <foreach collection="roleIds" item="roleId" separator=",">
+            (#{userId}, #{roleId})
+        </foreach>
+    </insert>
 </mapper>

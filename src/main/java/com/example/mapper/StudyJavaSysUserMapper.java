@@ -31,4 +31,8 @@ public interface StudyJavaSysUserMapper extends BaseMapper<StudyJavaSysUserDao> 
     int updateUserAvatar(@Param("userId") String userId, @Param("base64ImageUrl") String base64ImageUrl);
     // 查找用户信息
     StudyJavaSysUserVo getUserInfo(@Param("studyJavaSysUserDao") StudyJavaSysUserDao studyJavaSysUserDao);
+    // 删除用户所有角色
+    void deleteUserRolesByUserId(@Param("userId") Long userId);
+    // 批量插入用户角色
+    void insertUserRolesBatch(@Param("userId") Long userId, @Param("roleIds") java.util.List<Long> roleIds);
 }

@@ -25,16 +25,16 @@ public class StudyJavaSysUserController extends BaseController {
 
     /**
      * 获取用户列表
-     * @param pageSize int
      * @param pageNum int
+     * @param pageSize int
      * @param studyJavaUser StudyJavaSysUserDto
-     * @return ResponseResult<Map<String,Object>>
+     * @return ResponseListResult<StudyJavaSysUserVo>
      */
-    @GetMapping("/getUserList")
+    @PostMapping("/getUserList")
     public ResponseListResult<StudyJavaSysUserVo> getUserList(
-            @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
-            @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
-            @ModelAttribute("studyJavaUser") StudyJavaSysUserDto studyJavaUser
+        @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
+        @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
+        @RequestBody StudyJavaSysUserDto studyJavaUser
     ) {
         IPage<StudyJavaSysUserVo> userVoPage = studyJavaSysUserService.getUserList(startPage(pageNum, pageSize), studyJavaUser);
         return ResponseGenerator.generateListResult(userVoPage.getRecords(),userVoPage.getTotal());

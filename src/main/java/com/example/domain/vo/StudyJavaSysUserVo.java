@@ -20,19 +20,11 @@ public class StudyJavaSysUserVo implements Serializable {
     private Long id;
 
     /**
-     * 角色ID
+     * 多角色支持
      */
-    private Long roleId;
-
-    /**
-     * 角色名称
-     */
-    private String roleName;
-
-    /**
-     * 角色编码
-     */
-    private String roleCode;
+    private java.util.List<Long> roleIds;
+    private java.util.List<String> roleNames;
+    private java.util.List<String> roleCodes;
 
     /**
      * 用户昵称

@@ -28,6 +28,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Base64;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Slf4j
@@ -47,10 +48,8 @@ public class StudyJavaSysUserServiceImpl implements StudyJavaSysUserService {
         if (studyJavaSysUserDto.getId() != null) {
             studyJavaSysUserDao.setId(studyJavaSysUserDto.getId());
         }
-        // 手动映射roleId
-        if (studyJavaSysUserDto.getRoleId() != null) {
-            studyJavaSysUserDao.setRoleId(studyJavaSysUserDto.getRoleId());
-        }
+        // 新增：拷贝roleIds
+        studyJavaSysUserDao.setRoleIds(studyJavaSysUserDto.getRoleIds());
         return studyJavaSysUserDao;
     }
 
@@ -59,12 +58,23 @@ public class StudyJavaSysUserServiceImpl implements StudyJavaSysUserService {
      */
     @Override
     public IPage<StudyJavaSysUserVo> getUserList(Page<StudyJavaSysUserDto> page, StudyJavaSysUserDto studyJavaSysUserDto) {
-        return studyJavaSysUserMapper.getUserList(page,makeDto2Dao(studyJavaSysUserDto));
+        return studyJavaSysUserMapper.getUserList(page, makeDto2Dao(studyJavaSysUserDto));
     }
 
     @Override
+    @Transactional
     public Boolean updateUserInfo(StudyJavaSysUserDto studyJavaSysUserDto) {
-       return studyJavaSysUserMapper.updateUserInfo(makeDto2Dao(studyJavaSysUserDto)) > 0;
+        // 1. 更新用户主表
+        boolean userUpdate = studyJavaSysUserMapper.updateUserInfo(makeDto2Dao(studyJavaSysUserDto)) > 0;
+
+        // 2. 删除旧的角色关系
+        studyJavaSysUserMapper.deleteUserRolesByUserId(studyJavaSysUserDto.getId());
+
+        // 3. 批量插入新的角色关系
+        if (studyJavaSysUserDto.getRoleIds() != null && !studyJavaSysUserDto.getRoleIds().isEmpty()) {
+            studyJavaSysUserMapper.insertUserRolesBatch(studyJavaSysUserDto.getId(), studyJavaSysUserDto.getRoleIds());
+        }
+        return userUpdate;
     }
 
     @Override

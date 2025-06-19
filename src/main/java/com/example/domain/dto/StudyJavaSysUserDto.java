@@ -4,10 +4,10 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
-
 import java.io.Serial;
 import java.util.Date;
 import java.io.Serializable;
+import java.util.List;
 
 @Data
 public class StudyJavaSysUserDto implements Serializable {
@@ -15,11 +15,6 @@ public class StudyJavaSysUserDto implements Serializable {
      * 用户主键id
      */
     private Long id;
-
-    /**
-     * 角色ID
-     */
-    private Long roleId;
 
     /**
      * 用户昵称
@@ -87,6 +82,11 @@ public class StudyJavaSysUserDto implements Serializable {
      */
     @JsonIgnore
     private Integer lockedFlag;
+
+    /**
+     * 角色ID数组（多角色）
+     */
+    private List<Long> roleIds;
 
     @Serial
     private static final long serialVersionUID = 1L;

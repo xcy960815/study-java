@@ -8,7 +8,7 @@ import com.example.domain.vo.StudyJavaSysRoleVo;
 
 import java.util.List;
 
-public interface StudyJavaSysRoleService extends IService<StudyJavaSysRoleDao> {
+public interface StudyJavaSysRoleService {
 
     /**
      * 分页查询角色列表
@@ -23,7 +23,7 @@ public interface StudyJavaSysRoleService extends IService<StudyJavaSysRoleDao> {
     /**
      * 新增角色
      */
-    boolean insertRole(StudyJavaSysRoleDto roleDto);
+    boolean addRole(StudyJavaSysRoleDto roleDto);
 
     /**
      * 修改角色
@@ -39,4 +39,9 @@ public interface StudyJavaSysRoleService extends IService<StudyJavaSysRoleDao> {
      * 修改角色状态
      */
     boolean updateRoleStatus(StudyJavaSysRoleDto roleDto);
+
+    /**
+     * 根据ID获取角色
+     */
+    StudyJavaSysRoleDao getRoleById(Long id);
 }

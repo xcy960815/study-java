@@ -49,4 +49,49 @@
         ORDER BY role_sort ASC
     </select>
 
+    <insert id="addRole" parameterType="com.example.domain.dao.StudyJavaSysRoleDao">
+        INSERT INTO study_java_sys_role
+        (role_name, role_code, role_sort, status, menu_check_strictly, remark, create_by, create_time, update_by, update_time, del_flag)
+        VALUES
+        (#{roleName}, #{roleCode}, #{roleSort}, #{status}, #{menuCheckStrictly}, #{remark}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime}, #{delFlag})
+    </insert>
+
+    <update id="updateRole" parameterType="com.example.domain.dao.StudyJavaSysRoleDao">
+        UPDATE study_java_sys_role
+        <set>
+            <if test="roleName != null">role_name = #{roleName},</if>
+            <if test="roleCode != null">role_code = #{roleCode},</if>
+            <if test="roleSort != null">role_sort = #{roleSort},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="menuCheckStrictly != null">menu_check_strictly = #{menuCheckStrictly},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateRoleStatus" parameterType="com.example.domain.dao.StudyJavaSysRoleDao">
+        UPDATE study_java_sys_role
+        <set>
+            <if test="status != null">status = #{status},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <update id="deleteRole" parameterType="long">
+        UPDATE study_java_sys_role
+        SET del_flag = 1
+        WHERE id = #{id}
+    </update>
+
+    <select id="getRoleById" parameterType="long" resultType="com.example.domain.dao.StudyJavaSysRoleDao">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM study_java_sys_role
+        WHERE id = #{id} AND del_flag = 0
+    </select>
+
 </mapper>

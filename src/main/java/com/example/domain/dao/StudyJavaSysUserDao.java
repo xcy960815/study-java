@@ -3,6 +3,7 @@ package com.example.domain.dao;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -19,11 +20,6 @@ public class StudyJavaSysUserDao implements Serializable {
      */
     @TableId(value = "id", type = IdType.AUTO) // 指定主键
     private Long id;
-
-    /**
-     * 角色ID
-     */
-    private Long roleId;
 
     /**
      * 用户昵称
@@ -70,6 +66,8 @@ public class StudyJavaSysUserDao implements Serializable {
      * 头像
      */
     private String avatar;
+
+    private List<Long> roleIds;
 
     @Serial
     private static final long serialVersionUID = 1L;

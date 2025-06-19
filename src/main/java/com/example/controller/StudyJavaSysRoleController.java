@@ -7,6 +7,7 @@ import com.example.domain.vo.StudyJavaSysRoleVo;
 import com.example.service.StudyJavaSysRoleService;
 import com.example.utils.ResponseGenerator;
 import com.example.utils.ResponseListResult;
+import com.example.utils.ResponseResult;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -45,46 +46,46 @@ public class StudyJavaSysRoleController {
     /**
      * 获取角色详细信息
      */
-    @GetMapping("/{id}")
-    public StudyJavaSysRoleVo getInfo(@PathVariable Long id) {
-        StudyJavaSysRoleDao role = studyJavaSysRoleService.getById(id);
+    @GetMapping("/getRoleInfo")
+    public ResponseResult<StudyJavaSysRoleVo> getRoleInfo(@RequestParam Long id) {
+        StudyJavaSysRoleDao role = studyJavaSysRoleService.getRoleById(id);
         if (role == null) {
             return null;
         }
         StudyJavaSysRoleVo vo = new StudyJavaSysRoleVo();
         BeanUtils.copyProperties(role, vo);
-        return vo;
+        return ResponseGenerator.generateSuccessResult(vo);
     }
 
     /**
      * 新增角色
      */
-    @PostMapping
-    public boolean add(@Validated @RequestBody StudyJavaSysRoleDto roleDto) {
-        return studyJavaSysRoleService.insertRole(roleDto);
+    @PostMapping("/addRole")
+    public ResponseResult<Boolean> addRole(@Validated @RequestBody StudyJavaSysRoleDto roleDto) {
+        return ResponseGenerator.generateSuccessResult(studyJavaSysRoleService.addRole(roleDto));
     }
 
     /**
      * 修改角色
      */
-    @PutMapping
-    public boolean edit(@Validated @RequestBody StudyJavaSysRoleDto roleDto) {
-        return studyJavaSysRoleService.updateRole(roleDto);
+    @PutMapping("/updateRole")
+    public ResponseResult<Boolean> updateRole(@Validated @RequestBody StudyJavaSysRoleDto roleDto) {
+        return ResponseGenerator.generateSuccessResult(studyJavaSysRoleService.updateRole(roleDto));
     }
 
     /**
      * 删除角色
      */
-    @DeleteMapping("/{id}")
-    public boolean remove(@PathVariable Long id) {
-        return studyJavaSysRoleService.deleteRole(id);
+    @DeleteMapping("/deleteRole")
+    public ResponseResult<Boolean> remove(@RequestParam Long id) {
+        return ResponseGenerator.generateSuccessResult(studyJavaSysRoleService.deleteRole(id));
     }
 
     /**
      * 修改角色状态
      */
     @PutMapping("/changeStatus")
-    public boolean changeStatus(@RequestBody StudyJavaSysRoleDto roleDto) {
-        return studyJavaSysRoleService.updateRoleStatus(roleDto);
+    public ResponseResult<Boolean> changeStatus(@RequestBody StudyJavaSysRoleDto roleDto) {
+        return ResponseGenerator.generateSuccessResult(studyJavaSysRoleService.updateRoleStatus(roleDto));
     }
 }
