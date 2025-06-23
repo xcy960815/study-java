@@ -122,17 +122,17 @@ public class StudyJavaSysMenuController extends BaseController {
         List<StudyJavaSysMenuVo> menuList = allMenus.getRecords();
         // 构建树形结构
         List<StudyJavaSysMenuVo> menuTree = buildMenuTree(menuList, null);
-        return ResponseGenerator.generateListResult(menuTree,allMenus.getTotal());
+        return ResponseGenerator.generateListResult(menuTree,menuTree.size());
     }
 
     /**
      * 获取所有菜单树
      */
     @GetMapping("/getAllMenuTree")
-    public ResponseListResult<StudyJavaSysMenuVo> getAllMenuTree(){
+    public ResponseResult<List<StudyJavaSysMenuVo>> getAllMenuTree(){
         List<StudyJavaSysMenuVo> allMenuList  = studyJavaSysMenuService.getAllMenuList();
         List<StudyJavaSysMenuVo> menuTree = buildMenuTree(allMenuList, null);
-        return ResponseGenerator.generateListResult(menuTree,menuTree.size());
+        return ResponseGenerator.generateSuccessResult(menuTree);
     }
 
     /**
