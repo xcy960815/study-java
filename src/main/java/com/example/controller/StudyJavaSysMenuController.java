@@ -50,9 +50,14 @@ public class StudyJavaSysMenuController extends BaseController {
         return ResponseGenerator.generateListResult(menuPage.getRecords(),menuPage.getTotal());
     }
 
+    /**
+     * 获取当前用户所拥有的权限
+     * @return ResponseResult<List<StudyJavaSysMenuVo>>
+     */
     @GetMapping("/getRoutes")
-    public ResponseResult<StudyJavaSysMenuVo> getRoutes(){
-        return ResponseGenerator.generateSuccessResult(studyJavaSysMenuService.getRoutes());
+    public ResponseResult<List<StudyJavaSysMenuVo>> getRoutes(){
+        List<StudyJavaSysMenuVo> userMenuList = studyJavaSysMenuService.getRoutes();
+        return ResponseGenerator.generateSuccessResult(buildMenuTree(userMenuList,null));
     }
 
     /**
@@ -64,7 +69,7 @@ public class StudyJavaSysMenuController extends BaseController {
     public ResponseResult<StudyJavaSysMenuVo> getMenuDetail(@PathVariable Serializable id) {
         StudyJavaSysMenuVo studyJavaSysMenuVo = studyJavaSysMenuService.getMenuDetail(id);
         if (studyJavaSysMenuVo == null) {
-//            return ResponseGenerator.generateErrorResult("菜单不存在");
+            throw new StudyJavaException("菜单不存在");
         }
         return ResponseGenerator.generateSuccessResult(studyJavaSysMenuVo);
     }
@@ -89,7 +94,7 @@ public class StudyJavaSysMenuController extends BaseController {
         if (studyJavaSysMenuDto.getId() == null) {
             throw new StudyJavaException("菜单ID不能为空");
         }
-       return ResponseGenerator.generateSuccessResult(studyJavaSysMenuService.updateMenu(studyJavaSysMenuDto));
+        return ResponseGenerator.generateSuccessResult(studyJavaSysMenuService.updateMenu(studyJavaSysMenuDto));
     }
 
     /**
@@ -116,9 +121,18 @@ public class StudyJavaSysMenuController extends BaseController {
         IPage<StudyJavaSysMenuVo> allMenus = studyJavaSysMenuService.getMenuList(startPage(pageNum, pageSize), studyJavaSysMenuDto);
         List<StudyJavaSysMenuVo> menuList = allMenus.getRecords();
         // 构建树形结构
-        List<StudyJavaSysMenuVo> menuTree = buildMenuTree(menuList, 0L);
-
+        List<StudyJavaSysMenuVo> menuTree = buildMenuTree(menuList, null);
         return ResponseGenerator.generateListResult(menuTree,allMenus.getTotal());
+    }
+
+    /**
+     * 获取所有菜单树
+     */
+    @GetMapping("/getAllMenuTree")
+    public ResponseListResult<StudyJavaSysMenuVo> getAllMenuTree(){
+        List<StudyJavaSysMenuVo> allMenuList  = studyJavaSysMenuService.getAllMenuList();
+        List<StudyJavaSysMenuVo> menuTree = buildMenuTree(allMenuList, null);
+        return ResponseGenerator.generateListResult(menuTree,menuTree.size());
     }
 
     /**

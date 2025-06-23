@@ -103,6 +103,15 @@ public class StudyJavaSysMenuServiceImpl implements StudyJavaSysMenuService {
     }
 
     @Override
+    public List<StudyJavaSysMenuVo> getAllMenuList(){
+        List<StudyJavaSysMenuDao> menuDaoList = studyJavaSysMenuMapper.getAllMenuList();
+        return menuDaoList.stream()
+                .map(this::convertToVo)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public StudyJavaSysMenuVo getMenuDetail(Serializable id) {
         Assert.notNull(id, "菜单ID不能为空");
         try {
@@ -176,6 +185,14 @@ public class StudyJavaSysMenuServiceImpl implements StudyJavaSysMenuService {
             throw new StudyJavaException("删除菜单失败");
         }
     }
+
+//    @Override
+//    public List<StudyJavaSysMenuVo> getAllMenuList() {
+//        List<StudyJavaSysMenuDao> menuDaoList = studyJavaSysMenuMapper.getAllMenuList();
+//        return menuDaoList.stream()
+//                .map(this::convertToVo)
+//                .collect(Collectors.toList());
+//    }
 }
 
 

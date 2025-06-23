@@ -51,6 +51,17 @@
         ORDER BY order_num ASC
     </select>
 
+    <select id="getAllMenuList" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM
+        study_java_sys_menu
+        <where>
+            (is_deleted = 0 OR is_deleted IS NULL)
+        </where>
+        ORDER BY order_num ASC
+    </select>
+
     <select id="getMenuDetail" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List" />
@@ -62,7 +73,10 @@
     <!-- userId 当前登录用户id -->
     <select id="getRoutes" resultMap="BaseResultMap">
         SELECT
-            <include refid="Base_Column_List" />
+            m.id, m.parent_id, m.menu_name,
+            m.path, m.component, m.icon,
+            m.menu_type, m.perms, m.order_num,
+            m.create_time, m.update_time, m.is_deleted
         FROM
             study_java_sys_menu m
         INNER JOIN study_java_sys_role_menus rm ON m.id = rm.menu_id
@@ -124,4 +138,21 @@
     <delete id="deleteRoleMenusByMenuId">
         DELETE FROM study_java_sys_role_menus WHERE menu_id = #{menuId}
     </delete>
+
+    <select id="getTopLevelMenus" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM
+        study_java_sys_menu
+        <where>
+            (parent_id IS NULL OR parent_id = 0)
+            AND (is_deleted = 0 OR is_deleted IS NULL)
+            <if test="studyJavaSysMenuDao != null">
+                <if test="studyJavaSysMenuDao.menuName != null and studyJavaSysMenuDao.menuName != ''">
+                    AND menu_name LIKE CONCAT('%', #{studyJavaSysMenuDao.menuName}, '%')
+                </if>
+            </if>
+        </where>
+        ORDER BY order_num ASC
+    </select>
 </mapper>

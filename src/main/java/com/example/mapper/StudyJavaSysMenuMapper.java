@@ -21,6 +21,12 @@ public interface StudyJavaSysMenuMapper extends BaseMapper<StudyJavaSysMenuDao> 
     IPage<StudyJavaSysMenuDao>getMenuList(Page<StudyJavaSysMenuDao> page, @Param("studyJavaSysMenuDao") StudyJavaSysMenuDao studyJavaSysMenuDao);
 
     /**
+     * 获取所有菜单树
+     * @return List<StudyJavaSysMenuDao>
+     */
+    List<StudyJavaSysMenuDao> getAllMenuList();
+
+    /**
      * 通过主键查询单条数据
      *
      * @param id 主键

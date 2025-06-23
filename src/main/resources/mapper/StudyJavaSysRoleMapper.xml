@@ -84,13 +84,13 @@
     <update id="updateRole" parameterType="com.example.domain.dao.StudyJavaSysRoleDao">
         UPDATE study_java_sys_role
         <set>
-            <if test="roleDao != null AND roleDao.roleName != null AND roleDao.roleName != ''">role_name = #{roleDao.roleName},</if>
-            <if test="roleDao != null AND roleDao.roleCode != null AND roleDao.roleCode != ''">role_code = #{roleDao.roleCode},</if>   
-            <if test="roleDao != null AND roleDao.roleSort != null">role_sort = #{roleDao.roleSort},</if>
-            <if test="roleDao != null AND roleDao.status != null">status = #{roleDao.status},</if>
-            <if test="roleDao != null AND roleDao.remark != null">remark = #{roleDao.remark},</if>
-            <if test="roleDao != null AND roleDao.updateBy != null">update_by = #{roleDao.updateBy},</if>
-            <if test="roleDao != null AND roleDao.updateTime != null">update_time = #{roleDao.updateTime},</if>
+            <if test="roleDao != null and roleDao.roleName != null and roleDao.roleName != ''">role_name = #{roleDao.roleName},</if>
+            <if test="roleDao != null and roleDao.roleCode != null and roleDao.roleCode != ''">role_code = #{roleDao.roleCode},</if>
+            <if test="roleDao != null and roleDao.roleSort != null">role_sort = #{roleDao.roleSort},</if>
+            <if test="roleDao != null and roleDao.status != null">status = #{roleDao.status},</if>
+            <if test="roleDao != null and roleDao.remark != null">remark = #{roleDao.remark},</if>
+            <if test="roleDao != null and roleDao.updateBy != null">update_by = #{roleDao.updateBy},</if>
+            <if test="roleDao != null and roleDao.updateTime != null">update_time = #{roleDao.updateTime},</if>
         </set>
         WHERE id = #{roleDao.id}
     </update>
@@ -98,9 +98,9 @@
     <update id="updateRoleStatus" parameterType="com.example.domain.dao.StudyJavaSysRoleDao">
         UPDATE study_java_sys_role
         <set>
-            <if test="roleDao != null AND roleDao.status != null">status = #{roleDao.status},</if>
-            <if test="roleDao != null AND roleDao.updateBy != null">update_by = #{roleDao.updateBy},</if>
-            <if test="roleDao != null AND roleDao.updateTime != null">update_time = #{roleDao.updateTime},</if>
+            <if test="roleDao != null and roleDao.status != null">status = #{roleDao.status},</if>
+            <if test="roleDao != null and roleDao.updateBy != null">update_by = #{roleDao.updateBy},</if>
+            <if test="roleDao != null and roleDao.updateTime != null">update_time = #{roleDao.updateTime},</if>
         </set>
         WHERE id = #{roleDao.id}
     </update>
@@ -124,6 +124,7 @@
         SELECT menu_id FROM study_java_sys_role_menus WHERE role_id = #{roleId}
     </select>
 
+<!--    将关联关系写入数据库中-->
     <insert id="insertRoleMenus">
         INSERT INTO study_java_sys_role_menus (role_id, menu_id)
         VALUES

@@ -20,7 +20,8 @@ public interface StudyJavaSysMenuService {
      * @return
      */
     IPage<StudyJavaSysMenuVo> getMenuList (Page<StudyJavaSysMenuDto> page, StudyJavaSysMenuDto studyJavaSysMenuDto);
-
+    //    List<StudyJavaSysMenuVo> getAllMenus();
+    List<StudyJavaSysMenuVo> getAllMenuList();
     /**
      * 通过主键查询单条数据
      *
@@ -56,4 +57,6 @@ public interface StudyJavaSysMenuService {
      * @return 删除结果
      */
     Boolean deleteMenu(Serializable id);
+
+
 }

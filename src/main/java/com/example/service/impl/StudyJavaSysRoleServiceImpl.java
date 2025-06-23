@@ -66,17 +66,16 @@ public class StudyJavaSysRoleServiceImpl implements StudyJavaSysRoleService {
     @Transactional
     public boolean updateRole(StudyJavaSysRoleDto roleDto) {
         StudyJavaSysRoleDao role = convertToDao(roleDto);
-        // 1. 更新角色主表
-        boolean roleUpdate = studyJavaSysRoleMapper.updateRole(role) > 0;
 
-        // 2. 删除旧的角色-菜单关系
+        // 1. 删除旧的角色-菜单关系
         studyJavaSysRoleMapper.deleteRoleMenusByRoleId(roleDto.getId());
 
-        // 3. 批量插入新的角色-菜单关系
+        // 2. 批量插入新的角色-菜单关系
         if (roleDto.getMenuIds() != null && !roleDto.getMenuIds().isEmpty()) {
             studyJavaSysRoleMapper.insertRoleMenus(roleDto.getId(), roleDto.getMenuIds());
         }
-        return roleUpdate;
+        // 3. 更新角色主表
+        return studyJavaSysRoleMapper.updateRole(role) > 0;
     }
 
     @Override
