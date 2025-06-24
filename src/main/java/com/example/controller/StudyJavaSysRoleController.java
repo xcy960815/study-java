@@ -1,18 +1,15 @@
 package com.example.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.example.domain.dao.StudyJavaSysRoleDao;
 import com.example.domain.dto.StudyJavaSysRoleDto;
 import com.example.domain.vo.StudyJavaSysRoleVo;
 import com.example.service.StudyJavaSysRoleService;
 import com.example.utils.ResponseGenerator;
 import com.example.utils.ResponseListResult;
 import com.example.utils.ResponseResult;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -46,17 +43,17 @@ public class StudyJavaSysRoleController {
     /**
      * 获取角色详细信息
      */
-    @GetMapping("/getRoleById")
-    public ResponseResult<StudyJavaSysRoleVo> getRoleById(@RequestParam Long id) {
-        return ResponseGenerator.generateSuccessResult(studyJavaSysRoleService.getRoleById(id));
+    @GetMapping("/getRoleInfo")
+    public ResponseResult<StudyJavaSysRoleVo> getRoleInfo(@RequestParam Long id) {
+        return ResponseGenerator.generateSuccessResult(studyJavaSysRoleService.getRoleInfo(id));
     }
 
     /**
      * 新增角色
      */
-    @PostMapping("/addRole")
-    public ResponseResult<Boolean> addRole(@Validated @RequestBody StudyJavaSysRoleDto roleDto) {
-        return ResponseGenerator.generateSuccessResult(studyJavaSysRoleService.addRole(roleDto));
+    @PostMapping("/insertRole")
+    public ResponseResult<Boolean> insertRole(@Validated @RequestBody StudyJavaSysRoleDto roleDto) {
+        return ResponseGenerator.generateSuccessResult(studyJavaSysRoleService.insertRole(roleDto));
     }
 
     /**
@@ -93,11 +90,4 @@ public class StudyJavaSysRoleController {
         return ResponseGenerator.generateSuccessResult(studyJavaSysRoleService.updateRoleStatus(roleDto));
     }
 
-//    /**
-//     * 修改角色状态
-//     */
-//    @PutMapping("/changeStatus")
-//    public ResponseResult<Boolean> changeStatus(@RequestBody StudyJavaSysRoleDto roleDto) {
-//        return ResponseGenerator.generateSuccessResult(studyJavaSysRoleService.updateRoleStatus(roleDto));
-//    }
 }

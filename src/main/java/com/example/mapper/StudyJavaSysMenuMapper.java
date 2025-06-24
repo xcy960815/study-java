@@ -18,6 +18,12 @@ import java.util.List;
 */
 public interface StudyJavaSysMenuMapper extends BaseMapper<StudyJavaSysMenuDao> {
 
+    /**
+     * 获取菜单列表
+     * @param page Page<StudyJavaSysMenuDao>
+     * @param studyJavaSysMenuDao StudyJavaSysMenuDao
+     * @return IPage<StudyJavaSysMenuDao>
+     */
     IPage<StudyJavaSysMenuDao>getMenuList(Page<StudyJavaSysMenuDao> page, @Param("studyJavaSysMenuDao") StudyJavaSysMenuDao studyJavaSysMenuDao);
 
     /**
@@ -32,7 +38,7 @@ public interface StudyJavaSysMenuMapper extends BaseMapper<StudyJavaSysMenuDao> 
      * @param id 主键
      * @return 单条数据
      */
-    StudyJavaSysMenuDao getMenuDetail(@Param("id") Serializable id);
+    StudyJavaSysMenuDao getMenuInfo(@Param("id") Serializable id);
 
     /**
      * 获取当前用户所拥有的菜单
@@ -47,7 +53,7 @@ public interface StudyJavaSysMenuMapper extends BaseMapper<StudyJavaSysMenuDao> 
      * @param studyJavaSysMenuDao 菜单信息
      * @return 新增结果
      */
-    int addMenu(@Param("studyJavaSysMenuDao") StudyJavaSysMenuDao studyJavaSysMenuDao);
+    int insertMenu(@Param("studyJavaSysMenuDao") StudyJavaSysMenuDao studyJavaSysMenuDao);
 
     /**
      * 更新菜单

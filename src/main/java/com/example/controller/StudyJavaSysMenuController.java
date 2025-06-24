@@ -65,9 +65,9 @@ public class StudyJavaSysMenuController extends BaseController {
      * @param id 主键
      * @return 菜单详情
      */
-    @GetMapping("/getMenuDetail/{id}")
-    public ResponseResult<StudyJavaSysMenuVo> getMenuDetail(@PathVariable Serializable id) {
-        StudyJavaSysMenuVo studyJavaSysMenuVo = studyJavaSysMenuService.getMenuDetail(id);
+    @GetMapping("/getMenuInfo")
+    public ResponseResult<StudyJavaSysMenuVo> getMenuInfo(@RequestParam Serializable id) {
+        StudyJavaSysMenuVo studyJavaSysMenuVo = studyJavaSysMenuService.getMenuInfo(id);
         if (studyJavaSysMenuVo == null) {
             throw new StudyJavaException("菜单不存在");
         }
@@ -79,9 +79,9 @@ public class StudyJavaSysMenuController extends BaseController {
      * @param studyJavaSysMenuDto 菜单信息
      * @return 新增结果
      */
-    @PostMapping("/addMenu")
-    public ResponseResult<Boolean> addMenu(@Valid @RequestBody StudyJavaSysMenuDto studyJavaSysMenuDto) {
-        return ResponseGenerator.generateSuccessResult(studyJavaSysMenuService.addMenu(studyJavaSysMenuDto));
+    @PostMapping("/insertMenu")
+    public ResponseResult<Boolean> insertMenu(@Valid @RequestBody StudyJavaSysMenuDto studyJavaSysMenuDto) {
+        return ResponseGenerator.generateSuccessResult(studyJavaSysMenuService.insertMenu(studyJavaSysMenuDto));
     }
     /**
      * 更新菜单
@@ -99,12 +99,12 @@ public class StudyJavaSysMenuController extends BaseController {
 
     /**
      * 删除菜单（软删除）
-     * @param id 菜单ID
+     * @param studyJavaSysMenuDto StudyJavaSysMenuDto
      * @return 删除结果
      */
-    @DeleteMapping("/deleteMenu/{id}")
-    public ResponseResult<Boolean> deleteMenu(@PathVariable Serializable id) {
-        return ResponseGenerator.generateSuccessResult(studyJavaSysMenuService.deleteMenu(id));
+    @DeleteMapping("/deleteMenu")
+    public ResponseResult<Boolean> deleteMenu(@RequestBody StudyJavaSysMenuDto studyJavaSysMenuDto) {
+        return ResponseGenerator.generateSuccessResult(studyJavaSysMenuService.deleteMenu(studyJavaSysMenuDto));
     }
 
     /**

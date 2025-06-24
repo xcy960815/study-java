@@ -62,7 +62,7 @@
         ORDER BY order_num ASC
     </select>
 
-    <select id="getMenuDetail" resultMap="BaseResultMap">
+    <select id="getMenuInfo" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List" />
         FROM
@@ -88,7 +88,7 @@
             m.order_num ASC
     </select>
 
-    <insert id="addMenu" parameterType="com.example.domain.dao.StudyJavaSysMenuDao">
+    <insert id="insertMenu" parameterType="com.example.domain.dao.StudyJavaSysMenuDao">
         INSERT INTO study_java_sys_menu
         (parent_id, menu_name, path, component, icon, menu_type, perms, order_num, create_time, update_time, is_deleted)
         VALUES

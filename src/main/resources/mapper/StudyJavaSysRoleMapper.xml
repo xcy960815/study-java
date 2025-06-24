@@ -74,7 +74,8 @@
         ORDER BY r1.role_sort ASC
     </select>
 
-    <insert id="addRole" parameterType="com.example.domain.dao.StudyJavaSysRoleDao">
+<!--    创建角色-->
+    <insert id="insertRole" parameterType="com.example.domain.dao.StudyJavaSysRoleDao">
         INSERT INTO study_java_sys_role
         (role_name, role_code, role_sort, status, remark, create_by, create_time, update_by, update_time, del_flag)
         VALUES
@@ -113,11 +114,19 @@
     </update>
 
 <!--    获取用户角色-->
-    <select id="getRoleById" parameterType="long" resultType="com.example.domain.dao.StudyJavaSysRoleDao">
+    <select id="getRoleInfo" parameterType="com.example.domain.dao.StudyJavaSysRoleDao" resultType="com.example.domain.dao.StudyJavaSysRoleDao">
         SELECT
         <include refid="Base_Column_List"/>
         FROM study_java_sys_role
-        WHERE id = #{roleId} AND del_flag = 0
+        WHERE del_flag = 0
+        <if test="studyJavaSysRoleDao != null">
+            <if test="studyJavaSysRoleDao.roleCode != null and studyJavaSysRoleDao.roleCode != ''">
+                AND role_code = #{studyJavaSysRoleDao.roleCode}
+            </if>
+            <if test="studyJavaSysRoleDao.id != null">
+                AND id = #{studyJavaSysRoleDao.id}
+            </if>
+        </if>
     </select>
 
     <select id="getMenuIdsByRoleId" resultType="java.lang.Long">

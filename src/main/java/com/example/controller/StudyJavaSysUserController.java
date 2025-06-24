@@ -109,7 +109,7 @@ public class StudyJavaSysUserController extends BaseController {
      */
     @DeleteMapping("/deleteUser")
     public ResponseResult<Boolean> deleteUser(@RequestBody StudyJavaSysUserDto studyJavaSysUserDto) {
-        // 返回插入结果
+        // 返回删除结果
         return ResponseGenerator.generateSuccessResult(studyJavaSysUserService.deleteUser(studyJavaSysUserDto));
     }
 

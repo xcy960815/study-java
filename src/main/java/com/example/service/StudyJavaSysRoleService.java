@@ -23,7 +23,7 @@ public interface StudyJavaSysRoleService {
     /**
      * 新增角色
      */
-    boolean addRole(StudyJavaSysRoleDto roleDto);
+    boolean insertRole(StudyJavaSysRoleDto roleDto);
 
     /**
      * 修改角色
@@ -43,5 +43,5 @@ public interface StudyJavaSysRoleService {
     /**
      * 根据ID获取角色
      */
-    StudyJavaSysRoleVo getRoleById(Long id);
+    StudyJavaSysRoleVo getRoleInfo(Long id);
 }

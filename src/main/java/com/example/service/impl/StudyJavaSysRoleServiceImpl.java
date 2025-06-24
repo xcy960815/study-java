@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.domain.dao.StudyJavaSysRoleDao;
 import com.example.domain.dto.StudyJavaSysRoleDto;
 import com.example.domain.vo.StudyJavaSysRoleVo;
+import com.example.exception.StudyJavaException;
 import com.example.mapper.StudyJavaSysRoleMapper;
 import com.example.service.StudyJavaSysRoleService;
 import jakarta.annotation.Resource;
@@ -57,9 +58,17 @@ public class StudyJavaSysRoleServiceImpl implements StudyJavaSysRoleService {
     }
 
     @Override
-    public boolean addRole(StudyJavaSysRoleDto roleDto) {
-        StudyJavaSysRoleDao role = convertToDao(roleDto);
-        return studyJavaSysRoleMapper.addRole(role) > 0;
+    public boolean insertRole(StudyJavaSysRoleDto roleDto) {
+        // 检查 roleCode 是否已存在
+        StudyJavaSysRoleDao  studyJavaSysRoleDao = new StudyJavaSysRoleDao();
+        studyJavaSysRoleDao.setRoleCode(roleDto.getRoleCode());
+        StudyJavaSysRoleDao studyJavaSysRoleResultDao = studyJavaSysRoleMapper.getRoleInfo(studyJavaSysRoleDao);
+        if (studyJavaSysRoleResultDao != null) {
+            throw new StudyJavaException("角色编码已存在");
+        }
+        studyJavaSysRoleDao = convertToDao(roleDto);
+        studyJavaSysRoleDao.setDelFlag(0);
+        return studyJavaSysRoleMapper.insertRole(studyJavaSysRoleDao) > 0;
     }
 
     @Override
@@ -96,8 +105,10 @@ public class StudyJavaSysRoleServiceImpl implements StudyJavaSysRoleService {
     }
 
     @Override
-    public StudyJavaSysRoleVo getRoleById(Long id) {
-        return convertToVo(studyJavaSysRoleMapper.getRoleById(id));
+    public StudyJavaSysRoleVo getRoleInfo(Long id) {
+        StudyJavaSysRoleDao studyJavaSysRoleDao= new StudyJavaSysRoleDao();
+        studyJavaSysRoleDao.setId(id);
+        return convertToVo(studyJavaSysRoleMapper.getRoleInfo(studyJavaSysRoleDao));
     }
 
     /**

@@ -82,7 +82,12 @@ public class StudyJavaSysMenuServiceImpl implements StudyJavaSysMenuService {
         studyJavaSysMenuVo.setUpdateTime(studyJavaSysMenuDao.getUpdateTime());
         return studyJavaSysMenuVo;
     }
-
+    /**
+     * 获取菜单列表
+     * @param page Page<StudyJavaSysMenuDto>
+     * @param studyJavaSysMenuDto StudyJavaSysMenuDto
+     * @return IPage<StudyJavaSysMenuVo>
+     */
     @Override
     public IPage<StudyJavaSysMenuVo> getMenuList(Page<StudyJavaSysMenuDto> page, StudyJavaSysMenuDto studyJavaSysMenuDto) {
         try {
@@ -102,6 +107,10 @@ public class StudyJavaSysMenuServiceImpl implements StudyJavaSysMenuService {
         }
     }
 
+    /**
+     * 获取所有菜单列表
+     * @return List<StudyJavaSysMenuVo>
+     */
     @Override
     public List<StudyJavaSysMenuVo> getAllMenuList(){
         List<StudyJavaSysMenuDao> menuDaoList = studyJavaSysMenuMapper.getAllMenuList();
@@ -111,11 +120,16 @@ public class StudyJavaSysMenuServiceImpl implements StudyJavaSysMenuService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * 获取菜单详情
+     * @param id Serializable
+     * @return StudyJavaSysMenuVo
+     */
     @Override
-    public StudyJavaSysMenuVo getMenuDetail(Serializable id) {
+    public StudyJavaSysMenuVo getMenuInfo(Serializable id) {
         Assert.notNull(id, "菜单ID不能为空");
         try {
-            StudyJavaSysMenuDao studyJavaSysMenuDao = studyJavaSysMenuMapper.getMenuDetail(id);
+            StudyJavaSysMenuDao studyJavaSysMenuDao = studyJavaSysMenuMapper.getMenuInfo(id);
             return convertToVo(studyJavaSysMenuDao);
         } catch (Exception e) {
             log.error("获取菜单详情失败, id: {}", id, e);
@@ -136,22 +150,28 @@ public class StudyJavaSysMenuServiceImpl implements StudyJavaSysMenuService {
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
-
+    /**
+     * 添加菜单
+     * @param studyJavaSysMenuDto StudyJavaSysMenuDto
+     * @return Boolean
+     */
     @Override
-    public Boolean addMenu(StudyJavaSysMenuDto studyJavaSysMenuDto) {
-//        Assert.notNull(studyJavaSysMenuDto, "菜单信息不能为空");
+    public Boolean insertMenu(StudyJavaSysMenuDto studyJavaSysMenuDto) {
         try {
             StudyJavaSysMenuDao studyJavaSysMenuDao = convertToDao(studyJavaSysMenuDto);
             studyJavaSysMenuDao.setCreateTime(new Date());
             studyJavaSysMenuDao.setUpdateTime(new Date());
             studyJavaSysMenuDao.setIsDeleted(0);
-            return studyJavaSysMenuMapper.addMenu(studyJavaSysMenuDao) > 0;
+            return studyJavaSysMenuMapper.insertMenu(studyJavaSysMenuDao) > 0;
         } catch (Exception e) {
-            log.error("添加菜单失败", e);
             throw new StudyJavaException("添加菜单失败");
         }
     }
-
+    /**
+     * 更新菜单
+     * @param studyJavaSysMenuDto StudyJavaSysMenuDto
+     * @return Boolean
+     */
     @Override
     public Boolean updateMenu(StudyJavaSysMenuDto studyJavaSysMenuDto) {
         Assert.notNull(studyJavaSysMenuDto, "菜单信息不能为空");
@@ -166,33 +186,23 @@ public class StudyJavaSysMenuServiceImpl implements StudyJavaSysMenuService {
             throw new StudyJavaException("更新菜单失败");
         }
     }
-
+    /**
+     * 删除菜单
+     * @param studyJavaSysMenuDto StudyJavaSysMenuDto
+     * @return Boolean
+     */
     @Override
     @Transactional
-    public Boolean deleteMenu(Serializable id) {
-        Assert.notNull(id, "菜单ID不能为空");
-        try {
-            Long menuId = Long.valueOf(id.toString());
-            // 先删除角色-菜单关联
-            studyJavaSysMenuMapper.deleteRoleMenusByMenuId(menuId);
-            StudyJavaSysMenuDao studyJavaSysMenuDao = new StudyJavaSysMenuDao();
-            studyJavaSysMenuDao.setId(menuId);
-            studyJavaSysMenuDao.setIsDeleted(ISMENUDELETE);
-            studyJavaSysMenuDao.setUpdateTime(new Date());
-            return studyJavaSysMenuMapper.deleteMenu(studyJavaSysMenuDao) > 0;
-        } catch (Exception e) {
-            log.error("删除菜单失败, id: {}", id, e);
-            throw new StudyJavaException("删除菜单失败");
-        }
+    public Boolean deleteMenu(StudyJavaSysMenuDto studyJavaSysMenuDto) {
+        Assert.notNull(studyJavaSysMenuDto.getId(), "菜单ID不能为空");
+        // 先删除角色-菜单关联
+        studyJavaSysMenuMapper.deleteRoleMenusByMenuId(studyJavaSysMenuDto.getId());
+        StudyJavaSysMenuDao studyJavaSysMenuDao = new StudyJavaSysMenuDao();
+        studyJavaSysMenuDao.setId(studyJavaSysMenuDto.getId());
+        studyJavaSysMenuDao.setIsDeleted(ISMENUDELETE);
+        studyJavaSysMenuDao.setUpdateTime(new Date());
+        return studyJavaSysMenuMapper.deleteMenu(studyJavaSysMenuDao) > 0;
     }
-
-//    @Override
-//    public List<StudyJavaSysMenuVo> getAllMenuList() {
-//        List<StudyJavaSysMenuDao> menuDaoList = studyJavaSysMenuMapper.getAllMenuList();
-//        return menuDaoList.stream()
-//                .map(this::convertToVo)
-//                .collect(Collectors.toList());
-//    }
 }
 
 

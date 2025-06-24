@@ -28,7 +28,7 @@ public interface StudyJavaSysMenuService {
      * @param id 主键
      * @return 单条数据
      */
-    StudyJavaSysMenuVo getMenuDetail(Serializable id);
+    StudyJavaSysMenuVo getMenuInfo(Serializable id);
 
     /**
      * 获取当前登录用户所拥有的路由
@@ -40,7 +40,7 @@ public interface StudyJavaSysMenuService {
      * @param studyJavaSysMenuDto 菜单信息
      * @return 新增结果
      */
-    Boolean addMenu(StudyJavaSysMenuDto studyJavaSysMenuDto);
+    Boolean insertMenu(StudyJavaSysMenuDto studyJavaSysMenuDto);
 
     /**
      * 更新菜单
@@ -53,10 +53,10 @@ public interface StudyJavaSysMenuService {
     /**
      * 删除菜单（软删除）
      *
-     * @param id 菜单ID
+     * @param studyJavaSysMenuDto StudyJavaSysMenuDto
      * @return 删除结果
      */
-    Boolean deleteMenu(Serializable id);
+    Boolean deleteMenu(StudyJavaSysMenuDto studyJavaSysMenuDto);
 
 
 }
