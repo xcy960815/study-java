@@ -43,5 +43,5 @@ public interface StudyJavaSysRoleService {
     /**
      * 根据ID获取角色
      */
-    StudyJavaSysRoleVo getRoleInfo(Long id);
+    StudyJavaSysRoleVo getRoleInfo(StudyJavaSysRoleDto studyJavaSysRoleDto);
 }

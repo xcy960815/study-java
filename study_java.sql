@@ -1022,8 +1022,7 @@ CREATE TABLE `study_java_sys_role` (
   `update_by` varchar(64) DEFAULT '' COMMENT '更新者',
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
   `del_flag` tinyint NOT NULL DEFAULT '0' COMMENT '删除标志（0代表存在 1代表删除）',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `idx_role_code` (`role_code`)
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=105 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='角色信息表';
 
 -- ----------------------------

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.domain.dao.StudyJavaSysRoleDao;
 import com.example.domain.dto.StudyJavaSysRoleDto;
 import com.example.domain.vo.StudyJavaSysRoleVo;
+import com.example.domain.vo.StudyJavaSysUserVo;
 import com.example.exception.StudyJavaException;
 import com.example.mapper.StudyJavaSysRoleMapper;
 import com.example.service.StudyJavaSysRoleService;
@@ -12,7 +13,8 @@ import jakarta.annotation.Resource;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import com.example.service.StudyJavaSysUserService;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,6 +23,10 @@ public class StudyJavaSysRoleServiceImpl implements StudyJavaSysRoleService {
 
     @Resource
     private StudyJavaSysRoleMapper studyJavaSysRoleMapper;
+
+
+    @Resource
+    private StudyJavaSysUserService studyJavaSysUserService;
 
     @Override
     public Page<StudyJavaSysRoleVo> getRoleList(Integer pageNum, Integer pageSize, StudyJavaSysRoleDto queryDto) {
@@ -49,6 +55,10 @@ public class StudyJavaSysRoleServiceImpl implements StudyJavaSysRoleService {
         return voPage;
     }
 
+    /**
+     * 获取所有角色列表
+     * @return List<StudyJavaSysRoleVo>
+     */
     @Override
     public List<StudyJavaSysRoleVo> getAllRoleList() {
         // 调用 mapper 方法进行查询
@@ -57,34 +67,54 @@ public class StudyJavaSysRoleServiceImpl implements StudyJavaSysRoleService {
         return list.stream().map(this::convertToVo).collect(Collectors.toList());
     }
 
+    /**
+     * 添加角色
+     * @param studyJavaSysRoleDto StudyJavaSysRoleDto
+     * @return boolean
+     */
     @Override
-    public boolean insertRole(StudyJavaSysRoleDto roleDto) {
+    public boolean insertRole(StudyJavaSysRoleDto studyJavaSysRoleDto) {
+        StudyJavaSysRoleDao studyJavaSysRoleDao = convertToDao(studyJavaSysRoleDto);
         // 检查 roleCode 是否已存在
-        StudyJavaSysRoleDao  studyJavaSysRoleDao = new StudyJavaSysRoleDao();
-        studyJavaSysRoleDao.setRoleCode(roleDto.getRoleCode());
-        StudyJavaSysRoleDao studyJavaSysRoleResultDao = studyJavaSysRoleMapper.getRoleInfo(studyJavaSysRoleDao);
-        if (studyJavaSysRoleResultDao != null) {
+        StudyJavaSysRoleVo studyJavaSysRoleResponseVo = getRoleInfo(studyJavaSysRoleDto);
+        if (studyJavaSysRoleResponseVo != null) {
             throw new StudyJavaException("角色编码已存在");
         }
-        studyJavaSysRoleDao = convertToDao(roleDto);
+        StudyJavaSysUserVo studyJavaSysUserVo = studyJavaSysUserService.getUserInfo();
+        studyJavaSysRoleDao.setCreateTime(LocalDateTime.now());
+        studyJavaSysRoleDao.setUpdateTime(LocalDateTime.now());
+        studyJavaSysRoleDao.setCreateBy(studyJavaSysUserVo.getLoginName());
+        studyJavaSysRoleDao.setUpdateBy(studyJavaSysUserVo.getLoginName());
         studyJavaSysRoleDao.setDelFlag(0);
         return studyJavaSysRoleMapper.insertRole(studyJavaSysRoleDao) > 0;
     }
 
+    /**
+     * 更新角色
+     * @param studyJavaSysRoleDto StudyJavaSysRoleDto
+     * @return boolean
+     */
     @Override
     @Transactional
-    public boolean updateRole(StudyJavaSysRoleDto roleDto) {
-        StudyJavaSysRoleDao role = convertToDao(roleDto);
-
+    public boolean updateRole(StudyJavaSysRoleDto studyJavaSysRoleDto) {
+        // 检查 roleCode 是否已存在
+        StudyJavaSysRoleVo studyJavaSysRoleResponseVo = getRoleInfo(studyJavaSysRoleDto);
+        if (studyJavaSysRoleResponseVo != null) {
+            throw new StudyJavaException("角色编码已存在");
+        }
+        StudyJavaSysRoleDao studyJavaSysRoleDao = convertToDao(studyJavaSysRoleDto);
+        StudyJavaSysUserVo studyJavaSysUserVo = studyJavaSysUserService.getUserInfo();
+        studyJavaSysRoleDao.setUpdateTime(LocalDateTime.now());
+        studyJavaSysRoleDao.setUpdateBy(studyJavaSysUserVo.getLoginName());
         // 1. 删除旧的角色-菜单关系
-        studyJavaSysRoleMapper.deleteRoleMenusByRoleId(roleDto.getId());
+        studyJavaSysRoleMapper.deleteRoleMenusByRoleId(studyJavaSysRoleDto.getId());
 
         // 2. 批量插入新的角色-菜单关系
-        if (roleDto.getMenuIds() != null && !roleDto.getMenuIds().isEmpty()) {
-            studyJavaSysRoleMapper.insertRoleMenus(roleDto.getId(), roleDto.getMenuIds());
+        if (studyJavaSysRoleDto.getMenuIds() != null && !studyJavaSysRoleDto.getMenuIds().isEmpty()) {
+            studyJavaSysRoleMapper.insertRoleMenus(studyJavaSysRoleDto.getId(), studyJavaSysRoleDto.getMenuIds());
         }
         // 3. 更新角色主表
-        return studyJavaSysRoleMapper.updateRole(role) > 0;
+        return studyJavaSysRoleMapper.updateRole(studyJavaSysRoleDao) > 0;
     }
 
     @Override
@@ -105,9 +135,8 @@ public class StudyJavaSysRoleServiceImpl implements StudyJavaSysRoleService {
     }
 
     @Override
-    public StudyJavaSysRoleVo getRoleInfo(Long id) {
-        StudyJavaSysRoleDao studyJavaSysRoleDao= new StudyJavaSysRoleDao();
-        studyJavaSysRoleDao.setId(id);
+    public StudyJavaSysRoleVo getRoleInfo(StudyJavaSysRoleDto studyJavaSysRoleDto) {
+        StudyJavaSysRoleDao studyJavaSysRoleDao = convertToDao(studyJavaSysRoleDto);
         return convertToVo(studyJavaSysRoleMapper.getRoleInfo(studyJavaSysRoleDao));
     }
 

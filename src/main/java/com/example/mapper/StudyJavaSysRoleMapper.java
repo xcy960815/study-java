@@ -22,12 +22,12 @@ public interface StudyJavaSysRoleMapper {
     /**
      * 新增角色
      */
-    int insertRole(@Param("roleDao") StudyJavaSysRoleDao roleDao);
+    int insertRole(@Param("studyJavaSysRoleDao") StudyJavaSysRoleDao studyJavaSysRoleDao);
 
     /**
      * 修改角色
      */
-    int updateRole(@Param("roleDao") StudyJavaSysRoleDao roleDao);
+    int updateRole(@Param("studyJavaSysRoleDao") StudyJavaSysRoleDao studyJavaSysRoleDao);
 
     /**
      * 删除角色
@@ -37,10 +37,10 @@ public interface StudyJavaSysRoleMapper {
     /**
      * 修改角色状态
      */
-    int updateRoleStatus(@Param("roleDao") StudyJavaSysRoleDao roleDao);
+    int updateRoleStatus(@Param("studyJavaSysRoleDao") StudyJavaSysRoleDao studyJavaSysRoleDao);
 
     /**
-     * 根据ID获取角色
+     * 获取角色信息
      */
     StudyJavaSysRoleDao getRoleInfo(@Param("studyJavaSysRoleDao") StudyJavaSysRoleDao studyJavaSysRoleDao);
 

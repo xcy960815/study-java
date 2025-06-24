@@ -45,7 +45,9 @@ public class StudyJavaSysRoleController {
      */
     @GetMapping("/getRoleInfo")
     public ResponseResult<StudyJavaSysRoleVo> getRoleInfo(@RequestParam Long id) {
-        return ResponseGenerator.generateSuccessResult(studyJavaSysRoleService.getRoleInfo(id));
+        StudyJavaSysRoleDto queryDto = new StudyJavaSysRoleDto();
+        queryDto.setId(id);
+        return ResponseGenerator.generateSuccessResult(studyJavaSysRoleService.getRoleInfo(queryDto));
     }
 
     /**

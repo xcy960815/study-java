@@ -37,7 +37,7 @@
         <result property="menuIds" column="ids" typeHandler="com.example.typehandler.LongListTypeHandler"/>
         <result property="menuNames" column="menu_names" typeHandler="com.example.typehandler.StringListTypeHandler"/>
     </resultMap>
-
+    <!--获取角色列表-->
     <select id="getRoleList" resultMap="RoleWithMenuResultMap">
         SELECT
         r1.id, r1.role_name, r1.role_code, r1.role_sort, r1.status, r1.remark,
@@ -62,7 +62,7 @@
         GROUP BY r1.id
         ORDER BY r1.role_sort ASC
     </select>
-
+    <!-- 获取所有角色列表 -->
     <select id="getAllRoleList" resultType="com.example.domain.dao.StudyJavaSysRoleDao">
         SELECT
             r1.id, r1.role_name, r1.role_code, r1.role_sort, r1.status, r1.remark,
@@ -74,46 +74,51 @@
         ORDER BY r1.role_sort ASC
     </select>
 
-<!--    创建角色-->
+    <!-- 创建角色 -->
     <insert id="insertRole" parameterType="com.example.domain.dao.StudyJavaSysRoleDao">
         INSERT INTO study_java_sys_role
         (role_name, role_code, role_sort, status, remark, create_by, create_time, update_by, update_time, del_flag)
         VALUES
-        (#{roleDao.roleName}, #{roleDao.roleCode}, #{roleDao.roleSort}, #{roleDao.status}, #{roleDao.remark}, #{roleDao.createBy}, #{roleDao.createTime}, #{roleDao.updateBy}, #{roleDao.updateTime}, #{roleDao.delFlag})
+        (#{studyJavaSysRoleDao.roleName}, #{studyJavaSysRoleDao.roleCode}, #{studyJavaSysRoleDao.roleSort}, #{studyJavaSysRoleDao.status}, #{studyJavaSysRoleDao.remark}, #{studyJavaSysRoleDao.createBy}, #{studyJavaSysRoleDao.createTime}, #{studyJavaSysRoleDao.updateBy}, #{studyJavaSysRoleDao.updateTime}, #{studyJavaSysRoleDao.delFlag})
     </insert>
-
+    <!-- 更新角色 -->
     <update id="updateRole" parameterType="com.example.domain.dao.StudyJavaSysRoleDao">
         UPDATE study_java_sys_role
         <set>
-            <if test="roleDao != null and roleDao.roleName != null and roleDao.roleName != ''">role_name = #{roleDao.roleName},</if>
-            <if test="roleDao != null and roleDao.roleCode != null and roleDao.roleCode != ''">role_code = #{roleDao.roleCode},</if>
-            <if test="roleDao != null and roleDao.roleSort != null">role_sort = #{roleDao.roleSort},</if>
-            <if test="roleDao != null and roleDao.status != null">status = #{roleDao.status},</if>
-            <if test="roleDao != null and roleDao.remark != null">remark = #{roleDao.remark},</if>
-            <if test="roleDao != null and roleDao.updateBy != null">update_by = #{roleDao.updateBy},</if>
-            <if test="roleDao != null and roleDao.updateTime != null">update_time = #{roleDao.updateTime},</if>
+            <if test="studyJavaSysRoleDao != null">
+                <if test="studyJavaSysRoleDao.roleName != null and studyJavaSysRoleDao.roleName != ''">role_name = #{studyJavaSysRoleDao.roleName},</if>
+                <if test="studyJavaSysRoleDao.roleCode != null and studyJavaSysRoleDao.roleCode != ''">role_code = #{studyJavaSysRoleDao.roleCode},</if>
+                <if test="studyJavaSysRoleDao.roleSort != null">role_sort = #{studyJavaSysRoleDao.roleSort},</if>
+                <if test="studyJavaSysRoleDao.status != null">status = #{studyJavaSysRoleDao.status},</if>
+                <if test="studyJavaSysRoleDao.remark != null">remark = #{studyJavaSysRoleDao.remark},</if>
+                <if test="studyJavaSysRoleDao.updateBy != null">update_by = #{studyJavaSysRoleDao.updateBy},</if>
+                <if test="studyJavaSysRoleDao.updateTime != null">update_time = #{studyJavaSysRoleDao.updateTime},</if>
+            </if>
         </set>
-        WHERE id = #{roleDao.id}
+        WHERE id = #{studyJavaSysRoleDao.id}
     </update>
-
+    <!-- 改变用户角色 -->
     <update id="updateRoleStatus" parameterType="com.example.domain.dao.StudyJavaSysRoleDao">
         UPDATE study_java_sys_role
         <set>
-            <if test="roleDao != null and roleDao.status != null">status = #{roleDao.status},</if>
-            <if test="roleDao != null and roleDao.updateBy != null">update_by = #{roleDao.updateBy},</if>
-            <if test="roleDao != null and roleDao.updateTime != null">update_time = #{roleDao.updateTime},</if>
+            <if test="studyJavaSysRoleDao != null">
+                <if test="studyJavaSysRoleDao.status != null">status = #{studyJavaSysRoleDao.status},</if>
+                <if test="studyJavaSysRoleDao.updateBy != null">update_by = #{studyJavaSysRoleDao.updateBy},</if>
+                <if test="studyJavaSysRoleDao.updateTime != null">update_time = #{studyJavaSysRoleDao.updateTime},</if>
+            </if>
         </set>
-        WHERE id = #{roleDao.id}
+        WHERE id = #{studyJavaSysRoleDao.id}
     </update>
 
-<!--    删除角色-->
+    <!-- 删除角色-->
     <update id="deleteRole" parameterType="long">
         UPDATE study_java_sys_role
         SET del_flag = 1
         WHERE id = #{roleId}
     </update>
 
-<!--    获取用户角色-->
+
+    <!-- 获取角色信息-->
     <select id="getRoleInfo" parameterType="com.example.domain.dao.StudyJavaSysRoleDao" resultType="com.example.domain.dao.StudyJavaSysRoleDao">
         SELECT
         <include refid="Base_Column_List"/>
@@ -123,7 +128,7 @@
             <if test="studyJavaSysRoleDao.roleCode != null and studyJavaSysRoleDao.roleCode != ''">
                 AND role_code = #{studyJavaSysRoleDao.roleCode}
             </if>
-            <if test="studyJavaSysRoleDao.id != null">
+            <if test="studyJavaSysRoleDao.id != null and studyJavaSysRoleDao.id != ''">
                 AND id = #{studyJavaSysRoleDao.id}
             </if>
         </if>
