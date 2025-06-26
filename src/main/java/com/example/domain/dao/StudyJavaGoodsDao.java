@@ -1,24 +1,22 @@
-package com.example.domain.dto;
+package com.example.domain.dao;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Data;
-
 import java.io.Serializable;
 import java.util.Date;
+import lombok.Data;
 
 /**
- *
+ * 
  * @TableName study_java_goods_category
  */
 @TableName(value ="study_java_goods_category")
 @Data
-public class StudyJavaGoodsCategoryDto implements Serializable {
+public class StudyJavaGoodsDao implements Serializable {
     /**
-     * 分类id
+     * 商品id
      */
     @TableId(type = IdType.AUTO)
     private Long categoryId;
@@ -26,7 +24,7 @@ public class StudyJavaGoodsCategoryDto implements Serializable {
     /**
      * 分类级别(1-一级分类 2-二级分类 3-三级分类)
      */
-    private String categoryLevel;
+    private Integer categoryLevel;
 
     /**
      * 父分类id
@@ -37,10 +35,20 @@ public class StudyJavaGoodsCategoryDto implements Serializable {
      * 分类名称
      */
     private String categoryName;
+
+    /**
+     * 排序值(字段越大越靠前)
+     */
+    private Integer categoryRank;
+
+    /**
+     * 删除标识字段(0-未删除 1-已删除)
+     */
+    private Integer isDeleted;
+
     /**
      * 创建时间
      */
-    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date createTime;
 
     /**
@@ -51,7 +59,6 @@ public class StudyJavaGoodsCategoryDto implements Serializable {
     /**
      * 修改时间
      */
-    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date updateTime;
 
     /**

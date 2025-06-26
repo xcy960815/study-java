@@ -1,16 +1,18 @@
-package com.example.domain.vo;
+package com.example.domain.dao;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.util.Date;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
+/**
+ * 数据字典表
+ * @TableName study_java_data_dictionary
+ */
 @TableName(value ="study_java_data_dictionary")
 @Data
-public class StudyJavaDataDictionaryVo {
+public class StudyJavaSysDataDictDao {
     /**
      * 主键ID
      */
@@ -60,7 +62,6 @@ public class StudyJavaDataDictionaryVo {
     /**
      * 创建时间
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date createdTime;
 
     /**
@@ -71,6 +72,5 @@ public class StudyJavaDataDictionaryVo {
     /**
      * 更新时间
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date updatedTime;
 }

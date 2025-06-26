@@ -1,18 +1,16 @@
 package com.example.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.example.domain.dao.StudyJavaGoodsCategoryDao;
-import com.example.domain.dto.StudyJavaGoodsCategoryDto;
-import com.example.domain.vo.StudyJavaGoodsCategoryVo;
-import com.example.service.StudyJavaGoodsCategoryService;
+import com.example.domain.dao.StudyJavaGoodsDao;
+import com.example.domain.dto.StudyJavaGoodsDto;
+import com.example.domain.vo.StudyJavaGoodsVo;
+import com.example.service.StudyJavaGoodsService;
 import com.example.utils.ResponseGenerator;
+import com.example.utils.ResponseListResult;
 import com.example.utils.ResponseResult;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -20,11 +18,11 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
-@RequestMapping("/goodsCategory")
-public class StudyJavaGoodsCategoryController extends BaseController {
+@RequestMapping("/goods")
+public class StudyJavaGoodsController extends BaseController {
 
     @Resource
-    private StudyJavaGoodsCategoryService studyJavaGoodsCategoryService;
+    private StudyJavaGoodsService studyJavaGoodsService;
 
     /**
      * 获取商品分类列表
@@ -33,13 +31,15 @@ public class StudyJavaGoodsCategoryController extends BaseController {
      * @param categoryDto 查询条件
      * @return 商品分类列表
      */
-    @GetMapping("/list")
-    public ResponseResult<Map<String, Object>> getGoodsCategoryList(
+    @GetMapping("/getGoodsList")
+    public ResponseListResult<StudyJavaGoodsVo> getGoodsList(
             @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
             @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
-            @ModelAttribute StudyJavaGoodsCategoryDto categoryDto
+            @ModelAttribute StudyJavaGoodsDto categoryDto
     ) {
-        return null;
+        IPage<StudyJavaGoodsVo> test = startPage(pageNum,pageSize);
+//        studyJavaGoodsService.getGoodsList
+        return ResponseGenerator.generateListResult(null,1);
     }
 
     /**
@@ -48,7 +48,7 @@ public class StudyJavaGoodsCategoryController extends BaseController {
      * @return 添加结果
      */
     @PostMapping("/add")
-    public ResponseResult<StudyJavaGoodsCategoryVo> addGoodsCategory(@Valid @RequestBody StudyJavaGoodsCategoryDto categoryDto) {
+    public ResponseResult<StudyJavaGoodsVo> addGoodsCategory(@Valid @RequestBody StudyJavaGoodsDto categoryDto) {
         return null;
     }
 
@@ -58,7 +58,7 @@ public class StudyJavaGoodsCategoryController extends BaseController {
      * @return 更新结果
      */
     @PutMapping("/update")
-    public ResponseResult<StudyJavaGoodsCategoryVo> updateGoodsCategory(@Valid @RequestBody StudyJavaGoodsCategoryDto categoryDto) {
+    public ResponseResult<StudyJavaGoodsVo> updateGoodsCategory(@Valid @RequestBody StudyJavaGoodsDto categoryDto) {
         return null;
     }
 
@@ -78,7 +78,7 @@ public class StudyJavaGoodsCategoryController extends BaseController {
      * @return 商品分类详情
      */
     @GetMapping("/detail/{categoryId}")
-    public ResponseResult<StudyJavaGoodsCategoryVo> getGoodsCategoryDetail(@PathVariable Long categoryId) {
+    public ResponseResult<StudyJavaGoodsVo> getGoodsCategoryDetail(@PathVariable Long categoryId) {
         return null;
     }
 
@@ -97,7 +97,7 @@ public class StudyJavaGoodsCategoryController extends BaseController {
      * @param parentId 父分类ID
      * @return 分类树
      */
-    private List<Map<String, Object>> buildCategoryTree(List<StudyJavaGoodsCategoryDao> categories, Long parentId) {
+    private List<Map<String, Object>> buildCategoryTree(List<StudyJavaGoodsDao> categories, Long parentId) {
         return categories.stream()
                 .filter(category -> Objects.equals(category.getParentId(), parentId))
                 .map(category -> {

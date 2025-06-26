@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.example.mapper.StudyJavaGoodsCategoryMapper">
+<mapper namespace="com.example.mapper.StudyJavaGoodsMapper">
 
-    <resultMap id="BaseResultMap" type="com.example.domain.dao.StudyJavaGoodsCategoryDao">
+    <resultMap id="BaseResultMap" type="com.example.domain.dao.StudyJavaGoodsDao">
             <id property="categoryId" column="category_id" jdbcType="BIGINT"/>
             <result property="categoryLevel" column="category_level" jdbcType="TINYINT"/>
             <result property="parentId" column="parent_id" jdbcType="BIGINT"/>
@@ -24,24 +24,26 @@
         update_user
     </sql>
 
-    <select id="getGoodsCategoryList" resultMap="BaseResultMap"
-            parameterType="com.example.domain.vo.StudyJavaGoodsCategoryVo">
+    <select id="getGoodsList" resultMap="BaseResultMap"
+            parameterType="com.example.domain.dao.StudyJavaGoodsDao">
         SELECT
         <include refid="Base_Column_List"/>
-        FROM study_java_goods_category
+        FROM study_java_goods
             WHERE is_deleted = 0
-            <if test="studyJavaGoodsCategoryVo != null and studyJavaGoodsCategoryVo.categoryName != null and studyJavaGoodsCategoryVo.categoryName != ''">
-                AND category_name LIKE CONCAT('%', #{studyJavaGoodsCategoryVo.categoryName}, '%')
-            </if>
-            <if test="studyJavaGoodsCategoryVo != null and studyJavaGoodsCategoryVo.categoryLevel != null and studyJavaGoodsCategoryVo.categoryLevel != 0">
-                AND category_level = #{studyJavaGoodsCategoryVo.categoryLevel}
-            </if>
-            <if test="studyJavaGoodsCategoryVo != null and studyJavaGoodsCategoryVo.parentId != null and studyJavaGoodsCategoryVo.parentId != 0">
-                AND parent_id = #{studyJavaGoodsCategoryVo.parentId}
-            </if>
-            <if test="studyJavaGoodsCategoryVo != null and studyJavaGoodsCategoryVo.categoryRank != null and studyJavaGoodsCategoryVo.categoryRank != 0">
-                AND category_rank = #{studyJavaGoodsCategoryVo.categoryRank}
-            </if>
+              <if test="studyJavaGoodsDao != null ">
+                  <if test="studyJavaGoodsDao.categoryName != null and studyJavaGoodsDao.categoryName != ''">
+                      AND category_name LIKE CONCAT('%', #{studyJavaGoodsDao.categoryName}, '%')
+                  </if>
+                  <if test="studyJavaGoodsDao.categoryLevel != null and studyJavaGoodsDao.categoryLevel != 0">
+                      AND category_level = #{studyJavaGoodsDao.categoryLevel}
+                  </if>
+                  <if test="studyJavaGoodsDao.parentId != null and studyJavaGoodsDao.parentId != 0">
+                      AND parent_id = #{studyJavaGoodsDao.parentId}
+                  </if>
+                  <if test="studyJavaGoodsDao.categoryRank != null and studyJavaGoodsDao.categoryRank != 0">
+                      AND category_rank = #{studyJavaGoodsDao.categoryRank}
+                  </if>
+              </if>
             ORDER BY category_rank desc
     </select>
 </mapper>

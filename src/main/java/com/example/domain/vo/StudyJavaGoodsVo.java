@@ -1,20 +1,21 @@
-package com.example.domain.dao;
+package com.example.domain.vo;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
-import java.util.Date;
 import lombok.Data;
 
+import java.io.Serializable;
+import java.util.Date;
+
 /**
- * 
+ *
  * @TableName study_java_goods_category
  */
 @TableName(value ="study_java_goods_category")
 @Data
-public class StudyJavaGoodsCategoryDao implements Serializable {
+public class StudyJavaGoodsVo implements Serializable {
     /**
      * 分类id
      */
@@ -67,5 +68,6 @@ public class StudyJavaGoodsCategoryDao implements Serializable {
     private Integer updateUser;
 
     @TableField(exist = false)
+
     private static final long serialVersionUID = 1L;
 }

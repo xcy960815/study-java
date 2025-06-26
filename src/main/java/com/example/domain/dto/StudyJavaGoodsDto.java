@@ -1,9 +1,10 @@
-package com.example.domain.vo;
+package com.example.domain.dto;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -15,7 +16,7 @@ import java.util.Date;
  */
 @TableName(value ="study_java_goods_category")
 @Data
-public class StudyJavaGoodsCategoryVo implements Serializable {
+public class StudyJavaGoodsDto implements Serializable {
     /**
      * 分类id
      */
@@ -25,7 +26,7 @@ public class StudyJavaGoodsCategoryVo implements Serializable {
     /**
      * 分类级别(1-一级分类 2-二级分类 3-三级分类)
      */
-    private Integer categoryLevel;
+    private String categoryLevel;
 
     /**
      * 父分类id
@@ -36,20 +37,10 @@ public class StudyJavaGoodsCategoryVo implements Serializable {
      * 分类名称
      */
     private String categoryName;
-
-    /**
-     * 排序值(字段越大越靠前)
-     */
-    private Integer categoryRank;
-
-    /**
-     * 删除标识字段(0-未删除 1-已删除)
-     */
-    private Integer isDeleted;
-
     /**
      * 创建时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date createTime;
 
     /**
@@ -60,6 +51,7 @@ public class StudyJavaGoodsCategoryVo implements Serializable {
     /**
      * 修改时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date updateTime;
 
     /**
@@ -68,6 +60,5 @@ public class StudyJavaGoodsCategoryVo implements Serializable {
     private Integer updateUser;
 
     @TableField(exist = false)
-
     private static final long serialVersionUID = 1L;
 }
