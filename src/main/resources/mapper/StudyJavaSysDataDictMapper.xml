@@ -26,7 +26,7 @@
         created_time,updated_by,updated_time
     </sql>
 
-    <select id="dataDictionaryList" resultMap="BaseResultMap">
+    <select id="getDataDictList" resultMap="BaseResultMap">
         SELECT
             <include refid="Base_Column_List" />
         FROM study_java_sys_data_dictionary
@@ -47,14 +47,14 @@
         ORDER BY sort_order DESC
     </select>
 
-    <insert id="addDataDictionary" parameterType="com.example.domain.dao.StudyJavaSysDataDictDao">
+    <insert id="insertDataDict" parameterType="com.example.domain.dao.StudyJavaSysDataDictDao">
         INSERT INTO study_java_sys_data_dictionary
         (dict_type,dict_code,dict_name,dict_value,sort_order,status,remark,created_by,created_time,updated_by,updated_time)
         VALUES
         (#{studyJavaSysDataDictDao.dictType},#{studyJavaSysDataDictDao.dictCode},#{studyJavaSysDataDictDao.dictName},#{studyJavaSysDataDictDao.dictValue},#{studyJavaSysDataDictDao.sortOrder},#{studyJavaSysDataDictDao.status},#{studyJavaSysDataDictDao.remark},#{studyJavaSysDataDictDao.createdBy},#{studyJavaSysDataDictDao.createdTime},#{studyJavaSysDataDictDao.updatedBy},#{studyJavaSysDataDictDao.updatedTime})
     </insert>
 
-    <update id="updateDataDictionary" parameterType="com.example.domain.dao.StudyJavaSysDataDictDao">
+    <update id="updateDataDict" parameterType="com.example.domain.dao.StudyJavaSysDataDictDao">
         UPDATE study_java_sys_data_dictionary
         <set>
             <if test="studyJavaSysDataDictDao.dictType != null">dict_type = #{studyJavaSysDataDictDao.dictType},</if>
@@ -70,13 +70,13 @@
         WHERE id = #{studyJavaSysDataDictDao.id}
     </update>
 
-    <update id="deleteDataDictionary" parameterType="java.lang.Long">
+    <update id="deleteDataDict" parameterType="java.lang.Long">
         UPDATE study_java_sys_data_dictionary
         SET status = 0
         WHERE id = #{id}
     </update>
 
-    <select id="dataDictionaryDetail" resultMap="BaseResultMap">
+    <select id="getDataDictDetail" resultMap="BaseResultMap">
         SELECT
             <include refid="Base_Column_List" />
         FROM study_java_sys_data_dictionary

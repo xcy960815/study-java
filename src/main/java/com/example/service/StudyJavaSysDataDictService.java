@@ -14,14 +14,14 @@ import com.example.domain.vo.StudyJavaSysDataDictVo;
 */
 public interface StudyJavaSysDataDictService extends IService<StudyJavaSysDataDictDao> {
 
-    IPage<StudyJavaSysDataDictVo> dataDictionaryList(Page<StudyJavaSysDataDictDto> page, StudyJavaSysDataDictDto studyJavaSysDataDictDto);
+    IPage<StudyJavaSysDataDictVo> getDataDictList(Page<StudyJavaSysDataDictDto> page, StudyJavaSysDataDictDto studyJavaSysDataDictDto);
 
-    Boolean addDataDictionary(StudyJavaSysDataDictDto studyJavaSysDataDictDto);
+    Boolean insertDataDict(StudyJavaSysDataDictDto studyJavaSysDataDictDto);
 
-    Boolean updateDataDictionary(StudyJavaSysDataDictDto studyJavaSysDataDictDto);
+    Boolean updateDataDict(StudyJavaSysDataDictDto studyJavaSysDataDictDto);
 
-    Boolean deleteDataDictionary(Long id);
+    Boolean deleteDataDict(Long id);
 
-    StudyJavaSysDataDictVo dataDictionaryDetail(Long id);
+    StudyJavaSysDataDictVo getDataDictDetail(Long id);
 
 }

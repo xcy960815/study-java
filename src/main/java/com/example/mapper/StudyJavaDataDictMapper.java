@@ -13,15 +13,15 @@ import org.apache.ibatis.annotations.Param;
 */
 public interface StudyJavaDataDictMapper extends BaseMapper<StudyJavaSysDataDictDao> {
 
-    IPage<StudyJavaSysDataDictDao> dataDictionaryList(@Param("page") Page<StudyJavaSysDataDictDto> page, @Param("studyJavaDataDictionaryDao") StudyJavaSysDataDictDao studyJavaSysDataDictDao);
+    IPage<StudyJavaSysDataDictDao> getDataDictList(@Param("page") Page<StudyJavaSysDataDictDto> page, @Param("studyJavaSysDataDictDao") StudyJavaSysDataDictDao studyJavaSysDataDictDao);
 
-    Boolean addDataDictionary(@Param("studyJavaDataDictionaryDao") StudyJavaSysDataDictDao studyJavaSysDataDictDao);
+    Boolean insertDataDict(@Param("studyJavaSysDataDictDao") StudyJavaSysDataDictDao studyJavaSysDataDictDao);
 
-    Boolean updateDataDictionary(@Param("studyJavaDataDictionaryDao") StudyJavaSysDataDictDao studyJavaSysDataDictDao);
+    Boolean updateDataDict(@Param("studyJavaSysDataDictDao") StudyJavaSysDataDictDao studyJavaSysDataDictDao);
 
-    Boolean deleteDataDictionary(@Param("id") Long id);
+    Boolean deleteDataDict(@Param("id") Long id);
 
-    StudyJavaSysDataDictDao dataDictionaryDetail(@Param("id") Long id);
+    StudyJavaSysDataDictDao getDataDictDetail(@Param("id") Long id);
 
 }
 

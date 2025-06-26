@@ -13,40 +13,40 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/dataDictionary")
+@RequestMapping("/dataDict")
 @Slf4j
 public class StudyJavaSysDataDictController extends BaseController {
 
     @Resource
     private StudyJavaSysDataDictService studyJavaSysDataDictService;
 
-    @GetMapping("/list")
-    public ResponseListResult<StudyJavaSysDataDictVo> list(
+    @GetMapping("/getDataDictList")
+    public ResponseListResult<StudyJavaSysDataDictVo> getDataDictList(
             @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
             @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
             @ModelAttribute StudyJavaSysDataDictDto studyJavaSysDataDictDto
     ) {
-        IPage<StudyJavaSysDataDictVo> dataDictionaryPage = studyJavaSysDataDictService.dataDictionaryList(startPage(pageNum, pageSize), studyJavaSysDataDictDto);
+        IPage<StudyJavaSysDataDictVo> dataDictionaryPage = studyJavaSysDataDictService.getDataDictList(startPage(pageNum, pageSize), studyJavaSysDataDictDto);
         return ResponseGenerator.generateListResult(dataDictionaryPage.getRecords(),dataDictionaryPage.getTotal());
     }
 
-    @PostMapping("/add")
+    @PostMapping("/insertDataDict")
     public ResponseResult<Boolean> add(@Valid @RequestBody StudyJavaSysDataDictDto studyJavaSysDataDictDto) {
-        return ResponseGenerator.generateSuccessResult(studyJavaSysDataDictService.addDataDictionary(studyJavaSysDataDictDto));
+        return ResponseGenerator.generateSuccessResult(studyJavaSysDataDictService.insertDataDict(studyJavaSysDataDictDto));
     }
 
-    @PutMapping("/update")
+    @PutMapping("/updateDataDict")
     public ResponseResult<Boolean> update(@Valid @RequestBody StudyJavaSysDataDictDto studyJavaSysDataDictDto) {
-        return ResponseGenerator.generateSuccessResult(studyJavaSysDataDictService.updateDataDictionary(studyJavaSysDataDictDto));
+        return ResponseGenerator.generateSuccessResult(studyJavaSysDataDictService.updateDataDict(studyJavaSysDataDictDto));
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/deleteDataDict/{id}")
     public ResponseResult<Boolean> delete(@PathVariable("id") Long id) {
-        return ResponseGenerator.generateSuccessResult(studyJavaSysDataDictService.deleteDataDictionary(id)) ;
+        return ResponseGenerator.generateSuccessResult(studyJavaSysDataDictService.deleteDataDict(id)) ;
     }
 
-    @GetMapping("/detail/{id}")
+    @GetMapping("/getDataDictDetail/{id}")
     public ResponseResult<StudyJavaSysDataDictVo> detail(@PathVariable("id") Long id) {
-       return ResponseGenerator.generateSuccessResult(studyJavaSysDataDictService.dataDictionaryDetail(id)) ;
+       return ResponseGenerator.generateSuccessResult(studyJavaSysDataDictService.getDataDictDetail(id)) ;
     }
 }
