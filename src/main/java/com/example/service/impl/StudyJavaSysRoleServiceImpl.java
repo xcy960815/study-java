@@ -98,10 +98,10 @@ public class StudyJavaSysRoleServiceImpl implements StudyJavaSysRoleService {
     @Transactional
     public boolean updateRole(StudyJavaSysRoleDto studyJavaSysRoleDto) {
         // 检查 roleCode 是否已存在
-        StudyJavaSysRoleVo studyJavaSysRoleResponseVo = getRoleInfo(studyJavaSysRoleDto);
-        if (studyJavaSysRoleResponseVo != null) {
-            throw new StudyJavaException("角色编码已存在");
-        }
+//        StudyJavaSysRoleVo studyJavaSysRoleResponseVo = getRoleInfo(studyJavaSysRoleDto);
+//        if (studyJavaSysRoleResponseVo != null) {
+//            throw new StudyJavaException("角色编码已存在");
+//        }
         StudyJavaSysRoleDao studyJavaSysRoleDao = convertToDao(studyJavaSysRoleDto);
         StudyJavaSysUserVo studyJavaSysUserVo = studyJavaSysUserService.getUserInfo();
         studyJavaSysRoleDao.setUpdateTime(LocalDateTime.now());
