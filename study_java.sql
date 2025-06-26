@@ -11,155 +11,35 @@
  Target Server Version : 80402 (8.4.2)
  File Encoding         : 65001
 
- Date: 23/06/2025 23:50:11
+ Date: 26/06/2025 23:07:34
 */
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ----------------------------
--- Table structure for study_java_data_dictionary
+-- Table structure for study_java_carousel
 -- ----------------------------
-DROP TABLE IF EXISTS `study_java_data_dictionary`;
-CREATE TABLE `study_java_data_dictionary` (
-  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-  `dict_type` varchar(50) NOT NULL COMMENT '字典类型',
-  `dict_code` varchar(50) NOT NULL COMMENT '字典编码',
-  `dict_name` varchar(100) NOT NULL COMMENT '字典名称',
-  `dict_value` varchar(100) NOT NULL COMMENT '字典值',
-  `sort_order` int DEFAULT '0' COMMENT '排序号',
-  `status` tinyint DEFAULT '1' COMMENT '状态（0-禁用，1-启用）',
-  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
-  `created_by` varchar(50) DEFAULT NULL COMMENT '创建人',
-  `created_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `updated_by` varchar(50) DEFAULT NULL COMMENT '更新人',
-  `updated_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uk_dict_type_code` (`dict_type`,`dict_code`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='数据字典表';
-
--- ----------------------------
--- Records of study_java_data_dictionary
--- ----------------------------
-BEGIN;
-INSERT INTO `study_java_data_dictionary` (`id`, `dict_type`, `dict_code`, `dict_name`, `dict_value`, `sort_order`, `status`, `remark`, `created_by`, `created_time`, `updated_by`, `updated_time`) VALUES (1, '1', '1', '1', '1', 0, 1, '1', NULL, '2025-05-25 14:24:24', '13700002703', '2025-05-25 15:26:20');
-INSERT INTO `study_java_data_dictionary` (`id`, `dict_type`, `dict_code`, `dict_name`, `dict_value`, `sort_order`, `status`, `remark`, `created_by`, `created_time`, `updated_by`, `updated_time`) VALUES (2, '2', '2', '2', '2', 0, 1, '2', '13700002703', '2025-05-25 15:26:26', '13700002703', '2025-05-25 15:26:26');
-COMMIT;
-
--- ----------------------------
--- Table structure for study_java_goods
--- ----------------------------
-DROP TABLE IF EXISTS `study_java_goods`;
-CREATE TABLE `study_java_goods` (
-  `category_id` bigint NOT NULL AUTO_INCREMENT COMMENT '分类id',
-  `category_level` tinyint NOT NULL DEFAULT '0' COMMENT '分类级别(1-一级分类 2-二级分类 3-三级分类)',
-  `parent_id` bigint NOT NULL DEFAULT '0' COMMENT '父分类id',
-  `category_name` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT '' COMMENT '分类名称',
-  `category_rank` int NOT NULL DEFAULT '0' COMMENT '排序值(字段越大越靠前)',
+DROP TABLE IF EXISTS `study_java_carousel`;
+CREATE TABLE `study_java_carousel` (
+  `carousel_id` int NOT NULL AUTO_INCREMENT COMMENT '首页轮播图主键id',
+  `carousel_url` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT '' COMMENT '轮播图',
+  `redirect_url` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT '''##''' COMMENT '点击后的跳转地址(默认不跳转)',
+  `carousel_rank` int NOT NULL DEFAULT '0' COMMENT '排序值(字段越大越靠前)',
   `is_deleted` tinyint NOT NULL DEFAULT '0' COMMENT '删除标识字段(0-未删除 1-已删除)',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `create_user` int NOT NULL DEFAULT '0' COMMENT '创建者id',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
-  `update_user` int DEFAULT '0' COMMENT '修改者id',
-  PRIMARY KEY (`category_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=107 DEFAULT CHARSET=utf8mb3 ROW_FORMAT=DYNAMIC;
+  `update_user` int NOT NULL DEFAULT '0' COMMENT '修改者id',
+  PRIMARY KEY (`carousel_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb3 ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
--- Records of study_java_goods
+-- Records of study_java_carousel
 -- ----------------------------
 BEGIN;
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (15, 1, 0, '家电 数码 手机', 100, 0, '2019-09-11 18:45:40', 0, '2019-09-11 18:45:40', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (16, 1, 0, '女装 男装 穿搭', 99, 0, '2019-09-11 18:46:07', 0, '2019-09-11 18:46:07', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (17, 2, 15, '家电', 10, 0, '2019-09-11 18:46:32', 0, '2019-09-11 18:46:32', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (18, 2, 15, '数码', 9, 0, '2019-09-11 18:46:43', 0, '2019-09-11 18:46:43', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (19, 2, 15, '手机', 8, 0, '2019-09-11 18:46:52', 0, '2019-09-11 18:46:52', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (20, 3, 17, '生活电器', 0, 0, '2019-09-11 18:47:38', 0, '2019-09-11 18:47:38', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (21, 3, 17, '厨房电器', 0, 0, '2019-09-11 18:47:49', 0, '2019-09-11 18:47:49', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (22, 3, 17, '扫地机器人', 0, 0, '2019-09-11 18:47:58', 0, '2019-09-11 18:47:58', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (23, 3, 17, '吸尘器', 0, 0, '2019-09-11 18:48:06', 0, '2019-09-11 18:48:06', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (24, 3, 17, '取暖器', 0, 0, '2019-09-11 18:48:12', 0, '2019-09-11 18:48:12', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (25, 3, 17, '豆浆机', 0, 0, '2019-09-11 18:48:26', 0, '2019-09-11 18:48:26', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (26, 3, 17, '暖风机', 0, 0, '2019-09-11 18:48:40', 0, '2019-09-11 18:48:40', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (27, 3, 17, '加湿器', 0, 0, '2019-09-11 18:48:50', 0, '2019-09-11 18:48:50', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (28, 3, 17, '蓝牙音箱', 0, 0, '2019-09-11 18:48:57', 0, '2019-09-11 18:48:57', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (29, 3, 17, '烤箱', 0, 0, '2019-09-11 18:49:09', 0, '2019-09-11 18:49:09', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (30, 3, 17, '卷发器', 0, 0, '2019-09-11 18:49:19', 0, '2019-09-11 18:49:19', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (31, 3, 17, '空气净化器', 0, 0, '2019-09-11 18:49:30', 0, '2019-09-11 18:49:30', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (32, 3, 18, '游戏主机', 0, 0, '2019-09-11 18:49:50', 0, '2019-09-11 18:49:50', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (33, 3, 18, '数码精选', 0, 0, '2019-09-11 18:49:55', 0, '2019-09-11 18:49:55', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (34, 3, 18, '平板电脑', 0, 0, '2019-09-11 18:50:08', 0, '2019-09-11 18:50:08', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (35, 3, 18, '苹果 Apple', 0, 0, '2019-09-11 18:50:24', 0, '2019-09-11 18:50:24', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (36, 3, 18, '电脑主机', 0, 0, '2019-09-11 18:50:36', 0, '2019-09-11 18:50:36', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (37, 3, 18, '数码相机', 0, 0, '2019-09-11 18:50:57', 0, '2019-09-11 18:50:57', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (38, 3, 18, '电玩动漫', 0, 0, '2019-09-11 18:52:15', 0, '2019-09-11 18:52:15', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (39, 3, 18, '单反相机', 0, 0, '2019-09-11 18:52:26', 0, '2019-09-11 18:52:26', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (40, 3, 18, '键盘鼠标', 0, 0, '2019-09-11 18:52:46', 0, '2019-09-11 18:52:46', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (41, 3, 18, '无人机', 0, 0, '2019-09-11 18:53:01', 0, '2019-09-11 18:53:01', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (42, 3, 18, '二手电脑', 0, 0, '2019-09-11 18:53:08', 0, '2019-09-11 18:53:08', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (43, 3, 18, '二手手机', 0, 0, '2019-09-11 18:53:14', 0, '2019-09-11 18:53:14', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (44, 3, 19, 'iPhone 11', 89, 0, '2019-09-11 18:53:49', 0, '2019-09-11 18:54:38', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (45, 3, 19, '荣耀手机', 99, 0, '2019-09-11 18:53:59', 0, '2019-09-18 13:40:59', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (46, 3, 19, '华为手机', 98, 0, '2019-09-11 18:54:20', 0, '2019-09-18 13:40:51', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (47, 3, 19, 'iPhone', 88, 0, '2019-09-11 18:54:49', 0, '2019-09-18 13:40:32', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (48, 3, 19, '华为 Mate 20', 79, 0, '2019-09-11 18:55:03', 0, '2019-09-11 18:55:13', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (49, 3, 19, '华为 P30', 97, 0, '2019-09-11 18:55:22', 0, '2019-09-11 18:55:22', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (50, 3, 19, '华为 P30 Pro', 0, 1, '2019-09-11 18:55:32', 0, '2019-09-11 18:55:32', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (51, 3, 19, '小米手机', 0, 0, '2019-09-11 18:55:52', 0, '2019-09-11 18:55:52', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (52, 3, 19, '红米', 0, 0, '2019-09-11 18:55:58', 0, '2019-09-11 18:55:58', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (53, 3, 19, 'OPPO', 0, 0, '2019-09-11 18:56:06', 0, '2019-09-11 18:56:06', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (54, 3, 19, '一加', 0, 0, '2019-09-11 18:56:12', 0, '2019-09-11 18:56:12', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (55, 3, 19, '小米 MIX', 0, 0, '2019-09-11 18:56:37', 0, '2019-09-11 18:56:37', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (56, 3, 19, 'Reno', 0, 0, '2019-09-11 18:56:49', 0, '2019-09-11 18:56:49', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (57, 3, 19, 'vivo', 0, 0, '2019-09-11 18:57:01', 0, '2019-09-11 18:57:01', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (58, 3, 19, '手机以旧换新', 0, 0, '2019-09-11 18:57:09', 0, '2019-09-11 18:57:09', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (59, 1, 0, '运动 户外 乐器', 97, 0, '2019-09-12 00:08:46', 0, '2019-09-12 00:08:46', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (60, 1, 0, '游戏 动漫 影视', 96, 0, '2019-09-12 00:09:00', 0, '2019-09-12 00:09:00', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (61, 1, 0, '家具 家饰 家纺', 98, 0, '2019-09-12 00:09:27', 0, '2019-09-12 00:09:27', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (62, 1, 0, '美妆 清洁 宠物', 94, 0, '2019-09-12 00:09:51', 0, '2019-09-17 18:22:34', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (63, 1, 0, '工具 装修 建材', 93, 0, '2019-09-12 00:10:07', 0, '2019-09-12 00:10:07', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (64, 1, 0, '珠宝 金饰 眼镜', 92, 0, '2019-09-12 00:10:35', 0, '2019-09-12 00:16:30', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (65, 1, 0, '玩具 孕产 用品', 0, 0, '2019-09-12 00:11:17', 0, '2019-09-12 00:11:17', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (66, 1, 0, '鞋靴 箱包 配件', 91, 0, '2019-09-12 00:11:30', 0, '2019-09-12 00:11:30', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (67, 2, 16, '女装', 10, 0, '2019-09-12 00:15:19', 0, '2019-09-12 00:15:19', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (68, 2, 16, '男装', 9, 0, '2019-09-12 00:15:28', 0, '2019-09-12 00:15:28', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (69, 2, 16, '穿搭', 8, 0, '2019-09-12 00:15:35', 0, '2019-09-12 00:15:35', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (70, 2, 61, '家具', 10, 0, '2019-09-12 00:20:22', 0, '2019-09-12 00:20:22', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (71, 2, 61, '家饰', 9, 0, '2019-09-12 00:20:29', 0, '2019-09-12 00:20:29', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (72, 2, 61, '家纺', 8, 0, '2019-09-12 00:20:35', 0, '2019-09-12 00:20:35', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (73, 2, 59, '运动', 10, 0, '2019-09-12 00:20:49', 0, '2019-09-12 00:20:49', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (74, 2, 59, '户外', 9, 0, '2019-09-12 00:20:58', 0, '2019-09-12 00:20:58', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (75, 2, 59, '乐器', 8, 0, '2019-09-12 00:21:05', 0, '2019-09-12 00:21:05', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (76, 3, 67, '外套', 10, 0, '2019-09-12 00:21:55', 0, '2019-09-12 00:21:55', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (77, 3, 70, '沙发', 10, 0, '2019-09-12 00:22:21', 0, '2019-09-12 00:22:21', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (78, 3, 73, '跑鞋', 10, 0, '2019-09-12 00:22:42', 0, '2019-09-12 00:22:42', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (79, 2, 60, '游戏', 10, 0, '2019-09-12 00:23:13', 0, '2019-09-12 00:23:13', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (80, 2, 60, '动漫', 9, 0, '2019-09-12 00:23:21', 0, '2019-09-12 00:23:21', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (81, 2, 60, '影视', 8, 0, '2019-09-12 00:23:27', 0, '2019-09-12 00:23:27', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (82, 3, 79, 'LOL', 10, 0, '2019-09-12 00:23:44', 0, '2019-09-12 00:23:44', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (83, 2, 62, '美妆', 10, 0, '2019-09-12 00:23:58', 0, '2019-09-17 18:22:44', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (84, 2, 62, '宠物', 9, 0, '2019-09-12 00:24:07', 0, '2019-09-12 00:24:07', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (85, 2, 62, '清洁', 8, 0, '2019-09-12 00:24:15', 0, '2019-09-17 18:22:51', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (86, 3, 83, '口红', 10, 0, '2019-09-12 00:24:38', 0, '2019-09-17 18:23:08', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (87, 2, 63, '工具', 10, 0, '2019-09-12 00:24:56', 0, '2019-09-12 00:24:56', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (88, 2, 63, '装修', 9, 0, '2019-09-12 00:25:05', 0, '2019-09-12 00:25:05', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (89, 2, 63, '建材', 8, 0, '2019-09-12 00:25:12', 0, '2019-09-12 00:25:12', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (90, 3, 87, '转换器', 10, 0, '2019-09-12 00:25:45', 0, '2019-09-12 00:25:45', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (91, 2, 64, '珠宝', 10, 0, '2019-09-12 00:26:10', 0, '2019-09-12 00:26:10', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (92, 2, 64, '金饰', 9, 0, '2019-09-12 00:26:18', 0, '2019-09-12 00:26:18', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (93, 2, 64, '眼镜', 8, 0, '2019-09-12 00:26:25', 0, '2019-09-12 00:26:25', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (94, 3, 91, '钻石', 10, 0, '2019-09-12 00:26:40', 0, '2019-09-12 00:26:40', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (95, 2, 66, '鞋靴', 10, 0, '2019-09-12 00:27:09', 0, '2019-09-12 00:27:09', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (96, 2, 66, '箱包', 9, 0, '2019-09-12 00:27:17', 0, '2019-09-12 00:27:17', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (97, 2, 66, '配件', 8, 0, '2019-09-12 00:27:23', 0, '2019-09-12 00:27:23', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (98, 3, 95, '休闲鞋', 10, 0, '2019-09-12 00:27:48', 0, '2019-09-12 00:27:48', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (99, 3, 83, '气垫', 0, 0, '2019-09-17 18:24:23', 0, '2019-09-17 18:24:23', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (100, 3, 83, '美白', 0, 0, '2019-09-17 18:24:36', 0, '2019-09-17 18:24:36', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (101, 3, 83, '隔离霜', 0, 0, '2019-09-17 18:27:04', 0, '2019-09-17 18:27:04', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (102, 3, 83, '粉底', 0, 0, '2019-09-17 18:27:19', 0, '2019-09-17 18:27:19', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (103, 3, 83, '腮红', 0, 0, '2019-09-17 18:27:24', 0, '2019-09-17 18:27:24', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (104, 3, 83, '睫毛膏', 0, 0, '2019-09-17 18:27:47', 0, '2019-09-17 18:27:47', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (105, 3, 83, '香水', 0, 0, '2019-09-17 18:28:16', 0, '2019-09-17 18:28:16', 0);
-INSERT INTO `study_java_goods` (`category_id`, `category_level`, `parent_id`, `category_name`, `category_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (106, 3, 83, '面膜', 0, 0, '2019-09-17 18:28:21', 0, '2019-09-17 18:28:21', 0);
+INSERT INTO `study_java_carousel` (`carousel_id`, `carousel_url`, `redirect_url`, `carousel_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (2, 'https://newbee-mall.oss-cn-beijing.aliyuncs.com/images/banner1.png', 'https://juejin.im/book/5da2f9d4f265da5b81794d48/section/5da2f9d6f265da5b794f2189', 13, 0, '2019-11-29 00:00:00', 0, '2019-11-29 00:00:00', 0);
+INSERT INTO `study_java_carousel` (`carousel_id`, `carousel_url`, `redirect_url`, `carousel_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (5, 'https://newbee-mall.oss-cn-beijing.aliyuncs.com/images/banner2.png', 'https://juejin.im/book/5da2f9d4f265da5b81794d48/section/5da2f9d6f265da5b794f2189', 0, 0, '2019-11-29 00:00:00', 0, '2019-11-29 00:00:00', 0);
 COMMIT;
 
 -- ----------------------------
@@ -768,55 +648,6 @@ INSERT INTO `study_java_goods_info` (`goods_id`, `goods_name`, `goods_intro`, `g
 COMMIT;
 
 -- ----------------------------
--- Table structure for study_java_index_config
--- ----------------------------
-DROP TABLE IF EXISTS `study_java_index_config`;
-CREATE TABLE `study_java_index_config` (
-  `config_id` bigint NOT NULL AUTO_INCREMENT COMMENT '首页配置项主键id',
-  `config_name` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT '' COMMENT '显示字符(配置搜索时不可为空，其他可为空)',
-  `config_type` tinyint NOT NULL DEFAULT '0' COMMENT '1-搜索框热搜 2-搜索下拉框热搜 3-(首页)热销商品 4-(首页)新品上线 5-(首页)为你推荐',
-  `goods_id` bigint NOT NULL DEFAULT '0' COMMENT '商品id 默认为0',
-  `redirect_url` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT '##' COMMENT '点击后的跳转地址(默认不跳转)',
-  `config_rank` int NOT NULL DEFAULT '0' COMMENT '排序值(字段越大越靠前)',
-  `is_deleted` tinyint NOT NULL DEFAULT '0' COMMENT '删除标识字段(0-未删除 1-已删除)',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `create_user` int NOT NULL DEFAULT '0' COMMENT '创建者id',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最新修改时间',
-  `update_user` int DEFAULT '0' COMMENT '修改者id',
-  PRIMARY KEY (`config_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb3 ROW_FORMAT=DYNAMIC;
-
--- ----------------------------
--- Records of study_java_index_config
--- ----------------------------
-BEGIN;
-INSERT INTO `study_java_index_config` (`config_id`, `config_name`, `config_type`, `goods_id`, `redirect_url`, `config_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (1, '热销商品 iPhone XR', 3, 10284, '##', 10, 0, '2019-09-18 17:04:56', 0, '2019-09-18 17:04:56', 0);
-INSERT INTO `study_java_index_config` (`config_id`, `config_name`, `config_type`, `goods_id`, `redirect_url`, `config_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (2, '热销商品 华为 Mate20', 3, 10779, '##', 100, 0, '2019-09-18 17:05:27', 0, '2019-09-18 17:05:27', 0);
-INSERT INTO `study_java_index_config` (`config_id`, `config_name`, `config_type`, `goods_id`, `redirect_url`, `config_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (3, '热销商品 荣耀8X', 3, 10700, '##', 300, 0, '2019-09-18 17:08:02', 0, '2019-09-18 17:08:02', 0);
-INSERT INTO `study_java_index_config` (`config_id`, `config_name`, `config_type`, `goods_id`, `redirect_url`, `config_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (4, '热销商品 Apple AirPods', 3, 10159, '##', 101, 0, '2019-09-18 17:08:56', 0, '2019-09-18 17:08:56', 0);
-INSERT INTO `study_java_index_config` (`config_id`, `config_name`, `config_type`, `goods_id`, `redirect_url`, `config_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (5, '新品上线 Macbook Pro', 4, 10269, '##', 100, 0, '2019-09-18 17:10:36', 0, '2019-09-18 17:10:36', 0);
-INSERT INTO `study_java_index_config` (`config_id`, `config_name`, `config_type`, `goods_id`, `redirect_url`, `config_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (6, '新品上线 荣耀 9X Pro', 4, 10755, '##', 100, 0, '2019-09-18 17:11:05', 0, '2019-09-18 17:11:05', 0);
-INSERT INTO `study_java_index_config` (`config_id`, `config_name`, `config_type`, `goods_id`, `redirect_url`, `config_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (7, '新品上线 iPhone 11', 4, 10283, '##', 102, 0, '2019-09-18 17:11:44', 0, '2019-09-18 17:11:44', 0);
-INSERT INTO `study_java_index_config` (`config_id`, `config_name`, `config_type`, `goods_id`, `redirect_url`, `config_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (8, '新品上线 iPhone 11 Pro', 4, 10320, '##', 101, 0, '2019-09-18 17:11:58', 0, '2019-09-18 17:11:58', 0);
-INSERT INTO `study_java_index_config` (`config_id`, `config_name`, `config_type`, `goods_id`, `redirect_url`, `config_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (9, '新品上线 华为无线耳机', 4, 10186, '##', 100, 0, '2019-09-18 17:12:29', 0, '2019-09-18 17:12:29', 0);
-INSERT INTO `study_java_index_config` (`config_id`, `config_name`, `config_type`, `goods_id`, `redirect_url`, `config_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (10, '纪梵希高定香榭天鹅绒唇膏', 5, 10233, '##', 98, 0, '2019-09-18 17:47:23', 0, '2019-09-18 17:47:23', 0);
-INSERT INTO `study_java_index_config` (`config_id`, `config_name`, `config_type`, `goods_id`, `redirect_url`, `config_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (11, 'MAC 磨砂系列', 5, 10237, '##', 100, 0, '2019-09-18 17:47:44', 0, '2019-09-18 17:47:44', 0);
-INSERT INTO `study_java_index_config` (`config_id`, `config_name`, `config_type`, `goods_id`, `redirect_url`, `config_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (12, '索尼 WH-1000XM3', 5, 10195, '##', 102, 0, '2019-09-18 17:48:00', 0, '2019-09-18 17:48:00', 0);
-INSERT INTO `study_java_index_config` (`config_id`, `config_name`, `config_type`, `goods_id`, `redirect_url`, `config_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (13, 'Apple AirPods', 5, 10180, '##', 101, 0, '2019-09-18 17:49:11', 0, '2019-09-18 17:49:11', 0);
-INSERT INTO `study_java_index_config` (`config_id`, `config_name`, `config_type`, `goods_id`, `redirect_url`, `config_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (14, '小米 Redmi AirDots', 5, 10160, '##', 100, 0, '2019-09-18 17:49:28', 0, '2019-09-18 17:49:28', 0);
-INSERT INTO `study_java_index_config` (`config_id`, `config_name`, `config_type`, `goods_id`, `redirect_url`, `config_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (15, '2019 MacBookAir 13', 5, 10254, '##', 100, 0, '2019-09-18 17:50:18', 0, '2019-09-18 17:50:18', 0);
-INSERT INTO `study_java_index_config` (`config_id`, `config_name`, `config_type`, `goods_id`, `redirect_url`, `config_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (16, '女式粗棉线条纹长袖T恤', 5, 10158, '##', 99, 0, '2019-09-18 17:52:03', 0, '2019-09-18 17:52:03', 0);
-INSERT INTO `study_java_index_config` (`config_id`, `config_name`, `config_type`, `goods_id`, `redirect_url`, `config_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (17, '塑料浴室座椅', 5, 10154, '##', 100, 0, '2019-09-18 17:52:19', 0, '2019-09-18 17:52:19', 0);
-INSERT INTO `study_java_index_config` (`config_id`, `config_name`, `config_type`, `goods_id`, `redirect_url`, `config_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (18, '靠垫', 5, 10147, '##', 101, 0, '2019-09-18 17:52:50', 0, '2019-09-18 17:52:50', 0);
-INSERT INTO `study_java_index_config` (`config_id`, `config_name`, `config_type`, `goods_id`, `redirect_url`, `config_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (19, '小型超声波香薰机', 5, 10113, '##', 100, 0, '2019-09-18 17:54:07', 0, '2019-09-18 17:54:07', 0);
-INSERT INTO `study_java_index_config` (`config_id`, `config_name`, `config_type`, `goods_id`, `redirect_url`, `config_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (20, '11', 5, 1, '##', 0, 1, '2019-09-19 08:31:11', 0, '2019-09-19 08:31:20', 0);
-INSERT INTO `study_java_index_config` (`config_id`, `config_name`, `config_type`, `goods_id`, `redirect_url`, `config_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (21, '热销商品 华为 P30', 3, 10742, '##', 200, 0, '2019-09-19 23:23:38', 0, '2019-09-19 23:23:38', 0);
-INSERT INTO `study_java_index_config` (`config_id`, `config_name`, `config_type`, `goods_id`, `redirect_url`, `config_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (22, '新品上线 华为Mate30 Pro', 4, 10893, '##', 200, 0, '2019-09-19 23:26:05', 0, '2019-09-19 23:26:05', 0);
-INSERT INTO `study_java_index_config` (`config_id`, `config_name`, `config_type`, `goods_id`, `redirect_url`, `config_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (23, '新品上线 华为 Mate 30', 4, 10895, '##', 199, 0, '2019-09-19 23:26:32', 0, '2019-09-19 23:26:32', 0);
-INSERT INTO `study_java_index_config` (`config_id`, `config_name`, `config_type`, `goods_id`, `redirect_url`, `config_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (24, '华为 Mate 30 Pro', 5, 10894, '##', 101, 0, '2019-09-19 23:27:00', 0, '2019-09-19 23:27:00', 0);
-COMMIT;
-
--- ----------------------------
 -- Table structure for study_java_order
 -- ----------------------------
 DROP TABLE IF EXISTS `study_java_order`;
@@ -922,24 +753,32 @@ INSERT INTO `study_java_order_item` (`order_item_id`, `order_id`, `goods_id`, `g
 COMMIT;
 
 -- ----------------------------
--- Table structure for study_java_shopping_cart_item
+-- Table structure for study_java_sys_data_dictionary
 -- ----------------------------
-DROP TABLE IF EXISTS `study_java_shopping_cart_item`;
-CREATE TABLE `study_java_shopping_cart_item` (
-  `cart_item_id` bigint NOT NULL AUTO_INCREMENT COMMENT '购物项主键id',
-  `user_id` bigint NOT NULL COMMENT '用户主键id',
-  `goods_id` bigint NOT NULL DEFAULT '0' COMMENT '关联商品id',
-  `goods_count` int NOT NULL DEFAULT '1' COMMENT '数量(最大为5)',
-  `is_deleted` tinyint NOT NULL DEFAULT '0' COMMENT '删除标识字段(0-未删除 1-已删除)',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最新修改时间',
-  PRIMARY KEY (`cart_item_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=69 DEFAULT CHARSET=utf8mb3 ROW_FORMAT=DYNAMIC;
+DROP TABLE IF EXISTS `study_java_sys_data_dictionary`;
+CREATE TABLE `study_java_sys_data_dictionary` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `dict_type` varchar(50) NOT NULL COMMENT '字典类型',
+  `dict_code` varchar(50) NOT NULL COMMENT '字典编码',
+  `dict_name` varchar(100) NOT NULL COMMENT '字典名称',
+  `dict_value` varchar(100) NOT NULL COMMENT '字典值',
+  `sort_order` int DEFAULT '0' COMMENT '排序号',
+  `status` tinyint DEFAULT '1' COMMENT '状态（0-禁用，1-启用）',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `created_by` varchar(50) DEFAULT NULL COMMENT '创建人',
+  `created_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_by` varchar(50) DEFAULT NULL COMMENT '更新人',
+  `updated_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_dict_type_code` (`dict_type`,`dict_code`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='数据字典表';
 
 -- ----------------------------
--- Records of study_java_shopping_cart_item
+-- Records of study_java_sys_data_dictionary
 -- ----------------------------
 BEGIN;
+INSERT INTO `study_java_sys_data_dictionary` (`id`, `dict_type`, `dict_code`, `dict_name`, `dict_value`, `sort_order`, `status`, `remark`, `created_by`, `created_time`, `updated_by`, `updated_time`) VALUES (1, '1', '1', '1', '1', 0, 1, '1', NULL, '2025-05-25 14:24:24', '13700002703', '2025-05-25 15:26:20');
+INSERT INTO `study_java_sys_data_dictionary` (`id`, `dict_type`, `dict_code`, `dict_name`, `dict_value`, `sort_order`, `status`, `remark`, `created_by`, `created_time`, `updated_by`, `updated_time`) VALUES (2, '2', '2', '2', '2', 0, 1, '2', '13700002703', '2025-05-25 15:26:26', '13700002703', '2025-05-25 15:26:26');
 COMMIT;
 
 -- ----------------------------
@@ -970,8 +809,8 @@ CREATE TABLE `study_java_sys_menu` (
 BEGIN;
 INSERT INTO `study_java_sys_menu` (`id`, `parent_id`, `menu_name`, `path`, `component`, `icon`, `menu_type`, `perms`, `order_num`, `create_time`, `update_time`, `is_deleted`) VALUES (1, NULL, 'deepseek', '/deepseek', 'components/layout/index.vue', 'Brain', 0, '', 0, '2025-05-20 17:43:59', '2025-06-23 22:35:06', 0);
 INSERT INTO `study_java_sys_menu` (`id`, `parent_id`, `menu_name`, `path`, `component`, `icon`, `menu_type`, `perms`, `order_num`, `create_time`, `update_time`, `is_deleted`) VALUES (3, 1, '模型列表', '/deepseek/models', 'views/deepseek/models/index.vue', 'Brain', 1, '', 0, '2025-05-20 23:53:34', '2025-06-23 22:38:04', 0);
-INSERT INTO `study_java_sys_menu` (`id`, `parent_id`, `menu_name`, `path`, `component`, `icon`, `menu_type`, `perms`, `order_num`, `create_time`, `update_time`, `is_deleted`) VALUES (5, NULL, '商品', '/goods-category', 'components/layout/index.vue', 'Commodity', 0, '', 0, '2025-06-23 18:27:05', '2025-06-23 18:27:05', 0);
-INSERT INTO `study_java_sys_menu` (`id`, `parent_id`, `menu_name`, `path`, `component`, `icon`, `menu_type`, `perms`, `order_num`, `create_time`, `update_time`, `is_deleted`) VALUES (6, 5, '商品列表', '/goods-category/list', 'views/goods-category/list.vue', 'ListView', 1, '', 0, '2025-06-23 18:28:41', '2025-06-23 18:28:41', 0);
+INSERT INTO `study_java_sys_menu` (`id`, `parent_id`, `menu_name`, `path`, `component`, `icon`, `menu_type`, `perms`, `order_num`, `create_time`, `update_time`, `is_deleted`) VALUES (5, NULL, '商品', '/goods', 'components/layout/index.vue', 'Commodity', 0, '', 0, '2025-06-23 18:27:05', '2025-06-26 21:16:55', 0);
+INSERT INTO `study_java_sys_menu` (`id`, `parent_id`, `menu_name`, `path`, `component`, `icon`, `menu_type`, `perms`, `order_num`, `create_time`, `update_time`, `is_deleted`) VALUES (6, 5, '商品列表', '/goods/list', 'views/goods/index.vue', 'ListView', 1, '', 0, '2025-06-23 18:28:41', '2025-06-26 21:17:12', 0);
 INSERT INTO `study_java_sys_menu` (`id`, `parent_id`, `menu_name`, `path`, `component`, `icon`, `menu_type`, `perms`, `order_num`, `create_time`, `update_time`, `is_deleted`) VALUES (7, NULL, 'Ollama', '/ollama', 'components/layout/index.vue', 'Brain', 0, '', 0, '2025-06-23 18:41:56', '2025-06-23 18:41:56', 0);
 INSERT INTO `study_java_sys_menu` (`id`, `parent_id`, `menu_name`, `path`, `component`, `icon`, `menu_type`, `perms`, `order_num`, `create_time`, `update_time`, `is_deleted`) VALUES (8, 7, '模型列表', '/ollama/models', 'views/ollama/models/index.vue', 'ListView', 1, '', 0, '2025-06-23 18:44:11', '2025-06-23 18:44:11', 0);
 INSERT INTO `study_java_sys_menu` (`id`, `parent_id`, `menu_name`, `path`, `component`, `icon`, `menu_type`, `perms`, `order_num`, `create_time`, `update_time`, `is_deleted`) VALUES (9, NULL, '文件上传', '/upload', 'components/layout/index.vue', 'InboxUploadR', 0, '', 0, '2025-06-23 18:47:42', '2025-06-23 18:47:42', 0);
@@ -997,14 +836,15 @@ CREATE TABLE `study_java_sys_role` (
   `update_by` varchar(64) DEFAULT '' COMMENT '更新者',
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
   `del_flag` tinyint NOT NULL DEFAULT '0' COMMENT '删除标志（0代表存在 1代表删除）',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `idx_role_code` (`role_code`)
 ) ENGINE=InnoDB AUTO_INCREMENT=105 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='角色信息表';
 
 -- ----------------------------
 -- Records of study_java_sys_role
 -- ----------------------------
 BEGIN;
-INSERT INTO `study_java_sys_role` (`id`, `role_name`, `role_code`, `role_sort`, `status`, `remark`, `create_by`, `create_time`, `update_by`, `update_time`, `del_flag`) VALUES (100, '超级管理员', 'SUPER_ADMIN', 1, 1, '系统超级管理员，拥有所有权限', 'admin', '2025-06-18 02:36:46', 'admin', '2025-06-18 02:36:46', 0);
+INSERT INTO `study_java_sys_role` (`id`, `role_name`, `role_code`, `role_sort`, `status`, `remark`, `create_by`, `create_time`, `update_by`, `update_time`, `del_flag`) VALUES (100, '超级管理员', 'SUPER_ADMIN', 1, 1, '系统超级管理员，拥有所有权限', 'admin', '2025-06-18 02:36:46', '13700002703', '2025-06-25 22:15:37', 0);
 INSERT INTO `study_java_sys_role` (`id`, `role_name`, `role_code`, `role_sort`, `status`, `remark`, `create_by`, `create_time`, `update_by`, `update_time`, `del_flag`) VALUES (101, '管理员', 'ADMIN', 2, 1, '系统管理员，拥有大部分权限', 'admin', '2025-06-18 02:36:46', 'admin', '2025-06-18 02:36:46', 0);
 INSERT INTO `study_java_sys_role` (`id`, `role_name`, `role_code`, `role_sort`, `status`, `remark`, `create_by`, `create_time`, `update_by`, `update_time`, `del_flag`) VALUES (102, '普通用户', 'USER', 3, 1, '普通用户，拥有基本权限', 'admin', '2025-06-18 02:36:46', 'admin', '2025-06-18 02:36:46', 0);
 INSERT INTO `study_java_sys_role` (`id`, `role_name`, `role_code`, `role_sort`, `status`, `remark`, `create_by`, `create_time`, `update_by`, `update_time`, `del_flag`) VALUES (103, '访客', 'GUEST', 4, 1, '访客用户，拥有查看权限', 'admin', '2025-06-18 02:36:46', 'admin', '2025-06-18 02:36:46', 0);
@@ -1023,18 +863,20 @@ CREATE TABLE `study_java_sys_role_menus` (
   UNIQUE KEY `uk_role_menu` (`role_id`,`menu_id`) COMMENT '角色菜单唯一约束',
   KEY `idx_role_id` (`role_id`) COMMENT '角色ID索引',
   KEY `idx_menu_id` (`menu_id`) COMMENT '菜单ID索引'
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='角色菜单关联表';
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='角色菜单关联表';
 
 -- ----------------------------
 -- Records of study_java_sys_role_menus
 -- ----------------------------
 BEGIN;
-INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (19, 100, 1);
-INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (20, 100, 3);
-INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (22, 100, 7);
-INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (23, 100, 8);
-INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (21, 100, 12);
-INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (24, 100, 13);
+INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (25, 100, 1);
+INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (26, 100, 3);
+INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (28, 100, 5);
+INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (29, 100, 6);
+INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (30, 100, 7);
+INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (31, 100, 8);
+INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (27, 100, 12);
+INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (32, 100, 13);
 INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (8, 101, 5);
 INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (9, 101, 6);
 COMMIT;
