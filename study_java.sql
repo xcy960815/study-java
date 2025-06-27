@@ -1,7 +1,7 @@
 /*
- Navicat Premium Data Transfer
+ Navicat Premium Dump SQL
 
- Source Server         : study-java-mysql-local
+ Source Server         : study-java-local
  Source Server Type    : MySQL
  Source Server Version : 80402 (8.4.2)
  Source Host           : localhost:3308
@@ -11,36 +11,11 @@
  Target Server Version : 80402 (8.4.2)
  File Encoding         : 65001
 
- Date: 26/06/2025 23:07:34
+ Date: 27/06/2025 16:11:20
 */
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
-
--- ----------------------------
--- Table structure for study_java_carousel
--- ----------------------------
-DROP TABLE IF EXISTS `study_java_carousel`;
-CREATE TABLE `study_java_carousel` (
-  `carousel_id` int NOT NULL AUTO_INCREMENT COMMENT '首页轮播图主键id',
-  `carousel_url` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT '' COMMENT '轮播图',
-  `redirect_url` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT '''##''' COMMENT '点击后的跳转地址(默认不跳转)',
-  `carousel_rank` int NOT NULL DEFAULT '0' COMMENT '排序值(字段越大越靠前)',
-  `is_deleted` tinyint NOT NULL DEFAULT '0' COMMENT '删除标识字段(0-未删除 1-已删除)',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `create_user` int NOT NULL DEFAULT '0' COMMENT '创建者id',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
-  `update_user` int NOT NULL DEFAULT '0' COMMENT '修改者id',
-  PRIMARY KEY (`carousel_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb3 ROW_FORMAT=DYNAMIC;
-
--- ----------------------------
--- Records of study_java_carousel
--- ----------------------------
-BEGIN;
-INSERT INTO `study_java_carousel` (`carousel_id`, `carousel_url`, `redirect_url`, `carousel_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (2, 'https://newbee-mall.oss-cn-beijing.aliyuncs.com/images/banner1.png', 'https://juejin.im/book/5da2f9d4f265da5b81794d48/section/5da2f9d6f265da5b794f2189', 13, 0, '2019-11-29 00:00:00', 0, '2019-11-29 00:00:00', 0);
-INSERT INTO `study_java_carousel` (`carousel_id`, `carousel_url`, `redirect_url`, `carousel_rank`, `is_deleted`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES (5, 'https://newbee-mall.oss-cn-beijing.aliyuncs.com/images/banner2.png', 'https://juejin.im/book/5da2f9d4f265da5b81794d48/section/5da2f9d6f265da5b794f2189', 0, 0, '2019-11-29 00:00:00', 0, '2019-11-29 00:00:00', 0);
-COMMIT;
 
 -- ----------------------------
 -- Table structure for study_java_goods_info
@@ -835,7 +810,7 @@ CREATE TABLE `study_java_sys_role` (
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
   `update_by` varchar(64) DEFAULT '' COMMENT '更新者',
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
-  `del_flag` tinyint NOT NULL DEFAULT '0' COMMENT '删除标志（0代表存在 1代表删除）',
+  `is_deleted` tinyint NOT NULL DEFAULT '0' COMMENT '删除标志（0代表存在 1代表删除）',
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_role_code` (`role_code`)
 ) ENGINE=InnoDB AUTO_INCREMENT=105 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='角色信息表';
@@ -844,11 +819,11 @@ CREATE TABLE `study_java_sys_role` (
 -- Records of study_java_sys_role
 -- ----------------------------
 BEGIN;
-INSERT INTO `study_java_sys_role` (`id`, `role_name`, `role_code`, `role_sort`, `status`, `remark`, `create_by`, `create_time`, `update_by`, `update_time`, `del_flag`) VALUES (100, '超级管理员', 'SUPER_ADMIN', 1, 1, '系统超级管理员，拥有所有权限', 'admin', '2025-06-18 02:36:46', '13700002703', '2025-06-25 22:15:37', 0);
-INSERT INTO `study_java_sys_role` (`id`, `role_name`, `role_code`, `role_sort`, `status`, `remark`, `create_by`, `create_time`, `update_by`, `update_time`, `del_flag`) VALUES (101, '管理员', 'ADMIN', 2, 1, '系统管理员，拥有大部分权限', 'admin', '2025-06-18 02:36:46', 'admin', '2025-06-18 02:36:46', 0);
-INSERT INTO `study_java_sys_role` (`id`, `role_name`, `role_code`, `role_sort`, `status`, `remark`, `create_by`, `create_time`, `update_by`, `update_time`, `del_flag`) VALUES (102, '普通用户', 'USER', 3, 1, '普通用户，拥有基本权限', 'admin', '2025-06-18 02:36:46', 'admin', '2025-06-18 02:36:46', 0);
-INSERT INTO `study_java_sys_role` (`id`, `role_name`, `role_code`, `role_sort`, `status`, `remark`, `create_by`, `create_time`, `update_by`, `update_time`, `del_flag`) VALUES (103, '访客', 'GUEST', 4, 1, '访客用户，拥有查看权限', 'admin', '2025-06-18 02:36:46', 'admin', '2025-06-18 02:36:46', 0);
-INSERT INTO `study_java_sys_role` (`id`, `role_name`, `role_code`, `role_sort`, `status`, `remark`, `create_by`, `create_time`, `update_by`, `update_time`, `del_flag`) VALUES (104, '测试角色', 'TEST', 5, 1, '用于测试的角色', 'admin', '2025-06-18 02:36:46', 'admin', '2025-06-18 02:36:46', 1);
+INSERT INTO `study_java_sys_role` (`id`, `role_name`, `role_code`, `role_sort`, `status`, `remark`, `create_by`, `create_time`, `update_by`, `update_time`, `is_deleted`) VALUES (100, '超级管理员', 'SUPER_ADMIN', 1, 0, '系统超级管理员，拥有所有权限', 'admin', '2025-06-18 02:36:46', '13700002703', '2025-06-27 16:04:44', 0);
+INSERT INTO `study_java_sys_role` (`id`, `role_name`, `role_code`, `role_sort`, `status`, `remark`, `create_by`, `create_time`, `update_by`, `update_time`, `is_deleted`) VALUES (101, '管理员', 'ADMIN', 2, 1, '系统管理员，拥有大部分权限', 'admin', '2025-06-18 02:36:46', 'admin', '2025-06-18 02:36:46', 0);
+INSERT INTO `study_java_sys_role` (`id`, `role_name`, `role_code`, `role_sort`, `status`, `remark`, `create_by`, `create_time`, `update_by`, `update_time`, `is_deleted`) VALUES (102, '普通用户', 'USER', 3, 1, '普通用户，拥有基本权限', 'admin', '2025-06-18 02:36:46', 'admin', '2025-06-18 02:36:46', 0);
+INSERT INTO `study_java_sys_role` (`id`, `role_name`, `role_code`, `role_sort`, `status`, `remark`, `create_by`, `create_time`, `update_by`, `update_time`, `is_deleted`) VALUES (103, '访客', 'GUEST', 4, 1, '访客用户，拥有查看权限', 'admin', '2025-06-18 02:36:46', 'admin', '2025-06-18 02:36:46', 0);
+INSERT INTO `study_java_sys_role` (`id`, `role_name`, `role_code`, `role_sort`, `status`, `remark`, `create_by`, `create_time`, `update_by`, `update_time`, `is_deleted`) VALUES (104, '测试角色', 'TEST', 5, 1, '用于测试的角色', 'admin', '2025-06-18 02:36:46', 'admin', '2025-06-18 02:36:46', 1);
 COMMIT;
 
 -- ----------------------------
@@ -863,20 +838,18 @@ CREATE TABLE `study_java_sys_role_menus` (
   UNIQUE KEY `uk_role_menu` (`role_id`,`menu_id`) COMMENT '角色菜单唯一约束',
   KEY `idx_role_id` (`role_id`) COMMENT '角色ID索引',
   KEY `idx_menu_id` (`menu_id`) COMMENT '菜单ID索引'
-) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='角色菜单关联表';
+) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='角色菜单关联表';
 
 -- ----------------------------
 -- Records of study_java_sys_role_menus
 -- ----------------------------
 BEGIN;
-INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (25, 100, 1);
-INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (26, 100, 3);
-INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (28, 100, 5);
-INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (29, 100, 6);
-INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (30, 100, 7);
-INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (31, 100, 8);
-INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (27, 100, 12);
-INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (32, 100, 13);
+INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (33, 100, 1);
+INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (34, 100, 3);
+INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (36, 100, 7);
+INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (37, 100, 8);
+INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (35, 100, 12);
+INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (38, 100, 13);
 INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (8, 101, 5);
 INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (9, 101, 6);
 COMMIT;
@@ -924,13 +897,14 @@ CREATE TABLE `study_java_sys_user_roles` (
   UNIQUE KEY `uk_user_role` (`user_id`,`role_id`) COMMENT '用户角色唯一约束',
   KEY `idx_user_id` (`user_id`) COMMENT '用户ID索引',
   KEY `idx_role_id` (`role_id`) COMMENT '角色ID索引'
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户角色关联表';
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户角色关联表';
 
 -- ----------------------------
 -- Records of study_java_sys_user_roles
 -- ----------------------------
 BEGIN;
-INSERT INTO `study_java_sys_user_roles` (`id`, `user_id`, `role_id`) VALUES (3, 1, 100);
+INSERT INTO `study_java_sys_user_roles` (`id`, `user_id`, `role_id`) VALUES (5, 1, 100);
+INSERT INTO `study_java_sys_user_roles` (`id`, `user_id`, `role_id`) VALUES (6, 1, 101);
 INSERT INTO `study_java_sys_user_roles` (`id`, `user_id`, `role_id`) VALUES (4, 8, 101);
 COMMIT;
 

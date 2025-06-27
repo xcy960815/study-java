@@ -20,7 +20,11 @@ public interface StudyJavaSysMenuService {
      * @return
      */
     IPage<StudyJavaSysMenuVo> getMenuList (Page<StudyJavaSysMenuDto> page, StudyJavaSysMenuDto studyJavaSysMenuDto);
-    //    List<StudyJavaSysMenuVo> getAllMenus();
+
+    /**
+     * 获取所有菜单列表
+     * @return
+     */
     List<StudyJavaSysMenuVo> getAllMenuList();
     /**
      * 通过主键查询单条数据

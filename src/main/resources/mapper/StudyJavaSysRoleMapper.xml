@@ -4,12 +4,12 @@
 
     <sql id="Base_Column_List">
         id, role_name, role_code, role_sort, status, remark,
-        create_by, create_time, update_by, update_time, del_flag
+        create_by, create_time, update_by, update_time, is_deleted
     </sql>
 
     <sql id="Base_Where_Clause">
         <where>
-            del_flag = 0
+            is_deleted = 0
             <if test="studyJavaSysRoleDao.roleName != null and studyJavaSysRoleDao.roleName != ''">
                 AND role_name LIKE CONCAT('%', #{studyJavaSysRoleDao.roleName}, '%')
             </if>
@@ -33,7 +33,7 @@
         <result property="createTime" column="create_time"/>
         <result property="updateBy" column="update_by"/>
         <result property="updateTime" column="update_time"/>
-        <result property="delFlag" column="del_flag"/>
+        <result property="isDeleted" column="is_deleted"/>
         <result property="menuIds" column="ids" typeHandler="com.example.typehandler.LongListTypeHandler"/>
         <result property="menuNames" column="menu_names" typeHandler="com.example.typehandler.StringListTypeHandler"/>
     </resultMap>
@@ -41,22 +41,22 @@
     <select id="getRoleList" resultMap="RoleWithMenuResultMap">
         SELECT
         r1.id, r1.role_name, r1.role_code, r1.role_sort, r1.status, r1.remark,
-        r1.create_by, r1.create_time, r1.update_by, r1.update_time, r1.del_flag,
+        r1.create_by, r1.create_time, r1.update_by, r1.update_time, r1.is_deleted,
         GROUP_CONCAT(DISTINCT r3.id) AS ids,
         GROUP_CONCAT(DISTINCT r3.menu_name) AS menu_names
         FROM study_java_sys_role r1
         LEFT JOIN study_java_sys_role_menus m ON r1.id = m.role_id
         LEFT JOIN study_java_sys_menu r3 ON r3.id = m.menu_id
         <where>
-            del_flag = 0
+            r1.is_deleted = 0
             <if test="studyJavaSysRoleDao != null and studyJavaSysRoleDao.roleName != null and studyJavaSysRoleDao.roleName != ''">
-                AND role_name LIKE CONCAT('%', #{studyJavaSysRoleDao.roleName},'%')
+                AND r1.role_name LIKE CONCAT('%', #{studyJavaSysRoleDao.roleName},'%')
             </if>
             <if test="studyJavaSysRoleDao != null and studyJavaSysRoleDao.roleCode != null and studyJavaSysRoleDao.roleCode != ''">
-                AND role_code = #{studyJavaSysRoleDao.roleCode}
+                AND r1.role_code = #{studyJavaSysRoleDao.roleCode}
             </if>
             <if test="studyJavaSysRoleDao != null and studyJavaSysRoleDao.status != null">
-                AND status = #{studyJavaSysRoleDao.status}
+                AND r1.status = #{studyJavaSysRoleDao.status}
             </if>
         </where>
         GROUP BY r1.id
@@ -66,20 +66,20 @@
     <select id="getAllRoleList" resultType="com.example.domain.dao.StudyJavaSysRoleDao">
         SELECT
             r1.id, r1.role_name, r1.role_code, r1.role_sort, r1.status, r1.remark,
-            r1.create_by, r1.create_time, r1.update_by, r1.update_time, r1.del_flag
+            r1.create_by, r1.create_time, r1.update_by, r1.update_time, r1.is_deleted
         FROM study_java_sys_role r1
         <!-- LEFT JOIN study_java_sys_user_roles r2 ON r2.id = r1.id
         LEFT JOIN study_java_sys_user u ON r2.user_id = u.id -->
-        WHERE r1.del_flag = 0
+        WHERE r1.is_deleted = 0
         ORDER BY r1.role_sort ASC
     </select>
 
     <!-- 创建角色 -->
     <insert id="insertRole" parameterType="com.example.domain.dao.StudyJavaSysRoleDao">
         INSERT INTO study_java_sys_role
-        (role_name, role_code, role_sort, status, remark, create_by, create_time, update_by, update_time, del_flag)
+        (role_name, role_code, role_sort, status, remark, create_by, create_time, update_by, update_time, is_deleted)
         VALUES
-        (#{studyJavaSysRoleDao.roleName}, #{studyJavaSysRoleDao.roleCode}, #{studyJavaSysRoleDao.roleSort}, #{studyJavaSysRoleDao.status}, #{studyJavaSysRoleDao.remark}, #{studyJavaSysRoleDao.createBy}, #{studyJavaSysRoleDao.createTime}, #{studyJavaSysRoleDao.updateBy}, #{studyJavaSysRoleDao.updateTime}, #{studyJavaSysRoleDao.delFlag})
+        (#{studyJavaSysRoleDao.roleName}, #{studyJavaSysRoleDao.roleCode}, #{studyJavaSysRoleDao.roleSort}, #{studyJavaSysRoleDao.status}, #{studyJavaSysRoleDao.remark}, #{studyJavaSysRoleDao.createBy}, #{studyJavaSysRoleDao.createTime}, #{studyJavaSysRoleDao.updateBy}, #{studyJavaSysRoleDao.updateTime}, #{studyJavaSysRoleDao.isDeleted})
     </insert>
     <!-- 更新角色 -->
     <update id="updateRole" parameterType="com.example.domain.dao.StudyJavaSysRoleDao">
@@ -113,7 +113,7 @@
     <!-- 删除角色-->
     <update id="deleteRole" parameterType="long">
         UPDATE study_java_sys_role
-        SET del_flag = 1
+        SET is_deleted = 1
         WHERE id = #{roleId}
     </update>
 
@@ -123,7 +123,7 @@
         SELECT
         <include refid="Base_Column_List"/>
         FROM study_java_sys_role
-        WHERE del_flag = 0
+        WHERE is_deleted = 0
         <if test="studyJavaSysRoleDao != null">
             <if test="studyJavaSysRoleDao.roleCode != null and studyJavaSysRoleDao.roleCode != ''">
                 AND role_code = #{studyJavaSysRoleDao.roleCode}

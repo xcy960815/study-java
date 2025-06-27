@@ -30,7 +30,14 @@
         `is_deleted`,`create_time`,`update_time`
     </sql>
 
-    <select id="selectOrder" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    <select id="getOrderList" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM
+        study_java_order
+    </select>
+
+    <select id="getOrderInfo" parameterType="java.lang.Long" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List" />
         from study_java_order

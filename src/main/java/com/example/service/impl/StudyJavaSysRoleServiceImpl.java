@@ -85,7 +85,7 @@ public class StudyJavaSysRoleServiceImpl implements StudyJavaSysRoleService {
         studyJavaSysRoleDao.setUpdateTime(LocalDateTime.now());
         studyJavaSysRoleDao.setCreateBy(studyJavaSysUserVo.getLoginName());
         studyJavaSysRoleDao.setUpdateBy(studyJavaSysUserVo.getLoginName());
-        studyJavaSysRoleDao.setDelFlag(0);
+        studyJavaSysRoleDao.setIsDeleted(0);
         return studyJavaSysRoleMapper.insertRole(studyJavaSysRoleDao) > 0;
     }
 

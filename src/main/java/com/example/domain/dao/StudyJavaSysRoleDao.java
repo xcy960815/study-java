@@ -31,7 +31,7 @@ public class StudyJavaSysRoleDao {
 
     private LocalDateTime updateTime;
 
-    private Integer delFlag;
+    private Integer isDeleted;
 
     private java.util.List<Long> menuIds;
     private java.util.List<String> menuNames;
