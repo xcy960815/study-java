@@ -1,7 +1,7 @@
 package com.example.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.domain.dao.StudyJavaSysUserDao;
 import com.example.domain.dto.StudyJavaLoginDto;
 import com.example.domain.dto.StudyJavaSysUserDto;
 import com.example.domain.vo.StudyJavaSysUserVo;
@@ -14,7 +14,8 @@ public interface StudyJavaSysUserService {
     * 查询所有用户
     * @return IPage<StudyJavaSysUserDto>
     */
-    IPage<StudyJavaSysUserVo> getUserList(Page<StudyJavaSysUserDto> page, StudyJavaSysUserDto userQueryData);
+//    IPage<StudyJavaSysUserVo> getUserList(Page<StudyJavaSysUserDao> page, StudyJavaSysUserDto userQueryData);
+    IPage<StudyJavaSysUserVo> getUserList(IPage<StudyJavaSysUserDao> page, StudyJavaSysUserDto studyJavaSysUserDto);
 
     /**
      * 更新用户

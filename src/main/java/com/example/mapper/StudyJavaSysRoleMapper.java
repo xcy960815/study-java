@@ -12,7 +12,7 @@ public interface StudyJavaSysRoleMapper {
     /**
      * 分页查询角色列表
      */
-    IPage<StudyJavaSysRoleDao> getRoleList(IPage<StudyJavaSysRoleDao> page, @Param("studyJavaSysRoleDao") StudyJavaSysRoleDao studyJavaSysRoleDao);
+    IPage<StudyJavaSysRoleDao> getRoleList(@Param("page")  IPage<StudyJavaSysRoleDao> page, @Param("studyJavaSysRoleDao") StudyJavaSysRoleDao studyJavaSysRoleDao);
 
     /**
      * 查询所有角色列表

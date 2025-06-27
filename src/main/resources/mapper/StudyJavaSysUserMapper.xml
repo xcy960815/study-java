@@ -17,7 +17,7 @@
     </resultMap>
 
     <!-- 用户和角色联合查询的resultMap -->
-    <resultMap id="UserWithRoleResultMap" type="com.example.domain.vo.StudyJavaSysUserVo">
+    <resultMap id="UserWithRoleResultMap" type="com.example.domain.dao.StudyJavaSysUserDao">
         <id property="id" column="id" jdbcType="BIGINT"/>
         <result property="roleIds" column="role_ids" jdbcType="VARCHAR" typeHandler="com.example.typehandler.LongListTypeHandler"/>
         <result property="roleNames" column="role_names" jdbcType="VARCHAR" typeHandler="com.example.typehandler.StringListTypeHandler"/>
@@ -41,7 +41,7 @@
     </sql>
 
     <!--  根据条件查询所有的用户  -->
-    <select id="getUserList" resultMap="UserWithRoleResultMap" resultType="com.example.domain.vo.StudyJavaSysUserVo">
+    <select id="getUserList" resultMap="UserWithRoleResultMap">
         SELECT
         u.id,
         GROUP_CONCAT(DISTINCT r2.id) AS role_ids,

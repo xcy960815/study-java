@@ -1,6 +1,7 @@
 package com.example.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.domain.dto.StudyJavaOrderDto;
 import com.example.domain.vo.StudyJavaOrderVo;
 import com.example.service.StudyJavaOrderService;
@@ -11,6 +12,9 @@ import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
@@ -55,23 +59,9 @@ public class StudyJavaOrderController extends BaseController {
             @RequestParam(defaultValue = "1") Integer pageNum,
             @RequestParam(defaultValue = "10") Integer pageSize,
             @ModelAttribute StudyJavaOrderDto studyJavaOrderDto
-            ) {
-
-        IPage<StudyJavaOrderVo> orderVoPage = studyJavaOrderService.getOrderList(startPage(pageNum,pageSize),studyJavaOrderDto);
-
-//        // 转换为VO
-//        Page<StudyJavaOrderVo> orderVoPage = new Page<>(orderDaoPage.getCurrent(), orderDaoPage.getSize(), orderDaoPage.getTotal());
-//        List<StudyJavaOrderVo> orderVoList = new ArrayList<>();
-//
-//        for (StudyJavaOrderDao orderDao : orderDaoPage.getRecords()) {
-//            StudyJavaOrderVo orderVo = new StudyJavaOrderVo();
-//            BeanUtils.copyProperties(orderDao, orderVo);
-//            orderVoList.add(orderVo);
-//        }
-//
-//        orderVoPage.setRecords(orderVoList);
-//        return ResponseGenerator.generateSuccessResult(orderVoPage);
-        return null;
+    ) {
+        IPage<StudyJavaOrderVo> orderVoPage = studyJavaOrderService.getOrderList(startPage(pageNum, pageSize), studyJavaOrderDto);
+        return ResponseGenerator.generateListResult(orderVoPage.getRecords(), orderVoPage.getTotal());
     }
 
     /**

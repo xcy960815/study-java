@@ -2,6 +2,7 @@ package com.example.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.domain.dao.StudyJavaSysMenuDao;
 import com.example.domain.dto.StudyJavaSysMenuDto;
 import com.example.domain.vo.StudyJavaSysMenuVo;
 import java.io.Serializable;
@@ -15,11 +16,11 @@ import java.util.List;
 public interface StudyJavaSysMenuService {
     /**
      * 获取菜单列表
-     * @param page
+     * @param page IPage<StudyJavaSysMenuDao>
      * @param studyJavaSysMenuDto
      * @return
      */
-    IPage<StudyJavaSysMenuVo> getMenuList (Page<StudyJavaSysMenuDto> page, StudyJavaSysMenuDto studyJavaSysMenuDto);
+    IPage<StudyJavaSysMenuVo> getMenuList (IPage<StudyJavaSysMenuDao> page, StudyJavaSysMenuDto studyJavaSysMenuDto);
 
     /**
      * 获取所有菜单列表

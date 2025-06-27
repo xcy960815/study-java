@@ -1,9 +1,8 @@
 package com.example.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.domain.dto.StudyJavaOrderDto;
-import com.example.domain.dto.StudyJavaSysUserDto;
+import com.example.domain.dao.StudyJavaOrderDao;
 import com.example.domain.vo.StudyJavaOrderVo;
 
 /**
@@ -18,5 +17,5 @@ public interface StudyJavaOrderService {
      * @param studyJavaOrderDto StudyJavaOrderDto
      * @return IPage<StudyJavaOrderVo>
      */
-    IPage<StudyJavaOrderVo> getOrderList(Page<StudyJavaSysUserDto> page, StudyJavaOrderDto studyJavaOrderDto);
+    IPage<StudyJavaOrderVo> getOrderList(IPage<StudyJavaOrderDao> page, StudyJavaOrderDto studyJavaOrderDto);
 }

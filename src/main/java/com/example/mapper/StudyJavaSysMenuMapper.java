@@ -24,7 +24,7 @@ public interface StudyJavaSysMenuMapper extends BaseMapper<StudyJavaSysMenuDao> 
      * @param studyJavaSysMenuDao StudyJavaSysMenuDao
      * @return IPage<StudyJavaSysMenuDao>
      */
-    IPage<StudyJavaSysMenuDao>getMenuList(Page<StudyJavaSysMenuDao> page, @Param("studyJavaSysMenuDao") StudyJavaSysMenuDao studyJavaSysMenuDao);
+    IPage<StudyJavaSysMenuDao>getMenuList(@Param("page")  IPage<StudyJavaSysMenuDao> page, @Param("studyJavaSysMenuDao") StudyJavaSysMenuDao studyJavaSysMenuDao);
 
     /**
      * 获取所有菜单树
@@ -35,10 +35,10 @@ public interface StudyJavaSysMenuMapper extends BaseMapper<StudyJavaSysMenuDao> 
     /**
      * 通过主键查询单条数据
      *
-     * @param id 主键
+     * @param studyJavaSysMenuDao StudyJavaSysMenuDao
      * @return 单条数据
      */
-    StudyJavaSysMenuDao getMenuInfo(@Param("id") Serializable id);
+    StudyJavaSysMenuDao getMenuInfo(@Param("studyJavaSysMenuDao") StudyJavaSysMenuDao studyJavaSysMenuDao);
 
     /**
      * 获取当前用户所拥有的菜单

@@ -61,13 +61,16 @@ public class StudyJavaSysUserDao implements Serializable {
 
     private Date createTime;
 
-
     /**
      * 头像
      */
     private String avatar;
 
     private List<Long> roleIds;
+
+    private List<String> roleNames;
+
+    private  List<String> roleCodes;
 
     @Serial
     private static final long serialVersionUID = 1L;

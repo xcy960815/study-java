@@ -34,9 +34,9 @@ public class StudyJavaSysUserController extends BaseController {
     public ResponseListResult<StudyJavaSysUserVo> getUserList(
         @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
         @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
-        @RequestBody StudyJavaSysUserDto studyJavaUser
+        @RequestBody StudyJavaSysUserDto studyJavaSysUserDto
     ) {
-        IPage<StudyJavaSysUserVo> userVoPage = studyJavaSysUserService.getUserList(startPage(pageNum, pageSize), studyJavaUser);
+        IPage<StudyJavaSysUserVo> userVoPage = studyJavaSysUserService.getUserList(startPage(pageNum, pageSize), studyJavaSysUserDto);
         return ResponseGenerator.generateListResult(userVoPage.getRecords(),userVoPage.getTotal());
     }
 

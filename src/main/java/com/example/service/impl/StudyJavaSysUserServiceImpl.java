@@ -29,6 +29,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Base64;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -41,6 +43,9 @@ public class StudyJavaSysUserServiceImpl implements StudyJavaSysUserService {
     @Resource
     private JwtTokenComponent jwtTokenComponent;
 
+    /**
+     * Dto转Dao
+     */
     private StudyJavaSysUserDao makeDto2Dao(StudyJavaSysUserDto studyJavaSysUserDto){
         StudyJavaSysUserDao studyJavaSysUserDao = new StudyJavaSysUserDao();
         BeanUtils.copyProperties(studyJavaSysUserDto, studyJavaSysUserDao);
@@ -54,11 +59,34 @@ public class StudyJavaSysUserServiceImpl implements StudyJavaSysUserService {
     }
 
     /**
+     * Dao转Vo
+     */
+    private StudyJavaSysUserVo makeDao2Vo(StudyJavaSysUserDao studyJavaSysUserDao){
+        StudyJavaSysUserVo studyJavaSysUserVo = new StudyJavaSysUserVo();
+        BeanUtils.copyProperties(studyJavaSysUserDao, studyJavaSysUserVo);
+        return studyJavaSysUserVo;
+    }
+
+    /**
      * 查询所有用户
      */
     @Override
-    public IPage<StudyJavaSysUserVo> getUserList(Page<StudyJavaSysUserDto> page, StudyJavaSysUserDto studyJavaSysUserDto) {
-        return studyJavaSysUserMapper.getUserList(page, makeDto2Dao(studyJavaSysUserDto));
+    public IPage<StudyJavaSysUserVo> getUserList(IPage<StudyJavaSysUserDao> page, StudyJavaSysUserDto studyJavaSysUserDto) {
+        IPage<StudyJavaSysUserDao> daoPage = studyJavaSysUserMapper.getUserList(page, makeDto2Dao(studyJavaSysUserDto));
+        List<StudyJavaSysUserVo> voList = daoPage.getRecords().stream()
+            .map(this::convertToVo)
+            .collect(Collectors.toList());
+        IPage<StudyJavaSysUserVo> voPage = new Page<>(daoPage.getCurrent(), daoPage.getSize(), daoPage.getTotal());
+        voPage.setRecords(voList);
+        return voPage;
+    }
+
+    // Dao转Vo方法
+    private StudyJavaSysUserVo convertToVo(StudyJavaSysUserDao dao) {
+        if (dao == null) return null;
+        StudyJavaSysUserVo vo = new StudyJavaSysUserVo();
+        BeanUtils.copyProperties(dao, vo);
+        return vo;
     }
 
     @Override
@@ -162,7 +190,7 @@ public class StudyJavaSysUserServiceImpl implements StudyJavaSysUserService {
         StudyJavaSysUserDto studyJavaSysUserDto = new StudyJavaSysUserDto();
         studyJavaSysUserDto.setId(userId);
         studyJavaSysUserDto.setLoginName(loginName);
-       return studyJavaSysUserMapper.getUserInfo(makeDto2Dao(studyJavaSysUserDto));
+       return makeDao2Vo(studyJavaSysUserMapper.getUserInfo(makeDto2Dao(studyJavaSysUserDto)));
     }
 
     @Override
@@ -172,7 +200,7 @@ public class StudyJavaSysUserServiceImpl implements StudyJavaSysUserService {
         StudyJavaSysUserDto studyJavaSysUserDto = new StudyJavaSysUserDto();
 //        studyJavaSysUserDto.setPasswordMd5(passwordMd5);
         studyJavaSysUserDto.setLoginName(loginName);
-        return studyJavaSysUserMapper.getUserInfo(makeDto2Dao(studyJavaSysUserDto));
+        return makeDao2Vo(studyJavaSysUserMapper.getUserInfo(makeDto2Dao(studyJavaSysUserDto)));
     }
 
     /**

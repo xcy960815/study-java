@@ -89,16 +89,15 @@ public class StudyJavaSysMenuServiceImpl implements StudyJavaSysMenuService {
      * @return IPage<StudyJavaSysMenuVo>
      */
     @Override
-    public IPage<StudyJavaSysMenuVo> getMenuList(Page<StudyJavaSysMenuDto> page, StudyJavaSysMenuDto studyJavaSysMenuDto) {
+    public IPage<StudyJavaSysMenuVo> getMenuList(IPage<StudyJavaSysMenuDao> studyJavaSysMenuDaoPage, StudyJavaSysMenuDto studyJavaSysMenuDto) {
         try {
-            Page<StudyJavaSysMenuDao> studyJavaSysMenuDaoPage = new Page<>(page.getCurrent(), page.getSize(),page.getTotal());
             StudyJavaSysMenuDao studyJavaSysMenuDao = convertToDao(studyJavaSysMenuDto);
             IPage<StudyJavaSysMenuDao> menuDaoIPage = studyJavaSysMenuMapper.getMenuList(studyJavaSysMenuDaoPage, studyJavaSysMenuDao);
             List<StudyJavaSysMenuVo> menuVoList = menuDaoIPage.getRecords().stream()
                     .map(this::convertToVo)
                     .filter(Objects::nonNull)
                     .collect(Collectors.toList());
-            Page<StudyJavaSysMenuVo> studyJavaSysMenuVoPage = new Page<>(page.getCurrent(), page.getSize(),page.getTotal());
+           IPage<StudyJavaSysMenuVo> studyJavaSysMenuVoPage = new Page<>(studyJavaSysMenuDaoPage.getCurrent(), studyJavaSysMenuDaoPage.getSize(), studyJavaSysMenuDaoPage.getTotal());
             studyJavaSysMenuVoPage.setRecords(menuVoList);
             return studyJavaSysMenuVoPage;
         } catch (Exception e) {
@@ -129,7 +128,9 @@ public class StudyJavaSysMenuServiceImpl implements StudyJavaSysMenuService {
     public StudyJavaSysMenuVo getMenuInfo(Serializable id) {
         Assert.notNull(id, "菜单ID不能为空");
         try {
-            StudyJavaSysMenuDao studyJavaSysMenuDao = studyJavaSysMenuMapper.getMenuInfo(id);
+            StudyJavaSysMenuDao studyJavaSysRequestMenuDao = new StudyJavaSysMenuDao();
+            studyJavaSysRequestMenuDao.setId(Long.valueOf(id.toString()));
+            StudyJavaSysMenuDao studyJavaSysMenuDao = studyJavaSysMenuMapper.getMenuInfo(studyJavaSysRequestMenuDao);
             return convertToVo(studyJavaSysMenuDao);
         } catch (Exception e) {
             log.error("获取菜单详情失败, id: {}", id, e);
@@ -164,7 +165,7 @@ public class StudyJavaSysMenuServiceImpl implements StudyJavaSysMenuService {
             studyJavaSysMenuDao.setIsDeleted(0);
             return studyJavaSysMenuMapper.insertMenu(studyJavaSysMenuDao) > 0;
         } catch (Exception e) {
-            throw new StudyJavaException("添加菜单失败");
+            throw new StudyJavaException("菜单添加失败");
         }
     }
     /**
@@ -183,7 +184,7 @@ public class StudyJavaSysMenuServiceImpl implements StudyJavaSysMenuService {
             return studyJavaSysMenuMapper.updateMenu(studyJavaSysMenuDao) > 0;
         } catch (Exception e) {
             log.error("更新菜单失败, id: {}", studyJavaSysMenuDto.getId(), e);
-            throw new StudyJavaException("更新菜单失败");
+            throw new StudyJavaException("菜单更新失败");
         }
     }
     /**

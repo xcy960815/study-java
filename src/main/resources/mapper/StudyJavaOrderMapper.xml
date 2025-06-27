@@ -29,25 +29,51 @@
         `user_name`,`user_phone`,`user_address`,
         `is_deleted`,`create_time`,`update_time`
     </sql>
-
+    <!-- 查询订单列表 -->
     <select id="getOrderList" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List" />
         FROM
         study_java_order
+        <if test="studyJavaOrderDao != null">
+            <where>
+                <if test="studyJavaOrderDao.orderNo != null and studyJavaOrderDao.orderNo != ''">
+                    order_no = #{studyJavaOrderDao.orderNo,jdbcType=VARCHAR}
+                </if>
+                <if test="studyJavaOrderDao.userId != null">
+                    and user_id = #{studyJavaOrderDao.userId,jdbcType=BIGINT}
+                </if>
+                <if test="studyJavaOrderDao.payStatus != null">
+                    and pay_status = #{studyJavaOrderDao.payStatus,jdbcType=TINYINT}
+                </if>
+                <if test="studyJavaOrderDao.orderStatus != null">
+                    and order_status = #{studyJavaOrderDao.orderStatus,jdbcType=TINYINT}
+                </if>
+                <if test="studyJavaOrderDao.createTime != null">
+                    and create_time = #{studyJavaOrderDao.createTime,jdbcType=TIMESTAMP}
+                </if>
+                <if test="studyJavaOrderDao.updateTime != null">
+                    and update_time = #{studyJavaOrderDao.updateTime,jdbcType=TIMESTAMP}
+                </if>
+                <if test="studyJavaOrderDao.isDeleted != null">
+                    and is_deleted = #{studyJavaOrderDao.isDeleted,jdbcType=TINYINT}
+                </if> 
+            </where>
+        </if>
     </select>
-
+    <!-- 查询订单详情 -->
     <select id="getOrderInfo" parameterType="java.lang.Long" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List" />
         from study_java_order
         where  order_id = #{orderId,jdbcType=BIGINT}
     </select>
-
-    <delete id="deleteOrder" parameterType="java.lang.Long">
-        delete from study_java_order
+    <!-- 删除订单 -->
+    <update id="deleteOrder" parameterType="java.lang.Long">
+        update study_java_order
+        set is_deleted = 1
         where  order_id = #{orderId,jdbcType=BIGINT}
-    </delete>
+    </update>
 
     <insert id="insertOrder" keyColumn="order_id" keyProperty="orderId" parameterType="com.example.domain.vo.StudyJavaOrderVo" useGeneratedKeys="true">
         insert into study_java_order

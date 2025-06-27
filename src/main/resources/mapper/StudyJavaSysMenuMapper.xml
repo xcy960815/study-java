@@ -62,15 +62,32 @@
         ORDER BY order_num ASC
     </select>
 
-<!--   获取菜单信息-->
-    <select id="getMenuInfo" resultMap="BaseResultMap">
+    <!-- 获取菜单信息 -->
+    <select id="getMenuInfo" parameterType="com.example.domain.dao.StudyJavaSysMenuDao" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List" />
         FROM
         study_java_sys_menu
-        WHERE id = #{id}
-        AND (is_deleted = 0 OR is_deleted IS NULL)
+        <where>
+            <if test="studyJavaSysMenuDao != null">
+                <if test="studyJavaSysMenuDao.id != null">
+                    id = #{studyJavaSysMenuDao.id}
+                </if>
+                <if test="studyJavaSysMenuDao.menuName != null and studyJavaSysMenuDao.menuName != ''">
+                    AND menu_name = #{studyJavaSysMenuDao.menuName}
+                </if>
+                <if test="studyJavaSysMenuDao.parentId != null">
+                    AND parent_id = #{studyJavaSysMenuDao.parentId}
+                </if>
+                <if test="studyJavaSysMenuDao.menuType != null">
+                    AND menu_type = #{studyJavaSysMenuDao.menuType}
+                </if>
+                
+            </if>
+            AND is_deleted = 0
+        </where>
     </select>
+
     <!-- userId 当前登录用户id -->
     <select id="getRoutes" resultMap="BaseResultMap">
         SELECT
@@ -98,6 +115,7 @@
             m.order_num ASC
     </select>
 
+    <!-- 新增菜单 -->
     <insert id="insertMenu" parameterType="com.example.domain.dao.StudyJavaSysMenuDao">
         INSERT INTO study_java_sys_menu
         (parent_id, menu_name, path, component, icon, menu_type, perms, order_num, create_time, update_time, is_deleted)
@@ -105,7 +123,7 @@
         (#{studyJavaSysMenuDao.parentId}, #{studyJavaSysMenuDao.menuName}, #{studyJavaSysMenuDao.path}, #{studyJavaSysMenuDao.component}, #{studyJavaSysMenuDao.icon},
         #{studyJavaSysMenuDao.menuType}, #{studyJavaSysMenuDao.perms}, #{studyJavaSysMenuDao.orderNum}, #{studyJavaSysMenuDao.createTime}, #{studyJavaSysMenuDao.updateTime}, #{studyJavaSysMenuDao.isDeleted})
     </insert>
-
+    <!-- 更新菜单 -->
     <update id="updateMenu" parameterType="com.example.domain.dao.StudyJavaSysMenuDao">
         UPDATE study_java_sys_menu
         <set>
@@ -137,18 +155,18 @@
         </set>
         WHERE id = #{studyJavaSysMenuDao.id}
     </update>
-
+    <!-- 删除菜单 -->
     <update id="deleteMenu" parameterType="com.example.domain.dao.StudyJavaSysMenuDao">
         UPDATE study_java_sys_menu
         SET is_deleted = #{studyJavaSysMenuDao.isDeleted},
             update_time = #{studyJavaSysMenuDao.updateTime}
         WHERE id = #{studyJavaSysMenuDao.id}
     </update>
-
+    <!-- 删除角色菜单 -->
     <delete id="deleteRoleMenusByMenuId">
         DELETE FROM study_java_sys_role_menus WHERE menu_id = #{menuId}
     </delete>
-
+    <!-- 查询顶级菜单 -->
     <select id="getTopLevelMenus" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List" />
@@ -165,4 +183,5 @@
         </where>
         ORDER BY order_num ASC
     </select>
+
 </mapper>

@@ -37,6 +37,7 @@
         <result property="menuIds" column="ids" typeHandler="com.example.typehandler.LongListTypeHandler"/>
         <result property="menuNames" column="menu_names" typeHandler="com.example.typehandler.StringListTypeHandler"/>
     </resultMap>
+
     <!--获取角色列表-->
     <select id="getRoleList" resultMap="RoleWithMenuResultMap">
         SELECT
@@ -62,6 +63,7 @@
         GROUP BY r1.id
         ORDER BY r1.role_sort ASC
     </select>
+
     <!-- 获取所有角色列表 -->
     <select id="getAllRoleList" resultType="com.example.domain.dao.StudyJavaSysRoleDao">
         SELECT
@@ -81,6 +83,7 @@
         VALUES
         (#{studyJavaSysRoleDao.roleName}, #{studyJavaSysRoleDao.roleCode}, #{studyJavaSysRoleDao.roleSort}, #{studyJavaSysRoleDao.status}, #{studyJavaSysRoleDao.remark}, #{studyJavaSysRoleDao.createBy}, #{studyJavaSysRoleDao.createTime}, #{studyJavaSysRoleDao.updateBy}, #{studyJavaSysRoleDao.updateTime}, #{studyJavaSysRoleDao.isDeleted})
     </insert>
+
     <!-- 更新角色 -->
     <update id="updateRole" parameterType="com.example.domain.dao.StudyJavaSysRoleDao">
         UPDATE study_java_sys_role
@@ -97,6 +100,7 @@
         </set>
         WHERE id = #{studyJavaSysRoleDao.id}
     </update>
+    
     <!-- 改变用户角色 -->
     <update id="updateRoleStatus" parameterType="com.example.domain.dao.StudyJavaSysRoleDao">
         UPDATE study_java_sys_role
@@ -134,11 +138,12 @@
         </if>
     </select>
 
+    <!-- 获取角色菜单ID列表 -->
     <select id="getMenuIdsByRoleId" resultType="java.lang.Long">
         SELECT menu_id FROM study_java_sys_role_menus WHERE role_id = #{roleId}
     </select>
 
-<!--    将关联关系写入数据库中-->
+    <!-- 将关联关系写入数据库中-->
     <insert id="insertRoleMenus">
         INSERT INTO study_java_sys_role_menus (role_id, menu_id)
         VALUES
@@ -147,10 +152,12 @@
         </foreach>
     </insert>
 
+    <!-- 删除角色菜单 -->
     <delete id="deleteRoleMenusByRoleId">
         DELETE FROM study_java_sys_role_menus WHERE role_id = #{roleId}
     </delete>
 
+    <!-- 删除用户角色 -->
     <delete id="deleteUserRolesByRoleId">
         DELETE FROM study_java_sys_user_roles WHERE role_id = #{roleId}
     </delete>
