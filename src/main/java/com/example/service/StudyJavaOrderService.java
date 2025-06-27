@@ -18,4 +18,26 @@ public interface StudyJavaOrderService {
      * @return IPage<StudyJavaOrderVo>
      */
     IPage<StudyJavaOrderVo> getOrderList(IPage<StudyJavaOrderDao> page, StudyJavaOrderDto studyJavaOrderDto);
+
+
+    /**
+     * 获取订单信息
+     */
+
+    StudyJavaOrderVo getOrderInfo(StudyJavaOrderDto studyJavaOrderDto);
+
+    /**
+     * 新建订单
+     */
+    Boolean insertOrder(StudyJavaOrderDto studyJavaOrderDto);
+
+    /**
+     * 更新订单
+     */
+    Boolean updateOrder(StudyJavaOrderDto studyJavaOrderDto);
+
+    /**
+     * 删除订单
+     */
+    Boolean deleteOrder(StudyJavaOrderDto studyJavaOrderDto);
 }

@@ -57,25 +57,51 @@
                 </if>
                 <if test="studyJavaOrderDao.isDeleted != null">
                     and is_deleted = #{studyJavaOrderDao.isDeleted,jdbcType=TINYINT}
-                </if> 
+                </if>
             </where>
         </if>
     </select>
     <!-- 查询订单详情 -->
-    <select id="getOrderInfo" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    <select id="getOrderInfo" parameterType="com.example.domain.dao.StudyJavaOrderDao" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List" />
         from study_java_order
-        where  order_id = #{orderId,jdbcType=BIGINT}
+        <where>
+            is_deleted = 0
+            <if test="studyJavaOrderDao != null">
+                <if test="studyJavaOrderDao.orderId != null">
+                    and order_id = #{studyJavaOrderDao.orderId,jdbcType=BIGINT}
+                </if>
+                <if test="studyJavaOrderDao.orderNo != null">
+                    and order_no = #{studyJavaOrderDao.orderNo,jdbcType=VARCHAR}
+                </if>
+                <if test="studyJavaOrderDao.userId != null">
+                    and user_id = #{studyJavaOrderDao.userId,jdbcType=BIGINT}
+                </if>
+                <if test="studyJavaOrderDao.payStatus != null">
+                    and pay_status = #{studyJavaOrderDao.payStatus,jdbcType=TINYINT}
+                </if>
+
+            </if>
+
+        </where>
     </select>
     <!-- 删除订单 -->
-    <update id="deleteOrder" parameterType="java.lang.Long">
+    <update id="deleteOrder"  parameterType="com.example.domain.dao.StudyJavaOrderDao" >
         update study_java_order
         set is_deleted = 1
-        where  order_id = #{orderId,jdbcType=BIGINT}
+        <where>
+            <if test="studyJavaOrderDao != null">
+                <if test="studyJavaOrderDao.orderId != null">
+                    and order_id = #{studyJavaOrderDao.orderId,jdbcType=BIGINT}
+                </if>
+            </if>
+        </where>
     </update>
 
-    <insert id="insertOrder" keyColumn="order_id" keyProperty="orderId" parameterType="com.example.domain.vo.StudyJavaOrderVo" useGeneratedKeys="true">
+
+    <!-- 新建订单 -->
+    <insert id="insertOrder" keyColumn="order_id" keyProperty="orderId" parameterType="com.example.domain.dao.StudyJavaOrderDao" useGeneratedKeys="true">
         insert into study_java_order
         ( order_id,order_no,user_id
         ,total_price,pay_status,pay_type
@@ -91,11 +117,13 @@
         )
     </insert>
 
-    <update id="updateOrder" parameterType="com.example.domain.vo.StudyJavaOrderVo">
+    <!-- 更新订单 -->
+    <update id="updateOrder" parameterType="com.example.domain.dao.StudyJavaOrderDao">
         update study_java_order
         <set>
-                <if test="orderNo != null">
-                    order_no = #{orderNo,jdbcType=VARCHAR},
+            <if test="studyJavaOrderDao != null">
+                <if test="studyJavaOrderDao.orderNo != null">
+                    order_no = #{studyJavaOrderDao.orderNo,jdbcType=VARCHAR},
                 </if>
                 <if test="userId != null">
                     user_id = #{userId,jdbcType=BIGINT},
@@ -136,7 +164,14 @@
                 <if test="updateTime != null">
                     update_time = #{updateTime,jdbcType=TIMESTAMP},
                 </if>
+            </if>
         </set>
-        where   order_id = #{orderId,jdbcType=BIGINT}
-    </update>
+        <where>
+            <if test="studyJavaOrderDao != null">
+                <if test="studyJavaOrderDao.orderId != null">
+                    and order_id = #{studyJavaOrderDao.orderId,jdbcType=BIGINT}
+                </if>
+            </if>
+        </where>
+        </update>
 </mapper>

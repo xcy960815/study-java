@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.domain.dao.StudyJavaOrderDao;
 import com.example.domain.dto.StudyJavaOrderDto;
-import com.example.domain.dto.StudyJavaSysUserDto;
 import com.example.domain.vo.StudyJavaOrderVo;
 import com.example.service.StudyJavaOrderService;
 import com.example.mapper.StudyJavaOrderMapper;
@@ -30,7 +29,7 @@ public class StudyJavaOrderServiceImpl implements StudyJavaOrderService {
      * 获取订单列表
      * @param page Page<StudyJavaOrderDao>
      * @param studyJavaOrderDto StudyJavaOrderDto
-     * @return
+     * @return IPage<StudyJavaOrderVo>
      */
     @Override
     public IPage<StudyJavaOrderVo> getOrderList(IPage<com.example.domain.dao.StudyJavaOrderDao> page, StudyJavaOrderDto studyJavaOrderDto) {
@@ -55,19 +54,6 @@ public class StudyJavaOrderServiceImpl implements StudyJavaOrderService {
         BeanUtils.copyProperties(studyJavaOrderDao, studyJavaOrderVo);
         return studyJavaOrderVo;
     }
-
-    /**
-     * vo 转 dao
-     */
-    // private StudyJavaOrderDao convertToDao(StudyJavaOrderVo studyJavaOrderVo) {
-    //     if (studyJavaOrderVo == null) {
-    //         return null;
-    //     }
-    //     StudyJavaOrderDao studyJavaOrderDao = new StudyJavaOrderDao();
-    //     BeanUtils.copyProperties(studyJavaOrderVo, studyJavaOrderDao);
-    //     return studyJavaOrderDao;
-    // }
-
     /**
      * dto 转 dao
      */
@@ -78,6 +64,43 @@ public class StudyJavaOrderServiceImpl implements StudyJavaOrderService {
         StudyJavaOrderDao studyJavaOrderDao = new StudyJavaOrderDao();
         BeanUtils.copyProperties(studyJavaOrderDto, studyJavaOrderDao);
         return studyJavaOrderDao;
+    }
+
+    /**
+     * 获取订单信息
+     */
+    @Override
+    public StudyJavaOrderVo getOrderInfo(StudyJavaOrderDto studyJavaOrderDto) {
+        StudyJavaOrderDao studyJavaOrderDao = convertToDao(studyJavaOrderDto);
+        StudyJavaOrderDao studyJavaOrderResponseDao = studyJavaOrderMapper.getOrderInfo(studyJavaOrderDao);
+        return convertToVo(studyJavaOrderResponseDao);
+    }
+
+    /**
+     * 新建订单
+     */
+    @Override
+    public Boolean insertOrder(StudyJavaOrderDto studyJavaOrderDto) {
+        StudyJavaOrderDao studyJavaOrderDao = convertToDao(studyJavaOrderDto);
+        return studyJavaOrderMapper.insertOrder(studyJavaOrderDao);
+    }
+
+    /**
+     * 更新订单
+     */
+    @Override
+    public Boolean updateOrder(StudyJavaOrderDto studyJavaOrderDto) {
+        StudyJavaOrderDao studyJavaOrderDao = convertToDao(studyJavaOrderDto);
+        return studyJavaOrderMapper.updateOrder(studyJavaOrderDao);
+    }
+
+    /**
+     * 删除订单
+     */
+    @Override
+    public Boolean deleteOrder(StudyJavaOrderDto studyJavaOrderDto) {
+        StudyJavaOrderDao studyJavaOrderDao = convertToDao(studyJavaOrderDto);
+        return studyJavaOrderMapper.deleteOrder(studyJavaOrderDao);
     }
 }
 

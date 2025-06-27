@@ -12,6 +12,14 @@ import org.apache.ibatis.annotations.Param;
 */
 public interface StudyJavaOrderMapper  {
     IPage<StudyJavaOrderDao> getOrderList(@Param("page")  IPage<StudyJavaOrderDao> page, @Param("studyJavaOrderDao") StudyJavaOrderDao studyJavaOrderDao);
+
+    StudyJavaOrderDao getOrderInfo(@Param("studyJavaOrderDao") StudyJavaOrderDao studyJavaOrderDao);
+
+    Boolean insertOrder(@Param("studyJavaOrderDao") StudyJavaOrderDao studyJavaOrderDao);
+
+    Boolean updateOrder(@Param("studyJavaOrderDao") StudyJavaOrderDao studyJavaOrderDao);
+
+    Boolean deleteOrder(@Param("studyJavaOrderDao") StudyJavaOrderDao studyJavaOrderDao);
 }
 
 
