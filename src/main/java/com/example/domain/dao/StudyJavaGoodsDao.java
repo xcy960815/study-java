@@ -4,52 +4,78 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 import lombok.Data;
 
 /**
- * 
- * @TableName study_java_goods_category
+ * @TableName study_java_goods
  */
-@TableName(value ="study_java_goods_category")
+@TableName(value ="study_java_goods")
 @Data
 public class StudyJavaGoodsDao implements Serializable {
     /**
      * 商品id
      */
     @TableId(type = IdType.AUTO)
-    private Long categoryId;
+    private Long goodsId;
 
     /**
-     * 分类级别(1-一级分类 2-二级分类 3-三级分类)
+     * 商品名称
      */
-    private Integer categoryLevel;
+    private String goodsName;
 
     /**
-     * 父分类id
+     * 商品简介
      */
-    private Long parentId;
+    private String goodsIntro;
 
     /**
-     * 分类名称
+     * 商品分类id
      */
-    private String categoryName;
+    private Long goodsCategoryId;
 
     /**
-     * 排序值(字段越大越靠前)
+     * 商品封面图片
      */
-    private Integer categoryRank;
+    private String goodsCoverImg;
 
     /**
-     * 删除标识字段(0-未删除 1-已删除)
+     * 商品轮播图
      */
-    private Integer isDeleted;
+    private String goodsCarousel;
 
     /**
-     * 创建时间
+     * 商品详情内容
      */
-    private Date createTime;
+    private String goodsDetailContent;
+
+    /**
+     * 商品原价
+     */
+    private Integer originalPrice;
+
+    /**
+     * 商品销售价格
+     */
+    private Integer sellingPrice;
+
+    /**
+     * 商品库存数量
+     */
+    private Integer stockNum;
+
+    /**
+     * 商品标签
+     */
+    private String tag;
+
+    /**
+     * 商品销售状态(0-下架 1-上架)
+     */
+    private Integer goodsSellStatus;
 
     /**
      * 创建者id
@@ -57,15 +83,21 @@ public class StudyJavaGoodsDao implements Serializable {
     private Integer createUser;
 
     /**
-     * 修改时间
+     * 创建时间
      */
-    private Date updateTime;
+    private Date createTime;
 
     /**
      * 修改者id
      */
     private Integer updateUser;
 
+    /**
+     * 修改时间
+     */
+    private Date updateTime;
+
+    @Serial
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 }

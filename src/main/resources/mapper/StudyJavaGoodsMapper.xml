@@ -5,45 +5,49 @@
 <mapper namespace="com.example.mapper.StudyJavaGoodsMapper">
 
     <resultMap id="BaseResultMap" type="com.example.domain.dao.StudyJavaGoodsDao">
-            <id property="categoryId" column="category_id" jdbcType="BIGINT"/>
-            <result property="categoryLevel" column="category_level" jdbcType="TINYINT"/>
-            <result property="parentId" column="parent_id" jdbcType="BIGINT"/>
-            <result property="categoryName" column="category_name" jdbcType="VARCHAR"/>
-            <result property="categoryRank" column="category_rank" jdbcType="INTEGER"/>
-            <result property="isDeleted" column="is_deleted" jdbcType="TINYINT"/>
-            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
-            <result property="createUser" column="create_user" jdbcType="INTEGER"/>
-            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
-            <result property="updateUser" column="update_user" jdbcType="INTEGER"/>
+        <id property="goodsId" column="goods_id" jdbcType="BIGINT"/>
+        <result property="goodsName" column="goods_name" jdbcType="VARCHAR"/>
+        <result property="goodsIntro" column="goods_intro" jdbcType="VARCHAR"/>
+        <result property="goodsCategoryId" column="goods_category_id" jdbcType="BIGINT"/>
+        <result property="goodsCoverImg" column="goods_cover_img" jdbcType="VARCHAR"/>
+        <result property="goodsCarousel" column="goods_carousel" jdbcType="VARCHAR"/>
+        <result property="goodsDetailContent" column="goods_detail_content" jdbcType="LONGVARCHAR"/>
+        <result property="originalPrice" column="original_price" jdbcType="INTEGER"/>
+        <result property="sellingPrice" column="selling_price" jdbcType="INTEGER"/>
+        <result property="stockNum" column="stock_num" jdbcType="INTEGER"/>
+        <result property="tag" column="tag" jdbcType="VARCHAR"/>
+        <result property="goodsSellStatus" column="goods_sell_status" jdbcType="TINYINT"/>
+        <result property="createUser" column="create_user" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateUser" column="update_user" jdbcType="INTEGER"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        category_id,category_level,parent_id,
-        category_name,category_rank,is_deleted,
-        create_time,create_user,update_time,
-        update_user
+        goods_id, goods_name, goods_intro, goods_category_id, goods_cover_img, goods_carousel, goods_detail_content,
+        original_price, selling_price, stock_num, tag, goods_sell_status, create_user, create_time, update_user, update_time
     </sql>
 
+    <!-- 获取商品列表 -->
     <select id="getGoodsList" resultMap="BaseResultMap"
             parameterType="com.example.domain.dao.StudyJavaGoodsDao">
         SELECT
         <include refid="Base_Column_List"/>
         FROM study_java_goods
-            WHERE is_deleted = 0
-              <if test="studyJavaGoodsDao != null ">
-                  <if test="studyJavaGoodsDao.categoryName != null and studyJavaGoodsDao.categoryName != ''">
-                      AND category_name LIKE CONCAT('%', #{studyJavaGoodsDao.categoryName}, '%')
-                  </if>
-                  <if test="studyJavaGoodsDao.categoryLevel != null and studyJavaGoodsDao.categoryLevel != 0">
-                      AND category_level = #{studyJavaGoodsDao.categoryLevel}
-                  </if>
-                  <if test="studyJavaGoodsDao.parentId != null and studyJavaGoodsDao.parentId != 0">
-                      AND parent_id = #{studyJavaGoodsDao.parentId}
-                  </if>
-                  <if test="studyJavaGoodsDao.categoryRank != null and studyJavaGoodsDao.categoryRank != 0">
-                      AND category_rank = #{studyJavaGoodsDao.categoryRank}
-                  </if>
-              </if>
-            ORDER BY category_rank desc
+        <where>
+            <if test="studyJavaGoodsDao != null">
+                <if test="studyJavaGoodsDao.goodsName != null and studyJavaGoodsDao.goodsName != ''">
+                AND goods_name LIKE CONCAT('%', #{studyJavaGoodsDao.goodsName}, '%')
+                </if>
+                <if test="studyJavaGoodsDao.goodsCategoryId != null and studyJavaGoodsDao.goodsCategoryId != 0">
+                    AND goods_category_id = #{studyJavaGoodsDao.goodsCategoryId}
+                </if>
+                <if test="studyJavaGoodsDao.goodsSellStatus != null">
+                    AND goods_sell_status = #{studyJavaGoodsDao.goodsSellStatus}
+                </if>
+            </if>
+        </where>
+        ORDER BY goods_id desc
     </select>
+
 </mapper>

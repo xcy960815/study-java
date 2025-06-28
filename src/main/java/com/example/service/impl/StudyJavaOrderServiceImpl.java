@@ -32,7 +32,7 @@ public class StudyJavaOrderServiceImpl implements StudyJavaOrderService {
      * @return IPage<StudyJavaOrderVo>
      */
     @Override
-    public IPage<StudyJavaOrderVo> getOrderList(IPage<com.example.domain.dao.StudyJavaOrderDao> page, StudyJavaOrderDto studyJavaOrderDto) {
+    public IPage<StudyJavaOrderVo> getOrderList(IPage<StudyJavaOrderDao> page, StudyJavaOrderDto studyJavaOrderDto) {
         StudyJavaOrderDao studyJavaOrderDao = convertToDao(studyJavaOrderDto);
         IPage<StudyJavaOrderDao> studyJavaOrderResponseDao = studyJavaOrderMapper.getOrderList(page, studyJavaOrderDao);
         // 转换为 VO 并组装新分页对象

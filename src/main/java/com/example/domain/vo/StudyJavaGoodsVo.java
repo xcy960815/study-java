@@ -6,68 +6,34 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
 /**
- *
- * @TableName study_java_goods_category
+ * @TableName study_java_goods
  */
-@TableName(value ="study_java_goods_category")
+@TableName(value ="study_java_goods")
 @Data
 public class StudyJavaGoodsVo implements Serializable {
-    /**
-     * 分类id
-     */
     @TableId(type = IdType.AUTO)
-    private Long categoryId;
-
-    /**
-     * 分类级别(1-一级分类 2-二级分类 3-三级分类)
-     */
-    private Integer categoryLevel;
-
-    /**
-     * 父分类id
-     */
-    private Long parentId;
-
-    /**
-     * 分类名称
-     */
-    private String categoryName;
-
-    /**
-     * 排序值(字段越大越靠前)
-     */
-    private Integer categoryRank;
-
-    /**
-     * 删除标识字段(0-未删除 1-已删除)
-     */
-    private Integer isDeleted;
-
-    /**
-     * 创建时间
-     */
-    private Date createTime;
-
-    /**
-     * 创建者id
-     */
+    private Long goodsId;
+    private String goodsName;
+    private String goodsIntro;
+    private Long goodsCategoryId;
+    private String goodsCoverImg;
+    private String goodsCarousel;
+    private String goodsDetailContent;
+    private Integer originalPrice;
+    private Integer sellingPrice;
+    private Integer stockNum;
+    private String tag;
+    private Integer goodsSellStatus;
     private Integer createUser;
-
-    /**
-     * 修改时间
-     */
-    private Date updateTime;
-
-    /**
-     * 修改者id
-     */
+    private Date createTime;
     private Integer updateUser;
-
+    private Date updateTime;
+    @Serial
     @TableField(exist = false)
-
     private static final long serialVersionUID = 1L;
 }

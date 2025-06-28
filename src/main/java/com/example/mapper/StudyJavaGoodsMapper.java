@@ -1,10 +1,8 @@
 package com.example.mapper;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.domain.dao.StudyJavaGoodsDao;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.example.domain.vo.StudyJavaGoodsVo;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -15,9 +13,8 @@ import org.apache.ibatis.annotations.Param;
 */
 public interface StudyJavaGoodsMapper extends BaseMapper<StudyJavaGoodsDao> {
 
-
     // 获取商品列表
-    IPage<StudyJavaGoodsDao> getGoodsList(@Param("page") Page<StudyJavaGoodsVo> page, @Param("studyJavaGoodsDao") StudyJavaGoodsDao studyJavaGoodsDao);
+    IPage<StudyJavaGoodsDao> getGoodsList(@Param("page") IPage<StudyJavaGoodsDao> page, @Param("studyJavaGoodsDao") StudyJavaGoodsDao studyJavaGoodsDao);
 }
 
 

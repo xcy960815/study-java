@@ -2,13 +2,16 @@ package com.example.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-//import com.example.domain.dao.StudyJavaGoodsDao;
+import com.example.domain.dao.StudyJavaGoodsDao;
 import com.example.domain.dto.StudyJavaGoodsDto;
 import com.example.domain.vo.StudyJavaGoodsVo;
 import com.example.service.StudyJavaGoodsService;
 import com.example.mapper.StudyJavaGoodsMapper;
 import jakarta.annotation.Resource;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 
 /**
@@ -23,37 +26,31 @@ public class StudyJavaGoodsServiceImpl implements StudyJavaGoodsService {
     private  StudyJavaGoodsMapper studyJavaGoodsMapper;
 
     @Override
-    public IPage<StudyJavaGoodsVo> getGoodsList (Page<StudyJavaGoodsVo> page , StudyJavaGoodsDto studyJavaGoodsDto){
+    public IPage<StudyJavaGoodsVo> getGoodsList (IPage<StudyJavaGoodsDao> page , StudyJavaGoodsDto studyJavaGoodsDto){
+        IPage<StudyJavaGoodsDao> studyJavaGoodsDaoPage = studyJavaGoodsMapper.getGoodsList(page, dto2Dao(studyJavaGoodsDto));
+        List<StudyJavaGoodsVo> studyJavaGoodsVoList = studyJavaGoodsDaoPage.getRecords().stream().map(this::dao2Vo).toList();
+        // 创建新的 IPage 对象
+        IPage<StudyJavaGoodsVo> studyJavaGoodsVoPage = new Page<>(studyJavaGoodsDaoPage.getCurrent(), studyJavaGoodsDaoPage.getSize(), studyJavaGoodsDaoPage.getTotal());
+        studyJavaGoodsVoPage.setRecords(studyJavaGoodsVoList);
+        return studyJavaGoodsVoPage;
+    }
 
-//        IPage<StudyJavaGoodsDao> studyJavaGoodsCategoryIpage = studyJavaGoodsCategoryMapper.getGoodsCategoryList(page, studyJavaGoodsVo);
-//
-//        List<StudyJavaGoodsDto> goodsCategoryList = studyJavaGoodsCategoryIpage.getRecords().stream().map(goodsCategory -> {
-//            StudyJavaGoodsDto studyJavaGoodsDto = new StudyJavaGoodsDto();
-//            studyJavaGoodsDto.setCategoryId(goodsCategory.getCategoryId());
-//            studyJavaGoodsDto.setCategoryName(goodsCategory.getCategoryName());
-//            Integer categoryLevel = goodsCategory.getCategoryLevel();
-//            String categoryLevelStr;
-//            if (categoryLevel == 1) {
-//                categoryLevelStr = "一级分类";
-//            }else if(categoryLevel == 2){
-//                categoryLevelStr = "二级分类";
-//            }else {
-//                categoryLevelStr = "三级分类";
-//            }
-//            studyJavaGoodsDto.setCategoryLevel(categoryLevelStr);
-//            studyJavaGoodsDto.setCreateTime(goodsCategory.getCreateTime());
-//            studyJavaGoodsDto.setUpdateTime(goodsCategory.getUpdateTime());
-//            studyJavaGoodsDto.setCreateUser(goodsCategory.getCreateUser());
-//            studyJavaGoodsDto.setUpdateUser(goodsCategory.getUpdateUser());
-//            studyJavaGoodsDto.setParentId(goodsCategory.getParentId());
-//            return studyJavaGoodsDto;
-//        }).toList();
-//
-//        // 创建新的 IPage 对象
-//        IPage<StudyJavaGoodsDto> resultPage = new Page<>(studyJavaGoodsCategoryIpage.getCurrent(), studyJavaGoodsCategoryIpage.getSize(), studyJavaGoodsCategoryIpage.getTotal());
-//        resultPage.setRecords(goodsCategoryList);
-//        return resultPage;
-        return null;
+    /**
+     * dto 转 dao
+     */
+    private StudyJavaGoodsDao dto2Dao(StudyJavaGoodsDto studyJavaGoodsDto){
+        StudyJavaGoodsDao studyJavaGoodsDao = new StudyJavaGoodsDao();
+        BeanUtils.copyProperties(studyJavaGoodsDto, studyJavaGoodsDao);
+        return studyJavaGoodsDao;
+    }
+
+    /**
+     * dao 转 vo
+     */
+    private StudyJavaGoodsVo dao2Vo(StudyJavaGoodsDao studyJavaGoodsDao){
+        StudyJavaGoodsVo studyJavaGoodsVo = new StudyJavaGoodsVo();
+        BeanUtils.copyProperties(studyJavaGoodsDao, studyJavaGoodsVo);
+        return studyJavaGoodsVo;
     }
 }
 
