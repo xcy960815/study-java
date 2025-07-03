@@ -36,6 +36,16 @@ public class StudyJavaGoodsServiceImpl implements StudyJavaGoodsService {
     }
 
     /**
+     * 新建商品
+     * @param studyJavaGoodsDto StudyJavaGoodsDto
+     * @return StudyJavaGoodsVo
+     */
+    public boolean insertGoods(StudyJavaGoodsDto studyJavaGoodsDto){
+        StudyJavaGoodsDao studyJavaGoodsDao = dto2Dao(studyJavaGoodsDto);
+        return studyJavaGoodsMapper.insertGoods(studyJavaGoodsDao) > 0;
+    }
+
+    /**
      * dto 转 dao
      */
     private StudyJavaGoodsDao dto2Dao(StudyJavaGoodsDto studyJavaGoodsDto){
@@ -52,6 +62,8 @@ public class StudyJavaGoodsServiceImpl implements StudyJavaGoodsService {
         BeanUtils.copyProperties(studyJavaGoodsDao, studyJavaGoodsVo);
         return studyJavaGoodsVo;
     }
+
+
 }
 
 

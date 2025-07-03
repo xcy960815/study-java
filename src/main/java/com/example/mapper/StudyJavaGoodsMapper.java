@@ -15,6 +15,9 @@ public interface StudyJavaGoodsMapper extends BaseMapper<StudyJavaGoodsDao> {
 
     // 获取商品列表
     IPage<StudyJavaGoodsDao> getGoodsList(@Param("page") IPage<StudyJavaGoodsDao> page, @Param("studyJavaGoodsDao") StudyJavaGoodsDao studyJavaGoodsDao);
+
+
+    int insertGoods(StudyJavaGoodsDao studyJavaGoodsDao);
 }
 
 

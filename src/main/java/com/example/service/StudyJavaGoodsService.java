@@ -12,4 +12,6 @@ import com.example.domain.vo.StudyJavaGoodsVo;
 */
 public interface StudyJavaGoodsService {
      IPage<StudyJavaGoodsVo> getGoodsList(IPage<StudyJavaGoodsDao> page , StudyJavaGoodsDto studyJavaGoodsDto);
+
+     boolean insertGoods(StudyJavaGoodsDto studyJavaGoodsDto);
 }

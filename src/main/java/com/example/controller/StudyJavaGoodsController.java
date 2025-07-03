@@ -6,7 +6,9 @@ import com.example.domain.vo.StudyJavaGoodsVo;
 import com.example.service.StudyJavaGoodsService;
 import com.example.utils.ResponseGenerator;
 import com.example.utils.ResponseListResult;
+import com.example.utils.ResponseResult;
 import jakarta.annotation.Resource;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,15 +38,15 @@ public class StudyJavaGoodsController extends BaseController {
         return ResponseGenerator.generateListResult(studyJavaGoodsVoPage.getRecords(),studyJavaGoodsVoPage.getTotal());
     }
 
-//    /**
-//     * 添加商品分类
-//     * @param categoryDto 商品分类信息
-//     * @return 添加结果
-//     */
-//    @PostMapping("/add")
-//    public ResponseResult<StudyJavaGoodsVo> addGoodsCategory(@Valid @RequestBody StudyJavaGoodsDto categoryDto) {
-//        return null;
-//    }
+    /**
+     * 添加商品分类
+     * @param studyJavaGoodsDto 商品分类信息
+     * @return 添加结果
+     */
+    @PutMapping("/insertGoods")
+    public ResponseResult<Boolean> insertGoods(@Valid @RequestBody StudyJavaGoodsDto studyJavaGoodsDto) {
+        return ResponseGenerator.generateSuccessResult(studyJavaGoodsService.insertGoods(studyJavaGoodsDto)) ;
+    }
 //
 //    /**
 //     * 更新商品分类

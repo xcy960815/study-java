@@ -26,12 +26,6 @@ EXPOSE 8084
 CMD ["java", "-jar", "study-java.jar", "--spring.profiles.active=prod"]
 
 # 执行脚本
-# DOCKER_BUILDKIT=1 docker build -t xcy960815/study-java:1.0 .
-
-# 创建并启动构建器
-# docker buildx create --use
-
-# 构建多平台镜像
-# docker buildx build --platform linux/amd64,linux/arm64 -t xcy960815/study-java:1.0 --push .
+# docker build -t xcy960815/study-java:1.0 .
 
 
