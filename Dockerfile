@@ -1,5 +1,5 @@
 # 第一阶段：构建阶段
-FROM --platform=$BUILDPLATFORM maven:3.9.9 AS build
+FROM maven:3.9.9 AS build
 
 # 设置工作目录
 WORKDIR /study-java
@@ -12,7 +12,7 @@ COPY src ./src
 RUN mvn clean package -DskipTests -P prod
 
 # 第二阶段：运行阶段
-FROM --platform=$TARGETPLATFORM openjdk:21
+FROM openjdk:21
 
 # 设置工作目录为 /study-java
 WORKDIR /study-java
