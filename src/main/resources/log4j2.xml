@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN" monitorInterval="30">
     <properties>
-        <property name="logPath">./logs</property>
+        <!-- 使用系统属性log.path，如果未设置则使用相对路径./logs -->
+        <property name="logPath">${sys:log.path:-./logs}</property>
     </properties>
     <Appenders>
         <!--*********************控制台日志***********************-->

@@ -64,6 +64,8 @@ services:
         condition: service_healthy
     ports:
       - "12316:8084"
+    volumes:
+      - ./logs:/study-java/logs
     environment:
       SPRING_PROFILES_ACTIVE: prod
       # redis配置
