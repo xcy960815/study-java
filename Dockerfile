@@ -26,6 +26,6 @@ EXPOSE 8084
 CMD ["java", "-Dlog.path=/study-java/logs", "-jar", "study-java.jar", "--spring.profiles.active=prod"]
 
 # 执行脚本
-# docker build -t xcy960815/study-java:1.0 .
+# docker build -t xcy960815/study-java:1.x .
 
 
