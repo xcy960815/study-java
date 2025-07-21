@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.mapper.StudyJavaGoodsMapper">
 
-    <resultMap id="BaseResultMap" type="com.example.domain.dao.StudyJavaGoodsDao">
+    <resultMap id="BaseResultMap" type="com.studyjava.domain.dao.StudyJavaGoodsDao">
         <id property="goodsId" column="goods_id" jdbcType="BIGINT"/>
         <result property="goodsName" column="goods_name" jdbcType="VARCHAR"/>
         <result property="goodsIntro" column="goods_intro" jdbcType="VARCHAR"/>
@@ -30,7 +30,7 @@
 
     <!-- 获取商品列表 -->
     <select id="getGoodsList" resultMap="BaseResultMap"
-            parameterType="com.example.domain.dao.StudyJavaGoodsDao">
+            parameterType="com.studyjava.domain.dao.StudyJavaGoodsDao">
         SELECT
         <include refid="Base_Column_List"/>
         FROM study_java_goods
@@ -51,7 +51,7 @@
     </select>
 
 
-    <insert id="insertGoods" parameterType="com.example.domain.dao.StudyJavaGoodsDao">
+    <insert id="insertGoods" parameterType="com.studyjava.domain.dao.StudyJavaGoodsDao">
         INSERT INTO study_java_goods (
             goods_name, goods_intro, goods_category_id, goods_cover_img, goods_carousel, goods_detail_content,
             original_price, selling_price, stock_num, tag, goods_sell_status, create_user, create_time, update_user, update_time

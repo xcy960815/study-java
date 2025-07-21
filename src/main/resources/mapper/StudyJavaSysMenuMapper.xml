@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.mapper.StudyJavaSysMenuMapper">
 
-    <resultMap id="BaseResultMap" type="com.example.domain.dao.StudyJavaSysMenuDao">
+    <resultMap id="BaseResultMap" type="com.studyjava.domain.dao.StudyJavaSysMenuDao">
             <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="parentId" column="parent_id" jdbcType="BIGINT"/>
             <result property="menuName" column="menu_name" jdbcType="VARCHAR"/>
@@ -63,7 +63,7 @@
     </select>
 
     <!-- 获取菜单信息 -->
-    <select id="getMenuInfo" parameterType="com.example.domain.dao.StudyJavaSysMenuDao" resultMap="BaseResultMap">
+    <select id="getMenuInfo" parameterType="com.studyjava.domain.dao.StudyJavaSysMenuDao" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List" />
         FROM
@@ -82,7 +82,7 @@
                 <if test="studyJavaSysMenuDao.menuType != null">
                     AND menu_type = #{studyJavaSysMenuDao.menuType}
                 </if>
-                
+
             </if>
             AND is_deleted = 0
         </where>
@@ -116,7 +116,7 @@
     </select>
 
     <!-- 新增菜单 -->
-    <insert id="insertMenu" parameterType="com.example.domain.dao.StudyJavaSysMenuDao">
+    <insert id="insertMenu" parameterType="com.studyjava.domain.dao.StudyJavaSysMenuDao">
         INSERT INTO study_java_sys_menu
         (parent_id, menu_name, path, component, icon, menu_type, perms, order_num, create_time, update_time, is_deleted)
         VALUES
@@ -124,7 +124,7 @@
         #{studyJavaSysMenuDao.menuType}, #{studyJavaSysMenuDao.perms}, #{studyJavaSysMenuDao.orderNum}, #{studyJavaSysMenuDao.createTime}, #{studyJavaSysMenuDao.updateTime}, #{studyJavaSysMenuDao.isDeleted})
     </insert>
     <!-- 更新菜单 -->
-    <update id="updateMenu" parameterType="com.example.domain.dao.StudyJavaSysMenuDao">
+    <update id="updateMenu" parameterType="com.studyjava.domain.dao.StudyJavaSysMenuDao">
         UPDATE study_java_sys_menu
         <set>
             <if test="studyJavaSysMenuDao.menuName != null and studyJavaSysMenuDao.menuName != ''">
@@ -156,7 +156,7 @@
         WHERE id = #{studyJavaSysMenuDao.id}
     </update>
     <!-- 删除菜单 -->
-    <update id="deleteMenu" parameterType="com.example.domain.dao.StudyJavaSysMenuDao">
+    <update id="deleteMenu" parameterType="com.studyjava.domain.dao.StudyJavaSysMenuDao">
         UPDATE study_java_sys_menu
         SET is_deleted = #{studyJavaSysMenuDao.isDeleted},
             update_time = #{studyJavaSysMenuDao.updateTime}
