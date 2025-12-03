@@ -1,3 +1,4 @@
+# cspell:ignore Dskip temurin Dlog
 # 第一阶段：构建阶段
 FROM maven:3.9.9 AS build
 
