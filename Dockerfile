@@ -12,7 +12,7 @@ COPY src ./src
 RUN mvn clean package -DskipTests -P prod
 
 # 第二阶段：运行阶段
-FROM openjdk:21
+FROM eclipse-temurin:21-jre
 
 # 设置工作目录为 /study-java
 WORKDIR /study-java
