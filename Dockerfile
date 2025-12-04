@@ -5,11 +5,12 @@ FROM maven:3.9.9 AS build
 # 设置工作目录
 WORKDIR /study-java
 
-# 优化：利用 Docker 缓存，先下载依赖
+# 复制 Maven 配置和源码，直接进行打包
+# 说明：
+#  - 原来这里用了 `mvn dependency:go-offline -B` 来提前下载所有依赖，但在 CI 多架构构建时，
+#    会尝试解析某些与当前平台不匹配的 Netty native 依赖（例如 osx-aarch_64），导致构建失败。
+#  - 实际上 `mvn clean package` 本身就会按需下载依赖，这里直接打包即可，影响不大。
 COPY pom.xml .
-RUN mvn dependency:go-offline -B
-
-# 再复制源码进行构建
 COPY src ./src
 RUN mvn clean package -DskipTests -P prod
 

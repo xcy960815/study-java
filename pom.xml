@@ -78,11 +78,11 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.33</version>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>com.mysql</groupId>-->
-<!--            <artifactId>mysql-connector-j</artifactId>-->
-<!--            <version>8.0.33</version>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.mysql</groupId>-->
+        <!--            <artifactId>mysql-connector-j</artifactId>-->
+        <!--            <version>8.0.33</version>-->
+        <!--        </dependency>-->
 
         <!-- Spring Boot Web Starter -->
         <dependency>
@@ -164,7 +164,7 @@
             <artifactId>jakarta.validation-api</artifactId>
         </dependency>
 
-<!--   https://github.com/netty/netty/issues/11020     -->
+        <!--   https://github.com/netty/netty/issues/11020     -->
         <dependency>
             <groupId>io.projectreactor.netty</groupId>
             <artifactId>reactor-netty-http</artifactId>
@@ -177,7 +177,11 @@
             <version>1.0.39</version>
         </dependency>
 
-        <!-- 移除了 Mac 专用的 netty-resolver-dns-native-macos，改用 profile 加载 -->
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-resolver-dns-native-macos</artifactId>
+            <classifier>osx-aarch_64</classifier>
+        </dependency>
 
 
         <!-- Jackson Databind (包含 @JsonProperty 注解) -->
@@ -221,7 +225,7 @@
     </dependencies>
 
     <profiles>
-<!--    有点类似于前端的script脚本可以启动不同的环境加载不同的配置    -->
+        <!--    有点类似于前端的script脚本可以启动不同的环境加载不同的配置    -->
         <profile>
             <id>dev</id>
             <properties>
@@ -259,24 +263,6 @@
             <activation>
                 <activeByDefault>false</activeByDefault>
             </activation>
-        </profile>
-
-        
-        <!-- Mac 本地开发专用配置 -->
-        <profile>
-            <id>mac-native</id>
-            <activation>
-                <os>
-                    <family>mac</family>
-                </os>
-            </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>io.netty</groupId>
-                    <artifactId>netty-resolver-dns-native-macos</artifactId>
-                    <classifier>osx-aarch_64</classifier>
-                </dependency>
-            </dependencies>
         </profile>
     </profiles>
 
