@@ -50,46 +50,60 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      # - name: Update Docker Hub repository overview from README
-      #   env:
-      #     DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      #     DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-      #   run: |
-      #     # 将 README.md 转成 JSON 安全的字符串
-      #     DESCRIPTION=$(jq -Rs . < readme.md)
-      #
-      #     # 使用 Basic Auth (用户名:Personal Access Token)
-      #     # 将用户名和令牌编码为 Base64 (兼容 Linux 和 macOS)
-      #     AUTH_STRING=$(echo -n "${DOCKERHUB_USERNAME}:${DOCKERHUB_TOKEN}" | base64 | tr -d '\n')
-      #
-      #     # 先测试 token 是否有效（获取用户信息）
-      #     echo "测试 Docker Hub token 有效性..."
-      #     USER_INFO=$(curl -s --request GET \
-      #       --url https://hub.docker.com/v2/users/${DOCKERHUB_USERNAME}/ \
-      #       --header "Authorization: Basic ${AUTH_STRING}" || echo "FAILED")
-      #
-      #     if [ "$USER_INFO" = "FAILED" ]; then
-      #       echo "错误: Token 验证失败，请检查 DOCKERHUB_USERNAME 和 DOCKERHUB_TOKEN"
-      #       exit 1
-      #     fi
-      #
-      #     echo "Token 验证成功，开始更新仓库描述..."
-      #
-      #     # 调用 Docker Hub API 更新仓库 full_description（Overview）
-      #     RESPONSE=$(curl -s -w "\nHTTP_STATUS:%{http_code}" \
-      #       --request PATCH \
-      #       --url https://hub.docker.com/v2/repositories/xcy960815/study-java/ \
-      #       --header "Content-Type: application/json" \
-      #       --header "Authorization: Basic ${AUTH_STRING}" \
-      #       --data "{\"full_description\": ${DESCRIPTION}}")
-      #
-      #     HTTP_STATUS=$(echo "$RESPONSE" | grep "HTTP_STATUS:" | cut -d: -f2)
-      #     BODY=$(echo "$RESPONSE" | sed '/HTTP_STATUS:/d')
-      #
-      #     if [ "$HTTP_STATUS" != "200" ]; then
-      #       echo "错误: API 调用失败，HTTP 状态码: $HTTP_STATUS"
-      #       echo "响应内容: $BODY"
-      #       exit 1
-      #     fi
-      #
-      #     echo "仓库描述更新成功！"
+      - name: Update Docker Hub repository overview from README
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+        run: |
+          # 检查 README.md 是否存在
+          if [ ! -f readme.md ]; then
+            echo "Error: readme.md not found"
+            exit 1
+          fi
+
+          # 将 readme.md 转成 JSON 安全的字符串
+          DESCRIPTION=$(jq -Rs . < readme.md)
+
+          # 调试信息（不输出敏感信息）
+          echo "Updating Docker Hub repository: ${{ env.IMAGE_NAME }}"
+          echo "Username: ${DOCKERHUB_USERNAME}"
+          echo "README length: $(wc -c < readme.md) bytes"
+
+          # 先获取 JWT token（使用 Access Token 登录）
+          echo "Logging in to Docker Hub to get JWT token..."
+          LOGIN_RESPONSE=$(curl -s -X POST \
+            --url https://hub.docker.com/v2/users/login/ \
+            --header "Content-Type: application/json" \
+            --data "{\"username\": \"${DOCKERHUB_USERNAME}\", \"password\": \"${DOCKERHUB_TOKEN}\"}")
+
+          JWT_TOKEN=$(echo "$LOGIN_RESPONSE" | jq -r '.token // empty')
+
+          if [ -z "$JWT_TOKEN" ] || [ "$JWT_TOKEN" = "null" ]; then
+            echo "Warning: Failed to get JWT token, trying direct token authentication..."
+            # 如果获取 JWT 失败，尝试直接使用 token
+            AUTH_HEADER="Authorization: JWT ${DOCKERHUB_TOKEN}"
+          else
+            echo "Successfully obtained JWT token"
+            AUTH_HEADER="Authorization: JWT ${JWT_TOKEN}"
+          fi
+
+          # 调用 Docker Hub API 更新仓库 full_description（Overview）
+          RESPONSE=$(curl -s -w "\n%{http_code}" \
+            --request PATCH \
+            --url https://hub.docker.com/v2/repositories/${{ env.IMAGE_NAME }}/ \
+            --header "Content-Type: application/json" \
+            --header "${AUTH_HEADER}" \
+            --data "{\"full_description\": ${DESCRIPTION}}")
+
+          HTTP_CODE=$(echo "$RESPONSE" | tail -n1)
+          BODY=$(echo "$RESPONSE" | sed '$d')
+
+          if [ "$HTTP_CODE" -eq 200 ] || [ "$HTTP_CODE" -eq 201 ]; then
+            echo "Successfully updated Docker Hub repository overview"
+          else
+            echo "Error: Failed to update Docker Hub repository overview"
+            echo "HTTP Status: $HTTP_CODE"
+            echo "Response: $BODY"
+            # 不退出，避免影响主流程
+            echo "Warning: Docker Hub overview update failed, but continuing..."
+          fi
