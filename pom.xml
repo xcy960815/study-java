@@ -177,11 +177,7 @@
             <version>1.0.39</version>
         </dependency>
 
-        <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-resolver-dns-native-macos</artifactId>
-            <classifier>osx-aarch_64</classifier>
-        </dependency>
+        <!-- 移除了 Mac 专用的 netty-resolver-dns-native-macos，改用 profile 加载 -->
 
 
         <!-- Jackson Databind (包含 @JsonProperty 注解) -->
@@ -263,6 +259,24 @@
             <activation>
                 <activeByDefault>false</activeByDefault>
             </activation>
+        </profile>
+
+        
+        <!-- Mac 本地开发专用配置 -->
+        <profile>
+            <id>mac-native</id>
+            <activation>
+                <os>
+                    <family>mac</family>
+                </os>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>io.netty</groupId>
+                    <artifactId>netty-resolver-dns-native-macos</artifactId>
+                    <classifier>osx-aarch_64</classifier>
+                </dependency>
+            </dependencies>
         </profile>
     </profiles>
 
