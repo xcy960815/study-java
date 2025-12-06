@@ -137,6 +137,7 @@ volumes:
 networks:
   study-java-network:
     driver: bridge
+    name: study-java-network
 
 # 执行指令
 # docker-compose -p study-java -f study-java-compose.yml up -d --remove-orphans
