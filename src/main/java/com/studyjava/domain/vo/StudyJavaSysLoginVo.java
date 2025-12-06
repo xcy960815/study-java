@@ -7,4 +7,5 @@ import lombok.EqualsAndHashCode;
 @Data
 public class StudyJavaSysLoginVo extends StudyJavaSysUserVo {
     private String token;
+    private String refreshToken;
 }

@@ -10,4 +10,8 @@ public interface StudyJavaLoginService {
     StudyJavaSysLoginVo login(StudyJavaLoginDto studyJavaLogin);
 
     String getCaptcha() throws IOException;
+
+    StudyJavaSysLoginVo refreshToken(String refreshToken);
+
+    void logout();
 }

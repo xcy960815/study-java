@@ -31,8 +31,15 @@ public class StudyJavaLoginController {
     }
 
     @PostMapping("/logout")
-    public void logout() {
-        // studyJavaLoginService.logout(studyJavaLoginParams);
+    public Boolean logout() {
+        studyJavaLoginService.logout();
+        return true;
     }
+
+    @PostMapping("/refreshToken")
+    public StudyJavaSysLoginVo refreshToken(@RequestBody java.util.Map<String, String> params) {
+        return studyJavaLoginService.refreshToken(params.get("refreshToken"));
+    }
+
 
 }

@@ -32,9 +32,14 @@ public class JwtTokenComponent {
     private static final String SECRET_KEY_NAME = "study-java-secret-key";
 
     /**
-     * 设置过期时间（1天）
+     * Access Token 过期时间（1小时）
      */
-    private final long EXPIRATION_TIME = 86400000L;
+    private final long ACCESS_EXPIRATION_TIME = 3600000L;
+
+    /**
+     * Refresh Token 过期时间（7天）
+     */
+    private final long REFRESH_EXPIRATION_TIME = 604800000L * 7;
 
     /**
      * 秘钥
@@ -54,12 +59,12 @@ public class JwtTokenComponent {
             this.SECRET_KEY = new SecretKeySpec(Base64.getDecoder().decode(secretKeyName), SignatureAlgorithm.HS512.getJcaName());
         }else {
             this.SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS512);
-            redisComponent.setWithExpire(SECRET_KEY_NAME, Base64.getEncoder().encodeToString(SECRET_KEY.getEncoded()),EXPIRATION_TIME, TimeUnit.MILLISECONDS);
+            redisComponent.setWithExpire(SECRET_KEY_NAME, Base64.getEncoder().encodeToString(SECRET_KEY.getEncoded()),REFRESH_EXPIRATION_TIME, TimeUnit.MILLISECONDS);
         }
     }
 
     /**
-     * 生成 Token
+     * 生成 Access Token
      * @param tokenContent String
      * @return String
      */
@@ -67,7 +72,21 @@ public class JwtTokenComponent {
         return Jwts.builder()
                 .setSubject(tokenContent)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .setExpiration(new Date(System.currentTimeMillis() + ACCESS_EXPIRATION_TIME))
+                .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
+                .compact();
+    }
+
+    /**
+     * 生成 Refresh Token
+     * @param tokenContent String
+     * @return String
+     */
+    public String generateRefreshToken(String tokenContent) {
+        return Jwts.builder()
+                .setSubject(tokenContent)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + REFRESH_EXPIRATION_TIME))
                 .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
                 .compact();
     }

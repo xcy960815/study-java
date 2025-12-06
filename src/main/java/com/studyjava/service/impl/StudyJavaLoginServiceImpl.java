@@ -23,6 +23,9 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import jakarta.servlet.http.HttpServletRequest;
 
 
 @Slf4j
@@ -109,15 +112,28 @@ public class StudyJavaLoginServiceImpl implements StudyJavaLoginService {
         // 将用户关键信息（能从数据库中查出来的字段保存进去）
         String tokenContent = JSONUtil.toJsonStr(tokenContentOption);
         String token = jwtTokenComponent.generateToken(tokenContent);
-        redisComponent.setWithExpire(TOKEN_KEY, token,TOKEN_EXPIRE_TIME, TimeUnit.HOURS);
+        String refreshToken = jwtTokenComponent.generateRefreshToken(tokenContent);
+        redisComponent.setWithExpire(TOKEN_KEY + ":" + userInfoVo.getId(), token,TOKEN_EXPIRE_TIME, TimeUnit.HOURS);
         studyJavaLoginVo.setToken(token);
+        studyJavaLoginVo.setRefreshToken(refreshToken);
 
         return studyJavaLoginVo;
     }
 
 
-    public void logout(StudyJavaLoginDto studyJavaLoginParams) {
-        // studyJavaSysUserService.logout(studyJavaLoginParams);
+    @Override
+    public void logout() {
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        if (attributes != null) {
+            HttpServletRequest request = attributes.getRequest();
+            String authorization = request.getHeader("Authorization");
+            if (authorization != null) {
+                String userInfo = jwtTokenComponent.getUserInfoFromAuthorization(authorization);
+                Map<String, Object> map = JSONUtil.toBean(userInfo, Map.class);
+                String userId = (String) map.get("userId");
+                redisComponent.delete(TOKEN_KEY + ":" + userId);
+            }
+        }
     }
 
     /**
@@ -138,5 +154,43 @@ public class StudyJavaLoginServiceImpl implements StudyJavaLoginService {
         // 毫秒转秒 并保留2位小数
         log.info("生成验证码耗时 {}",String.format("%.2f", (endTime - startTime) / 1000.0) + "秒");
         return  "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(byteArrayOutputStream.toByteArray());
+    }
+
+    @Override
+    public StudyJavaSysLoginVo refreshToken(String refreshToken) {
+        if (jwtTokenComponent.isTokenExpired(refreshToken)) {
+            throw new StudyJavaException("Refresh Token已过期，请重新登录");
+        }
+        String tokenContent = jwtTokenComponent.getUserInfoFromToken(refreshToken);
+
+        // Generate new tokens
+        String newToken = jwtTokenComponent.generateToken(tokenContent);
+        String newRefreshToken = jwtTokenComponent.generateRefreshToken(tokenContent);
+
+        StudyJavaSysLoginVo loginVo = new StudyJavaSysLoginVo();
+        loginVo.setToken(newToken);
+        loginVo.setRefreshToken(newRefreshToken);
+
+        // Populate user info
+        Map<String, Object> map = JSONUtil.toBean(tokenContent, Map.class);
+        String loginName = (String) map.get("loginName");
+
+        StudyJavaLoginDto loginDto = new StudyJavaLoginDto();
+        loginDto.setUsername(loginName);
+        StudyJavaSysUserVo userInfoVo = studyJavaSysUserService.getUserInfo(loginDto);
+
+        if (userInfoVo != null) {
+            loginVo.setId(userInfoVo.getId());
+            loginVo.setLoginName(userInfoVo.getLoginName());
+            loginVo.setAddress(userInfoVo.getAddress());
+            loginVo.setCreateTime(userInfoVo.getCreateTime());
+            loginVo.setIntroduceSign(userInfoVo.getIntroduceSign());
+            loginVo.setNickName(userInfoVo.getNickName());
+
+            // 更新 Redis 中的 Token
+            redisComponent.setWithExpire(TOKEN_KEY + ":" + userInfoVo.getId(), newToken, TOKEN_EXPIRE_TIME, TimeUnit.HOURS);
+        }
+
+        return loginVo;
     }
 }
