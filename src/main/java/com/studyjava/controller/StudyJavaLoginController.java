@@ -3,8 +3,6 @@ package com.studyjava.controller;
 import com.studyjava.domain.dto.StudyJavaLoginDto;
 import com.studyjava.domain.vo.StudyJavaSysLoginVo;
 import com.studyjava.service.StudyJavaLoginService;
-import com.studyjava.utils.ResponseGenerator;
-import com.studyjava.utils.ResponseResult;
 import jakarta.annotation.Nullable;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
@@ -23,21 +21,18 @@ public class StudyJavaLoginController {
     private StudyJavaLoginService studyJavaLoginService;
 
     @PostMapping("/login")
-    public ResponseResult<StudyJavaSysLoginVo> login(@Valid @RequestBody StudyJavaLoginDto studyJavaLoginDto) {
-        StudyJavaSysLoginVo loginResult = studyJavaLoginService.login(studyJavaLoginDto);
-        return ResponseGenerator.generateSuccessResult(loginResult);
+    public StudyJavaSysLoginVo login(@Valid @RequestBody StudyJavaLoginDto studyJavaLoginDto) {
+        return studyJavaLoginService.login(studyJavaLoginDto);
     }
 
     @GetMapping("/captcha")
-    public ResponseResult<String> getCaptcha() throws IOException {
-        String base64Image = studyJavaLoginService.getCaptcha();
-        return ResponseGenerator.generateSuccessResult(base64Image);
+    public String getCaptcha() throws IOException {
+        return studyJavaLoginService.getCaptcha();
     }
 
     @PostMapping("/logout")
-    public ResponseResult<Nullable> logout() {
+    public void logout() {
         // studyJavaLoginService.logout(studyJavaLoginParams);
-        return ResponseGenerator.generateSuccessResult(null);
     }
 
 }

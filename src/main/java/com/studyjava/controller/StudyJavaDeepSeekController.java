@@ -8,8 +8,6 @@ import com.studyjava.domain.vo.deepseek.StudyJavaDeepSeekCompletionsVo;
 import com.studyjava.domain.vo.deepseek.StudyJavaDeepSeekModelsVo;
 import com.studyjava.exception.StudyJavaException;
 import com.studyjava.service.StudyJavaDeepSeekService;
-import com.studyjava.utils.ResponseGenerator;
-import com.studyjava.utils.ResponseResult;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -51,10 +49,10 @@ public class StudyJavaDeepSeekController {
 
     /**
      * 获取可用模型列表
-     * @return 模型列表
+     * @return StudyJavaDeepSeekModelsVo
      */
     @GetMapping(value = "/models")
-    public ResponseResult<StudyJavaDeepSeekModelsVo> models() {
+    public StudyJavaDeepSeekModelsVo models() {
         try {
             StudyJavaDeepSeekModelsDto modelsDto = studyJavaDeepSeekService.models();
 
@@ -70,7 +68,7 @@ public class StudyJavaDeepSeekController {
             }
             modelsVo.setData(modelVoList);
 
-            return ResponseGenerator.generateSuccessResult(modelsVo);
+            return modelsVo;
         } catch (IOException | InterruptedException e) {
             throw new StudyJavaException(e.getMessage());
         }
@@ -78,10 +76,10 @@ public class StudyJavaDeepSeekController {
 
     /**
      * 获取账户余额
-     * @return 账户余额信息
+     * @return StudyJavaDeepSeekBalanceVo
      */
     @GetMapping(value = "/balance")
-    public ResponseResult<StudyJavaDeepSeekBalanceVo> balance() {
+    public StudyJavaDeepSeekBalanceVo balance() {
         try {
             StudyJavaDeepSeekBalanceDto balanceDto = studyJavaDeepSeekService.balance();
 
@@ -97,7 +95,7 @@ public class StudyJavaDeepSeekController {
             }
             balanceVo.setBalance_infos(balanceInfoVoList);
 
-            return ResponseGenerator.generateSuccessResult(balanceVo);
+            return balanceVo;
         } catch (IOException | InterruptedException e) {
             throw new StudyJavaException(e.getMessage());
         }

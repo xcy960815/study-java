@@ -4,9 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.studyjava.domain.dto.StudyJavaOrderDto;
 import com.studyjava.domain.vo.StudyJavaOrderVo;
 import com.studyjava.service.StudyJavaOrderService;
-import com.studyjava.utils.ResponseGenerator;
-import com.studyjava.utils.ResponseListResult;
-import com.studyjava.utils.ResponseResult;
+import com.studyjava.utils.PageResult;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -28,58 +26,58 @@ public class StudyJavaOrderController extends BaseController {
      * 获取用户订单列表
      * @param pageNum 页码
      * @param pageSize 每页大小
-     * @return 订单列表
+     * @return PageResult<StudyJavaOrderVo>
      */
     @GetMapping("/getOrderList")
-    public ResponseListResult<StudyJavaOrderVo> getOrderList(
+    public PageResult<StudyJavaOrderVo> getOrderList(
             @RequestParam(defaultValue = "1") Integer pageNum,
             @RequestParam(defaultValue = "10") Integer pageSize,
             @ModelAttribute StudyJavaOrderDto studyJavaOrderDto
     ) {
         IPage<StudyJavaOrderVo> orderVoPage = studyJavaOrderService.getOrderList(startPage(pageNum, pageSize), studyJavaOrderDto);
-        return ResponseGenerator.generateListResult(orderVoPage.getRecords(), orderVoPage.getTotal());
+        return PageResult.of(orderVoPage.getRecords(), orderVoPage.getTotal());
     }
 
     /**
      * 获取订单详情
      * @param orderId 订单ID
-     * @return 订单VO
+     * @return StudyJavaOrderVo
      */
     @GetMapping("/getOrderInfo")
-    public ResponseResult<StudyJavaOrderVo> getOrderInfo(@RequestParam("id") Long orderId) {
+    public StudyJavaOrderVo getOrderInfo(@RequestParam("id") Long orderId) {
         StudyJavaOrderDto orderDto =  new StudyJavaOrderDto();
         orderDto.setOrderId(orderId);
-        return ResponseGenerator.generateSuccessResult(studyJavaOrderService.getOrderInfo(orderDto));
+        return studyJavaOrderService.getOrderInfo(orderDto);
     }
 
     /**
      * 新建订单
      */
     @PostMapping("/insertOrder")
-    public ResponseResult<Boolean> insertOrder(@Valid @RequestBody StudyJavaOrderDto orderDto) {
-        return ResponseGenerator.generateSuccessResult(studyJavaOrderService.insertOrder(orderDto));
+    public Boolean insertOrder(@Valid @RequestBody StudyJavaOrderDto orderDto) {
+        return studyJavaOrderService.insertOrder(orderDto);
     }
 
     /**
      * 更新订单状态
      * @param orderDto 订单DTO
-     * @return 更新结果
+     * @return Boolean
      */
     @PutMapping("/updateOrder")
-    public ResponseResult<Boolean> updateOrder(@Valid @RequestBody StudyJavaOrderDto orderDto) {
-        return ResponseGenerator.generateSuccessResult(studyJavaOrderService.updateOrder(orderDto));
+    public Boolean updateOrder(@Valid @RequestBody StudyJavaOrderDto orderDto) {
+        return studyJavaOrderService.updateOrder(orderDto);
     }
 
     /**
      * 删除订单（逻辑删除）
      * @param orderId 订单ID
-     * @return 删除结果
+     * @return Boolean
      */
     @DeleteMapping("/deleteOrder")
-    public ResponseResult<Boolean> deleteOrder(@RequestParam("id") Long orderId) {
+    public Boolean deleteOrder(@RequestParam("id") Long orderId) {
         StudyJavaOrderDto orderDto = new StudyJavaOrderDto();
         orderDto.setOrderId(orderId);
-        return ResponseGenerator.generateSuccessResult(studyJavaOrderService.deleteOrder(orderDto));
+        return studyJavaOrderService.deleteOrder(orderDto);
     }
 
 }

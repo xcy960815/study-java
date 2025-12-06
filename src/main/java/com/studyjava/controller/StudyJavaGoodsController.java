@@ -4,9 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.studyjava.domain.dto.StudyJavaGoodsDto;
 import com.studyjava.domain.vo.StudyJavaGoodsVo;
 import com.studyjava.service.StudyJavaGoodsService;
-import com.studyjava.utils.ResponseGenerator;
-import com.studyjava.utils.ResponseListResult;
-import com.studyjava.utils.ResponseResult;
+import com.studyjava.utils.PageResult;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -26,26 +24,26 @@ public class StudyJavaGoodsController extends BaseController {
      * @param pageSize 每页大小
      * @param pageNum 页码
      * @param studyJavaGoodsDto 查询条件
-     * @return 商品分类列表
+     * @return PageResult<StudyJavaGoodsVo>
      */
     @GetMapping("/getGoodsList")
-    public ResponseListResult<StudyJavaGoodsVo> getGoodsList(
+    public PageResult<StudyJavaGoodsVo> getGoodsList(
             @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
             @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
             @ModelAttribute StudyJavaGoodsDto studyJavaGoodsDto
     ) {
         IPage<StudyJavaGoodsVo> studyJavaGoodsVoPage =  studyJavaGoodsService.getGoodsList(startPage(pageNum,pageSize),studyJavaGoodsDto);
-        return ResponseGenerator.generateListResult(studyJavaGoodsVoPage.getRecords(),studyJavaGoodsVoPage.getTotal());
+        return PageResult.of(studyJavaGoodsVoPage.getRecords(), studyJavaGoodsVoPage.getTotal());
     }
 
     /**
      * 添加商品分类
      * @param studyJavaGoodsDto 商品分类信息
-     * @return 添加结果
+     * @return Boolean
      */
     @PutMapping("/insertGoods")
-    public ResponseResult<Boolean> insertGoods(@Valid @RequestBody StudyJavaGoodsDto studyJavaGoodsDto) {
-        return ResponseGenerator.generateSuccessResult(studyJavaGoodsService.insertGoods(studyJavaGoodsDto)) ;
+    public Boolean insertGoods(@Valid @RequestBody StudyJavaGoodsDto studyJavaGoodsDto) {
+        return studyJavaGoodsService.insertGoods(studyJavaGoodsDto);
     }
 //
 //    /**

@@ -4,13 +4,11 @@ import com.studyjava.domain.dto.StudyJavaSysUserDto;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.studyjava.domain.vo.StudyJavaSysUserVo;
 import com.studyjava.exception.StudyJavaException;
-import com.studyjava.utils.ResponseListResult;
+import com.studyjava.utils.PageResult;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import com.studyjava.utils.ResponseResult;
-import com.studyjava.utils.ResponseGenerator;
 import com.studyjava.service.StudyJavaSysUserService;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
@@ -28,25 +26,25 @@ public class StudyJavaSysUserController extends BaseController {
      * @param pageNum int
      * @param pageSize int
      * @param studyJavaUser StudyJavaSysUserDto
-     * @return ResponseListResult<StudyJavaSysUserVo>
+     * @return PageResult<StudyJavaSysUserVo>
      */
     @PostMapping("/getUserList")
-    public ResponseListResult<StudyJavaSysUserVo> getUserList(
+    public PageResult<StudyJavaSysUserVo> getUserList(
         @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
         @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
         @RequestBody StudyJavaSysUserDto studyJavaSysUserDto
     ) {
         IPage<StudyJavaSysUserVo> userVoPage = studyJavaSysUserService.getUserList(startPage(pageNum, pageSize), studyJavaSysUserDto);
-        return ResponseGenerator.generateListResult(userVoPage.getRecords(),userVoPage.getTotal());
+        return PageResult.of(userVoPage.getRecords(), userVoPage.getTotal());
     }
 
     /**
      * 获取用户信息
-     * @return ResponseResult<StudyJavaSysUserVo>
+     * @return StudyJavaSysUserVo
      */
     @GetMapping("/getUserInfo")
-    public ResponseResult<StudyJavaSysUserVo> getUserInfo(){
-        return ResponseGenerator.generateSuccessResult(studyJavaSysUserService.getUserInfo());
+    public StudyJavaSysUserVo getUserInfo(){
+        return studyJavaSysUserService.getUserInfo();
     }
 
     // RequestParam 通常用于获取单个参数
@@ -54,10 +52,10 @@ public class StudyJavaSysUserController extends BaseController {
     /**
      * 更新用户
      * @param studyJavaSysUser StudyJavaSysUserDto
-     * @return ResponseResult<Boolean>
+     * @return Boolean
      */
     @PostMapping("/updateUser")
-    public ResponseResult<Boolean> updateUser(@Valid @RequestBody StudyJavaSysUserDto studyJavaSysUser) {
+    public Boolean updateUser(@Valid @RequestBody StudyJavaSysUserDto studyJavaSysUser) {
         // 获取用户ID
         Long userId = studyJavaSysUser.getId();
         if(userId == null){
@@ -65,17 +63,17 @@ public class StudyJavaSysUserController extends BaseController {
         }
         studyJavaSysUserService.updateUser(studyJavaSysUser);
         // 返回更新结果
-        return ResponseGenerator.generateSuccessResult(true);
+        return true;
     }
 
     /**
      * 更新用户头像
      * @param userId String
      * @param file MultipartFile
-     * @return ResponseResult<String>
+     * @return String
      */
     @PostMapping("/updateUserAvatar")
-    public ResponseResult<String> updateUserAvatar(
+    public String updateUserAvatar(
             @RequestParam("userId") String userId,
             @RequestParam("file") MultipartFile file
     ) {
@@ -83,9 +81,7 @@ public class StudyJavaSysUserController extends BaseController {
             throw new StudyJavaException("用户ID不能为空");
         }
         try {
-           String base64Image = studyJavaSysUserService.updateUserAvatar(userId,file);
-            // 返回更新结果
-            return ResponseGenerator.generateSuccessResult(base64Image);
+           return studyJavaSysUserService.updateUserAvatar(userId,file);
         }catch (IOException error){
             throw new StudyJavaException("更新头像失败" + error.getMessage());
         }
@@ -94,32 +90,32 @@ public class StudyJavaSysUserController extends BaseController {
     /**
      * 更新用户信息
      * @param studyJavaUser StudyJavaSysUserDto
-     * @return ResponseResult<Boolean>
+     * @return Boolean
      */
     @PostMapping("/insertUser")
-    public ResponseResult<Boolean> insertUser(@Valid @RequestBody StudyJavaSysUserDto studyJavaUser) {
+    public Boolean insertUser(@Valid @RequestBody StudyJavaSysUserDto studyJavaUser) {
         // 返回插入结果
-        return ResponseGenerator.generateSuccessResult(studyJavaSysUserService.insertUser(studyJavaUser));
+        return studyJavaSysUserService.insertUser(studyJavaUser);
     }
 
     /**
      * 删除用户信息
      * @param studyJavaSysUserDto StudyJavaSysUserDto
-     * @return ResponseResult<Boolean>
+     * @return Boolean
      */
     @DeleteMapping("/deleteUser")
-    public ResponseResult<Boolean> deleteUser(@RequestBody StudyJavaSysUserDto studyJavaSysUserDto) {
+    public Boolean deleteUser(@RequestBody StudyJavaSysUserDto studyJavaSysUserDto) {
         // 返回删除结果
-        return ResponseGenerator.generateSuccessResult(studyJavaSysUserService.deleteUser(studyJavaSysUserDto));
+        return studyJavaSysUserService.deleteUser(studyJavaSysUserDto);
     }
 
     /**
      * 更新用户密码
-     * @return ResponseResult<Boolean>
+     * @return Boolean
      */
     @PostMapping("/updateUserPassword")
-    public ResponseResult<Boolean> updateUserPassword(@RequestBody StudyJavaSysUserDto studyJavaSysUserDto) {
+    public Boolean updateUserPassword(@RequestBody StudyJavaSysUserDto studyJavaSysUserDto) {
         // 返回插入结果
-        return ResponseGenerator.generateSuccessResult(studyJavaSysUserService.updateUserPassword(studyJavaSysUserDto));
+        return studyJavaSysUserService.updateUserPassword(studyJavaSysUserDto);
     }
 }

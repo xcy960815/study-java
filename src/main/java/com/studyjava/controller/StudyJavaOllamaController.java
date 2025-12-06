@@ -7,8 +7,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.studyjava.service.StudyJavaOllamaService;
-import com.studyjava.utils.ResponseGenerator;
-import com.studyjava.utils.ResponseResult;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
@@ -65,9 +63,9 @@ public class StudyJavaOllamaController {
      * 获取标签
      */
     @GetMapping("/tags")
-    public ResponseResult<StudyJavaOllamaTagsDto> tags() {
+    public StudyJavaOllamaTagsDto tags() {
         try {
-            return ResponseGenerator.generateSuccessResult(studyJavaOllamaService.tags());
+            return studyJavaOllamaService.tags();
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -77,9 +75,9 @@ public class StudyJavaOllamaController {
      * 获取所有的模型
      */
     @GetMapping("/models")
-    public ResponseResult<StudyJavaOllamaModelsDto> models() {
+    public StudyJavaOllamaModelsDto models() {
         try {
-            return ResponseGenerator.generateSuccessResult(studyJavaOllamaService.models());
+            return studyJavaOllamaService.models();
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -87,12 +85,12 @@ public class StudyJavaOllamaController {
 
     /**
      * 获取ollama版本
-     * @return ResponseResult
+     * @return StudyJavaOllamaVersionDto
      */
     @GetMapping("/version")
-    public ResponseResult<StudyJavaOllamaVersionDto> version() {
+    public StudyJavaOllamaVersionDto version() {
         try{
-            return ResponseGenerator.generateSuccessResult(studyJavaOllamaService.version());
+            return studyJavaOllamaService.version();
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -100,13 +98,13 @@ public class StudyJavaOllamaController {
 
     /**
      * 删除模型
-     * @return ResponseResult<Boolean>
+     * @return Boolean
      */
     @DeleteMapping("/delete")
-    public ResponseResult<Boolean> delete(@RequestBody StudyJavaOllamaDeleteVo studyJavaOllamaDeleteVo) {
+    public Boolean delete(@RequestBody StudyJavaOllamaDeleteVo studyJavaOllamaDeleteVo) {
         try {
             studyJavaOllamaService.delete(studyJavaOllamaDeleteVo);
-            return ResponseGenerator.generateSuccessResult();
+            return true;
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -114,12 +112,12 @@ public class StudyJavaOllamaController {
 
     /**
      * 获取正在内存中运行的模型
-     * @return ResponseResult<StudyJavaOllamaPsDto>
+     * @return StudyJavaOllamaPsDto
      */
     @GetMapping("/ps")
-    public ResponseResult<StudyJavaOllamaPsDto> ps() {
+    public StudyJavaOllamaPsDto ps() {
         try {
-            return ResponseGenerator.generateSuccessResult(studyJavaOllamaService.ps());
+            return studyJavaOllamaService.ps();
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -132,9 +130,9 @@ public class StudyJavaOllamaController {
     }
 
     @PostMapping("/show")
-    public ResponseResult<StudyJavaOllamaShowDto> show(StudyJavaOllamaShowVo studyJavaOllamaShowVo) {
+    public StudyJavaOllamaShowDto show(StudyJavaOllamaShowVo studyJavaOllamaShowVo) {
        try {
-           return ResponseGenerator.generateSuccessResult(studyJavaOllamaService.show(studyJavaOllamaShowVo));
+           return studyJavaOllamaService.show(studyJavaOllamaShowVo);
        } catch (IOException | InterruptedException e) {
            throw new RuntimeException(e);
        }

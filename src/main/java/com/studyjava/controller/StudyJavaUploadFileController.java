@@ -4,8 +4,6 @@ import java.io.IOException;
 import com.studyjava.domain.dto.StudyJavaUploadFileDto;
 import com.studyjava.domain.vo.StudyJavaUploadFileVo;
 import com.studyjava.service.StudyJavaUploadFileService;
-import com.studyjava.utils.ResponseGenerator;
-import com.studyjava.utils.ResponseResult;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -26,10 +24,10 @@ public class StudyJavaUploadFileController {
     /**
      * 常规文件上传
      * @param file 上传的文件
-     * @return 上传结果
+     * @return StudyJavaUploadFileVo
      */
     @PostMapping("/upload")
-    public ResponseResult<StudyJavaUploadFileVo> uploadFile(@RequestParam("file") MultipartFile file) {
+    public StudyJavaUploadFileVo uploadFile(@RequestParam("file") MultipartFile file) {
         try {
             // 创建DTO
             StudyJavaUploadFileDto fileDto = new StudyJavaUploadFileDto();
@@ -44,23 +42,23 @@ public class StudyJavaUploadFileController {
             fileVo.setStatus("success");
             fileVo.setMessage("文件上传成功");
 
-            return ResponseGenerator.generateSuccessResult(fileVo);
+            return fileVo;
         } catch (IOException e) {
             log.error("文件上传失败", e);
             StudyJavaUploadFileVo fileVo = new StudyJavaUploadFileVo();
             fileVo.setStatus("error");
             fileVo.setMessage("文件上传失败: " + e.getMessage());
-            return ResponseGenerator.generateSuccessResult(fileVo);
+            return fileVo;
         }
     }
 
     /**
      * 大文件分片上传
      * @param fileDto 上传文件DTO
-     * @return 上传结果
+     * @return StudyJavaUploadFileVo
      */
     @PostMapping("/upload/chunk")
-    public ResponseResult<StudyJavaUploadFileVo> uploadLargeFile(@Valid StudyJavaUploadFileDto fileDto) {
+    public StudyJavaUploadFileVo uploadLargeFile(@Valid StudyJavaUploadFileDto fileDto) {
         try {
             // 调用服务
             String result = studyJavaUploadFileService.uploadLargeFile(
@@ -86,50 +84,50 @@ public class StudyJavaUploadFileController {
                 fileVo.setMessage(result);
             }
 
-            return ResponseGenerator.generateSuccessResult(fileVo);
+            return fileVo;
         } catch (IOException e) {
             log.error("文件分片上传失败", e);
             StudyJavaUploadFileVo fileVo = new StudyJavaUploadFileVo();
             fileVo.setStatus("error");
             fileVo.setMessage("文件分片上传失败: " + e.getMessage());
-            return ResponseGenerator.generateSuccessResult(fileVo);
+            return fileVo;
         }
     }
 
     /**
      * 文件上传（兼容旧接口）
      * @param file MultipartFile
-     * @return ResponseResult<String>
+     * @return String
      * @deprecated 使用 /file/upload 替代
      */
     @Deprecated
     @PostMapping("/uploadFile")
-    public ResponseResult<String> uploadFileOld(MultipartFile file) {
+    public String uploadFileOld(MultipartFile file) {
         try {
-            return ResponseGenerator.generateSuccessResult(studyJavaUploadFileService.uploadFile(file));
+            return studyJavaUploadFileService.uploadFile(file);
         } catch (IOException e) {
-            return ResponseGenerator.generateErrorResult(e.getMessage());
+            throw new RuntimeException(e.getMessage());
         }
     }
 
     /**
      * 大文件切片上传（兼容旧接口）
      * @param file MultipartFile
-     * @return ResponseResult<String>
+     * @return String
      * @deprecated 使用 /file/upload/chunk 替代
      */
     @Deprecated
     @PostMapping("/uploadLargeFile")
-    public ResponseResult<String> uploadLargeFileOld(
+    public String uploadLargeFileOld(
             @RequestParam("file") MultipartFile file,
             @RequestParam("fileName") String fileName,
             @RequestParam("chunkIndex") int chunkIndex,
             @RequestParam("totalChunks") int totalChunks
     ) {
         try {
-            return ResponseGenerator.generateSuccessResult(studyJavaUploadFileService.uploadLargeFile(file, fileName, chunkIndex, totalChunks));
+            return studyJavaUploadFileService.uploadLargeFile(file, fileName, chunkIndex, totalChunks);
         } catch (IOException e) {
-            return ResponseGenerator.generateErrorResult("上传失败：" + e.getMessage());
+            throw new RuntimeException("上传失败：" + e.getMessage());
         }
     }
 }
