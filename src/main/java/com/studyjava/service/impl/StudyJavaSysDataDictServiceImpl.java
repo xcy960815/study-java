@@ -7,7 +7,7 @@ import com.studyjava.domain.dto.StudyJavaSysDataDictDto;
 import com.studyjava.domain.vo.StudyJavaSysDataDictVo;
 import com.studyjava.domain.vo.StudyJavaSysUserVo;
 import com.studyjava.service.StudyJavaSysDataDictService;
-import com.studyjava.mapper.StudyJavaDataDictMapper;
+import com.studyjava.mapper.StudyJavaSysDataDictMapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.studyjava.service.StudyJavaSysUserService;
 import jakarta.annotation.Resource;
@@ -24,9 +24,9 @@ import java.util.stream.Collectors;
 * @createDate 2025-05-24 15:50:57
 */
 @Service
-public class StudyJavaSysDataDictServiceImpl extends ServiceImpl<StudyJavaDataDictMapper, StudyJavaSysDataDictDao> implements StudyJavaSysDataDictService {
+public class StudyJavaSysDataDictServiceImpl extends ServiceImpl<StudyJavaSysDataDictMapper, StudyJavaSysDataDictDao> implements StudyJavaSysDataDictService {
     @Resource
-    private StudyJavaDataDictMapper studyJavaDataDictMapper;
+    private StudyJavaSysDataDictMapper studyJavaSysDataDictMapper;
 
     @Resource
     private StudyJavaSysUserService studyJavaSysUserService;
@@ -38,7 +38,7 @@ public class StudyJavaSysDataDictServiceImpl extends ServiceImpl<StudyJavaDataDi
     @Override
     public IPage<StudyJavaSysDataDictVo> getDataDictList(Page<StudyJavaSysDataDictDto> page, StudyJavaSysDataDictDto studyJavaSysDataDictDto) {
 
-        IPage<StudyJavaSysDataDictDao> daoPage = studyJavaDataDictMapper.getDataDictList(page,dto2Dao(studyJavaSysDataDictDto));
+        IPage<StudyJavaSysDataDictDao> daoPage = studyJavaSysDataDictMapper.getDataDictList(page,dto2Dao(studyJavaSysDataDictDto));
         // 转换为VO对象
         IPage<StudyJavaSysDataDictVo> voPage = new Page<>(daoPage.getCurrent(), daoPage.getSize(), daoPage.getTotal());
         List<StudyJavaSysDataDictVo> voList = daoPage.getRecords().stream()
@@ -61,7 +61,7 @@ public class StudyJavaSysDataDictServiceImpl extends ServiceImpl<StudyJavaDataDi
         StudyJavaSysUserVo studyJavaSysUserVo = studyJavaSysUserService.getUserInfo();
         studyJavaSysDataDictDao.setCreatedBy(studyJavaSysUserVo.getLoginName());
         studyJavaSysDataDictDao.setUpdatedBy(studyJavaSysUserVo.getLoginName());
-        return studyJavaDataDictMapper.insertDataDict(studyJavaSysDataDictDao);
+        return studyJavaSysDataDictMapper.insertDataDict(studyJavaSysDataDictDao);
     }
 
     @Override
@@ -72,17 +72,17 @@ public class StudyJavaSysDataDictServiceImpl extends ServiceImpl<StudyJavaDataDi
         StudyJavaSysUserVo studyJavaSysUserVo = studyJavaSysUserService.getUserInfo();
         studyJavaSysDataDictDao.setCreatedBy(studyJavaSysUserVo.getLoginName());
         studyJavaSysDataDictDao.setUpdatedBy(studyJavaSysUserVo.getLoginName());
-        return studyJavaDataDictMapper.updateDataDict(studyJavaSysDataDictDao);
+        return studyJavaSysDataDictMapper.updateDataDict(studyJavaSysDataDictDao);
     }
 
     @Override
     public Boolean deleteDataDict(Long id) {
-        return studyJavaDataDictMapper.deleteDataDict(id);
+        return studyJavaSysDataDictMapper.deleteDataDict(id);
     }
 
     @Override
     public StudyJavaSysDataDictVo getDataDictDetail(Long id) {
-        StudyJavaSysDataDictDao studyJavaSysDataDictDao = studyJavaDataDictMapper.getDataDictDetail(id);
+        StudyJavaSysDataDictDao studyJavaSysDataDictDao = studyJavaSysDataDictMapper.getDataDictDetail(id);
         StudyJavaSysDataDictVo studyJavaSysDataDictVo = new StudyJavaSysDataDictVo();
         BeanUtils.copyProperties(studyJavaSysDataDictDao, studyJavaSysDataDictVo);
         return studyJavaSysDataDictVo;

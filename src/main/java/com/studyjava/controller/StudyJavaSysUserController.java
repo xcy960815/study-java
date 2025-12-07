@@ -9,6 +9,8 @@ import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import com.studyjava.annotation.Log;
+import com.studyjava.domain.enums.BusinessType;
 import com.studyjava.service.StudyJavaSysUserService;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
@@ -54,6 +56,7 @@ public class StudyJavaSysUserController extends BaseController {
      * @param studyJavaSysUser StudyJavaSysUserDto
      * @return Boolean
      */
+    @Log(title = "用户管理", businessType = BusinessType.UPDATE)
     @PostMapping("/updateUser")
     public Boolean updateUser(@Valid @RequestBody StudyJavaSysUserDto studyJavaSysUser) {
         // 获取用户ID
@@ -92,6 +95,7 @@ public class StudyJavaSysUserController extends BaseController {
      * @param studyJavaUser StudyJavaSysUserDto
      * @return Boolean
      */
+    @Log(title = "用户管理", businessType = BusinessType.INSERT)
     @PostMapping("/insertUser")
     public Boolean insertUser(@Valid @RequestBody StudyJavaSysUserDto studyJavaUser) {
         // 返回插入结果
@@ -103,6 +107,7 @@ public class StudyJavaSysUserController extends BaseController {
      * @param studyJavaSysUserDto StudyJavaSysUserDto
      * @return Boolean
      */
+    @Log(title = "用户管理", businessType = BusinessType.DELETE)
     @DeleteMapping("/deleteUser")
     public Boolean deleteUser(@RequestBody StudyJavaSysUserDto studyJavaSysUserDto) {
         // 返回删除结果
@@ -113,6 +118,7 @@ public class StudyJavaSysUserController extends BaseController {
      * 更新用户密码
      * @return Boolean
      */
+    @Log(title = "用户管理", businessType = BusinessType.UPDATE)
     @PostMapping("/updateUserPassword")
     public Boolean updateUserPassword(@RequestBody StudyJavaSysUserDto studyJavaSysUserDto) {
         // 返回插入结果

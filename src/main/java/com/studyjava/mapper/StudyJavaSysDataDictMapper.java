@@ -11,7 +11,7 @@ import org.apache.ibatis.annotations.Param;
 * @description 针对表【study_java_data_dictionary(数据字典表)】的数据库操作Mapper
 * @createDate 2025-05-24 15:50:57
 */
-public interface StudyJavaDataDictMapper extends BaseMapper<StudyJavaSysDataDictDao> {
+public interface StudyJavaSysDataDictMapper extends BaseMapper<StudyJavaSysDataDictDao> {
 
     IPage<StudyJavaSysDataDictDao> getDataDictList(@Param("page") Page<StudyJavaSysDataDictDto> page, @Param("studyJavaSysDataDictDao") StudyJavaSysDataDictDao studyJavaSysDataDictDao);
 

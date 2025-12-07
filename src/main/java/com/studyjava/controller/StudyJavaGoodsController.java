@@ -9,6 +9,8 @@ import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import com.studyjava.annotation.Log;
+import com.studyjava.domain.enums.BusinessType;
 
 
 @Slf4j
@@ -41,6 +43,7 @@ public class StudyJavaGoodsController extends BaseController {
      * @param studyJavaGoodsDto 商品分类信息
      * @return Boolean
      */
+    @Log(title = "商品管理", businessType = BusinessType.INSERT)
     @PutMapping("/insertGoods")
     public Boolean insertGoods(@Valid @RequestBody StudyJavaGoodsDto studyJavaGoodsDto) {
         return studyJavaGoodsService.insertGoods(studyJavaGoodsDto);
