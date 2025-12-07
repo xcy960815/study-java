@@ -20,8 +20,7 @@ import java.time.Duration;
 import java.io.*;
 import java.net.http.*;
 import java.net.http.HttpRequest.Builder;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -85,13 +84,7 @@ public class StudyJavaOllamaServiceImpl extends StudyJavaAiService implements St
      */
     private static final String Ollama_Version_Api = "/api/version";
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
-    private final HttpClient httpClient = HttpClient.newBuilder()
-            .connectTimeout(Duration.ofSeconds(30))
-            .build();
-
-    private final ExecutorService executorService = Executors.newCachedThreadPool();  // 创建线程池
 
     /**
      * 构建请求地址
@@ -188,7 +181,7 @@ public class StudyJavaOllamaServiceImpl extends StudyJavaAiService implements St
         HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
         log.info("response--response {}",response);
         if(response.statusCode() != 200) {
-            throw new StudyJavaException("请求失败");
+             throw new StudyJavaException("请求失败");
         }
     }
     /**
@@ -198,7 +191,7 @@ public class StudyJavaOllamaServiceImpl extends StudyJavaAiService implements St
      */
     @Override
     public void completions(StudyJavaOllamaCompletionsVo studyJavaOllamaCompletionsVo, SseEmitter emitter) {
-        executorService.execute(() -> {
+        CompletableFuture.runAsync(() -> {
             try {
                 HttpRequest httpRequest = generateRequestBuilder(generateRequestUrl(Ollama_Completions_Api))
                         .POST(studyJavaOllamaCompletionsVo.getBodyPublisher())
@@ -228,33 +221,23 @@ public class StudyJavaOllamaServiceImpl extends StudyJavaAiService implements St
         });
     }
 //    TODO 拉取模型 提示 404 page not found
-    public void pull (StudyJavaOllamaPullVo studyJavaOllamaPullVo) {
-//        Map<String,String> httpRequestBody = new HashMap<>();
-//        httpRequestBody.put("name","deepseek-r1:32b");
-//        httpRequestBody.put("insecure","true");
-//        httpRequestBody.put("stream","false");
-//        HttpResponse response = HttpRequest.post(generateRequestUrl(Ollama_Pull_Api).toString())
-//                .header("Content-Type", "application/json")
-//                .body(JsonUtils.toJson(httpRequestBody))
-//                .timeout(Ollama_Timeout)
-//                .execute();
-//        System.out.println(response.body());
-//        if (response.getStatus() == 200) {
-//
-////            return JsonUtils.fromJson(response.body(), StudyJavaOllamaPsDto.class);
-//        } else {
-//            throw new StudyJavaException("请求失败");
-//        }
-    }
+    @Override
+    public void pull(StudyJavaOllamaPullVo studyJavaOllamaPullVo) {
+        try {
+            HttpRequest httpRequest = generateRequestBuilder(generateRequestUrl(Ollama_Pull_Api))
+                    .POST(studyJavaOllamaPullVo.getBodyPublisher())
+                    .build();
+            HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
 
-    /**
-     * 处理HTTP响应
-     */
-    private <T> T handleResponse(HttpResponse<String> response, Class<T> responseType) throws IOException {
-        if (response.statusCode() == 200) {
-            return objectMapper.readValue(response.body(), responseType);
+            if (response.statusCode() != 200) {
+                throw new StudyJavaException("请求失败: " + response.body());
+            }
+        } catch (IOException | InterruptedException e) {
+            if (e instanceof InterruptedException) {
+                Thread.currentThread().interrupt();
+            }
+            throw new StudyJavaException("请求失败: " + e.getMessage());
         }
-        throw new StudyJavaException(String.format("请求失败，状态码：%d", response.statusCode()));
     }
 
     /**
@@ -298,14 +281,8 @@ public class StudyJavaOllamaServiceImpl extends StudyJavaAiService implements St
      * 关闭资源
      */
     public void shutdown() {
-        try {
-            executorService.shutdown();
-            if (!executorService.awaitTermination(60, TimeUnit.SECONDS)) {
-                executorService.shutdownNow();
-            }
-        } catch (InterruptedException e) {
-            executorService.shutdownNow();
-            Thread.currentThread().interrupt();
-        }
+        // executorService was removed, so this method is no longer needed for that purpose
+        // If there are other resources to shut down, they should be added here.
+        // For now, it can be left empty or removed if no other resources require explicit shutdown.
     }
 }
