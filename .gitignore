@@ -41,3 +41,7 @@ build/
 
 /uploadLargeFiles/
 /uploadFiles/
+
+### Environment Variables ###
+.env.local
+.env.*.local

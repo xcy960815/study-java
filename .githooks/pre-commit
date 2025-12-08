@@ -1,0 +1,64 @@
+#!/bin/bash
+
+# Git Pre-commit Hook
+# 用途：在提交代码前，自动检测并清理 application.yml 中的敏感信息（如 API Key）
+# 作者：Antigravity AI
+# 日期：2025-12-08
+
+set -e
+
+# 颜色定义
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+# 配置文件路径
+CONFIG_FILE="src/main/resources/application.yml"
+
+# API Key 占位符
+PLACEHOLDER="your-api-key-here"
+
+echo -e "${GREEN}🔍 正在检查敏感信息...${NC}"
+
+# 检查配置文件是否在暂存区
+if git diff --cached --name-only | grep -q "^${CONFIG_FILE}$"; then
+    echo -e "${YELLOW}📝 检测到 ${CONFIG_FILE} 文件变更${NC}"
+    
+    # 获取暂存区的文件内容
+    STAGED_CONTENT=$(git show ":${CONFIG_FILE}")
+    
+    # 检查是否包含 API Key（不是占位符的情况）
+    # 匹配 deepseek.api-key 后面跟着的不是占位符的值
+    if echo "$STAGED_CONTENT" | grep -E "api-key:\s*sk-[a-zA-Z0-9]+" > /dev/null; then
+        echo -e "${YELLOW}⚠️  检测到真实的 API Key!${NC}"
+        
+        # 创建临时文件
+        TEMP_FILE=$(mktemp)
+        
+        # 将暂存区内容写入临时文件
+        echo "$STAGED_CONTENT" > "$TEMP_FILE"
+        
+        # 替换所有 API Key 为占位符
+        # 匹配格式：api-key: sk-xxxxxx
+        # macOS 使用 BSD sed，需要特别注意语法
+        sed -E "s/(api-key:[[:space:]]*)sk-[a-zA-Z0-9]+/\1${PLACEHOLDER}/g" "$TEMP_FILE" > "${TEMP_FILE}.tmp"
+        mv "${TEMP_FILE}.tmp" "$TEMP_FILE"
+        
+        # 将清理后的内容写回暂存区
+        git add "$TEMP_FILE"
+        mv "$TEMP_FILE" "$CONFIG_FILE"
+        git add "$CONFIG_FILE"
+        
+        echo -e "${GREEN}✅ API Key 已自动替换为占位符: ${PLACEHOLDER}${NC}"
+        echo -e "${YELLOW}💡 注意：本地文件已更新，请确保在本地环境配置中使用真实的 API Key${NC}"
+    else
+        echo -e "${GREEN}✅ 未检测到敏感信息${NC}"
+    fi
+else
+    echo -e "${GREEN}✅ ${CONFIG_FILE} 未发生变更${NC}"
+fi
+
+echo -e "${GREEN}🎉 检查完成，准备提交...${NC}"
+
+exit 0

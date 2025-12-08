@@ -11,7 +11,7 @@
  Target Server Version : 80402 (8.4.2)
  File Encoding         : 65001
 
- Date: 28/06/2025 09:44:14
+ Date: 08/12/2025 10:36:17
 */
 
 SET NAMES utf8mb4;
@@ -776,7 +776,7 @@ CREATE TABLE `study_java_sys_menu` (
   PRIMARY KEY (`id`) USING BTREE,
   KEY `idx_parent_id` (`parent_id`),
   KEY `idx_menu_type` (`menu_type`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='系统菜单表';
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='系统菜单表';
 
 -- ----------------------------
 -- Records of study_java_sys_menu
@@ -795,6 +795,42 @@ INSERT INTO `study_java_sys_menu` (`id`, `parent_id`, `menu_name`, `path`, `comp
 INSERT INTO `study_java_sys_menu` (`id`, `parent_id`, `menu_name`, `path`, `component`, `icon`, `menu_type`, `perms`, `order_num`, `create_time`, `update_time`, `is_deleted`) VALUES (13, 7, '对话', '/ollama/chat', 'views/ollama/chat/index.vue', 'Wechat', 1, '', 0, '2025-06-23 22:38:51', '2025-06-23 22:38:51', 0);
 INSERT INTO `study_java_sys_menu` (`id`, `parent_id`, `menu_name`, `path`, `component`, `icon`, `menu_type`, `perms`, `order_num`, `create_time`, `update_time`, `is_deleted`) VALUES (14, NULL, '订单', '/order', 'components/layout/index.vue', 'Order', 0, '', 0, '2025-06-28 00:44:38', '2025-06-28 00:49:17', 0);
 INSERT INTO `study_java_sys_menu` (`id`, `parent_id`, `menu_name`, `path`, `component`, `icon`, `menu_type`, `perms`, `order_num`, `create_time`, `update_time`, `is_deleted`) VALUES (16, 14, '订单列表', '/order/list', 'views/order/index.vue', 'OrderedList', 1, '', 0, '2025-06-28 00:48:58', '2025-06-28 00:49:35', 0);
+INSERT INTO `study_java_sys_menu` (`id`, `parent_id`, `menu_name`, `path`, `component`, `icon`, `menu_type`, `perms`, `order_num`, `create_time`, `update_time`, `is_deleted`) VALUES (17, NULL, '系统监控', '/monitor', 'components/layout/index.vue', 'Setting', 0, '', 0, '2025-12-08 01:27:06', '2025-12-08 01:27:06', 0);
+INSERT INTO `study_java_sys_menu` (`id`, `parent_id`, `menu_name`, `path`, `component`, `icon`, `menu_type`, `perms`, `order_num`, `create_time`, `update_time`, `is_deleted`) VALUES (18, NULL, 'monitor', '/monitor', 'components/layout/index.vue', 'Setting', 0, '', 0, '2025-12-08 01:30:45', '2025-12-08 01:30:45', 0);
+COMMIT;
+
+-- ----------------------------
+-- Table structure for study_java_sys_oper_log
+-- ----------------------------
+DROP TABLE IF EXISTS `study_java_sys_oper_log`;
+CREATE TABLE `study_java_sys_oper_log` (
+  `oper_id` bigint NOT NULL AUTO_INCREMENT COMMENT '日志主键',
+  `title` varchar(50) DEFAULT '' COMMENT '模块标题',
+  `business_type` int DEFAULT '0' COMMENT '业务类型（0其它 1新增 2修改 3删除）',
+  `method` varchar(100) DEFAULT '' COMMENT '方法名称',
+  `request_method` varchar(10) DEFAULT '' COMMENT '请求方式',
+  `operator_type` int DEFAULT '0' COMMENT '操作类别（0其它 1后台用户 2手机端用户）',
+  `oper_name` varchar(50) DEFAULT '' COMMENT '操作人员',
+  `dept_name` varchar(50) DEFAULT '' COMMENT '部门名称',
+  `oper_url` varchar(255) DEFAULT '' COMMENT '请求URL',
+  `oper_ip` varchar(128) DEFAULT '' COMMENT '主机地址',
+  `oper_location` varchar(255) DEFAULT '' COMMENT '操作地点',
+  `oper_param` varchar(2000) DEFAULT '' COMMENT '请求参数',
+  `json_result` varchar(2000) DEFAULT '' COMMENT '返回参数',
+  `status` int DEFAULT '0' COMMENT '操作状态（0正常 1异常）',
+  `error_msg` varchar(2000) DEFAULT '' COMMENT '错误消息',
+  `oper_time` datetime DEFAULT NULL COMMENT '操作时间',
+  `cost_time` bigint DEFAULT '0' COMMENT '消耗时间',
+  PRIMARY KEY (`oper_id`),
+  KEY `idx_sys_oper_log_bt` (`business_type`),
+  KEY `idx_sys_oper_log_s` (`status`),
+  KEY `idx_sys_oper_log_ot` (`oper_time`)
+) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='操作日志记录';
+
+-- ----------------------------
+-- Records of study_java_sys_oper_log
+-- ----------------------------
+BEGIN;
 COMMIT;
 
 -- ----------------------------
@@ -821,7 +857,7 @@ CREATE TABLE `study_java_sys_role` (
 -- Records of study_java_sys_role
 -- ----------------------------
 BEGIN;
-INSERT INTO `study_java_sys_role` (`id`, `role_name`, `role_code`, `role_sort`, `status`, `remark`, `create_by`, `create_time`, `update_by`, `update_time`, `is_deleted`) VALUES (100, '超级管理员', 'SUPER_ADMIN', 1, 0, '系统超级管理员，拥有所有权限', 'admin', '2025-06-18 02:36:46', '13700002703', '2025-06-27 16:04:44', 0);
+INSERT INTO `study_java_sys_role` (`id`, `role_name`, `role_code`, `role_sort`, `status`, `remark`, `create_by`, `create_time`, `update_by`, `update_time`, `is_deleted`) VALUES (100, '超级管理员', 'SUPER_ADMIN', 1, 1, '系统超级管理员，拥有所有权限', 'admin', '2025-06-18 02:36:46', '13700002703', '2025-12-06 20:59:33', 0);
 INSERT INTO `study_java_sys_role` (`id`, `role_name`, `role_code`, `role_sort`, `status`, `remark`, `create_by`, `create_time`, `update_by`, `update_time`, `is_deleted`) VALUES (101, '管理员', 'ADMIN', 2, 1, '系统管理员，拥有大部分权限', 'admin', '2025-06-18 02:36:46', '13700002703', '2025-06-28 00:49:46', 0);
 INSERT INTO `study_java_sys_role` (`id`, `role_name`, `role_code`, `role_sort`, `status`, `remark`, `create_by`, `create_time`, `update_by`, `update_time`, `is_deleted`) VALUES (102, '普通用户', 'USER', 3, 1, '普通用户，拥有基本权限', 'admin', '2025-06-18 02:36:46', 'admin', '2025-06-18 02:36:46', 0);
 INSERT INTO `study_java_sys_role` (`id`, `role_name`, `role_code`, `role_sort`, `status`, `remark`, `create_by`, `create_time`, `update_by`, `update_time`, `is_deleted`) VALUES (103, '访客', 'GUEST', 4, 1, '访客用户，拥有查看权限', 'admin', '2025-06-18 02:36:46', 'admin', '2025-06-18 02:36:46', 0);
@@ -840,18 +876,18 @@ CREATE TABLE `study_java_sys_role_menus` (
   UNIQUE KEY `uk_role_menu` (`role_id`,`menu_id`) COMMENT '角色菜单唯一约束',
   KEY `idx_role_id` (`role_id`) COMMENT '角色ID索引',
   KEY `idx_menu_id` (`menu_id`) COMMENT '菜单ID索引'
-) ENGINE=InnoDB AUTO_INCREMENT=46 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='角色菜单关联表';
+) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='角色菜单关联表';
 
 -- ----------------------------
 -- Records of study_java_sys_role_menus
 -- ----------------------------
 BEGIN;
-INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (33, 100, 1);
-INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (34, 100, 3);
-INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (36, 100, 7);
-INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (37, 100, 8);
-INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (35, 100, 12);
-INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (38, 100, 13);
+INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (46, 100, 1);
+INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (47, 100, 3);
+INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (48, 100, 7);
+INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (49, 100, 8);
+INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (50, 100, 12);
+INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (51, 100, 13);
 INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (42, 101, 5);
 INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (43, 101, 6);
 INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (44, 101, 14);
