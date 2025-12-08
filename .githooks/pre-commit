@@ -33,15 +33,22 @@ if git diff --cached --name-only | grep -q "^${CONFIG_FILE}$"; then
     if echo "$STAGED_CONTENT" | grep -E "api-key:\s*sk-[a-zA-Z0-9]+" > /dev/null; then
         echo -e "${YELLOW}⚠️  检测到真实的 API Key!${NC}"
         
-        # 直接修改原文件
+        # 1. 备份原文件 (包含真实 Key)
+        cp "$CONFIG_FILE" "${CONFIG_FILE}.bak"
+        
+        # 2. 修改文件为占位符
         sed -E "s/(api-key:[[:space:]]*)sk-[a-zA-Z0-9]+/\1${PLACEHOLDER}/g" "$CONFIG_FILE" > "${CONFIG_FILE}.tmp"
         mv "${CONFIG_FILE}.tmp" "$CONFIG_FILE"
         
-        # 重新添加到暂存区
+        # 3. 重新添加到暂存区 (Git 提交的将是这个占位符版本)
         git add "$CONFIG_FILE"
         
-        echo -e "${GREEN}✅ API Key 已自动替换为占位符: ${PLACEHOLDER}${NC}"
-        echo -e "${YELLOW}💡 注意：本地文件已更新，请确保在本地环境配置中使用真实的 API Key${NC}"
+        # 4. 立即恢复原文件 (本地保留真实 Key)
+        mv "${CONFIG_FILE}.bak" "$CONFIG_FILE"
+        
+        echo -e "${GREEN}✅ 自动处理完成：${NC}"
+        echo -e "   - 远程仓库：将提交占位符 ${PLACEHOLDER}"
+        echo -e "   - 本地文件：已恢复为真实 API Key"
     else
         echo -e "${GREEN}✅ 未检测到敏感信息${NC}"
     fi
