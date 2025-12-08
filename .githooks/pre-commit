@@ -33,21 +33,11 @@ if git diff --cached --name-only | grep -q "^${CONFIG_FILE}$"; then
     if echo "$STAGED_CONTENT" | grep -E "api-key:\s*sk-[a-zA-Z0-9]+" > /dev/null; then
         echo -e "${YELLOW}⚠️  检测到真实的 API Key!${NC}"
         
-        # 创建临时文件
-        TEMP_FILE=$(mktemp)
+        # 直接修改原文件
+        sed -E "s/(api-key:[[:space:]]*)sk-[a-zA-Z0-9]+/\1${PLACEHOLDER}/g" "$CONFIG_FILE" > "${CONFIG_FILE}.tmp"
+        mv "${CONFIG_FILE}.tmp" "$CONFIG_FILE"
         
-        # 将暂存区内容写入临时文件
-        echo "$STAGED_CONTENT" > "$TEMP_FILE"
-        
-        # 替换所有 API Key 为占位符
-        # 匹配格式：api-key: sk-xxxxxx
-        # macOS 使用 BSD sed，需要特别注意语法
-        sed -E "s/(api-key:[[:space:]]*)sk-[a-zA-Z0-9]+/\1${PLACEHOLDER}/g" "$TEMP_FILE" > "${TEMP_FILE}.tmp"
-        mv "${TEMP_FILE}.tmp" "$TEMP_FILE"
-        
-        # 将清理后的内容写回暂存区
-        git add "$TEMP_FILE"
-        mv "$TEMP_FILE" "$CONFIG_FILE"
+        # 重新添加到暂存区
         git add "$CONFIG_FILE"
         
         echo -e "${GREEN}✅ API Key 已自动替换为占位符: ${PLACEHOLDER}${NC}"
