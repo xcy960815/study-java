@@ -1,5 +1,7 @@
 #通用配置
 spring:
+  config:
+    import: optional:classpath:application-local.yml
   profiles:
     # 启动哪个环境
     active: @spring.profile.active@
