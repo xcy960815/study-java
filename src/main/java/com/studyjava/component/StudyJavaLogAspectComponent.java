@@ -150,12 +150,8 @@ public class StudyJavaLogAspectComponent
      */
     private void setRequestValue(JoinPoint joinPoint, StudyJavaSysOperLogDao operLog) throws Exception
     {
-        String requestMethod = operLog.getRequestMethod();
-        if ("PUT".equals(requestMethod) || "POST".equals(requestMethod))
-        {
-            String params = argsArrayToString(joinPoint.getArgs());
-            operLog.setOperParam(params != null && params.length() > 2000 ? params.substring(0, 2000) : params);
-        }
+        String params = argsArrayToString(joinPoint.getArgs());
+        operLog.setOperParam(params != null && params.length() > 2000 ? params.substring(0, 2000) : params);
     }
 
     /**

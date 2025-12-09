@@ -30,6 +30,7 @@ public class StudyJavaSysUserController extends BaseController {
      * @param studyJavaUser StudyJavaSysUserDto
      * @return PageResult<StudyJavaSysUserVo>
      */
+    @Log(title = "用户管理", businessType = BusinessType.QUERY)
     @PostMapping("/getUserList")
     public PageResult<StudyJavaSysUserVo> getUserList(
         @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
@@ -44,6 +45,7 @@ public class StudyJavaSysUserController extends BaseController {
      * 获取用户信息
      * @return StudyJavaSysUserVo
      */
+    @Log(title = "用户管理", businessType = BusinessType.QUERY)
     @GetMapping("/getUserInfo")
     public StudyJavaSysUserVo getUserInfo(){
         return studyJavaSysUserService.getUserInfo();
@@ -75,6 +77,7 @@ public class StudyJavaSysUserController extends BaseController {
      * @param file MultipartFile
      * @return String
      */
+    @Log(title = "用户管理", businessType = BusinessType.UPDATE)
     @PostMapping("/updateUserAvatar")
     public String updateUserAvatar(
             @RequestParam("userId") String userId,

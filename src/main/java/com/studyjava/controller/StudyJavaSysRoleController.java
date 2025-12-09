@@ -1,6 +1,8 @@
 package com.studyjava.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.studyjava.annotation.Log;
+import com.studyjava.domain.enums.BusinessType;
 import com.studyjava.domain.dto.StudyJavaSysRoleDto;
 import com.studyjava.domain.vo.StudyJavaSysRoleVo;
 import com.studyjava.service.StudyJavaSysRoleService;
@@ -20,6 +22,7 @@ public class StudyJavaSysRoleController {
     /**
      * 获取角色列表（分页）
      */
+    @Log(title = "角色管理", businessType = BusinessType.QUERY)
     @GetMapping("/getRoleList")
     public PageResult<StudyJavaSysRoleVo> getRoleList(
             @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
@@ -32,6 +35,7 @@ public class StudyJavaSysRoleController {
     /**
      * 获取所有角色列表（不分页）
      */
+    @Log(title = "角色管理", businessType = BusinessType.QUERY)
     @GetMapping("/getAllRoleList")
     public List<StudyJavaSysRoleVo> getAllRoleList() {
         return studyJavaSysRoleService.getAllRoleList();
@@ -40,6 +44,7 @@ public class StudyJavaSysRoleController {
     /**
      * 获取角色详细信息
      */
+    @Log(title = "角色管理", businessType = BusinessType.QUERY)
     @GetMapping("/getRoleInfo")
     public StudyJavaSysRoleVo getRoleInfo(@RequestParam Long id) {
         StudyJavaSysRoleDto studyJavaSysRoleDto = new StudyJavaSysRoleDto();
@@ -50,6 +55,7 @@ public class StudyJavaSysRoleController {
     /**
      * 新增角色
      */
+    @Log(title = "角色管理", businessType = BusinessType.INSERT)
     @PostMapping("/insertRole")
     public Boolean insertRole(@Validated @RequestBody StudyJavaSysRoleDto roleDto) {
         return studyJavaSysRoleService.insertRole(roleDto);
@@ -58,6 +64,7 @@ public class StudyJavaSysRoleController {
     /**
      * 修改角色
      */
+    @Log(title = "角色管理", businessType = BusinessType.UPDATE)
     @PutMapping("/updateRole")
     public Boolean updateRole(@Validated @RequestBody StudyJavaSysRoleDto roleDto) {
         return studyJavaSysRoleService.updateRole(roleDto);
@@ -66,6 +73,7 @@ public class StudyJavaSysRoleController {
     /**
      * 停用角色
      */
+    @Log(title = "角色管理", businessType = BusinessType.DELETE)
     @DeleteMapping("/deleteRole")
     public Boolean deleteRole(@RequestBody StudyJavaSysRoleDto roleDto) {
         return studyJavaSysRoleService.deleteRole(roleDto);
@@ -74,6 +82,7 @@ public class StudyJavaSysRoleController {
     /**
      * 启用角色
      */
+    @Log(title = "角色管理", businessType = BusinessType.UPDATE)
     @PostMapping("/enableRole")
     public Boolean enableRole(@RequestBody StudyJavaSysRoleDto roleDto) {
         roleDto.setStatus(1);
@@ -83,6 +92,7 @@ public class StudyJavaSysRoleController {
     /**
      * 禁用角色
      */
+    @Log(title = "角色管理", businessType = BusinessType.UPDATE)
     @PostMapping("/disableRole")
     public Boolean disableRole(@RequestBody StudyJavaSysRoleDto roleDto) {
         roleDto.setStatus(0);

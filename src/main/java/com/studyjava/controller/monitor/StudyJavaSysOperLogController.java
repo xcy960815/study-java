@@ -24,6 +24,7 @@ public class StudyJavaSysOperLogController extends BaseController
     @Resource
     private StudyJavaSysOperLogService studyJavaSysOperLogService;
 
+    @Log(title = "操作日志", businessType = BusinessType.QUERY)
     @GetMapping("/list")
     public PageResult<StudyJavaSysOperLogDao> list(@RequestParam(defaultValue = "1") Integer pageNum,
                                      @RequestParam(defaultValue = "10") Integer pageSize,
