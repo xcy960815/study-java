@@ -18,17 +18,21 @@ public class RedisConfig {
     // 显式配置RedisConnectionFactory，明确使用application.yml中的配置
     @Bean
     public RedisConnectionFactory redisConnectionFactory(RedisProperties properties) {
-        log.info("创建Redis连接工厂，使用配置：{}:{}，数据库：{}",
+        log.info("创建Redis连接工厂，使用配置：{}:{}，数据库：{}，密码：{}",
                 properties.getHost(),
                 properties.getPort(),
-                properties.getDatabase());
+                properties.getDatabase(),
+                properties.getPassword() != null ? "已设置" : "未设置");
 
         RedisStandaloneConfiguration config = new RedisStandaloneConfiguration();
         config.setHostName(properties.getHost());
         config.setPort(properties.getPort());
 
-        if (properties.getPassword() != null) {
+        if (properties.getPassword() != null && !properties.getPassword().isEmpty()) {
             config.setPassword(RedisPassword.of(properties.getPassword()));
+            log.info("Redis密码已配置");
+        } else {
+            log.warn("Redis密码未配置，如果Redis需要密码认证，连接将失败");
         }
 
         config.setDatabase(properties.getDatabase());

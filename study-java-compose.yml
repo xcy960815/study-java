@@ -81,10 +81,17 @@ services:
       - '12316:8084'
     volumes:
       - ./logs:/study-java/logs
+    # 注意：如果遇到日志权限问题，请执行：./fix-logs-permissions.sh
+    # 或者手动执行：sudo chown -R 1000:1000 ./logs && chmod -R 755 ./logs
     environment:
       SPRING_PROFILES_ACTIVE: prod
       TZ: ${TIMEZONE}
       # redis配置
+      # 使用 Spring Boot 标准环境变量，可以直接覆盖配置文件中的值，无需重新构建镜像
+      SPRING_DATA_REDIS_HOST: ${SPRING_REDIS_HOST:study-java-redis-container}
+      SPRING_DATA_REDIS_PORT: ${SPRING_REDIS_PORT:6379}
+      SPRING_DATA_REDIS_PASSWORD: ${REDIS_PASSWORD}
+      # 兼容旧的环境变量名（如果配置文件使用了自定义变量）
       SPRING_REDIS_HOST: study-java-redis-container
       SPRING_REDIS_PORT: 6379
       SPRING_REDIS_PASSWORD: ${REDIS_PASSWORD}
@@ -99,13 +106,18 @@ services:
       options:
         max-size: '10m'
         max-file: '3'
-    # 优化：添加健康检查 (注意：需要镜像内包含 curl)
+    # 优化：添加健康检查
+    # 检查 Java 进程是否存在（ps 命令在基础镜像中通常可用）
+    # 如果此方法不可用，可以考虑：
+    # 1. 在 Dockerfile 中安装 curl/wget：RUN apt-get update && apt-get install -y curl
+    # 2. 添加 Spring Boot Actuator 依赖并配置健康检查端点
+    # 3. 暂时移除 depends_on 的 condition，让容器先启动再检查日志
     healthcheck:
-      test: ['CMD-SHELL', 'curl -f http://localhost:8084/actuator/health || exit 1']
+      test: ['CMD-SHELL', 'ps aux | grep -q "[s]tudy-java.jar" || exit 1']
       interval: 10s
       timeout: 5s
-      retries: 3
-      start_period: 30s
+      retries: 5
+      start_period: 90s  # 增加启动等待时间，给应用更多时间启动和连接数据库
     restart: on-failure:5 # 遇到异常最多重启5次
 
   # 前端配置

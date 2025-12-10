@@ -4,7 +4,7 @@ spring:
       host: ${SPRING_REDIS_HOST:localhost}
       port: ${SPRING_REDIS_PORT:6381} # 本地启动走6381 应为docker容器中的reids暴漏的端口就是6381
       database: 0
-      # password: your_redis_password
+      password: ${SPRING_REDIS_PASSWORD:} # Redis密码，从环境变量读取
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver

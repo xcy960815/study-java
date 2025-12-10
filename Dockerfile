@@ -33,6 +33,20 @@ COPY --from=build /study-java/target/study-java-1.0-SNAPSHOT.jar ./study-java.ja
 # 优化：创建日志目录并授权
 RUN mkdir -p /study-java/logs && chown -R appuser:appuser /study-java
 
+# 创建启动脚本，确保日志目录权限正确（处理挂载卷的权限问题）
+RUN echo '#!/bin/bash\n\
+# 确保日志目录存在且可写（处理挂载卷权限问题）\n\
+mkdir -p /study-java/logs\n\
+# 如果目录不可写，尝试设置权限（需要以 root 运行）\n\
+if [ ! -w /study-java/logs ]; then\n\
+    echo "Warning: /study-java/logs is not writable. Please check volume permissions."\n\
+fi\n\
+# 启动应用\n\
+exec java -XX:MaxRAMPercentage=75.0 -XX:+ExitOnOutOfMemoryError -Dlog.path=/study-java/logs -jar study-java.jar\n\
+' > /study-java/entrypoint.sh && \
+    chmod +x /study-java/entrypoint.sh && \
+    chown appuser:appuser /study-java/entrypoint.sh
+
 # 切换到非 root 用户
 USER appuser
 
@@ -40,8 +54,8 @@ USER appuser
 ENV SPRING_PROFILES_ACTIVE=prod
 EXPOSE 8084
 
-# 优化：添加 JVM 容器感知参数
-CMD ["java", "-XX:MaxRAMPercentage=75.0", "-XX:+ExitOnOutOfMemoryError", "-Dlog.path=/study-java/logs", "-jar", "study-java.jar"]
+# 优化：使用启动脚本（处理权限问题）
+ENTRYPOINT ["/study-java/entrypoint.sh"]
 
 # 执行脚本
 # docker build -t xcy960815/study-java:1.x .
