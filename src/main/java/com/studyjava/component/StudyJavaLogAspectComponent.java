@@ -14,6 +14,8 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
+import org.springframework.core.NamedThreadLocal;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -40,6 +42,17 @@ public class StudyJavaLogAspectComponent
 
     @Resource
     private ObjectMapper objectMapper;
+
+    private static final ThreadLocal<Long> TIME_THREADLOCAL = new NamedThreadLocal<>("Cost Time");
+
+    /**
+     * 处理请求前执行
+     */
+    @Before(value = "@annotation(controllerLog)")
+    public void doBefore(JoinPoint joinPoint, Log controllerLog)
+    {
+        TIME_THREADLOCAL.set(System.currentTimeMillis());
+    }
 
     /**
      * 处理完请求后执行
@@ -98,8 +111,14 @@ public class StudyJavaLogAspectComponent
             operLog.setRequestMethod(request.getMethod());
             // 处理设置注解上的参数
             getControllerMethodDescription(joinPoint, controllerLog, operLog, jsonResult);
-            // 设置消耗时间 (简单处理，实际可以使用ThreadLocal记录开始时间)
+            // 设置消耗时间
             operLog.setOperTime(new Date());
+            Long startTime = TIME_THREADLOCAL.get();
+            if (startTime != null) {
+                operLog.setCostTime(System.currentTimeMillis() - startTime);
+            } else {
+                operLog.setCostTime(0L);
+            }
             
             // 保存数据库
             studyJavaSysOperLogService.save(operLog);
@@ -110,6 +129,10 @@ public class StudyJavaLogAspectComponent
             log.error("==前置通知异常==");
             log.error("异常信息:{}", exp.getMessage());
             exp.printStackTrace();
+        }
+        finally
+        {
+            TIME_THREADLOCAL.remove();
         }
     }
 

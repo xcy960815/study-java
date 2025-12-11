@@ -9,6 +9,7 @@ import com.studyjava.domain.enums.BusinessType;
 import com.studyjava.service.StudyJavaSysOperLogService;
 import com.studyjava.utils.PageResult;
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
@@ -17,6 +18,7 @@ import java.util.List;
 /**
  * 操作日志记录
  */
+@Slf4j
 @RestController
 @RequestMapping("/monitor/operlog")
 public class StudyJavaSysOperLogController extends BaseController
@@ -30,6 +32,7 @@ public class StudyJavaSysOperLogController extends BaseController
                                      @RequestParam(defaultValue = "10") Integer pageSize,
                                      StudyJavaSysOperLogDao operLog)
     {
+
         Page<StudyJavaSysOperLogDao> page = new Page<>(pageNum, pageSize);
         LambdaQueryWrapper<StudyJavaSysOperLogDao> queryWrapper = new LambdaQueryWrapper<>();
         if (operLog.getTitle() != null && !operLog.getTitle().isEmpty()) {
@@ -47,6 +50,7 @@ public class StudyJavaSysOperLogController extends BaseController
         queryWrapper.orderByDesc(StudyJavaSysOperLogDao::getOperTime);
         
         studyJavaSysOperLogService.page(page, queryWrapper);
+
         return PageResult.of(page.getRecords(), page.getTotal());
     }
 

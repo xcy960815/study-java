@@ -55,7 +55,7 @@ public class StudyJavaServerMonitorService {
   public StudyJavaServerInfoVo getServerInfo() {
     // 如果缓存为空，说明监控未启动，执行一次同步计算
     if (cachedServerInfo == null) {
-      log.debug("缓存为空，执行同步计算");
+
       return calculateServerInfo();
     }
     return cachedServerInfo;
@@ -72,7 +72,7 @@ public class StudyJavaServerMonitorService {
       return false;
     }
 
-    log.info("启动服务器监控，更新间隔：{}秒", UPDATE_INTERVAL_SECONDS);
+
 
     // 立即执行一次计算
     cachedServerInfo = calculateServerInfo();
@@ -105,7 +105,7 @@ public class StudyJavaServerMonitorService {
       return false;
     }
 
-    log.info("停止服务器监控");
+
 
     if (updateExecutor != null && !updateExecutor.isShutdown()) {
       updateExecutor.shutdown();
@@ -135,7 +135,7 @@ public class StudyJavaServerMonitorService {
   /** 后台更新缓存任务 */
   private void updateServerInfoCache() {
     try {
-      log.debug("更新服务器信息缓存");
+
       cachedServerInfo = calculateServerInfo();
     } catch (Exception e) {
       log.error("更新服务器信息缓存失败", e);
@@ -267,7 +267,7 @@ public class StudyJavaServerMonitorService {
     long total = 0;
     long free = 0;
 
-    log.info("开始统计磁盘信息，共发现 {} 个文件系统", fsArray.length);
+
 
     for (OSFileStore fs : fsArray) {
       String fsName = fs.getName();
@@ -277,42 +277,22 @@ public class StudyJavaServerMonitorService {
 
       // 过滤掉虚拟文件系统和网络驱动器
       if (!shouldIncludeFileStore(fs)) {
-        log.info(
-            "⏭️  跳过文件系统: {} (类型: {}), 容量: {} GB",
-            fsName,
-            fsType,
-            convertBytesToGB(fsTotal));
         continue;
       }
 
       // 只统计有效的文件系统（容量大于 1GB）
       if (fsTotal <= 1024L * 1024L * 1024L) {
-        log.info(
-            "⏭️  跳过小容量文件系统: {} (类型: {}), 容量: {} GB",
-            fsName,
-            fsType,
-            convertBytesToGB(fsTotal));
         continue;
       }
 
       total += fsTotal;
       free += fsFree;
-      log.info(
-          "✅ 统计文件系统: {} (类型: {}), 总容量: {} GB, 可用: {} GB",
-          fsName,
-          fsType,
-          convertBytesToGB(fsTotal),
-          convertBytesToGB(fsFree));
+
     }
 
     long used = total - free;
 
-    log.info(
-        "磁盘统计完成 - 总容量: {} GB, 已用: {} GB, 可用: {} GB, 使用率: {}%",
-        convertBytesToGB(total),
-        convertBytesToGB(used),
-        convertBytesToGB(free),
-        total > 0 ? String.format("%.2f", 100d * used / total) : "0");
+
 
     return StudyJavaServerInfoVo.DiskInfo.builder()
         .total(Double.parseDouble(DF.format(convertBytesToGB(total))))
@@ -479,7 +459,7 @@ public class StudyJavaServerMonitorService {
   /** 应用关闭时清理资源 */
   @PreDestroy
   public void destroy() {
-    log.info("清理服务器监控资源");
+
     stopMonitoring();
   }
 }

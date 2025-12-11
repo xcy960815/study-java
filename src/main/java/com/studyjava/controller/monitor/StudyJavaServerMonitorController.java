@@ -74,7 +74,7 @@ public class StudyJavaServerMonitorController {
             if (serverInfo != null) {
               // 通过 WebSocket 推送数据到 /topic/server-monitor
               messagingTemplate.convertAndSend("/topic/server-monitor", serverInfo);
-              log.debug("推送服务器监控数据: {}", serverInfo);
+
             }
           } catch (Exception e) {
             log.error("推送服务器监控数据失败", e);
@@ -84,7 +84,7 @@ public class StudyJavaServerMonitorController {
         3,
         TimeUnit.SECONDS);
 
-    log.info("开始推送服务器监控数据，间隔：3秒");
+
     return ResponseEntity.ok("开始推送监控数据");
   }
 
@@ -109,7 +109,7 @@ public class StudyJavaServerMonitorController {
         webSocketPushScheduler.shutdownNow();
         Thread.currentThread().interrupt();
       }
-      log.info("停止推送服务器监控数据");
+
       return ResponseEntity.ok("停止推送监控数据");
     }
     return ResponseEntity.ok("监控未在运行");
