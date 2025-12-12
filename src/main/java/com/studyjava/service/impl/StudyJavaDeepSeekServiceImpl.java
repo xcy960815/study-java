@@ -33,10 +33,7 @@ public class StudyJavaDeepSeekServiceImpl extends StudyJavaAiService implements 
     @Getter
     @Autowired
     private  DeepSeekConfig deepSeekConfig;
-    /**
-     * 域名
-     */
-    private static final String DEEPSEEK_BASE_URL = "https://api.deepseek.com";
+
     /**
      * completions 接口地址
      */
@@ -60,8 +57,8 @@ public class StudyJavaDeepSeekServiceImpl extends StudyJavaAiService implements 
      * @param url String
      * @return String
      */
-    private static URI generateRequestUrl(@NonNull String url){
-        return URI.create(DEEPSEEK_BASE_URL + url);
+    private URI generateRequestUrl(@NonNull String url){
+        return URI.create(deepSeekConfig.getBaseUrl() + url);
     }
     /**
      * 构建请求头
@@ -69,7 +66,7 @@ public class StudyJavaDeepSeekServiceImpl extends StudyJavaAiService implements 
      * @return Builder
      */
     private HttpRequest.Builder generateRequestBuilder(URI uri) {
-        String Authorization = String.format("Bearer %s", deepSeekConfig.getApiKey());
+        String Authorization = String.format("Bearer %s", deepSeekConfig.getKey());
         return HttpRequest.newBuilder(uri)
                 .header("Content-Type", "application/json")
                 .header("Authorization", Authorization)

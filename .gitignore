@@ -27,7 +27,7 @@ target/
 /nbbuild/
 /dist/
 /nbdist/
-/.nb-gradle/
+.nb-gradle/
 build/
 !**/src/main/**/build/
 !**/src/test/**/build/
@@ -43,8 +43,5 @@ build/
 /uploadFiles/
 
 ### Environment Variables ###
-.env.local
-.env.*.local
-
-### Local Configuration ###
-src/main/resources/application-local.yml
+# 忽略所有包含敏感信息的 .env 文件
+.env

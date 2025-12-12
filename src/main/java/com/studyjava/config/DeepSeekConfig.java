@@ -9,9 +9,11 @@ import org.springframework.stereotype.Component;
 @Setter
 @Getter
 @Component
-@ConfigurationProperties(prefix = "deepseek")
+@ConfigurationProperties(prefix = "deepseek.api")
 public class DeepSeekConfig {
 
-    private String apiKey;
+    private String key;
+    
+    private String baseUrl = "https://api.deepseek.com";  // 默认值
 
 }
