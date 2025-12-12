@@ -1,7 +1,5 @@
 #通用配置
 spring:
-  config:
-
   profiles:
     # 启动哪个环境
     active: @spring.profile.active@
