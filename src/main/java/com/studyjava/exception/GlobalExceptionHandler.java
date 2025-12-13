@@ -17,6 +17,7 @@ public class GlobalExceptionHandler {
     // 处理 Ai 系列的抛错
     @ExceptionHandler({StudyJavaAiException.class})
     public ResponseEntity<ErrorResponse> handleStudyJavaOllamaException(StudyJavaAiException error, HttpServletRequest request) {
+        log.error("AI Service Error: {}", error.getErrorMessage(), error);
         return new ResponseEntity<>(
             new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), error.getErrorMessage(), request.getRequestURI()), 
             HttpStatus.INTERNAL_SERVER_ERROR
@@ -26,6 +27,7 @@ public class GlobalExceptionHandler {
     // 处理自定义错误类
     @ExceptionHandler({StudyJavaException.class})
     public ResponseEntity<ErrorResponse> handleStudyJavaException(StudyJavaException e, HttpServletRequest request) {
+        log.error("Business Exception: {}", e.getMessage(), e);
         return new ResponseEntity<>(
             new ErrorResponse(HttpStatus.BAD_REQUEST.value(), e.getMessage(), request.getRequestURI()), 
             HttpStatus.BAD_REQUEST
