@@ -5,7 +5,7 @@ services:
     image: guovern/iptv-api:${IMAGE_VERSION:-latest}
     container_name: iptv-api
     restart: unless-stopped
-    network_mode: host  # 使用宿主机网络，确保 IPv6 互通
+    network_mode: host
     volumes:
       - ./config:/iptv-api/config
       - ./output:/iptv-api/output
@@ -17,6 +17,18 @@ services:
     container_name: iptv-web
     restart: always
     ports:
-      - "18989:80"  # 访问端口
+      - "18989:80"
     volumes:
       - ./output:/usr/share/nginx/html:ro
+    # 关键修改：注入一段配置来开启目录列表
+    command: >
+      /bin/sh -c "
+      echo 'server {
+        listen 80;
+        root /usr/share/nginx/html;
+        location / {
+          autoindex on;             # 开启目录列表
+          autoindex_exact_size off; # 显示大概大小(KB/MB)
+          autoindex_localtime on;   # 显示服务器时间
+        }
+      }' > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
