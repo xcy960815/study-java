@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  iptv-api:
+    image: guovern/iptv-api:${IMAGE_VERSION:-latest}
+    container_name: iptv-api
+    restart: unless-stopped
+    network_mode: host  # 使用宿主机网络，确保 IPv6 互通
+    volumes:
+      - ./config:/iptv-api/config
+      - ./output:/iptv-api/output
+    environment:
+      - TZ=Asia/Shanghai
+
+  web-server:
+    image: nginx:alpine
+    container_name: iptv-web
+    restart: always
+    ports:
+      - "18989:80"  # 访问端口
+    volumes:
+      - ./output:/usr/share/nginx/html:ro
