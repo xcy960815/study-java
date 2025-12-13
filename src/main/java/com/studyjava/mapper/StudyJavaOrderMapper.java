@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.studyjava.domain.dao.StudyJavaOrderDao;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Map;
+
 /**
 * @author opera
 * @description 针对表【study_java_order】的数据库操作Mapper
@@ -20,8 +22,6 @@ public interface StudyJavaOrderMapper  {
     Boolean updateOrder(@Param("studyJavaOrderDao") StudyJavaOrderDao studyJavaOrderDao);
 
     Boolean deleteOrder(@Param("studyJavaOrderDao") StudyJavaOrderDao studyJavaOrderDao);
+
+    Map<String, Object> getDailyStats(@Param("startTime") String startTime, @Param("endTime") String endTime);
 }
-
-
-
-

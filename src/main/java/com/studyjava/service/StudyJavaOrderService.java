@@ -5,6 +5,9 @@ import com.studyjava.domain.dto.StudyJavaOrderDto;
 import com.studyjava.domain.dao.StudyJavaOrderDao;
 import com.studyjava.domain.vo.StudyJavaOrderVo;
 
+import java.time.LocalDate;
+import java.util.Map;
+
 /**
 * @author opera
 * @description 针对表【study_java_order】的数据库操作Service
@@ -40,4 +43,9 @@ public interface StudyJavaOrderService {
      * 删除订单
      */
     Boolean deleteOrder(StudyJavaOrderDto studyJavaOrderDto);
+
+    /**
+     * 获取每日统计
+     */
+    Map<String, Object> getDailyStats(LocalDate date);
 }

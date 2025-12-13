@@ -174,4 +174,16 @@
             </if>
         </where>
         </update>
+
+    <!-- 每日统计 -->
+    <select id="getDailyStats" resultType="java.util.Map">
+        SELECT
+            COUNT(*) as totalOrders,
+            IFNULL(SUM(total_price), 0) as totalRevenue
+        FROM
+            study_java_order
+        WHERE
+            create_time BETWEEN #{startTime} AND #{endTime}
+            AND is_deleted = 0
+    </select>
 </mapper>

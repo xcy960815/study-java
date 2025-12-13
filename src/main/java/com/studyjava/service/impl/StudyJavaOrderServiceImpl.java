@@ -12,7 +12,12 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 /**
 * @author opera
@@ -102,6 +107,12 @@ public class StudyJavaOrderServiceImpl implements StudyJavaOrderService {
         StudyJavaOrderDao studyJavaOrderDao = convertToDao(studyJavaOrderDto);
         return studyJavaOrderMapper.deleteOrder(studyJavaOrderDao);
     }
+
+    @Override
+    public Map<String, Object> getDailyStats(LocalDate date) {
+        LocalDateTime startOfDay = date.atStartOfDay();
+        LocalDateTime endOfDay = date.atTime(LocalTime.MAX);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return studyJavaOrderMapper.getDailyStats(startOfDay.format(formatter), endOfDay.format(formatter));
+    }
 }
-
-

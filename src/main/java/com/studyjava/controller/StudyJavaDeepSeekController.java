@@ -30,6 +30,9 @@ public class StudyJavaDeepSeekController {
     @Resource
     private StudyJavaDeepSeekService studyJavaDeepSeekService;
 
+    @Resource(name = "aiTaskExecutor")
+    private java.util.concurrent.Executor aiTaskExecutor;
+
     /**
      * DeepSeek AI 对话接口
      * @param completionsRequestDto 请求参数
@@ -37,13 +40,25 @@ public class StudyJavaDeepSeekController {
      */
     @PostMapping(value = "/completions", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public ResponseBodyEmitter completions(@Valid @RequestBody StudyJavaDeepSeekCompletionsRequestDto completionsRequestDto) {
-        SseEmitter emitter = new SseEmitter();
+        // 设置超时时间，例如 5 分钟
+        SseEmitter emitter = new SseEmitter(5 * 60 * 1000L);
+        
+        emitter.onCompletion(() -> log.debug("SSE连接完成"));
+        emitter.onTimeout(() -> {
+            log.warn("SSE连接超时");
+            emitter.complete();
+        });
+        emitter.onError((e) -> {
+            log.error("SSE连接异常", e);
+            emitter.complete();
+        });
 
         // 转换DTO为VO
         StudyJavaDeepSeekCompletionsVo completionsVo = new StudyJavaDeepSeekCompletionsVo();
         BeanUtils.copyProperties(completionsRequestDto, completionsVo);
 
-        new Thread(() -> studyJavaDeepSeekService.completions(completionsVo, emitter)).start();
+        // 使用线程池执行异步任务
+        aiTaskExecutor.execute(() -> studyJavaDeepSeekService.completions(completionsVo, emitter));
         return emitter;
     }
 
