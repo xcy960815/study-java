@@ -1,13 +1,15 @@
 # Study Java 项目 Makefile
 # 提供统一的命令入口
 
-.PHONY: help dev build run clean docker-up docker-down docker-logs test
+.PHONY: help dev pre prod build run clean docker-up docker-down docker-logs test
 
 # 默认目标：显示帮助
 help:
 	@echo "📋 Study Java 可用命令："
 	@echo ""
 	@echo "  make dev          - 使用 Maven 启动开发环境"
+	@echo "  make pre          - 使用 Maven 启动预发布环境"
+	@echo "  make prod         - 使用 Maven 启动生产环境"
 	@echo "  make build        - 编译打包项目"
 	@echo "  make run          - 运行已编译的 JAR 包"
 	@echo "  make clean        - 清理编译产物"
@@ -28,6 +30,30 @@ dev:
 	else \
 		echo "⚠️  .env 文件不存在，使用默认配置"; \
 		mvn spring-boot:run -Dspring-boot.run.profiles=dev; \
+	fi
+
+# 预发布模式：使用 Maven 直接运行（加载 .env）
+pre:
+	@echo "🚀 启动预发布环境..."
+	@if [ -f .env ]; then \
+		echo "📝 加载 .env 环境变量..."; \
+		export $$(cat .env | grep -v '^#' | xargs) && \
+		mvn spring-boot:run -Dspring-boot.run.profiles=pre; \
+	else \
+		echo "⚠️  .env 文件不存在，使用默认配置"; \
+		mvn spring-boot:run -Dspring-boot.run.profiles=pre; \
+	fi
+
+# 生产模式：使用 Maven 直接运行（加载 .env）
+prod:
+	@echo "🚀 启动生产环境..."
+	@if [ -f .env ]; then \
+		echo "📝 加载 .env 环境变量..."; \
+		export $$(cat .env | grep -v '^#' | xargs) && \
+		mvn spring-boot:run -Dspring-boot.run.profiles=prod; \
+	else \
+		echo "⚠️  .env 文件不存在，使用默认配置"; \
+		mvn spring-boot:run -Dspring-boot.run.profiles=prod; \
 	fi
 
 # 编译打包
