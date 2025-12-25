@@ -3,10 +3,9 @@
 # iStoreOS SSH 信息
 HOST="100.109.41.26"
 USER="root"
-# 提示：如果脚本运行失败，请确保本地安装了 sshpass (brew install esolitos/ipa/sshpass)
-# 或者手动输入密码
 
 echo "正在尝试连接 iStoreOS ($HOST)..."
+echo "提示：请在下方提示时输入 SSH 密码。"
 
 # 远程执行的指令
 REMOTE_SCRIPT=$(cat << 'EOF'
@@ -49,5 +48,4 @@ EOF
 )
 
 # 使用 ssh 登录并执行
-# 注意：这里会提示输入密码 xuchongyu87v5
 ssh -o StrictHostKeyChecking=no $USER@$HOST "$REMOTE_SCRIPT"

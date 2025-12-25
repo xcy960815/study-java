@@ -3,7 +3,14 @@
 set timeout 30
 set host "100.109.41.26"
 set user "root"
-set password "xuchongyu87v5"
+
+# 交互式获取密码
+stty -echo
+send_user "请输入 iStoreOS 密码: "
+expect_user -re "(.*)\n"
+set password $expect_out(1,string)
+send_user "\n"
+stty echo
 
 spawn ssh -o StrictHostKeyChecking=no $user@$host
 
