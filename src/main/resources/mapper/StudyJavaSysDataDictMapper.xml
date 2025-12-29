@@ -13,17 +13,18 @@
             <result property="sortOrder" column="sort_order" jdbcType="INTEGER"/>
             <result property="status" column="status" jdbcType="TINYINT"/>
             <result property="remark" column="remark" jdbcType="VARCHAR"/>
-            <result property="createdBy" column="created_by" jdbcType="VARCHAR"/>
-            <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
-            <result property="updatedBy" column="updated_by" jdbcType="VARCHAR"/>
-            <result property="updatedTime" column="updated_time" jdbcType="TIMESTAMP"/>
+            <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="isDeleted" column="is_deleted" jdbcType="TINYINT"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id,dict_type,dict_code,
         dict_name,dict_value,sort_order,
-        status,remark,created_by,
-        created_time,updated_by,updated_time
+        status,remark,create_by,
+        create_time,update_by,update_time,is_deleted
     </sql>
 
     <select id="getDataDictList" resultMap="BaseResultMap">
@@ -49,9 +50,9 @@
 
     <insert id="insertDataDict" parameterType="com.studyjava.domain.dao.StudyJavaSysDataDictDao">
         INSERT INTO study_java_sys_data_dictionary
-        (dict_type,dict_code,dict_name,dict_value,sort_order,status,remark,created_by,created_time,updated_by,updated_time)
+        (dict_type,dict_code,dict_name,dict_value,sort_order,status,remark,create_by,create_time,update_by,update_time,is_deleted)
         VALUES
-        (#{studyJavaSysDataDictDao.dictType},#{studyJavaSysDataDictDao.dictCode},#{studyJavaSysDataDictDao.dictName},#{studyJavaSysDataDictDao.dictValue},#{studyJavaSysDataDictDao.sortOrder},#{studyJavaSysDataDictDao.status},#{studyJavaSysDataDictDao.remark},#{studyJavaSysDataDictDao.createdBy},#{studyJavaSysDataDictDao.createdTime},#{studyJavaSysDataDictDao.updatedBy},#{studyJavaSysDataDictDao.updatedTime})
+        (#{studyJavaSysDataDictDao.dictType},#{studyJavaSysDataDictDao.dictCode},#{studyJavaSysDataDictDao.dictName},#{studyJavaSysDataDictDao.dictValue},#{studyJavaSysDataDictDao.sortOrder},#{studyJavaSysDataDictDao.status},#{studyJavaSysDataDictDao.remark},#{studyJavaSysDataDictDao.createBy},#{studyJavaSysDataDictDao.createTime},#{studyJavaSysDataDictDao.updateBy},#{studyJavaSysDataDictDao.updateTime},#{studyJavaSysDataDictDao.isDeleted})
     </insert>
 
     <update id="updateDataDict" parameterType="com.studyjava.domain.dao.StudyJavaSysDataDictDao">
@@ -64,8 +65,8 @@
             <if test="studyJavaSysDataDictDao.sortOrder != null">sort_order = #{studyJavaSysDataDictDao.sortOrder},</if>
             <if test="studyJavaSysDataDictDao.status != null">status = #{studyJavaSysDataDictDao.status},</if>
             <if test="studyJavaSysDataDictDao.remark != null">remark = #{studyJavaSysDataDictDao.remark},</if>
-            <if test="studyJavaSysDataDictDao.updatedBy != null">updated_by = #{studyJavaSysDataDictDao.updatedBy},</if>
-            <if test="studyJavaSysDataDictDao.updatedTime != null">updated_time = #{studyJavaSysDataDictDao.updatedTime},</if>
+            <if test="studyJavaSysDataDictDao.updateBy != null">update_by = #{studyJavaSysDataDictDao.updateBy},</if>
+            <if test="studyJavaSysDataDictDao.updateTime != null">update_time = #{studyJavaSysDataDictDao.updateTime},</if>
         </set>
         WHERE id = #{studyJavaSysDataDictDao.id}
     </update>

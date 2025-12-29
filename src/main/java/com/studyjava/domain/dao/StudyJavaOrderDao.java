@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.util.Date;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  *
@@ -14,7 +15,8 @@ import lombok.Data;
  */
 @TableName(value ="study_java_order")
 @Data
-public class StudyJavaOrderDao implements Serializable {
+@EqualsAndHashCode(callSuper = true)
+public class StudyJavaOrderDao extends BaseDao {
     /**
      * 订单表主键id
      */
@@ -75,21 +77,6 @@ public class StudyJavaOrderDao implements Serializable {
      * 收货人收货地址
      */
     private String userAddress;
-
-    /**
-     * 删除标识字段(0-未删除 1-已删除)
-     */
-    private Integer isDeleted;
-
-    /**
-     * 创建时间
-     */
-    private Date createTime;
-
-    /**
-     * 最新修改时间
-     */
-    private Date updateTime;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

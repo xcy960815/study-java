@@ -2,15 +2,15 @@ package com.studyjava.domain.vo;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
-import java.util.Date;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-@TableName(value ="study_java_data_dictionary")
+/**
+ * 数据字典表VO
+ */
 @Data
-public class StudyJavaSysDataDictVo {
+@EqualsAndHashCode(callSuper = true)
+public class StudyJavaSysDataDictVo extends BaseVo {
     /**
      * 主键ID
      */
@@ -46,31 +46,4 @@ public class StudyJavaSysDataDictVo {
      * 状态（0-禁用，1-启用）
      */
     private Integer status;
-
-    /**
-     * 备注
-     */
-    private String remark;
-
-    /**
-     * 创建人
-     */
-    private String createdBy;
-
-    /**
-     * 创建时间
-     */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    private Date createdTime;
-
-    /**
-     * 更新人
-     */
-    private String updatedBy;
-
-    /**
-     * 更新时间
-     */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    private Date updatedTime;
 }

@@ -1,23 +1,18 @@
 package com.studyjava.domain.vo;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
-import java.time.LocalDateTime;
+import lombok.EqualsAndHashCode;
+
+import java.util.List;
 
 @Data
-public class StudyJavaSysRoleVo {
+@EqualsAndHashCode(callSuper = true)
+public class StudyJavaSysRoleVo extends BaseVo {
     private Long id;
     private String roleName;
     private String roleCode;
     private Integer roleSort;
     private Integer status;
-    private String remark;
-    private String createBy;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    private LocalDateTime createTime;
-    private String updateBy;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    private LocalDateTime updateTime;
-    private java.util.List<Long> menuIds;
-    private java.util.List<String> menuNames;
+    private List<Long> menuIds;
+    private List<String> menuNames;
 }

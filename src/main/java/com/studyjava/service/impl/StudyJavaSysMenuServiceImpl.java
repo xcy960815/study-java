@@ -80,6 +80,9 @@ public class StudyJavaSysMenuServiceImpl implements StudyJavaSysMenuService {
         studyJavaSysMenuVo.setOrderNum(studyJavaSysMenuDao.getOrderNum());
         studyJavaSysMenuVo.setCreateTime(studyJavaSysMenuDao.getCreateTime());
         studyJavaSysMenuVo.setUpdateTime(studyJavaSysMenuDao.getUpdateTime());
+        studyJavaSysMenuVo.setCreateBy(studyJavaSysMenuDao.getCreateBy());
+        studyJavaSysMenuVo.setUpdateBy(studyJavaSysMenuDao.getUpdateBy());
+        studyJavaSysMenuVo.setRemark(studyJavaSysMenuDao.getRemark());
         return studyJavaSysMenuVo;
     }
     /**
@@ -160,9 +163,6 @@ public class StudyJavaSysMenuServiceImpl implements StudyJavaSysMenuService {
     public Boolean insertMenu(StudyJavaSysMenuDto studyJavaSysMenuDto) {
         try {
             StudyJavaSysMenuDao studyJavaSysMenuDao = convertToDao(studyJavaSysMenuDto);
-            studyJavaSysMenuDao.setCreateTime(new Date());
-            studyJavaSysMenuDao.setUpdateTime(new Date());
-            studyJavaSysMenuDao.setIsDeleted(0);
             return studyJavaSysMenuMapper.insertMenu(studyJavaSysMenuDao) > 0;
         } catch (Exception e) {
             throw new StudyJavaException("菜单添加失败");
@@ -180,7 +180,6 @@ public class StudyJavaSysMenuServiceImpl implements StudyJavaSysMenuService {
         try {
             StudyJavaSysMenuDao studyJavaSysMenuDao = convertToDao(studyJavaSysMenuDto);
             studyJavaSysMenuDao.setId(studyJavaSysMenuDto.getId());
-            studyJavaSysMenuDao.setUpdateTime(new Date());
             return studyJavaSysMenuMapper.updateMenu(studyJavaSysMenuDao) > 0;
         } catch (Exception e) {
             log.error("更新菜单失败, id: {}", studyJavaSysMenuDto.getId(), e);
@@ -201,7 +200,6 @@ public class StudyJavaSysMenuServiceImpl implements StudyJavaSysMenuService {
         StudyJavaSysMenuDao studyJavaSysMenuDao = new StudyJavaSysMenuDao();
         studyJavaSysMenuDao.setId(studyJavaSysMenuDto.getId());
         studyJavaSysMenuDao.setIsDeleted(ISMENUDELETE);
-        studyJavaSysMenuDao.setUpdateTime(new Date());
         return studyJavaSysMenuMapper.deleteMenu(studyJavaSysMenuDao) > 0;
     }
 }

@@ -6,16 +6,16 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serial;
-import java.io.Serializable;
-import java.util.Date;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * @TableName study_java_goods
  */
 @TableName(value ="study_java_goods")
 @Data
-public class StudyJavaGoodsDao implements Serializable {
+@EqualsAndHashCode(callSuper = true)
+public class StudyJavaGoodsDao extends BaseDao {
     /**
      * 商品id
      */
@@ -76,26 +76,6 @@ public class StudyJavaGoodsDao implements Serializable {
      * 商品销售状态(0-下架 1-上架)
      */
     private Integer goodsSellStatus;
-
-    /**
-     * 创建者id
-     */
-    private Integer createUser;
-
-    /**
-     * 创建时间
-     */
-    private Date createTime;
-
-    /**
-     * 修改者id
-     */
-    private Integer updateUser;
-
-    /**
-     * 修改时间
-     */
-    private Date updateTime;
 
     @Serial
     @TableField(exist = false)

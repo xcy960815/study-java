@@ -128,9 +128,7 @@ public class StudyJavaSysUserServiceImpl implements StudyJavaSysUserService {
     @Override
     public Boolean insertUser(StudyJavaSysUserDto studyJavaSysUserDto) {
         StudyJavaSysUserDao studyJavaSysUserDao = makeDto2Dao(studyJavaSysUserDto);
-        studyJavaSysUserDao.setIsDeleted(0);
         studyJavaSysUserDao.setLockedFlag(0);
-        studyJavaSysUserDao.setCreateTime(new Date());
         return studyJavaSysUserMapper.insertUser(studyJavaSysUserDao) > 0;
     }
 

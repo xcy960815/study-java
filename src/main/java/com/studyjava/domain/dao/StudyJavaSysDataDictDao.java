@@ -3,16 +3,17 @@ package com.studyjava.domain.dao;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.util.Date;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * 数据字典表
- * @TableName study_java_data_dictionary
+ * @TableName study_java_sys_data_dictionary
  */
-@TableName(value ="study_java_data_dictionary")
+@TableName(value ="study_java_sys_data_dictionary")
 @Data
-public class StudyJavaSysDataDictDao {
+@EqualsAndHashCode(callSuper = true)
+public class StudyJavaSysDataDictDao extends BaseDao {
     /**
      * 主键ID
      */
@@ -48,29 +49,4 @@ public class StudyJavaSysDataDictDao {
      * 状态（0-禁用，1-启用）
      */
     private Integer status;
-
-    /**
-     * 备注
-     */
-    private String remark;
-
-    /**
-     * 创建人
-     */
-    private String createdBy;
-
-    /**
-     * 创建时间
-     */
-    private Date createdTime;
-
-    /**
-     * 更新人
-     */
-    private String updatedBy;
-
-    /**
-     * 更新时间
-     */
-    private Date updatedTime;
 }

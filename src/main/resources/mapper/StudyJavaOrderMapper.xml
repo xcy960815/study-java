@@ -17,9 +17,12 @@
             <result property="userName" column="user_name" jdbcType="VARCHAR"/>
             <result property="userPhone" column="user_phone" jdbcType="VARCHAR"/>
             <result property="userAddress" column="user_address" jdbcType="VARCHAR"/>
-            <result property="isDeleted" column="is_deleted" jdbcType="TINYINT"/>
+            <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
             <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="isDeleted" column="is_deleted" jdbcType="TINYINT"/>
+            <result property="remark" column="remark" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -27,7 +30,7 @@
         `total_price`,`pay_status`,`pay_type`,
         `pay_time`,`order_status`,`extra_info`,
         `user_name`,`user_phone`,`user_address`,
-        `is_deleted`,`create_time`,`update_time`
+        `create_by`,`create_time`,`update_by`,`update_time`,`is_deleted`,`remark`
     </sql>
     <!-- 查询订单列表 -->
     <select id="getOrderList" resultMap="BaseResultMap">
@@ -107,13 +110,13 @@
         ,total_price,pay_status,pay_type
         ,pay_time,order_status,extra_info
         ,user_name,user_phone,user_address
-        ,is_deleted,create_time,update_time
+        ,create_by,create_time,update_by,update_time,is_deleted,remark
         )
         values (#{orderId,jdbcType=BIGINT},#{orderNo,jdbcType=VARCHAR},#{userId,jdbcType=BIGINT}
         ,#{totalPrice,jdbcType=INTEGER},#{payStatus,jdbcType=TINYINT},#{payType,jdbcType=TINYINT}
         ,#{payTime,jdbcType=TIMESTAMP},#{orderStatus,jdbcType=TINYINT},#{extraInfo,jdbcType=VARCHAR}
         ,#{userName,jdbcType=VARCHAR},#{userPhone,jdbcType=VARCHAR},#{userAddress,jdbcType=VARCHAR}
-        ,#{isDeleted,jdbcType=TINYINT},#{createTime,jdbcType=TIMESTAMP},#{updateTime,jdbcType=TIMESTAMP}
+        ,#{createBy,jdbcType=VARCHAR},#{createTime,jdbcType=TIMESTAMP},#{updateBy,jdbcType=VARCHAR},#{updateTime,jdbcType=TIMESTAMP},#{isDeleted,jdbcType=TINYINT},#{remark,jdbcType=VARCHAR}
         )
     </insert>
 
@@ -155,14 +158,23 @@
                 <if test="userAddress != null">
                     user_address = #{userAddress,jdbcType=VARCHAR},
                 </if>
-                <if test="isDeleted != null">
-                    is_deleted = #{isDeleted,jdbcType=TINYINT},
+                <if test="createBy != null">
+                    create_by = #{createBy,jdbcType=VARCHAR},
                 </if>
                 <if test="createTime != null">
                     create_time = #{createTime,jdbcType=TIMESTAMP},
                 </if>
+                <if test="updateBy != null">
+                    update_by = #{updateBy,jdbcType=VARCHAR},
+                </if>
                 <if test="updateTime != null">
                     update_time = #{updateTime,jdbcType=TIMESTAMP},
+                </if>
+                <if test="isDeleted != null">
+                    is_deleted = #{isDeleted,jdbcType=TINYINT},
+                </if>
+                <if test="remark != null">
+                    remark = #{remark,jdbcType=VARCHAR},
                 </if>
             </if>
         </set>

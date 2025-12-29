@@ -11,9 +11,13 @@
             <result property="passwordMd5" column="password_md5" jdbcType="VARCHAR"/>
             <result property="introduceSign" column="introduce_sign" jdbcType="VARCHAR"/>
             <result property="address" column="address" jdbcType="VARCHAR"/>
+            <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
             <result property="isDeleted" column="is_deleted" jdbcType="TINYINT"/>
             <result property="lockedFlag" column="locked_flag" jdbcType="TINYINT"/>
-            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="remark" column="remark" jdbcType="VARCHAR"/>
     </resultMap>
 
     <!-- 用户和角色联合查询的resultMap -->
@@ -27,17 +31,21 @@
         <result property="passwordMd5" column="password_md5" jdbcType="VARCHAR"/>
         <result property="introduceSign" column="introduce_sign" jdbcType="VARCHAR"/>
         <result property="address" column="address" jdbcType="VARCHAR"/>
+        <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
         <result property="isDeleted" column="is_deleted" jdbcType="TINYINT"/>
         <result property="lockedFlag" column="locked_flag" jdbcType="TINYINT"/>
-        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
         <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
     </resultMap>
 
     <!-- 基础列 -->
     <sql id="Base_Column_List">
         id,nick_name,login_name,
         password_md5,introduce_sign,address,
-        is_deleted,locked_flag,create_time,avatar
+        create_by,create_time,update_by,update_time,is_deleted,locked_flag,avatar,remark
     </sql>
 
     <!--  根据条件查询所有的用户  -->
@@ -89,11 +97,11 @@
         insert into study_java_sys_user
         (nick_name,login_name
         ,password_md5,introduce_sign,address
-        ,is_deleted,locked_flag,create_time
+        ,create_by,create_time,update_by,update_time,is_deleted,locked_flag,remark
         )
         values (#{studyJavaSysUserDao.nickName,jdbcType=VARCHAR},#{studyJavaSysUserDao.loginName,jdbcType=VARCHAR}
         ,#{studyJavaSysUserDao.passwordMd5,jdbcType=VARCHAR},#{studyJavaSysUserDao.introduceSign,jdbcType=VARCHAR},#{studyJavaSysUserDao.address,jdbcType=VARCHAR}
-        ,#{studyJavaSysUserDao.isDeleted,jdbcType=TINYINT},#{studyJavaSysUserDao.lockedFlag,jdbcType=TINYINT},#{studyJavaSysUserDao.createTime,jdbcType=TIMESTAMP}
+        ,#{studyJavaSysUserDao.createBy,jdbcType=VARCHAR},#{studyJavaSysUserDao.createTime,jdbcType=TIMESTAMP},#{studyJavaSysUserDao.updateBy,jdbcType=VARCHAR},#{studyJavaSysUserDao.updateTime,jdbcType=TIMESTAMP},#{studyJavaSysUserDao.isDeleted,jdbcType=TINYINT},#{studyJavaSysUserDao.lockedFlag,jdbcType=TINYINT},#{studyJavaSysUserDao.remark,jdbcType=VARCHAR}
         )
     </insert>
 
@@ -136,6 +144,15 @@
             </if>
             <if test="studyJavaSysUserDao.passwordMd5 != null and studyJavaSysUserDao.passwordMd5 != ''">
                 password_md5 = #{studyJavaSysUserDao.passwordMd5,jdbcType=VARCHAR},
+            </if>
+            <if test="studyJavaSysUserDao.updateBy != null">
+                update_by = #{studyJavaSysUserDao.updateBy,jdbcType=VARCHAR},
+            </if>
+            <if test="studyJavaSysUserDao.updateTime != null">
+                update_time = #{studyJavaSysUserDao.updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="studyJavaSysUserDao.remark != null">
+                remark = #{studyJavaSysUserDao.remark,jdbcType=VARCHAR},
             </if>
         </set>
         where

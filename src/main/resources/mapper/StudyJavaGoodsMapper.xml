@@ -17,15 +17,17 @@
         <result property="stockNum" column="stock_num" jdbcType="INTEGER"/>
         <result property="tag" column="tag" jdbcType="VARCHAR"/>
         <result property="goodsSellStatus" column="goods_sell_status" jdbcType="TINYINT"/>
-        <result property="createUser" column="create_user" jdbcType="INTEGER"/>
+        <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
-        <result property="updateUser" column="update_user" jdbcType="INTEGER"/>
+        <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="isDeleted" column="is_deleted" jdbcType="TINYINT"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         goods_id, goods_name, goods_intro, goods_category_id, goods_cover_img, goods_carousel, goods_detail_content,
-        original_price, selling_price, stock_num, tag, goods_sell_status, create_user, create_time, update_user, update_time
+        original_price, selling_price, stock_num, tag, goods_sell_status, create_by, create_time, update_by, update_time, is_deleted, remark
     </sql>
 
     <!-- 获取商品列表 -->
@@ -54,10 +56,10 @@
     <insert id="insertGoods" parameterType="com.studyjava.domain.dao.StudyJavaGoodsDao">
         INSERT INTO study_java_goods (
             goods_name, goods_intro, goods_category_id, goods_cover_img, goods_carousel, goods_detail_content,
-            original_price, selling_price, stock_num, tag, goods_sell_status, create_user, create_time, update_user, update_time
+            original_price, selling_price, stock_num, tag, goods_sell_status, create_by, create_time, update_by, update_time, is_deleted, remark
         ) VALUES (
             #{goodsName}, #{goodsIntro}, #{goodsCategoryId}, #{goodsCoverImg}, #{goodsCarousel}, #{goodsDetailContent},
-            #{originalPrice}, #{sellingPrice}, #{stockNum}, #{tag}, #{goodsSellStatus}, #{createUser}, NOW(), #{updateUser}, NOW()
+            #{originalPrice}, #{sellingPrice}, #{stockNum}, #{tag}, #{goodsSellStatus}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime}, #{isDeleted}, #{remark}
         )
     </insert>
 </mapper>

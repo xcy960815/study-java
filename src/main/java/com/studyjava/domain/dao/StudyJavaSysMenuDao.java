@@ -4,9 +4,9 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
-import java.io.Serializable;
-import java.util.Date;
+import java.io.Serial;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * 系统菜单表
@@ -14,7 +14,8 @@ import lombok.Data;
  */
 @TableName(value ="study_java_sys_menu")
 @Data
-public class StudyJavaSysMenuDao implements Serializable {
+@EqualsAndHashCode(callSuper = true)
+public class StudyJavaSysMenuDao extends BaseDao {
     /**
      * 菜单ID
      */
@@ -61,27 +62,6 @@ public class StudyJavaSysMenuDao implements Serializable {
      */
     private Integer orderNum;
 
-    /**
-     * 创建时间
-     */
-    private Date createTime;
-
-    /**
-     * 更新时间
-     */
-    private Date updateTime;
-
-    /**
-     * 是否删除：0-未删除，1-已删除
-     */
-    private Integer isDeleted = 0;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
+    @Serial
+    private static final long serialVersionUID = 1L;
 }

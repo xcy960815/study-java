@@ -14,16 +14,19 @@
             <result property="menuType" column="menu_type" jdbcType="TINYINT"/>
             <result property="perms" column="perms" jdbcType="VARCHAR"/>
             <result property="orderNum" column="order_num" jdbcType="INTEGER"/>
+            <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
             <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
             <result property="isDeleted" column="is_deleted" jdbcType="TINYINT"/>
+            <result property="remark" column="remark" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id,parent_id,menu_name,
         path,component,icon,
         menu_type,perms,order_num,
-        create_time,update_time,is_deleted
+        create_by,create_time,update_by,update_time,is_deleted,remark
     </sql>
 
     <select id="getMenuList" resultMap="BaseResultMap">
@@ -118,10 +121,11 @@
     <!-- 新增菜单 -->
     <insert id="insertMenu" parameterType="com.studyjava.domain.dao.StudyJavaSysMenuDao">
         INSERT INTO study_java_sys_menu
-        (parent_id, menu_name, path, component, icon, menu_type, perms, order_num, create_time, update_time, is_deleted)
+        (parent_id, menu_name, path, component, icon, menu_type, perms, order_num, create_by, create_time, update_by, update_time, is_deleted, remark)
         VALUES
         (#{studyJavaSysMenuDao.parentId}, #{studyJavaSysMenuDao.menuName}, #{studyJavaSysMenuDao.path}, #{studyJavaSysMenuDao.component}, #{studyJavaSysMenuDao.icon},
-        #{studyJavaSysMenuDao.menuType}, #{studyJavaSysMenuDao.perms}, #{studyJavaSysMenuDao.orderNum}, #{studyJavaSysMenuDao.createTime}, #{studyJavaSysMenuDao.updateTime}, #{studyJavaSysMenuDao.isDeleted})
+        #{studyJavaSysMenuDao.menuType}, #{studyJavaSysMenuDao.perms}, #{studyJavaSysMenuDao.orderNum}, #{studyJavaSysMenuDao.createBy}, #{studyJavaSysMenuDao.createTime}, 
+        #{studyJavaSysMenuDao.updateBy}, #{studyJavaSysMenuDao.updateTime}, #{studyJavaSysMenuDao.isDeleted}, #{studyJavaSysMenuDao.remark})
     </insert>
     <!-- 更新菜单 -->
     <update id="updateMenu" parameterType="com.studyjava.domain.dao.StudyJavaSysMenuDao">
@@ -150,6 +154,12 @@
             </if>
             <if test="studyJavaSysMenuDao.orderNum != null">
                 order_num = #{studyJavaSysMenuDao.orderNum},
+            </if>
+            <if test="studyJavaSysMenuDao.updateBy != null">
+                update_by = #{studyJavaSysMenuDao.updateBy},
+            </if>
+            <if test="studyJavaSysMenuDao.remark != null">
+                remark = #{studyJavaSysMenuDao.remark},
             </if>
             update_time = #{studyJavaSysMenuDao.updateTime}
         </set>

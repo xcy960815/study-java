@@ -1,20 +1,22 @@
 package com.studyjava.domain.dao;
 
 import java.io.Serial;
-import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * TableName  study_java_sys_user
  */
 @Data
-public class StudyJavaSysUserDao implements Serializable {
+@EqualsAndHashCode(callSuper = true)
+@TableName("study_java_sys_user")
+public class StudyJavaSysUserDao extends BaseDao {
     /**
      * 用户主键id
      */
@@ -47,19 +49,10 @@ public class StudyJavaSysUserDao implements Serializable {
     private String address;
 
     /**
-     * 注销标识字段(0-正常 1-已注销)
-     */
-    @JsonIgnore
-    private Integer isDeleted;
-
-    /**
      * 锁定标识字段(0-未锁定 1-已锁定)
      */
     @JsonIgnore
     private Integer lockedFlag;
-
-
-    private Date createTime;
 
     /**
      * 头像
@@ -70,7 +63,7 @@ public class StudyJavaSysUserDao implements Serializable {
 
     private List<String> roleNames;
 
-    private  List<String> roleCodes;
+    private List<String> roleCodes;
 
     @Serial
     private static final long serialVersionUID = 1L;

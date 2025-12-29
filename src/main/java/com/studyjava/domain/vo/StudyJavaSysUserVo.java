@@ -1,19 +1,19 @@
 package com.studyjava.domain.vo;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.io.Serial;
-import java.io.Serializable;
-import java.util.Date;
+import java.util.List;
 
 /**
  * TableName study_java_sys_user
  */
 @Data
-public class StudyJavaSysUserVo implements Serializable {
+@EqualsAndHashCode(callSuper = true)
+public class StudyJavaSysUserVo extends BaseVo {
     /**
      * 用户主键id
      */
@@ -22,9 +22,9 @@ public class StudyJavaSysUserVo implements Serializable {
     /**
      * 多角色支持
      */
-    private java.util.List<Long> roleIds;
-    private java.util.List<String> roleNames;
-    private java.util.List<String> roleCodes;
+    private List<Long> roleIds;
+    private List<String> roleNames;
+    private List<String> roleCodes;
 
     /**
      * 用户昵称
@@ -66,12 +66,6 @@ public class StudyJavaSysUserVo implements Serializable {
     private String address;
 
     /**
-     * 注销标识字段(0-正常 1-已注销)
-     */
-    @JsonIgnore
-    private Integer isDeleted;
-
-    /**
      * 锁定标识字段(0-未锁定 1-已锁定)
      */
     @JsonIgnore
@@ -86,12 +80,6 @@ public class StudyJavaSysUserVo implements Serializable {
      * 年龄
      */
     private Integer age;
-
-    /**
-     * 注册时间，格式化为 "yyyy-MM-dd"
-     */
-    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
-    private Date createTime;
 
     @Serial
     private static final long serialVersionUID = 1L;

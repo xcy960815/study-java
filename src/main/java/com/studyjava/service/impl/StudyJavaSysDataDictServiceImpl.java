@@ -56,22 +56,17 @@ public class StudyJavaSysDataDictServiceImpl extends ServiceImpl<StudyJavaSysDat
     @Override
     public Boolean insertDataDict(StudyJavaSysDataDictDto studyJavaSysDataDictDto) {
         StudyJavaSysDataDictDao studyJavaSysDataDictDao = dto2Dao(studyJavaSysDataDictDto);
-        studyJavaSysDataDictDao.setUpdatedTime(new Date());
-        studyJavaSysDataDictDao.setCreatedTime(new Date());
         StudyJavaSysUserVo studyJavaSysUserVo = studyJavaSysUserService.getUserInfo();
-        studyJavaSysDataDictDao.setCreatedBy(studyJavaSysUserVo.getLoginName());
-        studyJavaSysDataDictDao.setUpdatedBy(studyJavaSysUserVo.getLoginName());
+        studyJavaSysDataDictDao.setCreateBy(studyJavaSysUserVo.getLoginName());
+        studyJavaSysDataDictDao.setUpdateBy(studyJavaSysUserVo.getLoginName());
         return studyJavaSysDataDictMapper.insertDataDict(studyJavaSysDataDictDao);
     }
 
     @Override
     public Boolean updateDataDict(StudyJavaSysDataDictDto studyJavaSysDataDictDto) {
         StudyJavaSysDataDictDao studyJavaSysDataDictDao = dto2Dao(studyJavaSysDataDictDto);
-        BeanUtils.copyProperties(studyJavaSysDataDictDto, studyJavaSysDataDictDao);
-        studyJavaSysDataDictDao.setUpdatedTime(new Date());
         StudyJavaSysUserVo studyJavaSysUserVo = studyJavaSysUserService.getUserInfo();
-        studyJavaSysDataDictDao.setCreatedBy(studyJavaSysUserVo.getLoginName());
-        studyJavaSysDataDictDao.setUpdatedBy(studyJavaSysUserVo.getLoginName());
+        studyJavaSysDataDictDao.setUpdateBy(studyJavaSysUserVo.getLoginName());
         return studyJavaSysDataDictMapper.updateDataDict(studyJavaSysDataDictDao);
     }
 
