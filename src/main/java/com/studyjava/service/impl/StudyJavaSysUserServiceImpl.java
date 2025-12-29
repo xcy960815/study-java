@@ -43,6 +43,9 @@ public class StudyJavaSysUserServiceImpl implements StudyJavaSysUserService {
     @Resource
     private JwtTokenComponent jwtTokenComponent;
 
+    @Resource
+    private com.studyjava.mapper.StudyJavaSysMenuMapper studyJavaSysMenuMapper;
+
     /**
      * Dto转Dao
      */
@@ -188,7 +191,16 @@ public class StudyJavaSysUserServiceImpl implements StudyJavaSysUserService {
         StudyJavaSysUserDto studyJavaSysUserDto = new StudyJavaSysUserDto();
         studyJavaSysUserDto.setId(userId);
         studyJavaSysUserDto.setLoginName(loginName);
-       return makeDao2Vo(studyJavaSysUserMapper.getUserInfo(makeDto2Dao(studyJavaSysUserDto)));
+        StudyJavaSysUserVo vo = makeDao2Vo(studyJavaSysUserMapper.getUserInfo(makeDto2Dao(studyJavaSysUserDto)));
+        if (vo != null) {
+            // 如果是超级管理员，赋予所有权限标识
+            if (vo.getRoleCodes() != null && vo.getRoleCodes().contains("SUPER_ADMIN")) {
+                vo.setPermissions(List.of("*:*:*"));
+            } else {
+                vo.setPermissions(studyJavaSysMenuMapper.getPermsByUserId(vo.getId()));
+            }
+        }
+        return vo;
     }
 
     @Override
@@ -196,9 +208,17 @@ public class StudyJavaSysUserServiceImpl implements StudyJavaSysUserService {
         String loginName = studyJavaLoginDto.getUsername();
 //        String passwordMd5 = studyJavaLoginDto.getPasswordMd5();
         StudyJavaSysUserDto studyJavaSysUserDto = new StudyJavaSysUserDto();
-//        studyJavaSysUserDto.setPasswordMd5(passwordMd5);
         studyJavaSysUserDto.setLoginName(loginName);
-        return makeDao2Vo(studyJavaSysUserMapper.getUserInfo(makeDto2Dao(studyJavaSysUserDto)));
+        StudyJavaSysUserVo vo = makeDao2Vo(studyJavaSysUserMapper.getUserInfo(makeDto2Dao(studyJavaSysUserDto)));
+        if (vo != null) {
+            // 如果是超级管理员，赋予所有权限标识
+            if (vo.getRoleCodes() != null && vo.getRoleCodes().contains("SUPER_ADMIN")) {
+                vo.setPermissions(List.of("*:*:*"));
+            } else {
+                vo.setPermissions(studyJavaSysMenuMapper.getPermsByUserId(vo.getId()));
+            }
+        }
+        return vo;
     }
 
     /**

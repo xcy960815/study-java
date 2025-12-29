@@ -41,6 +41,7 @@ public class StudyJavaSysMenuController extends BaseController {
      * @return PageResult<StudyJavaSysMenuVo>
      */
     @Log(title = "菜单管理", businessType = BusinessType.QUERY)
+    @com.studyjava.annotation.PreAuthorize("system:menu:query")
     @GetMapping("/getMenuList")
     public PageResult<StudyJavaSysMenuVo> getMenuList(
             @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
@@ -83,6 +84,7 @@ public class StudyJavaSysMenuController extends BaseController {
      * @return 新增结果
      */
     @Log(title = "菜单管理", businessType = BusinessType.INSERT)
+    @com.studyjava.annotation.PreAuthorize("system:menu:add")
     @PostMapping("/insertMenu")
     public Boolean insertMenu(@Valid @RequestBody StudyJavaSysMenuDto studyJavaSysMenuDto) {
         return studyJavaSysMenuService.insertMenu(studyJavaSysMenuDto);
@@ -94,6 +96,7 @@ public class StudyJavaSysMenuController extends BaseController {
      * @return 更新结果
      */
     @Log(title = "菜单管理", businessType = BusinessType.UPDATE)
+    @com.studyjava.annotation.PreAuthorize("system:menu:edit")
     @PutMapping("/updateMenu")
     public Boolean updateMenu(@Valid @RequestBody StudyJavaSysMenuDto studyJavaSysMenuDto) {
         if (studyJavaSysMenuDto.getId() == null) {
@@ -108,6 +111,7 @@ public class StudyJavaSysMenuController extends BaseController {
      * @return 删除结果
      */
     @Log(title = "菜单管理", businessType = BusinessType.DELETE)
+    @com.studyjava.annotation.PreAuthorize("system:menu:remove")
     @DeleteMapping("/deleteMenu")
     public Boolean deleteMenu(@RequestBody StudyJavaSysMenuDto studyJavaSysMenuDto) {
         return studyJavaSysMenuService.deleteMenu(studyJavaSysMenuDto);

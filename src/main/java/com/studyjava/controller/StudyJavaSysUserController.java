@@ -31,6 +31,7 @@ public class StudyJavaSysUserController extends BaseController {
      * @return PageResult<StudyJavaSysUserVo>
      */
     @Log(title = "用户管理", businessType = BusinessType.QUERY)
+    @com.studyjava.annotation.PreAuthorize("system:user:query")
     @PostMapping("/getUserList")
     public PageResult<StudyJavaSysUserVo> getUserList(
         @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
@@ -59,6 +60,7 @@ public class StudyJavaSysUserController extends BaseController {
      * @return Boolean
      */
     @Log(title = "用户管理", businessType = BusinessType.UPDATE)
+    @com.studyjava.annotation.PreAuthorize("system:user:edit")
     @PostMapping("/updateUser")
     public Boolean updateUser(@Valid @RequestBody StudyJavaSysUserDto studyJavaSysUser) {
         // 获取用户ID
@@ -99,6 +101,7 @@ public class StudyJavaSysUserController extends BaseController {
      * @return Boolean
      */
     @Log(title = "用户管理", businessType = BusinessType.INSERT)
+    @com.studyjava.annotation.PreAuthorize("system:user:add")
     @PostMapping("/insertUser")
     public Boolean insertUser(@Valid @RequestBody StudyJavaSysUserDto studyJavaUser) {
         // 返回插入结果
@@ -111,6 +114,7 @@ public class StudyJavaSysUserController extends BaseController {
      * @return Boolean
      */
     @Log(title = "用户管理", businessType = BusinessType.DELETE)
+    @com.studyjava.annotation.PreAuthorize("system:user:remove")
     @DeleteMapping("/deleteUser")
     public Boolean deleteUser(@RequestBody StudyJavaSysUserDto studyJavaSysUserDto) {
         // 返回删除结果

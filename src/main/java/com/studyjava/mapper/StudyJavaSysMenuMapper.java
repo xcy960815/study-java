@@ -72,6 +72,13 @@ public interface StudyJavaSysMenuMapper extends BaseMapper<StudyJavaSysMenuDao> 
      * 删除角色-菜单关联（根据菜单ID）
      */
     int deleteRoleMenusByMenuId(@Param("menuId") Long menuId);
+
+    /**
+     * 获取用户权限列表
+     * @param userId 用户ID
+     * @return 权限列表
+     */
+    List<String> getPermsByUserId(@Param("userId") Long userId);
 }
 
 

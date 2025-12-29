@@ -22,6 +22,12 @@ public class AuthInterceptorComponent implements HandlerInterceptor {
     @Resource
     private ObjectMapper objectMapper;
 
+    @Resource
+    private com.studyjava.service.StudyJavaSysUserService studyJavaSysUserService;
+
+    @Resource
+    private com.studyjava.mapper.StudyJavaSysMenuMapper studyJavaSysMenuMapper;
+
     @Override
     public boolean preHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler) throws Exception {
         // 获取请求头上的token
@@ -41,7 +47,34 @@ public class AuthInterceptorComponent implements HandlerInterceptor {
             sendErrorResponse(response, request.getRequestURI(), "Token已过期");
             return false;
         }
+
+        // 权限校验
+        if (handler instanceof org.springframework.web.method.HandlerMethod handlerMethod) {
+            com.studyjava.annotation.PreAuthorize preAuthorize = handlerMethod.getMethodAnnotation(com.studyjava.annotation.PreAuthorize.class);
+            if (preAuthorize == null) {
+                preAuthorize = handlerMethod.getBeanType().getAnnotation(com.studyjava.annotation.PreAuthorize.class);
+            }
+
+            if (preAuthorize != null && !preAuthorize.value().isEmpty()) {
+                String permission = preAuthorize.value();
+                // 获取当前用户信息（包含权限）
+                com.studyjava.domain.vo.StudyJavaSysUserVo userVo = studyJavaSysUserService.getUserInfo();
+                if (userVo == null || userVo.getPermissions() == null || 
+                    (!userVo.getPermissions().contains("*:*:*") && !userVo.getPermissions().contains(permission))) {
+                    sendForbiddenResponse(response, request.getRequestURI(), "没有操作权限");
+                    return false;
+                }
+            }
+        }
+
         return true;
+    }
+
+    private void sendForbiddenResponse(HttpServletResponse response, String path, String message) throws Exception {
+        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        response.setContentType(CONTENT_TYPE);
+        ErrorResponse errorResponse = new ErrorResponse(HttpServletResponse.SC_FORBIDDEN, message, path);
+        response.getWriter().write(objectMapper.writeValueAsString(errorResponse));
     }
 
     private void sendErrorResponse(HttpServletResponse response, String path, String message) throws Exception {

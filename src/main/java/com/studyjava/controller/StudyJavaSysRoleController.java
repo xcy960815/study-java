@@ -38,7 +38,8 @@ public class StudyJavaSysRoleController {
     @Log(title = "角色管理", businessType = BusinessType.QUERY)
     @GetMapping("/getAllRoleList")
     public List<StudyJavaSysRoleVo> getAllRoleList() {
-        return studyJavaSysRoleService.getAllRoleList();
+        List<StudyJavaSysRoleVo> studyJavaSysRoleList = studyJavaSysRoleService.getAllRoleList();
+        return studyJavaSysRoleList;
     }
 
     /**

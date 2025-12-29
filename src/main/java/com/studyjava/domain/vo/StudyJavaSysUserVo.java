@@ -27,6 +27,11 @@ public class StudyJavaSysUserVo extends BaseVo {
     private List<String> roleCodes;
 
     /**
+     * 权限列表
+     */
+    private List<String> permissions;
+
+    /**
      * 用户昵称
      */
     @NotBlank(message = "用户昵称不能为空")
