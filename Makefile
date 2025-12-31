@@ -26,10 +26,10 @@ dev:
 	@if [ -f .env ]; then \
 		echo "📝 加载 .env 环境变量..."; \
 		export $$(cat .env | grep -v '^#' | xargs) && \
-		mvn spring-boot:run -Dspring-boot.run.profiles=dev; \
+		mvn spring-boot:run -Dspring-boot.run.profiles=dev -Pdev; \
 	else \
 		echo "⚠️  .env 文件不存在，使用默认配置"; \
-		mvn spring-boot:run -Dspring-boot.run.profiles=dev; \
+		mvn spring-boot:run -Dspring-boot.run.profiles=dev -Pdev; \
 	fi
 
 # 预发布模式：使用 Maven 直接运行（加载 .env）
@@ -38,10 +38,10 @@ pre:
 	@if [ -f .env ]; then \
 		echo "📝 加载 .env 环境变量..."; \
 		export $$(cat .env | grep -v '^#' | xargs) && \
-		mvn spring-boot:run -Dspring-boot.run.profiles=pre; \
+		mvn spring-boot:run -Dspring-boot.run.profiles=pre -Ppre; \
 	else \
 		echo "⚠️  .env 文件不存在，使用默认配置"; \
-		mvn spring-boot:run -Dspring-boot.run.profiles=pre; \
+		mvn spring-boot:run -Dspring-boot.run.profiles=pre -Ppre; \
 	fi
 
 # 生产模式：使用 Maven 直接运行（加载 .env）
@@ -50,10 +50,10 @@ prod:
 	@if [ -f .env ]; then \
 		echo "📝 加载 .env 环境变量..."; \
 		export $$(cat .env | grep -v '^#' | xargs) && \
-		mvn spring-boot:run -Dspring-boot.run.profiles=prod; \
+		mvn spring-boot:run -Dspring-boot.run.profiles=prod -Pprod; \
 	else \
 		echo "⚠️  .env 文件不存在，使用默认配置"; \
-		mvn spring-boot:run -Dspring-boot.run.profiles=prod; \
+		mvn spring-boot:run -Dspring-boot.run.profiles=prod -Pprod; \
 	fi
 
 # 编译打包
