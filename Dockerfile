@@ -1,18 +1,17 @@
-# cspell:ignore Dskip temurin Dlog
 # 第一阶段：构建阶段
 FROM maven:3.9.9 AS build
-
-# 设置工作目录
 WORKDIR /study-java
 
-# 复制 Maven 配置和源码，直接进行打包
-# 说明：
-#  - 原来这里用了 `mvn dependency:go-offline -B` 来提前下载所有依赖，但在 CI 多架构构建时，
-#    会尝试解析某些与当前平台不匹配的 Netty native 依赖（例如 osx-aarch_64），导致构建失败。
-#  - 实际上 `mvn clean package` 本身就会按需下载依赖，这里直接打包即可，影响不大。
+# 复制 Maven 配置和源码
 COPY pom.xml .
 COPY src ./src
+
+# 打包
 RUN mvn clean package -DskipTests -P prod
+
+# 关键步骤：使用 layertools 提取分层文件
+# 这会将 JAR 包拆解为 dependencies, spring-boot-loader, snapshot-dependencies, application 四个目录
+RUN java -Djarmode=layertools -jar target/study-java-1.0-SNAPSHOT.jar extract
 
 # 第二阶段：运行阶段
 FROM eclipse-temurin:21-jre
@@ -27,22 +26,29 @@ WORKDIR /study-java
 # 优化：创建非 root 用户运行应用
 RUN useradd -m -s /bin/bash appuser
 
-# 将构建阶段的 JAR 文件复制到运行阶段
-COPY --from=build /study-java/target/study-java-1.0-SNAPSHOT.jar ./study-java.jar
+# 关键步骤：复制分层文件 (利用 Docker 缓存)
+# 依赖层 (变动最少，最先复制)
+COPY --from=build /study-java/dependencies/ ./
+# Loader 层
+COPY --from=build /study-java/spring-boot-loader/ ./
+# 快照依赖层
+COPY --from=build /study-java/snapshot-dependencies/ ./
+# 应用代码层 (变动最频繁，最后复制)
+COPY --from=build /study-java/application/ ./
 
 # 优化：创建日志目录并授权
 RUN mkdir -p /study-java/logs && chown -R appuser:appuser /study-java
 
-# 创建启动脚本，确保日志目录权限正确（处理挂载卷的权限问题）
+# 创建启动脚本
 RUN echo '#!/bin/bash\n\
-# 确保日志目录存在且可写（处理挂载卷权限问题）\n\
+# 确保日志目录存在且可写\n\
 mkdir -p /study-java/logs\n\
-# 如果目录不可写，尝试设置权限（需要以 root 运行）\n\
 if [ ! -w /study-java/logs ]; then\n\
     echo "Warning: /study-java/logs is not writable. Please check volume permissions."\n\
 fi\n\
-# 启动应用\n\
-exec java -XX:MaxRAMPercentage=75.0 -XX:+ExitOnOutOfMemoryError -Dlog.path=/study-java/logs -jar study-java.jar\n\
+# 启动应用 (使用 JarLauncher)\n\
+# 注意：Spring Boot 3.1 使用 org.springframework.boot.loader.JarLauncher\n\
+exec java -XX:MaxRAMPercentage=75.0 -XX:+ExitOnOutOfMemoryError -Dlog.path=/study-java/logs org.springframework.boot.loader.JarLauncher\n\
 ' > /study-java/entrypoint.sh && \
     chmod +x /study-java/entrypoint.sh && \
     chown appuser:appuser /study-java/entrypoint.sh
@@ -54,10 +60,4 @@ USER appuser
 ENV SPRING_PROFILES_ACTIVE=prod
 EXPOSE 8084
 
-# 优化：使用启动脚本（处理权限问题）
 ENTRYPOINT ["/study-java/entrypoint.sh"]
-
-# 执行脚本
-# docker build -t xcy960815/study-java:1.x .
-
-
