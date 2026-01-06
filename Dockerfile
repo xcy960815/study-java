@@ -6,6 +6,20 @@ WORKDIR /study-java
 COPY pom.xml .
 COPY src ./src
 
+# 优化：配置阿里云 Maven 镜像源，解决 GitHub Actions 连接中央仓库 403 问题
+RUN mkdir -p /root/.m2 && echo '<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0" \
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" \
+    xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 https://maven.apache.org/xsd/settings-1.0.0.xsd"> \
+    <mirrors> \
+        <mirror> \
+            <id>aliyunmaven</id> \
+            <mirrorOf>central</mirrorOf> \
+            <name>Aliyun Public</name> \
+            <url>https://maven.aliyun.com/repository/public</url> \
+        </mirror> \
+    </mirrors> \
+</settings>' > /root/.m2/settings.xml
+
 # 打包
 RUN mvn clean package -DskipTests -P prod
 
