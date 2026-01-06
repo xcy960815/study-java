@@ -20,8 +20,8 @@ spring:
 
 mybatis-plus:
   mapper-locations: classpath*:mapper/*.xml
-  configuration:
-    # 生产环境关闭控制台 SQL 日志
-    # log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#   configuration:
+#    # 生产环境关闭控制台 SQL 日志
+#    # log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 server:
   shutdown: graceful
