@@ -1,0 +1,135 @@
+services:
+  # Redis 缓存服务
+  redis:
+    image: redis:7.2.5
+    container_name: study-java-redis-container
+    command: redis-server --bind 0.0.0.0 --requirepass ${REDIS_PASSWORD}
+    ports:
+      - '6381:6379'
+    environment:
+      - TZ=${TIMEZONE:-Asia/Shanghai}
+    volumes:
+      - /mnt/sata1-4/AppData/study-java/redis/data:/data
+    networks:
+      - study-java-network
+    # 优化：日志轮转 (同步自生效配置)
+    logging:
+      driver: 'json-file'
+      options:
+        max-size: '10m'
+        max-file: '3'
+    # 添加健康检查，确保 Redis 就绪
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+    restart: always
+
+  # MySQL 数据库服务
+  mysql:
+    image: mysql:8.4.2
+    container_name: study-java-mysql-container
+    command:
+      [
+        '--bind-address=0.0.0.0',
+        '--character-set-server=utf8mb4',
+        '--collation-server=utf8mb4_unicode_ci',
+        '--max_allowed_packet=128M',
+        '--sql-mode=STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION',
+        '--default-time-zone=+8:00',
+      ]
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: study_java
+      TZ: ${TIMEZONE:-Asia/Shanghai}
+    ports:
+      - '3308:3306'
+    volumes:
+      - /mnt/sata1-4/AppData/study-java/mysql/data:/var/lib/mysql
+    networks:
+      - study-java-network
+    logging:
+      driver: 'json-file'
+      options:
+        max-size: '10m'
+        max-file: '3'
+    # 添加健康检查，确保数据库完全启动后再让后端连接
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 20s
+    restart: always
+
+  # SpringBoot 后端服务
+  springboot:
+    image: xcy960815/study-java:${IMAGE_VERSION}
+    container_name: study-java-container
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - '12316:8084'
+    volumes:
+      - /mnt/sata1-4/AppData/study-java/logs:/study-java/logs
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      TZ: ${TIMEZONE:-Asia/Shanghai}
+      # 建议直接连接内部 Redis 容器，端口 6379
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+      SPRING_DATA_REDIS_PASSWORD: ${REDIS_PASSWORD}
+      # 修复：主机名改为 mysql，对应上面的服务名
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/study_java?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY}
+      DEEPSEEK_BASE_URL: ${DEEPSEEK_BASE_URL:-https://api.deepseek.com}
+    depends_on:
+      redis:
+        condition: service_healthy
+      mysql:
+        condition: service_healthy
+    networks:
+      - study-java-network
+    logging:
+      driver: 'json-file'
+      options:
+        max-size: '10m'
+        max-file: '3'
+    # 优化：添加健康检查 (同步自生效配置)
+    healthcheck:
+      test: ['CMD-SHELL', 'ps aux | grep -q "[s]tudy-java.jar" || exit 1']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 90s
+    restart: always
+
+  # Vue 前端服务
+  vue:
+    image: xcy960815/study-java-web:${WEB_IMAGE_VERSION}
+    container_name: study-java-web-container
+    ports:
+      - '12315:80'
+    environment:
+      - TZ=${TIMEZONE:-Asia/Shanghai}
+    depends_on:
+      springboot:
+        condition: service_healthy
+    networks:
+      - study-java-network
+    logging:
+      driver: 'json-file'
+      options:
+        max-size: '10m'
+        max-file: '3'
+    restart: always
+
+networks:
+  study-java-network:
+    name: study-java-network
+    driver: bridge
+
