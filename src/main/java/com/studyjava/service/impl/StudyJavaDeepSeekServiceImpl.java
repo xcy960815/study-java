@@ -66,6 +66,7 @@ public class StudyJavaDeepSeekServiceImpl extends StudyJavaAiService implements 
      * @return Builder
      */
     private HttpRequest.Builder generateRequestBuilder(URI uri) {
+        log.info("Current DeepSeek API Key: {}", deepSeekConfig.getKey());
         String Authorization = String.format("Bearer %s", deepSeekConfig.getKey());
         return HttpRequest.newBuilder(uri)
                 .header("Content-Type", "application/json")

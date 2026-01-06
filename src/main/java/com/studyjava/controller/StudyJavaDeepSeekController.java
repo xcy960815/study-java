@@ -85,7 +85,8 @@ public class StudyJavaDeepSeekController {
 
             return modelsVo;
         } catch (IOException | InterruptedException e) {
-            throw new StudyJavaException(e.getMessage());
+            log.error("DeepSeek models error", e);
+            throw new StudyJavaException(e.getMessage() != null ? e.getMessage() : "DeepSeek API Error: " + e.getClass().getSimpleName());
         }
     }
 
@@ -112,7 +113,8 @@ public class StudyJavaDeepSeekController {
 
             return balanceVo;
         } catch (IOException | InterruptedException e) {
-            throw new StudyJavaException(e.getMessage());
+            log.error("DeepSeek balance error", e);
+            throw new StudyJavaException(e.getMessage() != null ? e.getMessage() : "DeepSeek API Error: " + e.getClass().getSimpleName());
         }
     }
 }
