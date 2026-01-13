@@ -1,6 +1,5 @@
 package com.studyjava.service;
 
-import com.studyjava.domain.vo.StudyJavaServerInfoVo;
 import java.lang.management.ManagementFactory;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -10,9 +9,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+
+import org.springframework.stereotype.Service;
+
+import com.studyjava.domain.vo.StudyJavaServerInfoVo;
+
 import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 import oshi.SystemInfo;
 import oshi.hardware.CentralProcessor;
 import oshi.hardware.GlobalMemory;
@@ -72,17 +75,17 @@ public class StudyJavaServerMonitorService {
       return false;
     }
 
-
-
     // 立即执行一次计算
     cachedServerInfo = calculateServerInfo();
 
     // 创建定时任务
-    updateExecutor = Executors.newSingleThreadScheduledExecutor(r -> {
-      Thread thread = new Thread(r, "server-monitor-updater");
-      thread.setDaemon(true);
-      return thread;
-    });
+    updateExecutor =
+        Executors.newSingleThreadScheduledExecutor(
+            r -> {
+              Thread thread = new Thread(r, "server-monitor-updater");
+              thread.setDaemon(true);
+              return thread;
+            });
 
     updateExecutor.scheduleAtFixedRate(
         this::updateServerInfoCache,
@@ -104,8 +107,6 @@ public class StudyJavaServerMonitorService {
       log.warn("监控未在运行");
       return false;
     }
-
-
 
     if (updateExecutor != null && !updateExecutor.isShutdown()) {
       updateExecutor.shutdown();
@@ -267,8 +268,6 @@ public class StudyJavaServerMonitorService {
     long total = 0;
     long free = 0;
 
-
-
     for (OSFileStore fs : fsArray) {
       String fsName = fs.getName();
       String fsType = fs.getType();
@@ -287,12 +286,9 @@ public class StudyJavaServerMonitorService {
 
       total += fsTotal;
       free += fsFree;
-
     }
 
     long used = total - free;
-
-
 
     return StudyJavaServerInfoVo.DiskInfo.builder()
         .total(Double.parseDouble(DF.format(convertBytesToGB(total))))

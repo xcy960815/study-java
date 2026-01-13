@@ -7,6 +7,6 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class StudyJavaOllamaShowVo extends StudyJavaOllamaBaseVo {
-    @NotBlank(message = "name不能为空")
-    String name;
+  @NotBlank(message = "name不能为空")
+  String name;
 }

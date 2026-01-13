@@ -1,7 +1,9 @@
 package com.studyjava.domain.vo;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

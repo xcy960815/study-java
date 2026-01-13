@@ -1,18 +1,21 @@
 package com.studyjava.controller.monitor;
 
-import com.studyjava.domain.vo.StudyJavaServerInfoVo;
-import com.studyjava.service.StudyJavaServerMonitorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.studyjava.domain.vo.StudyJavaServerInfoVo;
+import com.studyjava.service.StudyJavaServerMonitorService;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 服务器监控控制器
@@ -74,7 +77,6 @@ public class StudyJavaServerMonitorController {
             if (serverInfo != null) {
               // 通过 WebSocket 推送数据到 /topic/server-monitor
               messagingTemplate.convertAndSend("/topic/server-monitor", serverInfo);
-
             }
           } catch (Exception e) {
             log.error("推送服务器监控数据失败", e);
@@ -83,7 +85,6 @@ public class StudyJavaServerMonitorController {
         0,
         3,
         TimeUnit.SECONDS);
-
 
     return ResponseEntity.ok("开始推送监控数据");
   }

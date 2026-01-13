@@ -1,19 +1,19 @@
-//package com.example.config;
+// package com.example.config;
 //
 //
 //
-//import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-//import com.example.domain.vo.StudyJavaSysUserVo;
-//import com.example.mapper.StudyJavaSysUserMapper;
-//import org.junit.jupiter.api.Test;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.boot.test.context.SpringBootTest;
+// import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+// import com.example.domain.vo.StudyJavaSysUserVo;
+// import com.example.mapper.StudyJavaSysUserMapper;
+// import org.junit.jupiter.api.Test;
+// import org.springframework.beans.factory.annotation.Autowired;
+// import org.springframework.boot.test.context.SpringBootTest;
 //
 //
 //
 //
-//@SpringBootTest
-//public class MyBatisPlusTest {
+// @SpringBootTest
+// public class MyBatisPlusTest {
 //
 //        @Autowired
 //        private StudyJavaSysUserMapper studyJavaUserMapper;
@@ -30,4 +30,4 @@
 //        System.out.println(page.hasNext());//是否有下一页
 //        System.out.println(page.hasPrevious());//是否有上一页
 //    }
-//}
+// }

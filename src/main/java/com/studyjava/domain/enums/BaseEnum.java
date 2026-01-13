@@ -1,7 +1,7 @@
 package com.studyjava.domain.enums;
 
 public interface BaseEnum {
-    int getCode();
+  int getCode();
 
-    String getMessage();
+  String getMessage();
 }

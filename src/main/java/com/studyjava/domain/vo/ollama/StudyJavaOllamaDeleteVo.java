@@ -6,5 +6,5 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class StudyJavaOllamaDeleteVo extends StudyJavaOllamaBaseVo {
-    private String name;
+  private String name;
 }

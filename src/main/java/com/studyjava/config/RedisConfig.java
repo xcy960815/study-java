@@ -1,61 +1,63 @@
 package com.studyjava.config;
 
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.RedisPassword;
+import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
-import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
-import org.springframework.data.redis.connection.RedisPassword;
-import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Configuration
 @Slf4j
 public class RedisConfig {
 
-    // 显式配置RedisConnectionFactory，明确使用application.yml中的配置
-    @Bean
-    public RedisConnectionFactory redisConnectionFactory(RedisProperties properties) {
-        log.info("创建Redis连接工厂，使用配置：{}:{}，数据库：{}，密码：{}",
-                properties.getHost(),
-                properties.getPort(),
-                properties.getDatabase(),
-                properties.getPassword() != null ? "已设置" : "未设置");
+  // 显式配置RedisConnectionFactory，明确使用application.yml中的配置
+  @Bean
+  public RedisConnectionFactory redisConnectionFactory(RedisProperties properties) {
+    log.info(
+        "创建Redis连接工厂，使用配置：{}:{}，数据库：{}，密码：{}",
+        properties.getHost(),
+        properties.getPort(),
+        properties.getDatabase(),
+        properties.getPassword() != null ? "已设置" : "未设置");
 
-        RedisStandaloneConfiguration config = new RedisStandaloneConfiguration();
-        config.setHostName(properties.getHost());
-        config.setPort(properties.getPort());
+    RedisStandaloneConfiguration config = new RedisStandaloneConfiguration();
+    config.setHostName(properties.getHost());
+    config.setPort(properties.getPort());
 
-        if (properties.getPassword() != null && !properties.getPassword().isEmpty()) {
-            config.setPassword(RedisPassword.of(properties.getPassword()));
-            log.info("Redis密码已配置");
-        } else {
-            log.warn("Redis密码未配置，如果Redis需要密码认证，连接将失败");
-        }
-
-        config.setDatabase(properties.getDatabase());
-
-        // 可根据需要添加其他配置
-        return new LettuceConnectionFactory(config);
+    if (properties.getPassword() != null && !properties.getPassword().isEmpty()) {
+      config.setPassword(RedisPassword.of(properties.getPassword()));
+      log.info("Redis密码已配置");
+    } else {
+      log.warn("Redis密码未配置，如果Redis需要密码认证，连接将失败");
     }
 
-    @Bean
-    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
-        log.info("redisTemplate 创建成功");
-        RedisTemplate<String, Object> template = new RedisTemplate<>();
-        template.setConnectionFactory(connectionFactory);
+    config.setDatabase(properties.getDatabase());
 
-        // 设置 key 和 value 的序列化器
-        template.setKeySerializer(new StringRedisSerializer());
-        template.setValueSerializer(new StringRedisSerializer());
+    // 可根据需要添加其他配置
+    return new LettuceConnectionFactory(config);
+  }
 
-        // 如果需要使用hash操作，还需要设置hashKey和hashValue的序列化器
-        template.setHashKeySerializer(new StringRedisSerializer());
-        template.setHashValueSerializer(new StringRedisSerializer());
+  @Bean
+  public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
+    log.info("redisTemplate 创建成功");
+    RedisTemplate<String, Object> template = new RedisTemplate<>();
+    template.setConnectionFactory(connectionFactory);
 
-        template.afterPropertiesSet();
-        return template;
-    }
+    // 设置 key 和 value 的序列化器
+    template.setKeySerializer(new StringRedisSerializer());
+    template.setValueSerializer(new StringRedisSerializer());
+
+    // 如果需要使用hash操作，还需要设置hashKey和hashValue的序列化器
+    template.setHashKeySerializer(new StringRedisSerializer());
+    template.setHashValueSerializer(new StringRedisSerializer());
+
+    template.afterPropertiesSet();
+    return template;
+  }
 }

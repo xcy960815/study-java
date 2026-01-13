@@ -6,6 +6,6 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class StudyJavaSysLoginVo extends StudyJavaSysUserVo {
-    private String token;
-    private String refreshToken;
+  private String token;
+  private String refreshToken;
 }

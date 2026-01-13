@@ -4,5 +4,5 @@ import lombok.Data;
 
 @Data
 public class StudyJavaOllamaVersionDto {
-    private String version;
+  private String version;
 }
