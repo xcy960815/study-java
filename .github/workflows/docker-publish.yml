@@ -11,9 +11,9 @@ env:
   IMAGE_NAME: xcy960815/study-java
 
 jobs:
-  build-and-push:
+  # 任务 1: 构建并推送镜像
+  build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -50,7 +50,15 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Update Docker Hub repository overview from README
+  # 任务 2: 更新 Docker Hub 文档
+  update-docs:
+    needs: build # 只有构建成功后才更新文档
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4 # 需要检出代码才能读取 readme.md
+
+      - name: Update Docker Hub repository overview
         env:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
           DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
