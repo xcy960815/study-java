@@ -34,6 +34,9 @@ FROM eclipse-temurin:21-jre
 ENV TZ=Asia/Shanghai
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
+# 优化：安装 curl 用于健康检查
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+
 # 设置工作目录
 WORKDIR /study-java
 
