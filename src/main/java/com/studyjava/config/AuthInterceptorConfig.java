@@ -26,7 +26,8 @@ public class AuthInterceptorConfig implements WebMvcConfigurer {
           "/test/**",
           "/ollama/**",
           "/deepseek/**",
-          "/v1/chat/completions");
+          "/v1/chat/completions",
+          "/health");
 
   @Override
   public void addInterceptors(InterceptorRegistry registry) {
