@@ -2,7 +2,7 @@
 
 # 设置超时
 set timeout 30
-set host "100.109.41.26"
+set host "100.95.73.31"
 set user "root"
 
 # 交互式获取密码

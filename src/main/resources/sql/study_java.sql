@@ -4,7 +4,7 @@
  Source Server         : study-java-remote
  Source Server Type    : MySQL
  Source Server Version : 80402 (8.4.2)
- Source Host           : 100.109.41.26:3308
+ Source Host           : 100.95.73.31:3308
  Source Schema         : study_java
 
  Target Server Type    : MySQL

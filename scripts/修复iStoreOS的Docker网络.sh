@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # iStoreOS SSH 信息
-HOST="100.109.41.26"
+HOST="100.95.73.31"
 USER="root"
 
 echo "正在尝试连接 iStoreOS ($HOST)..."
