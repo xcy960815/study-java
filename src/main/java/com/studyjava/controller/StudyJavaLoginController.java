@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.studyjava.domain.dto.StudyJavaLoginDto;
+import com.studyjava.domain.dto.StudyJavaRegisterDto;
 import com.studyjava.domain.vo.StudyJavaSysLoginVo;
 import com.studyjava.service.StudyJavaLoginService;
 
@@ -30,6 +31,18 @@ public class StudyJavaLoginController {
   @PostMapping("/login")
   public StudyJavaSysLoginVo login(@Valid @RequestBody StudyJavaLoginDto studyJavaLoginDto) {
     return studyJavaLoginService.login(studyJavaLoginDto);
+  }
+
+  /**
+   * 注册
+   *
+   * @param studyJavaRegisterDto
+   * @return Boolean
+   */
+  @PostMapping("/register")
+  public Boolean register(@Valid @RequestBody StudyJavaRegisterDto studyJavaRegisterDto) {
+    studyJavaLoginService.register(studyJavaRegisterDto);
+    return true;
   }
 
   /**

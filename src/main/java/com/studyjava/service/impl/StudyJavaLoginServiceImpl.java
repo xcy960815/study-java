@@ -112,6 +112,34 @@ public class StudyJavaLoginServiceImpl implements StudyJavaLoginService {
   }
 
   @Override
+  public void register(com.studyjava.domain.dto.StudyJavaRegisterDto studyJavaRegisterDto) {
+    if (!redisComponent.hasKey(CAPTCHA_KEY)) {
+      throw new StudyJavaException("验证码不存在或已过期");
+    }
+
+    String captcha = redisComponent.get(CAPTCHA_KEY, String.class);
+    if (!captcha.equalsIgnoreCase(studyJavaRegisterDto.getCaptcha())) {
+      throw new StudyJavaException("验证码错误");
+    }
+
+    if (!studyJavaRegisterDto.getPassword().equals(studyJavaRegisterDto.getConfirmPassword())) {
+      throw new StudyJavaException("两次输入的密码不一致");
+    }
+
+    StudyJavaLoginDto loginDtoCheck = new StudyJavaLoginDto();
+    loginDtoCheck.setUsername(studyJavaRegisterDto.getUsername());
+    if (studyJavaSysUserService.getUserInfo(loginDtoCheck) != null) {
+      throw new StudyJavaException("该用户名已被注册");
+    }
+
+    StudyJavaSysUserDto newUser = new StudyJavaSysUserDto();
+    newUser.setLoginName(studyJavaRegisterDto.getUsername());
+    newUser.setPasswordMd5(studyJavaRegisterDto.getPassword()); // 前端已过MD5，直接存
+    newUser.setNickName(studyJavaRegisterDto.getUsername());
+    studyJavaSysUserService.insertUser(newUser);
+  }
+
+  @Override
   public void logout() {
     ServletRequestAttributes attributes =
         (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();

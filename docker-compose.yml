@@ -110,8 +110,8 @@ services:
 
   # Vue 前端服务
   vue:
-    image: xcy960815/study-java-web:${WEB_IMAGE_VERSION}
-    container_name: study-java-web-container
+    image: xcy960815/study-java-vue:${WEB_IMAGE_VERSION}
+    container_name: study-java-vue-container
     ports:
       - '${WEB_PORT}:80'
     environment:
