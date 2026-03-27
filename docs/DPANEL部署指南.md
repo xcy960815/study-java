@@ -31,7 +31,10 @@ graph LR
    ```bash
    # 项目版本
    IMAGE_VERSION=latest
-   WEB_IMAGE_VERSION=latest
+   VUE_WEB_IMAGE_VERSION=latest
+   REACT_WEB_IMAGE_VERSION=latest
+   VUE_WEB_PORT=80
+   REACT_WEB_PORT=8081
    
    # 数据库配置
    MYSQL_ROOT_PASSWORD=your_strong_password
@@ -98,7 +101,10 @@ graph LR
 | 变量名 | 说明 | 示例值 | 必填 |
 |--------|------|--------|------|
 | `IMAGE_VERSION` | 后端镜像版本 | `latest` / `v1.0.0` | ✅ |
-| `WEB_IMAGE_VERSION` | 前端镜像版本 | `latest` / `v1.0.0` | ✅ |
+| `VUE_WEB_IMAGE_VERSION` | Vue 前端镜像版本 | `latest` / `v1.0.0` | ✅ |
+| `REACT_WEB_IMAGE_VERSION` | React 前端镜像版本 | `latest` / `v1.0.0` | ❌ |
+| `VUE_WEB_PORT` | Vue 前端端口 | `80` | ❌ |
+| `REACT_WEB_PORT` | React 前端端口 | `8081` | ❌ |
 | `MYSQL_ROOT_PASSWORD` | MySQL root 密码 | 强密码 | ✅ |
 | `REDIS_PASSWORD` | Redis 访问密码 | 强密码 | ✅ |
 | `TIMEZONE` | 时区设置 | `Asia/Shanghai` | ✅ |

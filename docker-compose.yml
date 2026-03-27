@@ -16,8 +16,8 @@ services:
     logging:
       driver: 'json-file'
       options:
-        max-size: '10m'
-        max-file: '3'
+        max-size: '${LOG_MAX_SIZE:-10m}'
+        max-file: '${LOG_MAX_FILE:-3}'
     # 添加健康检查，确保 Redis 就绪
     healthcheck:
       test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
@@ -53,8 +53,8 @@ services:
     logging:
       driver: 'json-file'
       options:
-        max-size: '10m'
-        max-file: '3'
+        max-size: '${LOG_MAX_SIZE:-10m}'
+        max-file: '${LOG_MAX_FILE:-3}'
     # 添加健康检查，确保数据库完全启动后再让后端连接
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
@@ -66,7 +66,7 @@ services:
 
   # SpringBoot 后端服务
   springboot:
-    image: xcy960815/study-java:${IMAGE_VERSION}
+    image: ${APP_IMAGE_NAME}:${IMAGE_VERSION}
     container_name: study-java-container
     extra_hosts:
       - "host.docker.internal:host-gateway"
@@ -97,11 +97,11 @@ services:
     logging:
       driver: 'json-file'
       options:
-        max-size: '10m'
-        max-file: '3'
+        max-size: '${LOG_MAX_SIZE:-10m}'
+        max-file: '${LOG_MAX_FILE:-3}'
     # 优化：添加健康检查 (同步自生效配置)
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8084/prod-api/health || exit 1"]
+      test: ["CMD-SHELL", "curl -f http://localhost:8084${APP_HEALTHCHECK_PATH:-/prod-api/health} || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -110,10 +110,10 @@ services:
 
   # Vue 前端服务
   vue:
-    image: xcy960815/study-java-vue:${WEB_IMAGE_VERSION}
+    image: ${VUE_WEB_IMAGE_NAME}:${VUE_WEB_IMAGE_VERSION:-latest}
     container_name: study-java-vue-container
     ports:
-      - '${WEB_PORT}:80'
+      - '${VUE_WEB_PORT:-80}:80'
     environment:
       - TZ=${TIMEZONE:-Asia/Shanghai}
     depends_on:
@@ -124,12 +124,31 @@ services:
     logging:
       driver: 'json-file'
       options:
-        max-size: '10m'
-        max-file: '3'
+        max-size: '${LOG_MAX_SIZE:-10m}'
+        max-file: '${LOG_MAX_FILE:-3}'
+    restart: always
+
+  # React 前端服务
+  react:
+    image: ${REACT_WEB_IMAGE_NAME}:${REACT_WEB_IMAGE_VERSION:-latest}
+    container_name: study-java-react-container
+    ports:
+      - '${REACT_WEB_PORT:-8081}:80'
+    environment:
+      - TZ=${TIMEZONE:-Asia/Shanghai}
+    depends_on:
+      springboot:
+        condition: service_healthy
+    networks:
+      - study-java-network
+    logging:
+      driver: 'json-file'
+      options:
+        max-size: '${LOG_MAX_SIZE:-10m}'
+        max-file: '${LOG_MAX_FILE:-3}'
     restart: always
 
 networks:
   study-java-network:
-    name: study-java-network
+    name: ${DOCKER_NETWORK_NAME:-study-java-network}
     driver: bridge
-
