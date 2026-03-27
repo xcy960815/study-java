@@ -27,6 +27,7 @@ public class StudyJavaOrderController extends BaseController {
    * @param pageSize 每页大小
    * @return PageResult<StudyJavaOrderVo>
    */
+  @com.studyjava.annotation.PreAuthorize("order:query")
   @GetMapping("/getOrderList")
   public PageResult<StudyJavaOrderVo> getOrderList(
       @RequestParam(defaultValue = "1") Integer pageNum,
@@ -43,6 +44,7 @@ public class StudyJavaOrderController extends BaseController {
    * @param orderId 订单ID
    * @return StudyJavaOrderVo
    */
+  @com.studyjava.annotation.PreAuthorize("order:query")
   @GetMapping("/getOrderInfo")
   public StudyJavaOrderVo getOrderInfo(@RequestParam("id") Long orderId) {
     StudyJavaOrderDto orderDto = new StudyJavaOrderDto();
@@ -51,6 +53,7 @@ public class StudyJavaOrderController extends BaseController {
   }
 
   /** 新建订单 */
+  @com.studyjava.annotation.PreAuthorize("order:add")
   @PostMapping("/insertOrder")
   public Boolean insertOrder(@Valid @RequestBody StudyJavaOrderDto orderDto) {
     return studyJavaOrderService.insertOrder(orderDto);
@@ -62,6 +65,7 @@ public class StudyJavaOrderController extends BaseController {
    * @param orderDto 订单DTO
    * @return Boolean
    */
+  @com.studyjava.annotation.PreAuthorize("order:edit")
   @PutMapping("/updateOrder")
   public Boolean updateOrder(@Valid @RequestBody StudyJavaOrderDto orderDto) {
     return studyJavaOrderService.updateOrder(orderDto);
@@ -73,6 +77,7 @@ public class StudyJavaOrderController extends BaseController {
    * @param orderId 订单ID
    * @return Boolean
    */
+  @com.studyjava.annotation.PreAuthorize("order:remove")
   @DeleteMapping("/deleteOrder")
   public Boolean deleteOrder(@RequestParam("id") Long orderId) {
     StudyJavaOrderDto orderDto = new StudyJavaOrderDto();

@@ -31,16 +31,19 @@ public class StudyJavaSysDataDictController extends BaseController {
   }
 
   @PostMapping("/insertDataDict")
+  @com.studyjava.annotation.PreAuthorize("system:data-dict:add")
   public Boolean add(@Valid @RequestBody StudyJavaSysDataDictDto studyJavaSysDataDictDto) {
     return studyJavaSysDataDictService.insertDataDict(studyJavaSysDataDictDto);
   }
 
   @PutMapping("/updateDataDict")
+  @com.studyjava.annotation.PreAuthorize("system:data-dict:edit")
   public Boolean update(@Valid @RequestBody StudyJavaSysDataDictDto studyJavaSysDataDictDto) {
     return studyJavaSysDataDictService.updateDataDict(studyJavaSysDataDictDto);
   }
 
   @DeleteMapping("/deleteDataDict/{id}")
+  @com.studyjava.annotation.PreAuthorize("system:data-dict:remove")
   public Boolean delete(@PathVariable("id") Long id) {
     return studyJavaSysDataDictService.deleteDataDict(id);
   }

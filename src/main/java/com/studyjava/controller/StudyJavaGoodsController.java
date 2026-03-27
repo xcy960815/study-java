@@ -29,6 +29,7 @@ public class StudyJavaGoodsController extends BaseController {
    * @param studyJavaGoodsDto 查询条件
    * @return PageResult<StudyJavaGoodsVo>
    */
+  @com.studyjava.annotation.PreAuthorize("goods:query")
   @GetMapping("/getGoodsList")
   public PageResult<StudyJavaGoodsVo> getGoodsList(
       @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
@@ -46,6 +47,7 @@ public class StudyJavaGoodsController extends BaseController {
    * @return Boolean
    */
   @Log(title = "商品管理", businessType = BusinessType.INSERT)
+  @com.studyjava.annotation.PreAuthorize("goods:add")
   @PutMapping("/insertGoods")
   public Boolean insertGoods(@Valid @RequestBody StudyJavaGoodsDto studyJavaGoodsDto) {
     return studyJavaGoodsService.insertGoods(studyJavaGoodsDto);
