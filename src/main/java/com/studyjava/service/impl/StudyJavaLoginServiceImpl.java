@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
@@ -18,13 +19,18 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import com.google.code.kaptcha.Producer;
 import com.studyjava.component.JwtTokenComponent;
 import com.studyjava.component.RedisComponent;
+import com.studyjava.domain.dao.StudyJavaSysUserDao;
 import com.studyjava.domain.dto.StudyJavaLoginDto;
 import com.studyjava.domain.dto.StudyJavaSysUserDto;
+import com.studyjava.domain.vo.StudyJavaCaptchaVo;
 import com.studyjava.domain.vo.StudyJavaSysLoginVo;
 import com.studyjava.domain.vo.StudyJavaSysUserVo;
 import com.studyjava.exception.StudyJavaException;
+import com.studyjava.mapper.StudyJavaSysUserMapper;
 import com.studyjava.service.StudyJavaLoginService;
 import com.studyjava.service.StudyJavaSysUserService;
+import com.studyjava.utils.AuthRedisKeys;
+import com.studyjava.utils.PasswordUtils;
 
 import cn.hutool.json.JSONUtil;
 import jakarta.annotation.Resource;
@@ -36,16 +42,13 @@ import lombok.extern.slf4j.Slf4j;
 public class StudyJavaLoginServiceImpl implements StudyJavaLoginService {
 
   /** 验证码 key 名 */
-  private static final String CAPTCHA_KEY = "study-java-captcha";
-
-  /** 验证码过期时间 */
-  private static final int CAPTCHA_EXPIRE_TIME = 5;
-
-  /** token key 名 */
-  private static final String TOKEN_KEY = "study-java-token";
+  private static final int CAPTCHA_EXPIRE_TIME_MINUTES = 5;
 
   /** token 过期时间 */
-  private static final int TOKEN_EXPIRE_TIME = 24;
+  private static final int TOKEN_EXPIRE_TIME_HOURS = 24;
+
+  /** refresh token 过期时间 */
+  private static final int REFRESH_TOKEN_EXPIRE_TIME_DAYS = 7;
 
   @Resource private JwtTokenComponent jwtTokenComponent;
 
@@ -55,17 +58,17 @@ public class StudyJavaLoginServiceImpl implements StudyJavaLoginService {
 
   @Resource private StudyJavaSysUserService studyJavaSysUserService;
 
-  //    @Resource
-  //    private StudyJavaSysUserMapper studyJavaUserMapper;
+  @Resource private StudyJavaSysUserMapper studyJavaSysUserMapper;
 
   @Override
   public StudyJavaSysLoginVo login(StudyJavaLoginDto studyJavaLoginDto) {
-
-    if (!redisComponent.hasKey(CAPTCHA_KEY)) {
+    String captchaKey = AuthRedisKeys.captchaKey(studyJavaLoginDto.getCaptchaId());
+    if (!redisComponent.hasKey(captchaKey)) {
       throw new StudyJavaException("验证码不存在");
     }
 
-    String captcha = redisComponent.get(CAPTCHA_KEY, String.class);
+    String captcha = redisComponent.get(captchaKey, String.class);
+    redisComponent.delete(captchaKey);
 
     if (!captcha.equalsIgnoreCase(studyJavaLoginDto.getCaptcha())) {
 
@@ -81,13 +84,19 @@ public class StudyJavaLoginServiceImpl implements StudyJavaLoginService {
       throw new StudyJavaException("用户不存在");
     }
 
-    if (!StringUtils.isBlank(userInfoVo.getPasswordMd5())
-        && !StringUtils.isBlank(studyJavaLoginDto.getPassword())) {
-      String dataBasePassword = userInfoVo.getPasswordMd5();
-      String loginPassword = studyJavaLoginDto.getPassword();
-      if (!dataBasePassword.equals(loginPassword)) {
-        throw new StudyJavaException("密码错误");
-      }
+    String dataBasePassword = userInfoVo.getPasswordMd5();
+    String loginPassword = studyJavaLoginDto.getPassword();
+    if (StringUtils.isBlank(dataBasePassword)
+        || StringUtils.isBlank(loginPassword)
+        || !PasswordUtils.matches(loginPassword, dataBasePassword)) {
+      throw new StudyJavaException("密码错误");
+    }
+
+    if (PasswordUtils.needsUpgrade(dataBasePassword)) {
+      StudyJavaSysUserDao updatePasswordDao = new StudyJavaSysUserDao();
+      updatePasswordDao.setId(userInfoVo.getId());
+      updatePasswordDao.setPasswordMd5(PasswordUtils.encode(loginPassword));
+      studyJavaSysUserMapper.updateUser(updatePasswordDao);
     }
     StudyJavaSysLoginVo studyJavaLoginVo = new StudyJavaSysLoginVo();
     studyJavaLoginVo.setId(userInfoVo.getId());
@@ -104,7 +113,15 @@ public class StudyJavaLoginServiceImpl implements StudyJavaLoginService {
     String token = jwtTokenComponent.generateToken(tokenContent);
     String refreshToken = jwtTokenComponent.generateRefreshToken(tokenContent);
     redisComponent.setWithExpire(
-        TOKEN_KEY + ":" + userInfoVo.getId(), token, TOKEN_EXPIRE_TIME, TimeUnit.HOURS);
+        AuthRedisKeys.accessTokenKey(userInfoVo.getId().toString()),
+        token,
+        TOKEN_EXPIRE_TIME_HOURS,
+        TimeUnit.HOURS);
+    redisComponent.setWithExpire(
+        AuthRedisKeys.refreshTokenKey(userInfoVo.getId().toString()),
+        refreshToken,
+        REFRESH_TOKEN_EXPIRE_TIME_DAYS,
+        TimeUnit.DAYS);
     studyJavaLoginVo.setToken(token);
     studyJavaLoginVo.setRefreshToken(refreshToken);
 
@@ -113,11 +130,13 @@ public class StudyJavaLoginServiceImpl implements StudyJavaLoginService {
 
   @Override
   public void register(com.studyjava.domain.dto.StudyJavaRegisterDto studyJavaRegisterDto) {
-    if (!redisComponent.hasKey(CAPTCHA_KEY)) {
+    String captchaKey = AuthRedisKeys.captchaKey(studyJavaRegisterDto.getCaptchaId());
+    if (!redisComponent.hasKey(captchaKey)) {
       throw new StudyJavaException("验证码不存在或已过期");
     }
 
-    String captcha = redisComponent.get(CAPTCHA_KEY, String.class);
+    String captcha = redisComponent.get(captchaKey, String.class);
+    redisComponent.delete(captchaKey);
     if (!captcha.equalsIgnoreCase(studyJavaRegisterDto.getCaptcha())) {
       throw new StudyJavaException("验证码错误");
     }
@@ -134,7 +153,7 @@ public class StudyJavaLoginServiceImpl implements StudyJavaLoginService {
 
     StudyJavaSysUserDto newUser = new StudyJavaSysUserDto();
     newUser.setLoginName(studyJavaRegisterDto.getUsername());
-    newUser.setPasswordMd5(studyJavaRegisterDto.getPassword()); // 前端已过MD5，直接存
+    newUser.setPasswordMd5(PasswordUtils.encode(studyJavaRegisterDto.getPassword()));
     newUser.setNickName(studyJavaRegisterDto.getUsername());
     studyJavaSysUserService.insertUser(newUser);
   }
@@ -150,7 +169,8 @@ public class StudyJavaLoginServiceImpl implements StudyJavaLoginService {
         String userInfo = jwtTokenComponent.getUserInfoFromAuthorization(authorization);
         Map<String, Object> map = JSONUtil.toBean(userInfo, Map.class);
         String userId = (String) map.get("userId");
-        redisComponent.delete(TOKEN_KEY + ":" + userId);
+        redisComponent.delete(AuthRedisKeys.accessTokenKey(userId));
+        redisComponent.delete(AuthRedisKeys.refreshTokenKey(userId));
       }
     }
   }
@@ -161,11 +181,16 @@ public class StudyJavaLoginServiceImpl implements StudyJavaLoginService {
    * @return String
    * @throws IOException
    */
-  public String getCaptcha() throws IOException {
+  public StudyJavaCaptchaVo getCaptcha() throws IOException {
     long startTime = System.currentTimeMillis(); // 获取开始时间(毫秒)
     // 生成验证码文本
     String captchaText = kaptchaProducer.createText();
-    redisComponent.setWithExpire(CAPTCHA_KEY, captchaText, CAPTCHA_EXPIRE_TIME, TimeUnit.MINUTES);
+    String captchaId = UUID.randomUUID().toString();
+    redisComponent.setWithExpire(
+        AuthRedisKeys.captchaKey(captchaId),
+        captchaText,
+        CAPTCHA_EXPIRE_TIME_MINUTES,
+        TimeUnit.MINUTES);
     BufferedImage captchaImage = kaptchaProducer.createImage(captchaText);
     // 将验证码图像转换为 Base64
     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -173,8 +198,10 @@ public class StudyJavaLoginServiceImpl implements StudyJavaLoginService {
     long endTime = System.currentTimeMillis(); // 获取结束时间(毫秒)
     // 毫秒转秒 并保留2位小数
     log.info("生成验证码耗时 {}", String.format("%.2f", (endTime - startTime) / 1000.0) + "秒");
-    return "data:image/jpeg;base64,"
-        + Base64.getEncoder().encodeToString(byteArrayOutputStream.toByteArray());
+    return new StudyJavaCaptchaVo(
+        captchaId,
+        "data:image/jpeg;base64,"
+            + Base64.getEncoder().encodeToString(byteArrayOutputStream.toByteArray()));
   }
 
   @Override
@@ -183,6 +210,12 @@ public class StudyJavaLoginServiceImpl implements StudyJavaLoginService {
       throw new StudyJavaException("Refresh Token已过期，请重新登录");
     }
     String tokenContent = jwtTokenComponent.getUserInfoFromToken(refreshToken);
+    Map<String, Object> map = JSONUtil.toBean(tokenContent, Map.class);
+    String userId = (String) map.get("userId");
+    String storedRefreshToken = redisComponent.get(AuthRedisKeys.refreshTokenKey(userId), String.class);
+    if (!refreshToken.equals(storedRefreshToken)) {
+      throw new StudyJavaException("Refresh Token无效，请重新登录");
+    }
 
     // Generate new tokens
     String newToken = jwtTokenComponent.generateToken(tokenContent);
@@ -193,7 +226,6 @@ public class StudyJavaLoginServiceImpl implements StudyJavaLoginService {
     loginVo.setRefreshToken(newRefreshToken);
 
     // Populate user info
-    Map<String, Object> map = JSONUtil.toBean(tokenContent, Map.class);
     String loginName = (String) map.get("loginName");
 
     StudyJavaLoginDto loginDto = new StudyJavaLoginDto();
@@ -210,7 +242,15 @@ public class StudyJavaLoginServiceImpl implements StudyJavaLoginService {
 
       // 更新 Redis 中的 Token
       redisComponent.setWithExpire(
-          TOKEN_KEY + ":" + userInfoVo.getId(), newToken, TOKEN_EXPIRE_TIME, TimeUnit.HOURS);
+          AuthRedisKeys.accessTokenKey(userInfoVo.getId().toString()),
+          newToken,
+          TOKEN_EXPIRE_TIME_HOURS,
+          TimeUnit.HOURS);
+      redisComponent.setWithExpire(
+          AuthRedisKeys.refreshTokenKey(userInfoVo.getId().toString()),
+          newRefreshToken,
+          REFRESH_TOKEN_EXPIRE_TIME_DAYS,
+          TimeUnit.DAYS);
     }
 
     return loginVo;

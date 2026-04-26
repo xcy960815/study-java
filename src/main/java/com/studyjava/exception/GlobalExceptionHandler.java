@@ -62,36 +62,11 @@ public class GlobalExceptionHandler {
   // 全局异常类
   @ExceptionHandler({Exception.class})
   public ResponseEntity<ErrorResponse> handleException(Exception e, HttpServletRequest request) {
-    // 获取错误堆栈信息
-    StackTraceElement[] stackTraceElements = e.getStackTrace();
-    StringBuilder errorDetails = new StringBuilder();
-    if (stackTraceElements.length > 0) {
-      StackTraceElement element = stackTraceElements[0]; // 获取第一个堆栈元素
-      errorDetails
-          .append("File: ")
-          .append(element.getFileName())
-          .append(", Line: ")
-          .append(element.getLineNumber());
-    }
-    // 获取请求 URL 地址
-    String requestUrl = request.getRequestURL().toString();
-    // 构建错误信息
-    String errorMessage =
-        "System Error: "
-            + e.getMessage()
-            + ", "
-            + "At: "
-            + errorDetails
-            + ", "
-            + "Request URL: "
-            + requestUrl;
+    log.error("System Error, Request URL: {}", request.getRequestURL(), e);
 
-    log.error(errorMessage, e);
-
-    // 生产环境建议隐藏详细堆栈信息，这里为了调试保留
     return new ResponseEntity<>(
         new ErrorResponse(
-            HttpStatus.INTERNAL_SERVER_ERROR.value(), errorMessage, request.getRequestURI()),
+            HttpStatus.INTERNAL_SERVER_ERROR.value(), "系统异常，请稍后重试", request.getRequestURI()),
         HttpStatus.INTERNAL_SERVER_ERROR);
   }
 }

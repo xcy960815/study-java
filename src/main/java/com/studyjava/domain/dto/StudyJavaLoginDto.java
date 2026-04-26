@@ -13,6 +13,10 @@ public class StudyJavaLoginDto {
   @NotBlank(message = "密码不能为空")
   private String password;
 
+  /** 验证码ID */
+  @NotBlank(message = "验证码ID不能为空")
+  private String captchaId;
+
   /** 验证码 */
   @NotBlank(message = "验证码不能为空")
   private String captcha;

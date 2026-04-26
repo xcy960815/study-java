@@ -13,10 +13,8 @@ public class FileUploadConfiguration {
   @Bean
   public MultipartConfigElement multipartConfigElement() {
     MultipartConfigFactory factory = new MultipartConfigFactory();
-    // 不限制单个文件大小
-    factory.setMaxFileSize(DataSize.ofBytes(-1));
-    // 不限制总上传大小
-    factory.setMaxRequestSize(DataSize.ofBytes(-1));
+    factory.setMaxFileSize(DataSize.ofMegabytes(100));
+    factory.setMaxRequestSize(DataSize.ofMegabytes(120));
     return factory.createMultipartConfig();
   }
 }

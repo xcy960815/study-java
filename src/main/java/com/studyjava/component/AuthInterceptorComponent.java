@@ -1,11 +1,14 @@
 package com.studyjava.component;
 
+import java.util.Map;
+
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.studyjava.utils.ErrorResponse;
 
+import cn.hutool.json.JSONUtil;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -19,6 +22,8 @@ public class AuthInterceptorComponent implements HandlerInterceptor {
   private static final String CONTENT_TYPE = "application/json;charset=UTF-8";
 
   @Resource private JwtTokenComponent jwtTokenComponent;
+
+  @Resource private RedisComponent redisComponent;
 
   @Resource private ObjectMapper objectMapper;
 
@@ -47,6 +52,15 @@ public class AuthInterceptorComponent implements HandlerInterceptor {
 
     if (isTokenExpired) {
       sendErrorResponse(response, request.getRequestURI(), "Token已过期");
+      return false;
+    }
+
+    String tokenUserInfo = jwtTokenComponent.getUserInfoFromToken(token);
+    Map<String, Object> tokenUserInfoMap = JSONUtil.toBean(tokenUserInfo, Map.class);
+    String userId = (String) tokenUserInfoMap.get("userId");
+    String storedToken = redisComponent.get(com.studyjava.utils.AuthRedisKeys.accessTokenKey(userId), String.class);
+    if (!token.equals(storedToken)) {
+      sendErrorResponse(response, request.getRequestURI(), "Token无效或已退出登录");
       return false;
     }
 

@@ -34,7 +34,7 @@ public class JwtTokenComponent {
   private final long ACCESS_EXPIRATION_TIME = 3600000L;
 
   /** Refresh Token 过期时间（7天） */
-  private final long REFRESH_EXPIRATION_TIME = 604800000L * 7;
+  private final long REFRESH_EXPIRATION_TIME = 604800000L;
 
   /** 秘钥 */
   private Key SECRET_KEY;

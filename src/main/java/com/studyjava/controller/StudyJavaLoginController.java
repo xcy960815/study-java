@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.studyjava.domain.dto.StudyJavaLoginDto;
 import com.studyjava.domain.dto.StudyJavaRegisterDto;
+import com.studyjava.domain.vo.StudyJavaCaptchaVo;
 import com.studyjava.domain.vo.StudyJavaSysLoginVo;
 import com.studyjava.service.StudyJavaLoginService;
 
@@ -51,7 +52,7 @@ public class StudyJavaLoginController {
    * @return String
    */
   @GetMapping("/captcha")
-  public String getCaptcha() throws IOException {
+  public StudyJavaCaptchaVo getCaptcha() throws IOException {
     return studyJavaLoginService.getCaptcha();
   }
 

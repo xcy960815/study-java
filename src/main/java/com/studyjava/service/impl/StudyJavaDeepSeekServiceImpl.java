@@ -7,6 +7,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,11 +25,16 @@ import lombok.NonNull;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
+import jakarta.annotation.Resource;
+
 @Slf4j
 @Service
 public class StudyJavaDeepSeekServiceImpl extends StudyJavaAiService
     implements StudyJavaDeepSeekService {
   @Setter @Getter @Autowired private DeepSeekConfig deepSeekConfig;
+
+  @Resource(name = "aiTaskExecutor")
+  private Executor aiTaskExecutor;
 
   /** completions 接口地址 */
   private static final String DEEPSEEK_COMPLETIONS_URL = "/v1/chat/completions";
@@ -59,7 +65,6 @@ public class StudyJavaDeepSeekServiceImpl extends StudyJavaAiService
    * @return Builder
    */
   private HttpRequest.Builder generateRequestBuilder(URI uri) {
-    log.info("Current DeepSeek API Key: {}", deepSeekConfig.getKey());
     String Authorization = String.format("Bearer %s", deepSeekConfig.getKey());
     return HttpRequest.newBuilder(uri)
         .header("Content-Type", "application/json")
@@ -118,7 +123,8 @@ public class StudyJavaDeepSeekServiceImpl extends StudyJavaAiService
             log.error("DeepSeek AI对话请求发生未知异常：{}", e.getMessage(), e);
             emitter.completeWithError(e);
           }
-        });
+        },
+        aiTaskExecutor);
   }
 
   /**

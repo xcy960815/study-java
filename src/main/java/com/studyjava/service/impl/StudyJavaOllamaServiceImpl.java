@@ -11,6 +11,7 @@ import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -23,11 +24,16 @@ import com.studyjava.service.StudyJavaOllamaService;
 
 import lombok.extern.slf4j.Slf4j;
 
+import jakarta.annotation.Resource;
+
 /** Ollama服务实现类 */
 @Slf4j
 @Service
 public class StudyJavaOllamaServiceImpl extends StudyJavaAiService
     implements StudyJavaOllamaService {
+  @Resource(name = "aiTaskExecutor")
+  private Executor aiTaskExecutor;
+
   /** 端口号 */
   private static final Integer Ollama_Port = 11434;
 
@@ -206,7 +212,8 @@ public class StudyJavaOllamaServiceImpl extends StudyJavaAiService
             }
             Thread.currentThread().interrupt(); // 保持中断状态
           }
-        });
+        },
+        aiTaskExecutor);
   }
 
   //    TODO 拉取模型 提示 404 page not found

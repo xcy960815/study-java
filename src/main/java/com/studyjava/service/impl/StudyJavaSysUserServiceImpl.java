@@ -27,6 +27,7 @@ import com.studyjava.domain.vo.StudyJavaSysUserVo;
 import com.studyjava.exception.StudyJavaException;
 import com.studyjava.mapper.StudyJavaSysUserMapper;
 import com.studyjava.service.StudyJavaSysUserService;
+import com.studyjava.utils.PasswordUtils;
 
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
@@ -126,6 +127,9 @@ public class StudyJavaSysUserServiceImpl implements StudyJavaSysUserService {
   @Override
   public Boolean insertUser(StudyJavaSysUserDto studyJavaSysUserDto) {
     StudyJavaSysUserDao studyJavaSysUserDao = makeDto2Dao(studyJavaSysUserDto);
+    if (PasswordUtils.needsUpgrade(studyJavaSysUserDao.getPasswordMd5())) {
+      studyJavaSysUserDao.setPasswordMd5(PasswordUtils.encode(studyJavaSysUserDao.getPasswordMd5()));
+    }
     studyJavaSysUserDao.setLockedFlag(0);
     return studyJavaSysUserMapper.insertUser(studyJavaSysUserDao) > 0;
   }
@@ -226,16 +230,18 @@ public class StudyJavaSysUserServiceImpl implements StudyJavaSysUserService {
   @Override
   public Boolean updateUserPassword(StudyJavaSysUserDto studyJavaSysUserDto) {
     StudyJavaSysUserVo studyJavaUserDao = this.getUserInfo();
-    String passwordMd5 = studyJavaUserDao.getPasswordMd5();
+    String oldPassword = studyJavaSysUserDto.getPasswordMd5();
+    String storedPassword = studyJavaUserDao.getPasswordMd5();
     String newPasswordMd5 = studyJavaSysUserDto.getNewPasswordMd5();
     String confirmNewPasswordMd5 = studyJavaSysUserDto.getConfirmNewPasswordMd5();
     if (!newPasswordMd5.equals(confirmNewPasswordMd5)) {
       throw new StudyJavaException("两次密码不一致");
     }
-    if (!newPasswordMd5.equals(passwordMd5)) {
+    if (!PasswordUtils.matches(oldPassword, storedPassword)) {
       throw new StudyJavaException("原密码不正确");
     }
-    studyJavaSysUserDto.setPasswordMd5(newPasswordMd5);
+    studyJavaSysUserDto.setId(studyJavaUserDao.getId());
+    studyJavaSysUserDto.setPasswordMd5(PasswordUtils.encode(newPasswordMd5));
 
     return studyJavaSysUserMapper.updateUser(makeDto2Dao(studyJavaSysUserDto)) > 0;
   }
