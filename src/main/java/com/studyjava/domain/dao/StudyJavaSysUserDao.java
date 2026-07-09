@@ -26,7 +26,7 @@ public class StudyJavaSysUserDao extends BaseDao {
   /** 登陆名称(默认为手机号) */
   private String loginName;
 
-  /** MD5加密后的密码 */
+  /** 密码哈希，兼容历史 MD5 和 BCrypt */
   private String passwordMd5;
 
   /** 个性签名 */

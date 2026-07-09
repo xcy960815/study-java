@@ -33,7 +33,7 @@ public class StudyJavaSysUserVo extends BaseVo {
   @NotBlank(message = "登陆名称不能为空")
   private String loginName;
 
-  /** MD5加密后的密码 */
+  /** 密码哈希，兼容历史 MD5 和 BCrypt */
   private String passwordMd5;
 
   /** 新密码 用于修改密码 */

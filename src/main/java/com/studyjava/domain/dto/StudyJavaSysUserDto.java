@@ -39,7 +39,7 @@ public class StudyJavaSysUserDto implements Serializable {
   @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
   private Date createTime;
 
-  /** 密码 */
+  /** 密码或密码哈希，写入前会统一转成 BCrypt */
   private String passwordMd5;
 
   /** 新密码 用于修改密码 */
