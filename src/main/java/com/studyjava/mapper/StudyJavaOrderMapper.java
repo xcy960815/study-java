@@ -1,5 +1,6 @@
 package com.studyjava.mapper;
 
+import java.util.Date;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
@@ -19,9 +20,19 @@ public interface StudyJavaOrderMapper {
 
   StudyJavaOrderDao getOrderInfo(@Param("studyJavaOrderDao") StudyJavaOrderDao studyJavaOrderDao);
 
-  Boolean insertOrder(@Param("studyJavaOrderDao") StudyJavaOrderDao studyJavaOrderDao);
+  StudyJavaOrderDao getOrderByIdForUpdate(@Param("orderId") Long orderId);
+
+  int insertOrder(@Param("studyJavaOrderDao") StudyJavaOrderDao studyJavaOrderDao);
 
   Boolean updateOrder(@Param("studyJavaOrderDao") StudyJavaOrderDao studyJavaOrderDao);
+
+  int transitionOrder(
+      @Param("orderId") Long orderId,
+      @Param("expectedStatus") Integer expectedStatus,
+      @Param("targetStatus") Integer targetStatus,
+      @Param("payStatus") Integer payStatus,
+      @Param("payType") Integer payType,
+      @Param("payTime") Date payTime);
 
   Boolean deleteOrder(@Param("studyJavaOrderDao") StudyJavaOrderDao studyJavaOrderDao);
 

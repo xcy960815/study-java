@@ -5,8 +5,12 @@ import java.util.Map;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.studyjava.domain.dao.StudyJavaOrderDao;
+import com.studyjava.domain.dto.StudyJavaPayOrderDto;
+import com.studyjava.domain.dto.StudyJavaPlaceOrderDto;
 import com.studyjava.domain.dto.StudyJavaOrderDto;
+import com.studyjava.domain.dto.StudyJavaOrderTransitionDto;
 import com.studyjava.domain.vo.StudyJavaOrderVo;
+import com.studyjava.domain.vo.StudyJavaPaymentVo;
 
 /**
  * @author opera
@@ -30,8 +34,17 @@ public interface StudyJavaOrderService {
   /** 新建订单 */
   Boolean insertOrder(StudyJavaOrderDto studyJavaOrderDto);
 
+  /** 按数据库商品价格创建订单并原子扣减库存。 */
+  StudyJavaOrderVo placeOrder(StudyJavaPlaceOrderDto placeOrderDto);
+
+  /** 使用支付策略和幂等键支付订单。 */
+  StudyJavaPaymentVo payOrder(StudyJavaPayOrderDto payOrderDto);
+
   /** 更新订单 */
   Boolean updateOrder(StudyJavaOrderDto studyJavaOrderDto);
+
+  /** 按状态机规则推进订单状态。 */
+  StudyJavaOrderVo transitionOrder(StudyJavaOrderTransitionDto transitionDto);
 
   /** 删除订单 */
   Boolean deleteOrder(StudyJavaOrderDto studyJavaOrderDto);

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.studyjava.mapper.StudyJavaOrderPaymentMapper">
+
+    <resultMap id="BaseResultMap" type="com.studyjava.domain.dao.StudyJavaOrderPaymentDao">
+        <id property="paymentId" column="payment_id" jdbcType="BIGINT"/>
+        <result property="requestId" column="request_id" jdbcType="VARCHAR"/>
+        <result property="orderId" column="order_id" jdbcType="BIGINT"/>
+        <result property="paymentType" column="payment_type" jdbcType="TINYINT"/>
+        <result property="transactionNo" column="transaction_no" jdbcType="VARCHAR"/>
+        <result property="paymentStatus" column="payment_status" jdbcType="TINYINT"/>
+        <result property="amount" column="amount" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="isDeleted" column="is_deleted" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <!-- 唯一索引冲突时不新建流水，随后读取已有结果实现幂等返回 -->
+    <insert id="insertIfAbsent" keyColumn="payment_id" keyProperty="payment.paymentId"
+            useGeneratedKeys="true">
+        insert ignore into study_java_order_payment
+        (request_id, order_id, payment_type, transaction_no, payment_status, amount,
+         create_time, update_time, is_deleted)
+        values
+        (#{payment.requestId,jdbcType=VARCHAR},
+         #{payment.orderId,jdbcType=BIGINT},
+         #{payment.paymentType,jdbcType=TINYINT},
+         #{payment.transactionNo,jdbcType=VARCHAR},
+         #{payment.paymentStatus,jdbcType=TINYINT},
+         #{payment.amount,jdbcType=INTEGER},
+         CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0)
+    </insert>
+
+    <!-- FOR UPDATE 是当前读，能够看到并发事务刚提交的同一幂等键记录 -->
+    <select id="getByRequestIdForUpdate" resultMap="BaseResultMap">
+        select payment_id, request_id, order_id, payment_type, transaction_no,
+               payment_status, amount, create_time, update_time, is_deleted
+        from study_java_order_payment
+        where request_id = #{requestId,jdbcType=VARCHAR}
+          and is_deleted = 0
+        for update
+    </select>
+
+    <update id="markSuccess">
+        update study_java_order_payment
+        set transaction_no = #{transactionNo,jdbcType=VARCHAR},
+            payment_status = 1,
+            update_time = CURRENT_TIMESTAMP
+        where request_id = #{requestId,jdbcType=VARCHAR}
+          and payment_status = 0
+          and is_deleted = 0
+    </update>
+</mapper>

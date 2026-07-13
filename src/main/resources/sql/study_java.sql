@@ -677,6 +677,26 @@ INSERT INTO `study_java_order` (`order_id`, `order_no`, `user_id`, `total_price`
 COMMIT;
 
 -- ----------------------------
+-- Table structure for study_java_order_payment
+-- ----------------------------
+DROP TABLE IF EXISTS `study_java_order_payment`;
+CREATE TABLE `study_java_order_payment` (
+  `payment_id` bigint NOT NULL AUTO_INCREMENT COMMENT '支付流水主键',
+  `request_id` varchar(64) NOT NULL COMMENT '调用方支付幂等键',
+  `order_id` bigint NOT NULL COMMENT '订单主键',
+  `payment_type` tinyint NOT NULL COMMENT '1.支付宝 2.微信支付',
+  `transaction_no` varchar(64) DEFAULT NULL COMMENT '支付渠道交易号',
+  `payment_status` tinyint NOT NULL DEFAULT '0' COMMENT '0.处理中 1.成功',
+  `amount` int NOT NULL COMMENT '支付金额',
+  `create_time` datetime DEFAULT CURRENT_TIMESTAMP,
+  `update_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `is_deleted` tinyint(1) DEFAULT '0',
+  PRIMARY KEY (`payment_id`) USING BTREE,
+  UNIQUE KEY `uk_order_payment_request_id` (`request_id`),
+  KEY `idx_order_payment_order_id` (`order_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 ROW_FORMAT=DYNAMIC;
+
+-- ----------------------------
 -- Table structure for study_java_order_item
 -- ----------------------------
 DROP TABLE IF EXISTS `study_java_order_item`;

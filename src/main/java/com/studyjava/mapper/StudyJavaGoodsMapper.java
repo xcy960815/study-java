@@ -19,4 +19,7 @@ public interface StudyJavaGoodsMapper extends BaseMapper<StudyJavaGoodsDao> {
       @Param("studyJavaGoodsDao") StudyJavaGoodsDao studyJavaGoodsDao);
 
   int insertGoods(StudyJavaGoodsDao studyJavaGoodsDao);
+
+  /** 库存足够且商品在售时原子扣减库存。 */
+  int decreaseStock(@Param("goodsId") Long goodsId, @Param("quantity") Integer quantity);
 }

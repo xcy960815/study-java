@@ -62,4 +62,15 @@
             #{originalPrice}, #{sellingPrice}, #{stockNum}, #{tag}, #{goodsSellStatus}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime}, #{isDeleted}, #{remark}
         )
     </insert>
+
+    <!-- 把库存判断和扣减放在同一条 SQL 中，避免先查询后更新造成超卖 -->
+    <update id="decreaseStock">
+        update study_java_goods
+        set stock_num = stock_num - #{quantity,jdbcType=INTEGER},
+            update_time = CURRENT_TIMESTAMP
+        where goods_id = #{goodsId,jdbcType=BIGINT}
+          and stock_num &gt;= #{quantity,jdbcType=INTEGER}
+          and goods_sell_status = 1
+          and is_deleted = 0
+    </update>
 </mapper>
