@@ -18,6 +18,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -68,6 +69,7 @@ public class StudyJavaOrderServiceImpl implements StudyJavaOrderService {
   @Resource private OrderNumberGenerator orderNumberGenerator;
   @Resource private PaymentStrategyRegistry paymentStrategyRegistry;
   @Resource private ApplicationEventPublisher applicationEventPublisher;
+  @Resource private TransactionTemplate transactionTemplate;
 
   /**
    * 获取订单列表
@@ -167,7 +169,6 @@ public class StudyJavaOrderServiceImpl implements StudyJavaOrderService {
   }
 
   @Override
-  @Transactional
   public StudyJavaPaymentVo payOrder(StudyJavaPayOrderDto payOrderDto) {
     if (payOrderDto == null) {
       throw new StudyJavaException("支付参数不能为空");
@@ -180,39 +181,55 @@ public class StudyJavaOrderServiceImpl implements StudyJavaOrderService {
       throw new StudyJavaException("支付参数不合法");
     }
     PaymentType paymentType = PaymentType.fromCode(payOrderDto.payType());
-    StudyJavaOrderDao order = studyJavaOrderMapper.getOrderByIdForUpdate(payOrderDto.orderId());
-    if (order == null) {
-      throw new StudyJavaException("订单不存在");
-    }
 
-    StudyJavaOrderPaymentDao payment = createPayment(payOrderDto, order, paymentType);
-    if (studyJavaOrderPaymentMapper.insertIfAbsent(payment) == 0) {
-      StudyJavaOrderPaymentDao existingPayment =
-          studyJavaOrderPaymentMapper.getByRequestIdForUpdate(payOrderDto.requestId());
-      return resolveIdempotentPayment(payOrderDto, order, existingPayment);
+    // 事务1：锁定订单并写入幂等流水，提交后立即释放行锁
+    PaymentReservation reservation =
+        transactionTemplate.execute(status -> reservePayment(payOrderDto, paymentType));
+    if (reservation.idempotentResult() != null) {
+      return reservation.idempotentResult();
     }
-    if (OrderStatus.fromCode(order.getOrderStatus()) != OrderStatus.PENDING_PAYMENT) {
-      throw new StudyJavaException("当前订单状态不能支付");
-    }
+    StudyJavaOrderDao order = reservation.order();
 
+    // 锁外调用支付渠道，避免慢网关长时间占用行锁和数据库连接
     PaymentStrategy paymentStrategy = paymentStrategyRegistry.get(paymentType);
-    PaymentResult paymentResult =
-        paymentStrategy.pay(
-            new PaymentCommand(payOrderDto.requestId(), order.getOrderNo(), order.getTotalPrice()));
+    PaymentResult paymentResult;
+    try {
+      paymentResult =
+          paymentStrategy.pay(
+              new PaymentCommand(
+                  payOrderDto.requestId(), order.getOrderNo(), order.getTotalPrice()));
+    } catch (RuntimeException exception) {
+      markPaymentFailed(payOrderDto.requestId());
+      throw exception;
+    }
     if (!paymentResult.successful()) {
+      markPaymentFailed(payOrderDto.requestId());
       throw new StudyJavaException("支付失败: " + paymentResult.message());
     }
 
+    // 事务2：CAS 状态流转 + 流水标记成功。若此处因订单状态并发变化而失败，
+    // 渠道侧已扣款，需要人工对账处理（真实渠道接入后应触发退款补偿）
+    try {
+      return transactionTemplate.execute(
+          status -> completePayment(payOrderDto, paymentType, paymentResult));
+    } catch (RuntimeException exception) {
+      markPaymentFailed(payOrderDto.requestId());
+      throw exception;
+    }
+  }
+
+  /** 在独立事务中完成状态流转、流水落账并发布领域事件（提交后触发 AFTER_COMMIT 监听器） */
+  private StudyJavaPaymentVo completePayment(
+      StudyJavaPayOrderDto payOrderDto, PaymentType paymentType, PaymentResult paymentResult) {
     StudyJavaOrderVo paidOrder =
         applyTransition(
             new StudyJavaOrderTransitionDto(
-                order.getOrderId(), OrderAction.PAY, paymentType.getCode()));
+                payOrderDto.orderId(), OrderAction.PAY, paymentType.getCode()));
     if (studyJavaOrderPaymentMapper.markSuccess(
             payOrderDto.requestId(), paymentResult.transactionNo())
         != 1) {
       throw new StudyJavaException("支付流水更新失败");
     }
-
     applicationEventPublisher.publishEvent(
         new OrderPaidEvent(
             paidOrder.getOrderId(),
@@ -222,6 +239,47 @@ public class StudyJavaOrderServiceImpl implements StudyJavaOrderService {
             paymentType.getCode(),
             paymentResult.transactionNo()));
     return toPaymentVo(paidOrder, paymentResult.transactionNo(), false);
+  }
+
+  /** 事务1的产物：order 为待支付订单快照；idempotentResult 非空时直接返回历史支付结果 */
+  private record PaymentReservation(StudyJavaOrderDao order, StudyJavaPaymentVo idempotentResult) {}
+
+  /** 在独立事务中锁定订单、校验支付状态并写入幂等流水 */
+  private PaymentReservation reservePayment(
+      StudyJavaPayOrderDto payOrderDto, PaymentType paymentType) {
+    StudyJavaOrderDao order = studyJavaOrderMapper.getOrderByIdForUpdate(payOrderDto.orderId());
+    if (order == null) {
+      throw new StudyJavaException("订单不存在");
+    }
+
+    StudyJavaOrderPaymentDao payment = createPayment(payOrderDto, order, paymentType);
+    if (studyJavaOrderPaymentMapper.insertIfAbsent(payment) == 0) {
+      StudyJavaOrderPaymentDao existingPayment =
+          studyJavaOrderPaymentMapper.getByRequestIdForUpdate(payOrderDto.requestId());
+      if (existingPayment != null
+          && (!payOrderDto.orderId().equals(existingPayment.getOrderId())
+              || !payOrderDto.payType().equals(existingPayment.getPaymentType()))) {
+        throw new StudyJavaException("支付幂等键已被其他订单或支付方式使用");
+      }
+      if (existingPayment != null
+          && Integer.valueOf(PaymentStatus.FAILED.getCode())
+              .equals(existingPayment.getPaymentStatus())) {
+        // 上次渠道调用失败：流水重置为处理中，允许同一 requestId 重试
+        studyJavaOrderPaymentMapper.markProcessing(payOrderDto.requestId());
+        return new PaymentReservation(order, null);
+      }
+      return new PaymentReservation(
+          order, resolveIdempotentPayment(payOrderDto, order, existingPayment));
+    }
+    if (OrderStatus.fromCode(order.getOrderStatus()) != OrderStatus.PENDING_PAYMENT) {
+      throw new StudyJavaException("当前订单状态不能支付");
+    }
+    return new PaymentReservation(order, null);
+  }
+
+  /** 渠道调用失败后回滚流水状态，允许同一 requestId 重试 */
+  private void markPaymentFailed(String requestId) {
+    studyJavaOrderPaymentMapper.markFailed(requestId);
   }
 
   private StudyJavaOrderPaymentDao createPayment(

@@ -1,11 +1,18 @@
 package com.studyjava.component;
 
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.springframework.stereotype.Component;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.studyjava.annotation.PreAuthorize;
+import com.studyjava.domain.vo.StudyJavaSysUserVo;
+import com.studyjava.service.StudyJavaSysUserService;
+import com.studyjava.utils.AuthRedisKeys;
 import com.studyjava.utils.ErrorResponse;
 
 import cn.hutool.json.JSONUtil;
@@ -19,6 +26,9 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class AuthInterceptorComponent implements HandlerInterceptor {
 
+  /** 权限缓存时长：角色/菜单变更最迟 5 分钟生效，登出时主动清除 */
+  private static final long PERMISSIONS_CACHE_MINUTES = 5;
+
   private static final String CONTENT_TYPE = "application/json;charset=UTF-8";
 
   @Resource private JwtTokenComponent jwtTokenComponent;
@@ -27,9 +37,7 @@ public class AuthInterceptorComponent implements HandlerInterceptor {
 
   @Resource private ObjectMapper objectMapper;
 
-  @Resource private com.studyjava.service.StudyJavaSysUserService studyJavaSysUserService;
-
-  @Resource private com.studyjava.mapper.StudyJavaSysMenuMapper studyJavaSysMenuMapper;
+  @Resource private StudyJavaSysUserService studyJavaSysUserService;
 
   @Override
   public boolean preHandle(
@@ -58,29 +66,22 @@ public class AuthInterceptorComponent implements HandlerInterceptor {
     String tokenUserInfo = jwtTokenComponent.getUserInfoFromToken(token);
     Map<String, Object> tokenUserInfoMap = JSONUtil.toBean(tokenUserInfo, Map.class);
     String userId = (String) tokenUserInfoMap.get("userId");
-    String storedToken = redisComponent.get(com.studyjava.utils.AuthRedisKeys.accessTokenKey(userId), String.class);
+    String storedToken =
+        redisComponent.get(AuthRedisKeys.accessTokenKey(userId), String.class);
     if (!token.equals(storedToken)) {
       sendErrorResponse(response, request.getRequestURI(), "Token无效或已退出登录");
       return false;
     }
 
     // 权限校验
-    if (handler instanceof org.springframework.web.method.HandlerMethod handlerMethod) {
-      com.studyjava.annotation.PreAuthorize preAuthorize =
-          handlerMethod.getMethodAnnotation(com.studyjava.annotation.PreAuthorize.class);
+    if (handler instanceof HandlerMethod handlerMethod) {
+      PreAuthorize preAuthorize = handlerMethod.getMethodAnnotation(PreAuthorize.class);
       if (preAuthorize == null) {
-        preAuthorize =
-            handlerMethod.getBeanType().getAnnotation(com.studyjava.annotation.PreAuthorize.class);
+        preAuthorize = handlerMethod.getBeanType().getAnnotation(PreAuthorize.class);
       }
 
       if (preAuthorize != null && !preAuthorize.value().isEmpty()) {
-        String permission = preAuthorize.value();
-        // 获取当前用户信息（包含权限）
-        com.studyjava.domain.vo.StudyJavaSysUserVo userVo = studyJavaSysUserService.getUserInfo();
-        if (userVo == null
-            || userVo.getPermissions() == null
-            || (!userVo.getPermissions().contains("*:*:*")
-                && !userVo.getPermissions().contains(permission))) {
+        if (!hasPermission(userId, preAuthorize.value())) {
           sendForbiddenResponse(response, request.getRequestURI(), "没有操作权限");
           return false;
         }
@@ -88,6 +89,47 @@ public class AuthInterceptorComponent implements HandlerInterceptor {
     }
 
     return true;
+  }
+
+  /** 优先读 Redis 权限缓存，未命中时回源数据库并回填 */
+  private boolean hasPermission(String userId, String permission) {
+    String cacheKey = AuthRedisKeys.permissionsCacheKey(userId);
+    List<String> permissions = readCachedPermissions(cacheKey);
+    if (permissions == null) {
+      StudyJavaSysUserVo userVo = studyJavaSysUserService.getUserInfo();
+      if (userVo == null || userVo.getPermissions() == null) {
+        return false;
+      }
+      permissions = userVo.getPermissions();
+      cachePermissions(cacheKey, permissions);
+    }
+    return permissions.contains("*:*:*") || permissions.contains(permission);
+  }
+
+  @SuppressWarnings("unchecked")
+  private List<String> readCachedPermissions(String cacheKey) {
+    String cached = redisComponent.get(cacheKey, String.class);
+    if (cached == null) {
+      return null;
+    }
+    try {
+      return objectMapper.readValue(cached, List.class);
+    } catch (Exception exception) {
+      log.warn("权限缓存解析失败，回源数据库: {}", exception.getMessage());
+      return null;
+    }
+  }
+
+  private void cachePermissions(String cacheKey, List<String> permissions) {
+    try {
+      redisComponent.setWithExpire(
+          cacheKey,
+          objectMapper.writeValueAsString(permissions),
+          PERMISSIONS_CACHE_MINUTES,
+          TimeUnit.MINUTES);
+    } catch (Exception exception) {
+      log.warn("权限缓存写入失败: {}", exception.getMessage());
+    }
   }
 
   private void sendForbiddenResponse(HttpServletResponse response, String path, String message)

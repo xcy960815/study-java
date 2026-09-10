@@ -44,8 +44,8 @@ public class DailyReportTask {
 
       } catch (Exception e) {
         log.error("每日报表统计任务执行失败", e);
-        // 可以在这里添加告警逻辑
-        // 任务失败是否删除锁取决于业务，如果希望重试则删除锁，如果不希望重试则保留
+        // 删除锁允许当天重试
+        redisTemplate.delete(lockKey);
       }
     } else {
       log.info("每日报表统计任务已被其他实例执行，本实例跳过。日期：{}", yesterday);

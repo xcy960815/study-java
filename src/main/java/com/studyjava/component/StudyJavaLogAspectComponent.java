@@ -3,6 +3,7 @@ package com.studyjava.component;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
@@ -39,6 +40,13 @@ public class StudyJavaLogAspectComponent {
   @Resource private ObjectMapper objectMapper;
 
   private static final ThreadLocal<Long> TIME_THREADLOCAL = new NamedThreadLocal<>("Cost Time");
+
+  /** 敏感字段名（不区分大小写），序列化参数前替换其值为 *** */
+  private static final Pattern SENSITIVE_FIELD_PATTERN =
+      Pattern.compile(
+          "(\"(?:passwordMd5|newPasswordMd5|confirmNewPasswordMd5|password|oldPassword)\""
+              + "\\s*:\\s*)\"[^\"]*\"",
+          Pattern.CASE_INSENSITIVE);
 
   /** 处理请求前执行 */
   @Before(value = "@annotation(controllerLog)")
@@ -116,9 +124,7 @@ public class StudyJavaLogAspectComponent {
       studyJavaSysOperLogService.save(operLog);
     } catch (Exception exp) {
       // 记录本地异常日志
-      log.error("==前置通知异常==");
-      log.error("异常信息:{}", exp.getMessage());
-      exp.printStackTrace();
+      log.error("操作日志记录失败: {}", exp.getMessage(), exp);
     } finally {
       TIME_THREADLOCAL.remove();
     }
@@ -147,7 +153,7 @@ public class StudyJavaLogAspectComponent {
     }
     // 是否需要保存response，参数和值
     if (log.isSaveResponseData() && jsonResult != null) {
-      String json = objectMapper.writeValueAsString(jsonResult);
+      String json = maskSensitiveFields(objectMapper.writeValueAsString(jsonResult));
       operLog.setJsonResult(json != null && json.length() > 2000 ? json.substring(0, 2000) : json);
     }
   }
@@ -167,19 +173,25 @@ public class StudyJavaLogAspectComponent {
 
   /** 参数拼装 */
   private String argsArrayToString(Object[] paramsArray) {
-    String params = "";
+    StringBuilder params = new StringBuilder();
     if (paramsArray != null && paramsArray.length > 0) {
       for (Object o : paramsArray) {
         if (o != null && !isFilterObject(o)) {
           try {
             String jsonObj = objectMapper.writeValueAsString(o);
-            params += jsonObj.toString() + " ";
+            params.append(maskSensitiveFields(jsonObj)).append(' ');
           } catch (Exception e) {
+            log.warn("操作日志参数序列化失败: {}", e.getMessage());
           }
         }
       }
     }
-    return params.trim();
+    return params.toString().trim();
+  }
+
+  /** 将 JSON 文本中敏感字段的值替换为 ***，避免密码等落库 */
+  private String maskSensitiveFields(String json) {
+    return SENSITIVE_FIELD_PATTERN.matcher(json).replaceAll("$1\"***\"");
   }
 
   /**
@@ -196,13 +208,17 @@ public class StudyJavaLogAspectComponent {
     } else if (Collection.class.isAssignableFrom(clazz)) {
       Collection collection = (Collection) o;
       for (Object value : collection) {
-        return value instanceof MultipartFile;
+        if (value instanceof MultipartFile) {
+          return true;
+        }
       }
     } else if (Map.class.isAssignableFrom(clazz)) {
       Map map = (Map) o;
       for (Object value : map.entrySet()) {
         Map.Entry entry = (Map.Entry) value;
-        return entry.getValue() instanceof MultipartFile;
+        if (entry.getValue() instanceof MultipartFile) {
+          return true;
+        }
       }
     }
     return o instanceof MultipartFile

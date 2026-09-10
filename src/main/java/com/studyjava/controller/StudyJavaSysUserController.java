@@ -89,9 +89,6 @@ public class StudyJavaSysUserController extends BaseController {
   @PostMapping("/updateUserAvatar")
   public String updateUserAvatar(
       @RequestParam("userId") String userId, @RequestParam("file") MultipartFile file) {
-    if (userId == null) {
-      throw new StudyJavaException("用户ID不能为空");
-    }
     try {
       return studyJavaSysUserService.updateUserAvatar(userId, file);
     } catch (IOException error) {

@@ -1,9 +1,10 @@
 package com.studyjava.component;
 
+import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
@@ -13,9 +14,11 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class RedisComponent {
 
+  private static final DefaultRedisScript<String> GET_DEL_SCRIPT =
+      new DefaultRedisScript<>("return redis.call('GETDEL', KEYS[1])", String.class);
+
   private final RedisTemplate<String, Object> redisTemplate;
 
-  @Autowired
   public RedisComponent(RedisTemplate<String, Object> redisTemplate) {
     this.redisTemplate = redisTemplate;
   }
@@ -93,5 +96,15 @@ public class RedisComponent {
    */
   public Long getExpireWithKey(String key, TimeUnit unit) {
     return redisTemplate.getExpire(key, unit);
+  }
+
+  /**
+   * 原子地读取并删除 key（等价 Redis 6.2+ GETDEL），用于验证码一次性校验，消除并发重用窗口
+   *
+   * @param key String
+   * @return String key 对应的值；key 不存在时返回 null
+   */
+  public String getAndDelete(String key) {
+    return redisTemplate.execute(GET_DEL_SCRIPT, Collections.singletonList(key));
   }
 }

@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.imageio.ImageIO;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -128,10 +129,16 @@ public class StudyJavaSysUserServiceImpl implements StudyJavaSysUserService {
   public Boolean insertUser(StudyJavaSysUserDto studyJavaSysUserDto) {
     StudyJavaSysUserDao studyJavaSysUserDao = makeDto2Dao(studyJavaSysUserDto);
     if (PasswordUtils.needsUpgrade(studyJavaSysUserDao.getPasswordMd5())) {
-      studyJavaSysUserDao.setPasswordMd5(PasswordUtils.encode(studyJavaSysUserDao.getPasswordMd5()));
+      studyJavaSysUserDao.setPasswordMd5(
+          PasswordUtils.encode(studyJavaSysUserDao.getPasswordMd5()));
     }
     studyJavaSysUserDao.setLockedFlag(0);
-    return studyJavaSysUserMapper.insertUser(studyJavaSysUserDao) > 0;
+    try {
+      return studyJavaSysUserMapper.insertUser(studyJavaSysUserDao) > 0;
+    } catch (DuplicateKeyException exception) {
+      // login_name 唯一索引兜底：并发注册同一用户名时"先查后插"会被穿透
+      throw new StudyJavaException("该用户名已被注册");
+    }
   }
 
   /** 删除用户 */

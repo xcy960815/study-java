@@ -44,8 +44,8 @@ public class StudyJavaLoginServiceImpl implements StudyJavaLoginService {
   /** 验证码 key 名 */
   private static final int CAPTCHA_EXPIRE_TIME_MINUTES = 5;
 
-  /** token 过期时间 */
-  private static final int TOKEN_EXPIRE_TIME_HOURS = 24;
+  /** token 过期时间（与 JWT 本体过期时间保持一致：1 小时） */
+  private static final int TOKEN_EXPIRE_TIME_HOURS = 1;
 
   /** refresh token 过期时间 */
   private static final int REFRESH_TOKEN_EXPIRE_TIME_DAYS = 7;
@@ -63,15 +63,13 @@ public class StudyJavaLoginServiceImpl implements StudyJavaLoginService {
   @Override
   public StudyJavaSysLoginVo login(StudyJavaLoginDto studyJavaLoginDto) {
     String captchaKey = AuthRedisKeys.captchaKey(studyJavaLoginDto.getCaptchaId());
-    if (!redisComponent.hasKey(captchaKey)) {
+    // GETDEL 原子读取并删除，防止并发窗口内同一验证码被重复使用
+    String captcha = redisComponent.getAndDelete(captchaKey);
+
+    if (captcha == null) {
       throw new StudyJavaException("验证码不存在");
     }
-
-    String captcha = redisComponent.get(captchaKey, String.class);
-    redisComponent.delete(captchaKey);
-
     if (!captcha.equalsIgnoreCase(studyJavaLoginDto.getCaptcha())) {
-
       throw new StudyJavaException("验证码错误");
     }
     StudyJavaSysUserDto studyJavaSysUserDto = new StudyJavaSysUserDto();
@@ -80,16 +78,12 @@ public class StudyJavaLoginServiceImpl implements StudyJavaLoginService {
 
     StudyJavaSysUserVo userInfoVo = studyJavaSysUserService.getUserInfo(studyJavaLoginDto);
 
-    if (userInfoVo == null) {
-      throw new StudyJavaException("用户不存在");
-    }
-
-    String dataBasePassword = userInfoVo.getPasswordMd5();
-    String loginPassword = studyJavaLoginDto.getPassword();
-    if (StringUtils.isBlank(dataBasePassword)
-        || StringUtils.isBlank(loginPassword)
-        || !PasswordUtils.matches(loginPassword, dataBasePassword)) {
-      throw new StudyJavaException("密码错误");
+    // 统一文案，避免区分"用户不存在"/"密码错误"被用于枚举用户名
+    if (userInfoVo == null
+        || StringUtils.isBlank(userInfoVo.getPasswordMd5())
+        || StringUtils.isBlank(studyJavaLoginDto.getPassword())
+        || !PasswordUtils.matches(studyJavaLoginDto.getPassword(), userInfoVo.getPasswordMd5())) {
+      throw new StudyJavaException("用户名或密码错误");
     }
 
     if (PasswordUtils.needsUpgrade(dataBasePassword)) {
@@ -131,12 +125,10 @@ public class StudyJavaLoginServiceImpl implements StudyJavaLoginService {
   @Override
   public void register(com.studyjava.domain.dto.StudyJavaRegisterDto studyJavaRegisterDto) {
     String captchaKey = AuthRedisKeys.captchaKey(studyJavaRegisterDto.getCaptchaId());
-    if (!redisComponent.hasKey(captchaKey)) {
+    String captcha = redisComponent.getAndDelete(captchaKey);
+    if (captcha == null) {
       throw new StudyJavaException("验证码不存在或已过期");
     }
-
-    String captcha = redisComponent.get(captchaKey, String.class);
-    redisComponent.delete(captchaKey);
     if (!captcha.equalsIgnoreCase(studyJavaRegisterDto.getCaptcha())) {
       throw new StudyJavaException("验证码错误");
     }
@@ -171,6 +163,7 @@ public class StudyJavaLoginServiceImpl implements StudyJavaLoginService {
         String userId = (String) map.get("userId");
         redisComponent.delete(AuthRedisKeys.accessTokenKey(userId));
         redisComponent.delete(AuthRedisKeys.refreshTokenKey(userId));
+        redisComponent.delete(AuthRedisKeys.permissionsCacheKey(userId));
       }
     }
   }
@@ -212,9 +205,19 @@ public class StudyJavaLoginServiceImpl implements StudyJavaLoginService {
     String tokenContent = jwtTokenComponent.getUserInfoFromToken(refreshToken);
     Map<String, Object> map = JSONUtil.toBean(tokenContent, Map.class);
     String userId = (String) map.get("userId");
-    String storedRefreshToken = redisComponent.get(AuthRedisKeys.refreshTokenKey(userId), String.class);
+    String storedRefreshToken =
+        redisComponent.get(AuthRedisKeys.refreshTokenKey(userId), String.class);
     if (!refreshToken.equals(storedRefreshToken)) {
       throw new StudyJavaException("Refresh Token无效，请重新登录");
+    }
+
+    // 先校验用户存在，再签发并写入 Redis，避免返回一对无法使用的 token
+    String loginName = (String) map.get("loginName");
+    StudyJavaLoginDto loginDto = new StudyJavaLoginDto();
+    loginDto.setUsername(loginName);
+    StudyJavaSysUserVo userInfoVo = studyJavaSysUserService.getUserInfo(loginDto);
+    if (userInfoVo == null) {
+      throw new StudyJavaException("用户不存在，请重新登录");
     }
 
     // Generate new tokens
@@ -224,34 +227,24 @@ public class StudyJavaLoginServiceImpl implements StudyJavaLoginService {
     StudyJavaSysLoginVo loginVo = new StudyJavaSysLoginVo();
     loginVo.setToken(newToken);
     loginVo.setRefreshToken(newRefreshToken);
+    loginVo.setId(userInfoVo.getId());
+    loginVo.setLoginName(userInfoVo.getLoginName());
+    loginVo.setAddress(userInfoVo.getAddress());
+    loginVo.setCreateTime(userInfoVo.getCreateTime());
+    loginVo.setIntroduceSign(userInfoVo.getIntroduceSign());
+    loginVo.setNickName(userInfoVo.getNickName());
 
-    // Populate user info
-    String loginName = (String) map.get("loginName");
-
-    StudyJavaLoginDto loginDto = new StudyJavaLoginDto();
-    loginDto.setUsername(loginName);
-    StudyJavaSysUserVo userInfoVo = studyJavaSysUserService.getUserInfo(loginDto);
-
-    if (userInfoVo != null) {
-      loginVo.setId(userInfoVo.getId());
-      loginVo.setLoginName(userInfoVo.getLoginName());
-      loginVo.setAddress(userInfoVo.getAddress());
-      loginVo.setCreateTime(userInfoVo.getCreateTime());
-      loginVo.setIntroduceSign(userInfoVo.getIntroduceSign());
-      loginVo.setNickName(userInfoVo.getNickName());
-
-      // 更新 Redis 中的 Token
-      redisComponent.setWithExpire(
-          AuthRedisKeys.accessTokenKey(userInfoVo.getId().toString()),
-          newToken,
-          TOKEN_EXPIRE_TIME_HOURS,
-          TimeUnit.HOURS);
-      redisComponent.setWithExpire(
-          AuthRedisKeys.refreshTokenKey(userInfoVo.getId().toString()),
-          newRefreshToken,
-          REFRESH_TOKEN_EXPIRE_TIME_DAYS,
-          TimeUnit.DAYS);
-    }
+    // 更新 Redis 中的 Token
+    redisComponent.setWithExpire(
+        AuthRedisKeys.accessTokenKey(userInfoVo.getId().toString()),
+        newToken,
+        TOKEN_EXPIRE_TIME_HOURS,
+        TimeUnit.HOURS);
+    redisComponent.setWithExpire(
+        AuthRedisKeys.refreshTokenKey(userInfoVo.getId().toString()),
+        newRefreshToken,
+        REFRESH_TOKEN_EXPIRE_TIME_DAYS,
+        TimeUnit.DAYS);
 
     return loginVo;
   }

@@ -12,4 +12,10 @@ public interface StudyJavaOrderPaymentMapper {
 
   int markSuccess(
       @Param("requestId") String requestId, @Param("transactionNo") String transactionNo);
+
+  /** 将流水标记为失败（回滚 PROCESSING 状态），允许同一 requestId 重试 */
+  int markFailed(@Param("requestId") String requestId);
+
+  /** 将失败流水重置为处理中（同 requestId 重试时调用） */
+  int markProcessing(@Param("requestId") String requestId);
 }

@@ -3,7 +3,6 @@ package com.studyjava.component;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 import javax.crypto.spec.SecretKeySpec;
 
@@ -31,10 +30,10 @@ public class JwtTokenComponent {
   private static final String SECRET_KEY_NAME = "study-java-secret-key";
 
   /** Access Token 过期时间（1小时） */
-  private final long ACCESS_EXPIRATION_TIME = 3600000L;
+  private static final long ACCESS_EXPIRATION_TIME = 3600000L;
 
   /** Refresh Token 过期时间（7天） */
-  private final long REFRESH_EXPIRATION_TIME = 604800000L;
+  private static final long REFRESH_EXPIRATION_TIME = 604800000L;
 
   /** 秘钥 */
   private Key SECRET_KEY;
@@ -52,11 +51,9 @@ public class JwtTokenComponent {
               Base64.getDecoder().decode(secretKeyName), SignatureAlgorithm.HS512.getJcaName());
     } else {
       this.SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS512);
-      redisComponent.setWithExpire(
-          SECRET_KEY_NAME,
-          Base64.getEncoder().encodeToString(SECRET_KEY.getEncoded()),
-          REFRESH_EXPIRATION_TIME,
-          TimeUnit.MILLISECONDS);
+      // 密钥必须持久保存：TTL 过期后重启会生成新密钥，导致所有已签发 token 失效
+      redisComponent.set(
+          SECRET_KEY_NAME, Base64.getEncoder().encodeToString(SECRET_KEY.getEncoded()));
     }
   }
 

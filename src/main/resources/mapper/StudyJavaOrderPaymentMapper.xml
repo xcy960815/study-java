@@ -52,4 +52,24 @@
           and payment_status = 0
           and is_deleted = 0
     </update>
+
+    <!-- 渠道调用失败或异常时回滚流水状态，允许同一幂等键重试 -->
+    <update id="markFailed">
+        update study_java_order_payment
+        set payment_status = 2,
+            update_time = CURRENT_TIMESTAMP
+        where request_id = #{requestId,jdbcType=VARCHAR}
+          and payment_status = 0
+          and is_deleted = 0
+    </update>
+
+    <!-- 同一幂等键重试时，把上次失败的流水重置为处理中 -->
+    <update id="markProcessing">
+        update study_java_order_payment
+        set payment_status = 0,
+            update_time = CURRENT_TIMESTAMP
+        where request_id = #{requestId,jdbcType=VARCHAR}
+          and payment_status = 2
+          and is_deleted = 0
+    </update>
 </mapper>

@@ -46,7 +46,7 @@ public class StudyJavaDeepSeekServiceImpl extends StudyJavaAiService
   private static final String DEEPSEEK_BALANCE_URL = "/user/balance";
 
   /** 超时时间 10 分钟 */
-  private static final int DeepSeek_Timeout = 60 * 1000 * 10;
+  private static final int DEEPSEEK_TIMEOUT_MS = 60 * 1000 * 10;
 
   /**
    * 构建请求地址
@@ -69,7 +69,7 @@ public class StudyJavaDeepSeekServiceImpl extends StudyJavaAiService
     return HttpRequest.newBuilder(uri)
         .header("Content-Type", "application/json")
         .header("Authorization", Authorization)
-        .timeout(Duration.ofMillis(DeepSeek_Timeout));
+        .timeout(Duration.ofMillis(DEEPSEEK_TIMEOUT_MS));
   }
 
   @Override

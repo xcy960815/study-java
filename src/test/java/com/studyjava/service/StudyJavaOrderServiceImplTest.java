@@ -27,6 +27,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.IntStream;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -34,6 +35,9 @@ import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import com.studyjava.domain.dao.StudyJavaGoodsDao;
 import com.studyjava.domain.dao.StudyJavaOrderDao;
@@ -73,8 +77,15 @@ class StudyJavaOrderServiceImplTest {
   @Mock private PaymentStrategyRegistry paymentStrategyRegistry;
   @Mock private PaymentStrategy paymentStrategy;
   @Mock private ApplicationEventPublisher eventPublisher;
+  @Mock private PlatformTransactionManager transactionManager;
 
   @InjectMocks private StudyJavaOrderServiceImpl orderService;
+
+  @BeforeEach
+  void wireTransactionTemplate() {
+    ReflectionTestUtils.setField(
+        orderService, "transactionTemplate", new TransactionTemplate(transactionManager));
+  }
 
   @Test
   void paysWithSelectedStrategyAndPublishesDomainEvent() {
@@ -342,6 +353,135 @@ class StudyJavaOrderServiceImplTest {
                     new StudyJavaOrderTransitionDto(10L, OrderAction.MANUAL_CLOSE, null)));
 
     assertEquals("订单状态已发生变化，请刷新后重试", exception.getMessage());
+  }
+
+  @Test
+  void callsPaymentChannelOutsideReservationAndMarksSuccessAfterTransition() {
+    StudyJavaOrderDao pendingOrder = order(10L, OrderStatus.PENDING_PAYMENT);
+    pendingOrder.setOrderNo("ORDER-10");
+    pendingOrder.setUserId(7L);
+    pendingOrder.setTotalPrice(500);
+    StudyJavaOrderDao paidOrder = order(10L, OrderStatus.PAID);
+    when(orderMapper.getOrderByIdForUpdate(10L)).thenReturn(pendingOrder);
+    when(orderPaymentMapper.insertIfAbsent(any())).thenReturn(1);
+    when(paymentStrategyRegistry.get(PaymentType.WECHAT_PAY)).thenReturn(paymentStrategy);
+    when(paymentStrategy.pay(any(PaymentCommand.class)))
+        .thenReturn(PaymentResult.success("WX-TRANSACTION-1"));
+    when(orderMapper.getOrderInfo(any())).thenReturn(pendingOrder, paidOrder);
+    when(orderMapper.transitionOrder(any(), any(), any(), any(), any(), any())).thenReturn(1);
+    when(orderPaymentMapper.markSuccess(any(), any())).thenReturn(1);
+
+    orderService.payOrder(
+        new StudyJavaPayOrderDto("pay-request-1", 10L, PaymentType.WECHAT_PAY.getCode()));
+
+    // 渠道调用在幂等流水写入之后、状态流转之前（即行锁释放后）
+    InOrder paymentFlow = inOrder(orderPaymentMapper, paymentStrategy, orderMapper);
+    paymentFlow.verify(orderPaymentMapper).insertIfAbsent(any());
+    paymentFlow.verify(paymentStrategy).pay(any(PaymentCommand.class));
+    paymentFlow.verify(orderMapper).transitionOrder(any(), any(), any(), any(), any(), any());
+    paymentFlow.verify(orderPaymentMapper).markSuccess(any(), any());
+    verify(orderPaymentMapper, never()).markFailed(any());
+    verify(orderPaymentMapper, never()).markProcessing(any());
+  }
+
+  @Test
+  void marksPaymentFailedWhenChannelReportsFailure() {
+    StudyJavaOrderDao pendingOrder = order(10L, OrderStatus.PENDING_PAYMENT);
+    pendingOrder.setOrderNo("ORDER-10");
+    when(orderMapper.getOrderByIdForUpdate(10L)).thenReturn(pendingOrder);
+    when(orderPaymentMapper.insertIfAbsent(any())).thenReturn(1);
+    when(paymentStrategyRegistry.get(PaymentType.WECHAT_PAY)).thenReturn(paymentStrategy);
+    when(paymentStrategy.pay(any(PaymentCommand.class)))
+        .thenReturn(PaymentResult.failure("渠道余额不足"));
+
+    StudyJavaException exception =
+        assertThrows(
+            StudyJavaException.class,
+            () ->
+                orderService.payOrder(
+                    new StudyJavaPayOrderDto(
+                        "pay-request-1", 10L, PaymentType.WECHAT_PAY.getCode())));
+
+    assertEquals("支付失败: 渠道余额不足", exception.getMessage());
+    verify(orderPaymentMapper).markFailed("pay-request-1");
+    verify(orderMapper, never()).transitionOrder(any(), any(), any(), any(), any(), any());
+    verify(eventPublisher, never()).publishEvent(any());
+  }
+
+  @Test
+  void marksPaymentFailedWhenChannelThrows() {
+    StudyJavaOrderDao pendingOrder = order(10L, OrderStatus.PENDING_PAYMENT);
+    pendingOrder.setOrderNo("ORDER-10");
+    when(orderMapper.getOrderByIdForUpdate(10L)).thenReturn(pendingOrder);
+    when(orderPaymentMapper.insertIfAbsent(any())).thenReturn(1);
+    when(paymentStrategyRegistry.get(PaymentType.WECHAT_PAY)).thenReturn(paymentStrategy);
+    when(paymentStrategy.pay(any(PaymentCommand.class)))
+        .thenThrow(new IllegalStateException("网关超时"));
+
+    assertThrows(
+        IllegalStateException.class,
+        () ->
+            orderService.payOrder(
+                new StudyJavaPayOrderDto("pay-request-1", 10L, PaymentType.WECHAT_PAY.getCode())));
+
+    verify(orderPaymentMapper).markFailed("pay-request-1");
+    verify(orderMapper, never()).transitionOrder(any(), any(), any(), any(), any(), any());
+  }
+
+  @Test
+  void resetsFailedPaymentAndRetriesWithSameRequestId() {
+    StudyJavaOrderDao pendingOrder = order(10L, OrderStatus.PENDING_PAYMENT);
+    pendingOrder.setOrderNo("ORDER-10");
+    pendingOrder.setUserId(7L);
+    pendingOrder.setTotalPrice(500);
+    StudyJavaOrderPaymentDao failedPayment = new StudyJavaOrderPaymentDao();
+    failedPayment.setRequestId("retry-request");
+    failedPayment.setOrderId(10L);
+    failedPayment.setPaymentType(PaymentType.WECHAT_PAY.getCode());
+    failedPayment.setPaymentStatus(PaymentStatus.FAILED.getCode());
+    StudyJavaOrderDao paidOrder = order(10L, OrderStatus.PAID);
+    when(orderMapper.getOrderByIdForUpdate(10L)).thenReturn(pendingOrder);
+    when(orderPaymentMapper.insertIfAbsent(any())).thenReturn(0);
+    when(orderPaymentMapper.getByRequestIdForUpdate("retry-request")).thenReturn(failedPayment);
+    when(paymentStrategyRegistry.get(PaymentType.WECHAT_PAY)).thenReturn(paymentStrategy);
+    when(paymentStrategy.pay(any(PaymentCommand.class)))
+        .thenReturn(PaymentResult.success("WX-RETRY-1"));
+    when(orderMapper.getOrderInfo(any())).thenReturn(pendingOrder, paidOrder);
+    when(orderMapper.transitionOrder(any(), any(), any(), any(), any(), any())).thenReturn(1);
+    when(orderPaymentMapper.markSuccess("retry-request", "WX-RETRY-1")).thenReturn(1);
+
+    StudyJavaPaymentVo result =
+        orderService.payOrder(
+            new StudyJavaPayOrderDto("retry-request", 10L, PaymentType.WECHAT_PAY.getCode()));
+
+    assertEquals("WX-RETRY-1", result.transactionNo());
+    assertFalse(result.idempotent());
+    verify(orderPaymentMapper).markProcessing("retry-request");
+  }
+
+  @Test
+  void rejectsRequestIdBoundToAnotherOrderEvenWhenFailed() {
+    StudyJavaOrderDao pendingOrder = order(10L, OrderStatus.PENDING_PAYMENT);
+    StudyJavaOrderPaymentDao otherOrderPayment = new StudyJavaOrderPaymentDao();
+    otherOrderPayment.setOrderId(99L);
+    otherOrderPayment.setPaymentType(PaymentType.WECHAT_PAY.getCode());
+    otherOrderPayment.setPaymentStatus(PaymentStatus.FAILED.getCode());
+    when(orderMapper.getOrderByIdForUpdate(10L)).thenReturn(pendingOrder);
+    when(orderPaymentMapper.insertIfAbsent(any())).thenReturn(0);
+    when(orderPaymentMapper.getByRequestIdForUpdate("stolen-request"))
+        .thenReturn(otherOrderPayment);
+
+    StudyJavaException exception =
+        assertThrows(
+            StudyJavaException.class,
+            () ->
+                orderService.payOrder(
+                    new StudyJavaPayOrderDto(
+                        "stolen-request", 10L, PaymentType.WECHAT_PAY.getCode())));
+
+    assertEquals("支付幂等键已被其他订单或支付方式使用", exception.getMessage());
+    verify(orderPaymentMapper, never()).markProcessing(any());
+    verifyNoInteractions(paymentStrategy, eventPublisher);
   }
 
   private StudyJavaOrderDao order(long orderId, OrderStatus status) {
