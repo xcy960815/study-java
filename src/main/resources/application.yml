@@ -24,5 +24,14 @@ deepseek:
     key: ${DEEPSEEK_API_KEY:your-api-key-here}
     base-url: ${DEEPSEEK_BASE_URL:https://api.deepseek.com}
 
+# Java/JVM 能力实验室（危险演示保持关闭）
+java-lab:
+  enabled: true
+  dangerous-demo-enabled: false
+  jfr:
+    enabled: true
+    directory: jfr-recordings
+    max-duration-seconds: 600
+    max-size-mb: 500
 
 

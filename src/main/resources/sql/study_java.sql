@@ -838,7 +838,7 @@ CREATE TABLE `study_java_sys_menu` (
   PRIMARY KEY (`id`) USING BTREE,
   KEY `idx_parent_id` (`parent_id`),
   KEY `idx_menu_type` (`menu_type`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='系统菜单表';
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='系统菜单表';
 
 -- ----------------------------
 -- Records of study_java_sys_menu
@@ -859,6 +859,9 @@ INSERT INTO `study_java_sys_menu` (`id`, `parent_id`, `menu_name`, `path`, `comp
 INSERT INTO `study_java_sys_menu` (`id`, `parent_id`, `menu_name`, `path`, `component`, `icon`, `menu_type`, `perms`, `order_num`, `create_time`, `update_time`, `is_deleted`, `create_by`, `update_by`, `remark`) VALUES (16, 14, '订单列表', '/order/list', 'views/order/index.vue', 'OrderedList', 1, '', 0, '2025-06-28 00:48:58', '2025-06-28 00:49:35', 0, NULL, NULL, NULL);
 INSERT INTO `study_java_sys_menu` (`id`, `parent_id`, `menu_name`, `path`, `component`, `icon`, `menu_type`, `perms`, `order_num`, `create_time`, `update_time`, `is_deleted`, `create_by`, `update_by`, `remark`) VALUES (17, NULL, '系统监控', '/monitor', 'components/layout/index.vue', 'Setting', 0, '', 0, '2025-12-08 01:27:06', '2025-12-08 01:27:06', 0, NULL, NULL, NULL);
 INSERT INTO `study_java_sys_menu` (`id`, `parent_id`, `menu_name`, `path`, `component`, `icon`, `menu_type`, `perms`, `order_num`, `create_time`, `update_time`, `is_deleted`, `create_by`, `update_by`, `remark`) VALUES (18, NULL, 'monitor', '/monitor', 'components/layout/index.vue', 'Setting', 0, '', 0, '2025-12-08 01:30:45', '2025-12-08 01:30:45', 0, NULL, NULL, NULL);
+INSERT INTO `study_java_sys_menu` (`id`, `parent_id`, `menu_name`, `path`, `component`, `icon`, `menu_type`, `perms`, `order_num`, `create_time`, `update_time`, `is_deleted`, `create_by`, `update_by`, `remark`) VALUES (19, 17, 'JVM 诊断查询', NULL, NULL, NULL, 2, 'monitor:jvm:query', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0, 'system', NULL, 'Java/JVM 能力实验室基础查询权限');
+INSERT INTO `study_java_sys_menu` (`id`, `parent_id`, `menu_name`, `path`, `component`, `icon`, `menu_type`, `perms`, `order_num`, `create_time`, `update_time`, `is_deleted`, `create_by`, `update_by`, `remark`) VALUES (20, 17, 'Thread Dump', NULL, NULL, NULL, 2, 'monitor:jvm:thread', 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0, 'system', NULL, 'Java/JVM 能力实验室线程诊断权限');
+INSERT INTO `study_java_sys_menu` (`id`, `parent_id`, `menu_name`, `path`, `component`, `icon`, `menu_type`, `perms`, `order_num`, `create_time`, `update_time`, `is_deleted`, `create_by`, `update_by`, `remark`) VALUES (21, 17, 'JFR 管理', NULL, NULL, NULL, 2, 'monitor:jfr:manage', 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0, 'system', NULL, 'Java/JVM 能力实验室 JFR 管理权限');
 COMMIT;
 
 -- ----------------------------
@@ -1330,7 +1333,7 @@ CREATE TABLE `study_java_sys_role_menus` (
   UNIQUE KEY `uk_role_menu` (`role_id`,`menu_id`) COMMENT '角色菜单唯一约束',
   KEY `idx_role_id` (`role_id`) COMMENT '角色ID索引',
   KEY `idx_menu_id` (`menu_id`) COMMENT '菜单ID索引'
-) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='角色菜单关联表';
+) ENGINE=InnoDB AUTO_INCREMENT=60 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='角色菜单关联表';
 
 -- ----------------------------
 -- Records of study_java_sys_role_menus
@@ -1342,10 +1345,18 @@ INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (48,
 INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (49, 100, 8);
 INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (50, 100, 12);
 INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (51, 100, 13);
+INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (52, 100, 17);
+INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (53, 100, 19);
+INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (54, 100, 20);
+INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (55, 100, 21);
 INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (42, 101, 5);
 INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (43, 101, 6);
 INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (44, 101, 14);
 INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (45, 101, 16);
+INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (56, 101, 17);
+INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (57, 101, 19);
+INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (58, 101, 20);
+INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (59, 101, 21);
 COMMIT;
 
 -- ----------------------------
@@ -1366,9 +1377,13 @@ CREATE TABLE `study_java_sys_user` (
   `create_by` varchar(64) DEFAULT NULL COMMENT 'åˆ›å»ºè€…',
   `update_by` varchar(64) DEFAULT NULL COMMENT 'æ›´æ–°è€…',
   `update_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'æ›´æ–°æ—¶é—´',
-  `remark` varchar(500) DEFAULT NULL COMMENT 'å¤‡æ³¨',
-  PRIMARY KEY (`id`) USING BTREE
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `uk_login_name` (`login_name`) COMMENT '登录名唯一约束'
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb3 ROW_FORMAT=DYNAMIC;
+
+-- 存量库升级语句（新库直接执行上方建表语句即可，无需执行）：
+-- ALTER TABLE `study_java_sys_user` ADD UNIQUE KEY `uk_login_name` (`login_name`);
 
 -- ----------------------------
 -- Records of study_java_sys_user

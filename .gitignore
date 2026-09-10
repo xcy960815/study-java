@@ -41,6 +41,7 @@ build/
 
 /uploadLargeFiles/
 /uploadFiles/
+/jfr-recordings/
 
 # 忽略所有包含敏感信息的 .env 文件
 .env
