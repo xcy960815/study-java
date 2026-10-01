@@ -105,7 +105,7 @@ docker build -t study-java:latest .
 docker compose --env-file .env up -d
 ```
 
-重要：当前 `docker-compose.yml` 需要 `APP_IMAGE_NAME`、`VUE_WEB_IMAGE_NAME`、`REACT_WEB_IMAGE_NAME` 等变量；`.env.example` 没有定义全部变量。启动前先运行：
+`docker-compose.yml` 只包含 MySQL、Redis 和后端，并创建网络 `study-java-network`。Vue 与 React 的 compose 在各自仓库，加入这个已存在的网络。启动前先运行：
 
 ```bash
 docker compose --env-file .env config

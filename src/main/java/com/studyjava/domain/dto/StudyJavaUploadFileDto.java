@@ -3,6 +3,7 @@ package com.studyjava.domain.dto;
 import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -14,13 +15,16 @@ public class StudyJavaUploadFileDto {
   private MultipartFile file;
 
   /** 文件名（用于分片上传） */
+  @NotBlank(message = "文件名不能为空")
   private String fileName;
 
   /** 分片索引（用于分片上传） */
+  @NotNull(message = "分片索引不能为空")
   @Min(value = 0, message = "分片索引不能小于0")
   private Integer chunkIndex;
 
   /** 总分片数（用于分片上传） */
+  @NotNull(message = "总分片数不能为空")
   @Min(value = 1, message = "总分片数不能小于1")
   private Integer totalChunks;
 }

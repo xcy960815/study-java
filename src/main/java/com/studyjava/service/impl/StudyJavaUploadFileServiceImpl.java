@@ -1,11 +1,10 @@
 package com.studyjava.service.impl;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Path;
+import java.io.OutputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -38,6 +37,9 @@ public class StudyJavaUploadFileServiceImpl implements StudyJavaUploadFileServic
   /** 记录已上传的分片 */
   private static final ConcurrentMap<String, Set<Integer>> uploadedChunks =
       new ConcurrentHashMap<>();
+
+  /** 同一文件的分片写入和合并必须串行，避免两个请求同时合并出半截文件 */
+  private static final ConcurrentMap<String, Object> uploadLocks = new ConcurrentHashMap<>();
 
   /** 常规文件上传路径 */
   private static final String FOLDERS_NAME = "uploadFiles";
@@ -79,46 +81,75 @@ public class StudyJavaUploadFileServiceImpl implements StudyJavaUploadFileServic
       MultipartFile file, String fileName, int chunkIndex, int totalChunks) {
     validateFile(file, MAX_CHUNK_SIZE);
     validateChunkParams(fileName, chunkIndex, totalChunks);
-    try {
-      Files.createDirectories(FOLDERS_LARGE_PATH);
-      String safeFileName = sanitizeFileName(fileName);
-      String uploadKey = safeFileName + ":" + totalChunks;
-      // 保存分片到临时文件
-      File chunkFile =
-          resolveUploadPath(FOLDERS_LARGE_PATH, safeFileName + ".part." + chunkIndex).toFile();
-      file.transferTo(chunkFile);
+    String safeFileName = sanitizeFileName(fileName);
+    String uploadKey = safeFileName + ":" + totalChunks;
+    Object lock = uploadLocks.computeIfAbsent(uploadKey, key -> new Object());
+    synchronized (lock) {
+      try {
+        Files.createDirectories(FOLDERS_LARGE_PATH);
+        Path chunkPath =
+            resolveUploadPath(FOLDERS_LARGE_PATH, safeFileName + ".part." + chunkIndex);
+        file.transferTo(chunkPath);
 
-      // 记录已上传分片
-      Set<Integer> chunks = uploadedChunks.computeIfAbsent(uploadKey, key -> ConcurrentHashMap.newKeySet());
-      chunks.add(chunkIndex);
+        Set<Integer> chunks =
+            uploadedChunks.computeIfAbsent(uploadKey, key -> ConcurrentHashMap.newKeySet());
+        chunks.add(chunkIndex);
 
-      // 检查是否所有分片都上传完成
-      if (chunks.size() == totalChunks) {
-        mergeFile(safeFileName, totalChunks);
-        uploadedChunks.remove(uploadKey);
-        return "上传完成: " + safeFileName;
+        if (chunks.size() == totalChunks) {
+          mergeFile(safeFileName, totalChunks);
+          uploadedChunks.remove(uploadKey);
+          uploadLocks.remove(uploadKey, lock);
+          return "上传完成: " + safeFileName;
+        }
+        return "分片 " + chunkIndex + " 上传成功";
+      } catch (IOException e) {
+        log.error("大文件分片上传失败", e);
+        throw new StudyJavaException("上传失败");
       }
-      return "分片 " + chunkIndex + " 上传成功";
-
-    } catch (IOException e) {
-      log.error("大文件分片上传失败", e);
-      throw new StudyJavaException("上传失败");
     }
   }
 
-  /** 合并分片文件 */
+  /**
+   * 合并分片文件。先写入临时文件再替换目标，避免中途失败时把半截内容追加到已有文件上。
+   */
   private void mergeFile(String fileName, int totalChunks) {
-    File mergedFile = resolveUploadPath(FOLDERS_LARGE_PATH, fileName).toFile();
-    try (FileOutputStream fos = new FileOutputStream(mergedFile, true);
-        BufferedOutputStream mergingStream = new BufferedOutputStream(fos)) {
-      for (int i = 0; i < totalChunks; i++) {
-        File chunkFile = resolveUploadPath(FOLDERS_LARGE_PATH, fileName + ".part." + i).toFile();
-        Files.copy(chunkFile.toPath(), mergingStream);
-        Files.deleteIfExists(chunkFile.toPath());
+    Path mergedPath = resolveUploadPath(FOLDERS_LARGE_PATH, fileName);
+    Path tempPath = resolveUploadPath(FOLDERS_LARGE_PATH, fileName + ".merging");
+    try {
+      Files.deleteIfExists(tempPath);
+      try (OutputStream outputStream = Files.newOutputStream(tempPath)) {
+        for (int i = 0; i < totalChunks; i++) {
+          Path chunkPath = resolveUploadPath(FOLDERS_LARGE_PATH, fileName + ".part." + i);
+          if (!Files.isRegularFile(chunkPath)) {
+            throw new StudyJavaException("分片缺失");
+          }
+          Files.copy(chunkPath, outputStream);
+        }
       }
+      Files.move(
+          tempPath,
+          mergedPath,
+          StandardCopyOption.REPLACE_EXISTING,
+          StandardCopyOption.ATOMIC_MOVE);
+    } catch (StudyJavaException e) {
+      deleteQuietly(tempPath);
+      throw e;
     } catch (IOException e) {
+      deleteQuietly(tempPath);
       log.error("合并分片文件失败", e);
       throw new StudyJavaException("合并分片文件失败");
+    }
+
+    for (int i = 0; i < totalChunks; i++) {
+      deleteQuietly(resolveUploadPath(FOLDERS_LARGE_PATH, fileName + ".part." + i));
+    }
+  }
+
+  private void deleteQuietly(Path path) {
+    try {
+      Files.deleteIfExists(path);
+    } catch (IOException e) {
+      log.warn("删除临时文件失败: {}", path, e);
     }
   }
 

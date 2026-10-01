@@ -145,6 +145,18 @@ class StudyJavaUploadFileServiceImplTest {
   }
 
   @Test
+  void uploadLargeFileReplacesExistingMergedFile() throws IOException {
+    Files.createDirectories(uploadLargeFilesDir());
+    Files.writeString(uploadLargeFilesDir().resolve("replace.bin"), "old-data");
+
+    String result =
+        service.uploadLargeFile(file("replace.bin", "fresh".getBytes()), "replace.bin", 0, 1);
+
+    assertEquals("上传完成: replace.bin", result);
+    assertEquals("fresh", Files.readString(uploadLargeFilesDir().resolve("replace.bin")));
+  }
+
+  @Test
   void uploadLargeFileRejectsInvalidChunkIndex() {
     assertThrows(
         StudyJavaException.class,

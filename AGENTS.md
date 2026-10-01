@@ -51,7 +51,7 @@ docker compose --env-file .env up -d
 注意：
 
 - 当前仓库没有 Maven wrapper，请使用系统 `mvn`。
-- `docker-compose.yml` 引用了 `.env.example` 中不完整的镜像/环境变量名；运行前先校验真实 `.env`。
+- `docker-compose.yml` 只部署 MySQL、Redis 和后端。Vue、React 的 compose 在同级仓库 `study-java-vue`、`study-java-react`，并加入这里创建的 `study-java-network`。
 - 部分旧文档提到 `run-local.sh`、`study-java-compose.yml` 和 Swagger 地址，但这些文件/依赖当前不存在。
 
 ## Important Constraints

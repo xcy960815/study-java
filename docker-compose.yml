@@ -101,54 +101,15 @@ services:
         max-file: '${LOG_MAX_FILE:-3}'
     # 优化：添加健康检查 (同步自生效配置)
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8084${APP_HEALTHCHECK_PATH:-/prod-api/health} || exit 1"]
+      test: ["CMD-SHELL", "curl -fsS -o /dev/null --max-time 4 http://127.0.0.1:8084${APP_HEALTHCHECK_PATH:-/prod-api/health}"]
       interval: 10s
       timeout: 5s
       retries: 5
       start_period: 90s
     restart: always
 
-  # Vue 前端服务
-  vue:
-    image: ${VUE_WEB_IMAGE_NAME}:${VUE_WEB_IMAGE_VERSION:-latest}
-    container_name: study-java-vue-container
-    ports:
-      - '${VUE_WEB_PORT:-80}:80'
-    environment:
-      - TZ=${TIMEZONE:-Asia/Shanghai}
-    depends_on:
-      springboot:
-        condition: service_healthy
-    networks:
-      - study-java-network
-    logging:
-      driver: 'json-file'
-      options:
-        max-size: '${LOG_MAX_SIZE:-10m}'
-        max-file: '${LOG_MAX_FILE:-3}'
-    restart: always
-
-  # React 前端服务
-  react:
-    image: ${REACT_WEB_IMAGE_NAME}:${REACT_WEB_IMAGE_VERSION:-latest}
-    container_name: study-java-react-container
-    ports:
-      - '${REACT_WEB_PORT:-8081}:80'
-    environment:
-      - TZ=${TIMEZONE:-Asia/Shanghai}
-    depends_on:
-      springboot:
-        condition: service_healthy
-    networks:
-      - study-java-network
-    logging:
-      driver: 'json-file'
-      options:
-        max-size: '${LOG_MAX_SIZE:-10m}'
-        max-file: '${LOG_MAX_FILE:-3}'
-    restart: always
-
 networks:
+  # Vue / React 的 compose 以 external 方式加入这个网络
   study-java-network:
     name: ${DOCKER_NETWORK_NAME:-study-java-network}
     driver: bridge
