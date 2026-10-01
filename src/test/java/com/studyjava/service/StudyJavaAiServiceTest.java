@@ -149,7 +149,7 @@ class StudyJavaAiServiceTest {
   }
 
   @Test
-  void readResponseLinesHandlesEmptyStreamWithoutError() {
+  void readResponseLinesHandlesEmptyStreamWithoutError() throws Exception {
     assertDoesNotThrow(() -> aiService.read(streamResponse(200, ""), emitter));
     verify(emitter, never()).send(anyString());
   }
