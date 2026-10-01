@@ -78,18 +78,20 @@ public class StudyJavaLoginServiceImpl implements StudyJavaLoginService {
 
     StudyJavaSysUserVo userInfoVo = studyJavaSysUserService.getUserInfo(studyJavaLoginDto);
 
+    String storedPassword = userInfoVo == null ? null : userInfoVo.getPasswordMd5();
+    String rawPassword = studyJavaLoginDto.getPassword();
     // 统一文案，避免区分"用户不存在"/"密码错误"被用于枚举用户名
     if (userInfoVo == null
-        || StringUtils.isBlank(userInfoVo.getPasswordMd5())
-        || StringUtils.isBlank(studyJavaLoginDto.getPassword())
-        || !PasswordUtils.matches(studyJavaLoginDto.getPassword(), userInfoVo.getPasswordMd5())) {
+        || StringUtils.isBlank(storedPassword)
+        || StringUtils.isBlank(rawPassword)
+        || !PasswordUtils.matches(rawPassword, storedPassword)) {
       throw new StudyJavaException("用户名或密码错误");
     }
 
-    if (PasswordUtils.needsUpgrade(dataBasePassword)) {
+    if (PasswordUtils.needsUpgrade(storedPassword)) {
       StudyJavaSysUserDao updatePasswordDao = new StudyJavaSysUserDao();
       updatePasswordDao.setId(userInfoVo.getId());
-      updatePasswordDao.setPasswordMd5(PasswordUtils.encode(loginPassword));
+      updatePasswordDao.setPasswordMd5(PasswordUtils.encode(rawPassword));
       studyJavaSysUserMapper.updateUser(updatePasswordDao);
     }
     StudyJavaSysLoginVo studyJavaLoginVo = new StudyJavaSysLoginVo();

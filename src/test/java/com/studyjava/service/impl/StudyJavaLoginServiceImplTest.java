@@ -3,6 +3,7 @@ package com.studyjava.service.impl;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -16,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.google.code.kaptcha.Producer;
 import com.studyjava.component.JwtTokenComponent;
 import com.studyjava.component.RedisComponent;
+import com.studyjava.domain.dao.StudyJavaSysUserDao;
 import com.studyjava.domain.dto.StudyJavaLoginDto;
 import com.studyjava.domain.vo.StudyJavaSysUserVo;
 import com.studyjava.exception.StudyJavaException;
@@ -84,6 +86,26 @@ class StudyJavaLoginServiceImplTest {
             StudyJavaException.class, () -> loginService.login(loginDto("admin", "pw", "abcd")));
 
     assertEquals("用户名或密码错误", exception.getMessage());
+  }
+
+  @Test
+  void loginUpgradesLegacyPasswordAfterSuccessfulMatch() {
+    when(redisComponent.getAndDelete(AuthRedisKeys.captchaKey(CAPTCHA_ID))).thenReturn("abcd");
+    StudyJavaSysUserVo userVo = new StudyJavaSysUserVo();
+    userVo.setId(7L);
+    userVo.setLoginName("admin");
+    userVo.setPasswordMd5("e10adc3949ba59abbe56e057f20f883e");
+    when(studyJavaSysUserService.getUserInfo(any(StudyJavaLoginDto.class))).thenReturn(userVo);
+
+    loginService.login(loginDto("admin", "123456", "abcd"));
+
+    verify(studyJavaSysUserMapper)
+        .updateUser(
+            argThat(
+                (StudyJavaSysUserDao dao) ->
+                    Long.valueOf(7L).equals(dao.getId())
+                        && dao.getPasswordMd5() != null
+                        && dao.getPasswordMd5().startsWith("$2")));
   }
 
   @Test
