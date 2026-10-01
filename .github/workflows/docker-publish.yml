@@ -12,7 +12,7 @@ env:
 
 jobs:
   # 任务 1: 构建并推送镜像
-  build:
+  build-and-push:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -52,7 +52,7 @@ jobs:
 
   # 任务 2: 更新 Docker Hub 文档
   update-docs:
-    needs: build # 只有构建成功后才更新文档
+    needs: build-and-push # 只有构建成功后才更新文档
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
