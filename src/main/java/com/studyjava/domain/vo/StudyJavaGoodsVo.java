@@ -23,6 +23,7 @@ public class StudyJavaGoodsVo extends BaseVo {
   private String goodsName;
   private String goodsIntro;
   private Long goodsCategoryId;
+  private String categoryName;
   private String goodsCoverImg;
   private String goodsCarousel;
   private String goodsDetailContent;

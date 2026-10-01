@@ -11,6 +11,7 @@ import com.studyjava.domain.dao.StudyJavaGoodsDao;
 import com.studyjava.domain.dto.StudyJavaGoodsDto;
 import com.studyjava.domain.vo.StudyJavaGoodsVo;
 import com.studyjava.mapper.StudyJavaGoodsMapper;
+import com.studyjava.service.StudyJavaGoodsCategoryService;
 import com.studyjava.service.StudyJavaGoodsService;
 
 import jakarta.annotation.Resource;
@@ -24,12 +25,18 @@ import jakarta.annotation.Resource;
 public class StudyJavaGoodsServiceImpl implements StudyJavaGoodsService {
 
   @Resource private StudyJavaGoodsMapper studyJavaGoodsMapper;
+  @Resource private StudyJavaGoodsCategoryService studyJavaGoodsCategoryService;
 
   @Override
   public IPage<StudyJavaGoodsVo> getGoodsList(
       IPage<StudyJavaGoodsDao> page, StudyJavaGoodsDto studyJavaGoodsDto) {
+    StudyJavaGoodsDao query = dto2Dao(studyJavaGoodsDto);
+    Long categoryId = studyJavaGoodsDto == null ? null : studyJavaGoodsDto.getGoodsCategoryId();
+    if (categoryId != null && categoryId != 0) {
+      query.setCategoryIds(studyJavaGoodsCategoryService.listSelfAndDescendantIds(categoryId));
+    }
     IPage<StudyJavaGoodsDao> studyJavaGoodsDaoPage =
-        studyJavaGoodsMapper.getGoodsList(page, dto2Dao(studyJavaGoodsDto));
+        studyJavaGoodsMapper.getGoodsList(page, query);
     List<StudyJavaGoodsVo> studyJavaGoodsVoList =
         studyJavaGoodsDaoPage.getRecords().stream().map(this::dao2Vo).toList();
     // 创建新的 IPage 对象

@@ -9,6 +9,7 @@
         <result property="goodsName" column="goods_name" jdbcType="VARCHAR"/>
         <result property="goodsIntro" column="goods_intro" jdbcType="VARCHAR"/>
         <result property="goodsCategoryId" column="goods_category_id" jdbcType="BIGINT"/>
+        <result property="categoryName" column="category_name" jdbcType="VARCHAR"/>
         <result property="goodsCoverImg" column="goods_cover_img" jdbcType="VARCHAR"/>
         <result property="goodsCarousel" column="goods_carousel" jdbcType="VARCHAR"/>
         <result property="goodsDetailContent" column="goods_detail_content" jdbcType="LONGVARCHAR"/>
@@ -34,22 +35,31 @@
     <select id="getGoodsList" resultMap="BaseResultMap"
             parameterType="com.studyjava.domain.dao.StudyJavaGoodsDao">
         SELECT
-        <include refid="Base_Column_List"/>
-        FROM study_java_goods
+        g.goods_id, g.goods_name, g.goods_intro, g.goods_category_id, g.goods_cover_img, g.goods_carousel,
+        g.goods_detail_content, g.original_price, g.selling_price, g.stock_num, g.tag, g.goods_sell_status,
+        g.create_by, g.create_time, g.update_by, g.update_time, g.is_deleted, g.remark,
+        c.category_name
+        FROM study_java_goods g
+        LEFT JOIN study_java_goods_category c
+            ON g.goods_category_id = c.category_id AND c.is_deleted = 0
         <where>
+            g.is_deleted = 0
             <if test="studyJavaGoodsDao != null">
                 <if test="studyJavaGoodsDao.goodsName != null and studyJavaGoodsDao.goodsName != ''">
-                AND goods_name LIKE CONCAT('%', #{studyJavaGoodsDao.goodsName}, '%')
+                AND g.goods_name LIKE CONCAT('%', #{studyJavaGoodsDao.goodsName}, '%')
                 </if>
-                <if test="studyJavaGoodsDao.goodsCategoryId != null and studyJavaGoodsDao.goodsCategoryId != 0">
-                    AND goods_category_id = #{studyJavaGoodsDao.goodsCategoryId}
+                <if test="studyJavaGoodsDao.categoryIds != null and studyJavaGoodsDao.categoryIds.size() > 0">
+                    AND g.goods_category_id IN
+                    <foreach collection="studyJavaGoodsDao.categoryIds" item="categoryId" open="(" separator="," close=")">
+                        #{categoryId}
+                    </foreach>
                 </if>
                 <if test="studyJavaGoodsDao.goodsSellStatus != null">
-                    AND goods_sell_status = #{studyJavaGoodsDao.goodsSellStatus}
+                    AND g.goods_sell_status = #{studyJavaGoodsDao.goodsSellStatus}
                 </if>
             </if>
         </where>
-        ORDER BY goods_id desc
+        ORDER BY g.goods_id desc
     </select>
 
 

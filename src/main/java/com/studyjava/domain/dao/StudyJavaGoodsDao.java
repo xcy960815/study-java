@@ -1,6 +1,7 @@
 package com.studyjava.domain.dao;
 
 import java.io.Serial;
+import java.util.List;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -29,6 +30,14 @@ public class StudyJavaGoodsDao extends BaseDao {
 
   /** 商品分类id */
   private Long goodsCategoryId;
+
+  /** 分类名称，列表查询时由分类表带出 */
+  @TableField(exist = false)
+  private String categoryName;
+
+  /** 按父分类筛选时展开出的分类 id，不入库 */
+  @TableField(exist = false)
+  private List<Long> categoryIds;
 
   /** 商品封面图片 */
   private String goodsCoverImg;

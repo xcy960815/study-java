@@ -22,7 +22,7 @@ public class StudyJavaGoodsController extends BaseController {
   @Resource private StudyJavaGoodsService studyJavaGoodsService;
 
   /**
-   * 获取商品分类列表
+   * 获取商品列表
    *
    * @param pageSize 每页大小
    * @param pageNum 页码
@@ -41,9 +41,9 @@ public class StudyJavaGoodsController extends BaseController {
   }
 
   /**
-   * 添加商品分类
+   * 新增商品
    *
-   * @param studyJavaGoodsDto 商品分类信息
+   * @param studyJavaGoodsDto 商品信息
    * @return Boolean
    */
   @Log(title = "商品管理", businessType = BusinessType.INSERT)
@@ -52,72 +52,4 @@ public class StudyJavaGoodsController extends BaseController {
   public Boolean insertGoods(@Valid @RequestBody StudyJavaGoodsDto studyJavaGoodsDto) {
     return studyJavaGoodsService.insertGoods(studyJavaGoodsDto);
   }
-  //
-  //    /**
-  //     * 更新商品分类
-  //     * @param categoryDto 商品分类信息
-  //     * @return 更新结果
-  //     */
-  //    @PutMapping("/update")
-  //    public ResponseResult<StudyJavaGoodsVo> updateGoodsCategory(@Valid @RequestBody
-  // StudyJavaGoodsDto categoryDto) {
-  //        return null;
-  //    }
-  //
-  //    /**
-  //     * 删除商品分类
-  //     * @param categoryId 商品分类ID
-  //     * @return 删除结果
-  //     */
-  //    @DeleteMapping("/delete/{categoryId}")
-  //    public ResponseResult<Boolean> deleteGoodsCategory(@PathVariable Long categoryId) {
-  //        return null;
-  //    }
-  //
-  //    /**
-  //     * 获取商品分类详情
-  //     * @param categoryId 商品分类ID
-  //     * @return 商品分类详情
-  //     */
-  //    @GetMapping("/detail/{categoryId}")
-  //    public ResponseResult<StudyJavaGoodsVo> getGoodsCategoryDetail(@PathVariable Long
-  // categoryId) {
-  //        return null;
-  //    }
-  //
-  //    /**
-  //     * 获取所有分类的树形结构
-  //     * @return 分类树
-  //     */
-  //    @GetMapping("/tree")
-  //    public ResponseResult<List<Map<String, Object>>> getCategoryTree() {
-  //        return null;
-  //    }
-  //
-  //    /**
-  //     * 递归构建分类树
-  //     * @param categories 所有分类
-  //     * @param parentId 父分类ID
-  //     * @return 分类树
-  //     */
-  //    private List<Map<String, Object>> buildCategoryTree(List<StudyJavaGoodsDao> categories, Long
-  // parentId) {
-  //        return categories.stream()
-  //                .filter(category -> Objects.equals(category.getParentId(), parentId))
-  //                .map(category -> {
-  //                    Map<String, Object> node = new HashMap<>();
-  //                    node.put("id", category.getCategoryId());
-  //                    node.put("name", category.getCategoryName());
-  //                    node.put("level", category.getCategoryLevel());
-  //
-  //                    List<Map<String, Object>> children = buildCategoryTree(categories,
-  // category.getCategoryId());
-  //                    if (!children.isEmpty()) {
-  //                        node.put("children", children);
-  //                    }
-  //
-  //                    return node;
-  //                })
-  //                .collect(Collectors.toList());
-  //    }
 }
