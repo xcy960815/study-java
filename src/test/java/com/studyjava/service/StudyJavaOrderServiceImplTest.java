@@ -130,7 +130,7 @@ class StudyJavaOrderServiceImplTest {
     verify(eventPublisher)
         .publishEvent(
             argThat(
-                event ->
+                (Object event) ->
                     event instanceof OrderPaidEvent paidEvent
                         && paidEvent.orderId().equals(10L)
                         && paidEvent.transactionNo().equals("WX-TRANSACTION-1")));
