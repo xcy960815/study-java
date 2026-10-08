@@ -1,36 +1,57 @@
 package com.studyjava.lab;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import com.studyjava.StudyJavaApplication;
-import com.studyjava.lab.service.JfrRecordingService;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.boot.test.context.runner.ApplicationContextRunner;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
-/**
- * Test to verify that Jfr recording related beans can be loaded in Spring context.
- * This test ensures that the "No default constructor found" error is resolved.
- */
-@SpringBootTest(classes = StudyJavaApplication.class)
-@ActiveProfiles("test")
+import com.studyjava.lab.config.JavaLabProperties;
+import com.studyjava.lab.controller.JfrLabController;
+import com.studyjava.lab.service.JfrRecordingService;
+
 class JfrLabContextTest {
 
+  private final ApplicationContextRunner contextRunner =
+      new ApplicationContextRunner().withUserConfiguration(JfrConfiguration.class);
+
   @Test
-  void contextLoads() {
-    // If we get here, the context loaded successfully
-    assertTrue(true);
+  void createsServiceAndControllerWithDefaultSettings() {
+    contextRunner.run(
+        context -> {
+          assertThat(context).hasNotFailed();
+          assertThat(context).hasSingleBean(JfrRecordingService.class);
+          assertThat(context).hasSingleBean(JfrLabController.class);
+          assertThat(context.getBean(JfrRecordingService.class).current()).isEmpty();
+        });
   }
 
   @Test
-  void jfrRecordingServiceBeanExistsWhenFeatureEnabled() {
-    // Given - feature is enabled by default via properties
-    // When/Then
-    // We expect this bean NOT to exist because JavaLabProperties might not have the right profile
-    // The actual verification is in the next test
-    assertThrows(NoSuchBeanDefinitionException.class, () -> {
-      // This will fail if the conditional on expression evaluates to false
-    });
+  void omitsJfrBeansWhenJfrIsDisabled() {
+    contextRunner
+        .withPropertyValues("java-lab.jfr.enabled=false")
+        .run(
+            context -> {
+              assertThat(context).hasNotFailed();
+              assertThat(context).doesNotHaveBean(JfrRecordingService.class);
+              assertThat(context).doesNotHaveBean(JfrLabController.class);
+            });
   }
+
+  @Test
+  void omitsJfrBeansWhenLabIsDisabled() {
+    contextRunner
+        .withPropertyValues("java-lab.enabled=false")
+        .run(
+            context -> {
+              assertThat(context).hasNotFailed();
+              assertThat(context).doesNotHaveBean(JfrRecordingService.class);
+              assertThat(context).doesNotHaveBean(JfrLabController.class);
+            });
+  }
+
+  @Configuration(proxyBeanMethods = false)
+  @Import({JavaLabProperties.class, JfrRecordingService.class, JfrLabController.class})
+  static class JfrConfiguration {}
 }

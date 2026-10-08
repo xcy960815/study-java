@@ -12,6 +12,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.stereotype.Service;
 
@@ -43,14 +44,12 @@ public class JfrRecordingService {
   private String currentRecordingId;
   private boolean shuttingDown;
 
+  @Autowired
   public JfrRecordingService(JavaLabProperties properties) {
     this(properties, Path.of(System.getProperty("user.dir")));
   }
 
-  /**
-   * Testing constructor that accepts a custom runtime directory.
-   * Visible for testing only.
-   */
+  /** Testing constructor that accepts a custom runtime directory. Visible for testing only. */
   public JfrRecordingService(JavaLabProperties properties, Path runtimeDirectory) {
     JavaLabProperties.Jfr jfr = properties.getJfr();
     if (jfr.getMaxDurationSeconds() < 1
@@ -226,8 +225,7 @@ public class JfrRecordingService {
     if (request.durationSeconds() < 1
         || request.durationSeconds() > ABSOLUTE_MAX_DURATION_SECONDS
         || request.durationSeconds() > maxDurationSeconds) {
-      throw new StudyJavaException(
-          "durationSeconds 必须在 1 到 " + maxDurationSeconds + " 之间");
+      throw new StudyJavaException("durationSeconds 必须在 1 到 " + maxDurationSeconds + " 之间");
     }
   }
 
