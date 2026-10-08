@@ -47,7 +47,11 @@ public class JfrRecordingService {
     this(properties, Path.of(System.getProperty("user.dir")));
   }
 
-  JfrRecordingService(JavaLabProperties properties, Path runtimeDirectory) {
+  /**
+   * Testing constructor that accepts a custom runtime directory.
+   * Visible for testing only.
+   */
+  public JfrRecordingService(JavaLabProperties properties, Path runtimeDirectory) {
     JavaLabProperties.Jfr jfr = properties.getJfr();
     if (jfr.getMaxDurationSeconds() < 1
         || jfr.getMaxDurationSeconds() > ABSOLUTE_MAX_DURATION_SECONDS) {

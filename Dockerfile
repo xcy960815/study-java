@@ -54,14 +54,18 @@ COPY --from=build /study-java/snapshot-dependencies/ ./
 COPY --from=build /study-java/application/ ./
 
 # 优化：创建日志目录并授权
-RUN mkdir -p /study-java/logs && chown -R appuser:appuser /study-java
+RUN mkdir -p /study-java/logs && \
+    chown -R appuser:appuser /study-java/logs
 
 # 创建启动脚本
 RUN echo '#!/bin/bash\n\
-# 确保日志目录存在且可写\n\
-mkdir -p /study-java/logs\n\
-if [ ! -w /study-java/logs ]; then\n\
-    echo "Warning: /study-java/logs is not writable. Please check volume permissions."\n\
+# 确保日志目录存在且可写 (处理挂载体积时权限可能不正确的问题)\n\
+if [ ! -d /study-java/logs ]; then\n\
+    mkdir -p /study-java/logs\n\
+fi\n\
+# 如果宿主机挂载的目录属于其他用户，修正为 appuser 所有\n\
+if [ "$(stat -c %u:%g /study-java/logs)" != "1000:1000" ] && [ "$(id -u appuser):$(id -g appuser)" != "$(stat -c %u:%g /study-java/logs)" ]; then\n\
+    chown -R appuser:appuser /study-java/logs 2>/dev/null || true\n\
 fi\n\
 # 启动应用 (使用 JarLauncher)\n\
 # 注意：Spring Boot 3.1 使用 org.springframework.boot.loader.JarLauncher\n\
