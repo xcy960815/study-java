@@ -7,7 +7,7 @@ services:
     ports:
       - '${REDIS_PORT}:6379'
     environment:
-      - TZ=${TIMEZONE:-Asia/Shanghai}
+      - TZ=${TIMEZONE}
     volumes:
       - ${DATA_ROOT}/redis/data:/data
     networks:
@@ -16,8 +16,8 @@ services:
     logging:
       driver: 'json-file'
       options:
-        max-size: '${LOG_MAX_SIZE:-10m}'
-        max-file: '${LOG_MAX_FILE:-3}'
+        max-size: '${LOG_MAX_SIZE}'
+        max-file: '${LOG_MAX_FILE}'
     # 添加健康检查，确保 Redis 就绪
     healthcheck:
       test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
@@ -43,7 +43,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
-      TZ: ${TIMEZONE:-Asia/Shanghai}
+      TZ: ${TIMEZONE}
     ports:
       - '${MYSQL_PORT}:3306'
     volumes:
@@ -53,8 +53,8 @@ services:
     logging:
       driver: 'json-file'
       options:
-        max-size: '${LOG_MAX_SIZE:-10m}'
-        max-file: '${LOG_MAX_FILE:-3}'
+        max-size: '${LOG_MAX_SIZE}'
+        max-file: '${LOG_MAX_FILE}'
     # 添加健康检查，确保数据库完全启动后再让后端连接
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
@@ -76,7 +76,7 @@ services:
       - ${DATA_ROOT}/logs:/study-java/logs
     environment:
       SPRING_PROFILES_ACTIVE: ${SPRING_PROFILE}
-      TZ: ${TIMEZONE:-Asia/Shanghai}
+      TZ: ${TIMEZONE}
       # 建议直接连接内部 Redis 容器，端口 6379
       SPRING_DATA_REDIS_HOST: redis
       SPRING_DATA_REDIS_PORT: 6379
@@ -97,11 +97,11 @@ services:
     logging:
       driver: 'json-file'
       options:
-        max-size: '${LOG_MAX_SIZE:-10m}'
-        max-file: '${LOG_MAX_FILE:-3}'
+        max-size: '${LOG_MAX_SIZE}'
+        max-file: '${LOG_MAX_FILE}'
     # 优化：添加健康检查 (同步自生效配置)
     healthcheck:
-      test: ["CMD-SHELL", "curl -fsS -o /dev/null --max-time 4 http://127.0.0.1:8084${APP_HEALTHCHECK_PATH:-/prod-api/health}"]
+      test: ["CMD-SHELL", "curl -fsS -o /dev/null --max-time 4 http://127.0.0.1:8084${APP_HEALTHCHECK_PATH}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -111,5 +111,5 @@ services:
 networks:
   # Vue / React 的 compose 以 external 方式加入这个网络
   study-java-network:
-    name: ${DOCKER_NETWORK_NAME:-study-java-network}
+    name: ${DOCKER_NETWORK_NAME}
     driver: bridge
