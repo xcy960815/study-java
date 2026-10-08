@@ -176,7 +176,7 @@ docker logs study-java-container -f
 
 ```bash
 # 调用测试接口
-curl http://your-server:12316/api/test/deepseek
+curl http://your-server:12317/api/test/deepseek
 ```
 
 ## 📞 常见问题
