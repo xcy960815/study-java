@@ -14,6 +14,10 @@
  Date: 23/02/2026 13:13:47
 */
 
+-- 可在 Navicat 连接上直接执行，不必事先手动建库。
+CREATE DATABASE IF NOT EXISTS `study_java` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
+USE `study_java`;
+
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
@@ -1420,7 +1424,7 @@ INSERT INTO `study_java_sys_user_roles` (`id`, `user_id`, `role_id`) VALUES (6, 
 INSERT INTO `study_java_sys_user_roles` (`id`, `user_id`, `role_id`) VALUES (4, 8, 101);
 COMMIT;
 
--- 商品分类、现有商品归类，以及分类菜单。语句可重复执行，与 goods_category.sql 保持一致。
+-- 商品分类、现有商品归类，以及分类菜单。
 
 CREATE TABLE IF NOT EXISTS `study_java_goods_category` (
   `category_id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '分类ID',
