@@ -16,10 +16,15 @@ public class StudyJavaDeepSeekModelsVo {
   public static class Model {
     private String id;
     private String object;
+    private String name;
 
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private long created;
 
     private String owned_by;
+    private Long context_window;
+    private Integer max_output_tokens;
+    private List<String> input_modalities;
+    private List<String> output_modalities;
   }
 }

@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -64,14 +65,23 @@ class StudyJavaAiServiceTest {
 
   @Test
   void handleResponseParsesSuccessfulBody() throws Exception {
-    String body = "{\"object\":\"list\",\"data\":[{\"id\":\"deepseek-chat\","
-        + "\"object\":\"model\",\"created\":1700000000,\"owned_by\":\"deepseek\"}]}";
+    String body =
+        "{\"object\":\"list\",\"data\":[{\"id\":\"deepseek-flash\","
+            + "\"object\":\"model\",\"owned_by\":\"deepseek\",\"name\":\"DeepSeek-V4.1-Flash\","
+            + "\"context_window\":1048576,\"max_output_tokens\":393216,"
+            + "\"input_modalities\":[\"text\",\"image\"],\"output_modalities\":[\"text\"],"
+            + "\"effort\":{\"supported_levels\":[\"low\",\"high\"],\"default_level\":\"high\"}}]}";
 
     StudyJavaDeepSeekModelsDto dto =
         aiService.parse(stringResponse(200, body), StudyJavaDeepSeekModelsDto.class);
 
+    StudyJavaDeepSeekModelsDto.Model model = dto.getData().get(0);
     assertEquals("list", dto.getObject());
-    assertEquals("deepseek-chat", dto.getData().get(0).getId());
+    assertEquals("deepseek-flash", model.getId());
+    assertEquals("DeepSeek-V4.1-Flash", model.getName());
+    assertEquals(1048576L, model.getContext_window());
+    assertEquals(393216, model.getMax_output_tokens());
+    assertEquals(List.of("text", "image"), model.getInput_modalities());
   }
 
   @Test
