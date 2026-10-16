@@ -28,8 +28,7 @@ class JsonUtilsTest {
   @Test
   void fromJsonDeserializesJsonStringToObject() {
     SamplePayload payload =
-        JsonUtils.fromJson(
-            "{\"name\":\"java\",\"count\":2,\"tags\":[\"a\"]}", SamplePayload.class);
+        JsonUtils.fromJson("{\"name\":\"java\",\"count\":2,\"tags\":[\"a\"]}", SamplePayload.class);
 
     assertEquals("java", payload.name());
     assertEquals(2, payload.count());
@@ -72,8 +71,7 @@ class JsonUtilsTest {
           }
         });
 
-    RuntimeException exception =
-        assertThrows(RuntimeException.class, () -> JsonUtils.toJson(data));
+    RuntimeException exception = assertThrows(RuntimeException.class, () -> JsonUtils.toJson(data));
 
     assertEquals("JSON 转换失败", exception.getMessage());
   }

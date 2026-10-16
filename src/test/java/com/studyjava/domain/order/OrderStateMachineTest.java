@@ -18,8 +18,7 @@ class OrderStateMachineTest {
     OrderTransition paid =
         OrderStateMachine.transition(
             OrderStatus.PENDING_PAYMENT, new OrderEvent.Pay(PaymentType.ALIPAY));
-    OrderTransition prepared =
-        OrderStateMachine.transition(paid.to(), new OrderEvent.Prepare());
+    OrderTransition prepared = OrderStateMachine.transition(paid.to(), new OrderEvent.Prepare());
     OrderTransition shipped = OrderStateMachine.transition(prepared.to(), new OrderEvent.Ship());
     OrderTransition completed =
         OrderStateMachine.transition(shipped.to(), new OrderEvent.Complete());
@@ -37,8 +36,7 @@ class OrderStateMachineTest {
   @Test
   void closesPendingOrderByTimeout() {
     OrderTransition transition =
-        OrderStateMachine.transition(
-            OrderStatus.PENDING_PAYMENT, new OrderEvent.TimeoutClose());
+        OrderStateMachine.transition(OrderStatus.PENDING_PAYMENT, new OrderEvent.TimeoutClose());
 
     assertEquals(OrderStatus.TIMEOUT_CLOSED, transition.to());
   }
@@ -48,9 +46,7 @@ class OrderStateMachineTest {
     StudyJavaException exception =
         assertThrows(
             StudyJavaException.class,
-            () ->
-                OrderStateMachine.transition(
-                    OrderStatus.PENDING_PAYMENT, new OrderEvent.Ship()));
+            () -> OrderStateMachine.transition(OrderStatus.PENDING_PAYMENT, new OrderEvent.Ship()));
 
     assertEquals("订单状态不能从待支付变更为出库成功", exception.getMessage());
   }
@@ -59,8 +55,6 @@ class OrderStateMachineTest {
   void rejectsChangingTerminalOrder() {
     assertThrows(
         StudyJavaException.class,
-        () ->
-            OrderStateMachine.transition(
-                OrderStatus.COMPLETED, new OrderEvent.MerchantClose()));
+        () -> OrderStateMachine.transition(OrderStatus.COMPLETED, new OrderEvent.MerchantClose()));
   }
 }

@@ -22,9 +22,8 @@ import com.studyjava.exception.StudyJavaException;
 import com.studyjava.service.StudyJavaAiService;
 import com.studyjava.service.StudyJavaOllamaService;
 
-import lombok.extern.slf4j.Slf4j;
-
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 
 /** Ollama服务实现类 */
 @Slf4j

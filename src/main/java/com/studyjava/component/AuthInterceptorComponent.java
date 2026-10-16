@@ -66,8 +66,7 @@ public class AuthInterceptorComponent implements HandlerInterceptor {
     String tokenUserInfo = jwtTokenComponent.getUserInfoFromToken(token);
     Map<String, Object> tokenUserInfoMap = JSONUtil.toBean(tokenUserInfo, Map.class);
     String userId = (String) tokenUserInfoMap.get("userId");
-    String storedToken =
-        redisComponent.get(AuthRedisKeys.accessTokenKey(userId), String.class);
+    String storedToken = redisComponent.get(AuthRedisKeys.accessTokenKey(userId), String.class);
     if (!token.equals(storedToken)) {
       sendErrorResponse(response, request.getRequestURI(), "Token无效或已退出登录");
       return false;

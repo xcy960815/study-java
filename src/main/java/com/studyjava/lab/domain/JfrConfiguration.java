@@ -2,7 +2,6 @@ package com.studyjava.lab.domain;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-
 import com.studyjava.exception.StudyJavaException;
 
 public enum JfrConfiguration {

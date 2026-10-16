@@ -30,28 +30,12 @@ public final class OrderStateMachine {
           move(current, OrderStatus.SHIPPED, OrderStatus.COMPLETED, null, null, false);
       case OrderEvent.ManualClose ignored ->
           move(
-              current,
-              OrderStatus.PENDING_PAYMENT,
-              OrderStatus.MANUALLY_CLOSED,
-              null,
-              null,
-              false);
+              current, OrderStatus.PENDING_PAYMENT, OrderStatus.MANUALLY_CLOSED, null, null, false);
       case OrderEvent.TimeoutClose ignored ->
-          move(
-              current,
-              OrderStatus.PENDING_PAYMENT,
-              OrderStatus.TIMEOUT_CLOSED,
-              null,
-              null,
-              false);
+          move(current, OrderStatus.PENDING_PAYMENT, OrderStatus.TIMEOUT_CLOSED, null, null, false);
       case OrderEvent.MerchantClose ignored ->
           move(
-              current,
-              OrderStatus.PENDING_PAYMENT,
-              OrderStatus.MERCHANT_CLOSED,
-              null,
-              null,
-              false);
+              current, OrderStatus.PENDING_PAYMENT, OrderStatus.MERCHANT_CLOSED, null, null, false);
     };
   }
 
@@ -63,8 +47,7 @@ public final class OrderStateMachine {
       Integer payType,
       boolean recordPayTime) {
     if (current != expected) {
-      throw new StudyJavaException(
-          "订单状态不能从" + current.getMessage() + "变更为" + target.getMessage());
+      throw new StudyJavaException("订单状态不能从" + current.getMessage() + "变更为" + target.getMessage());
     }
     return new OrderTransition(current, target, payStatus, payType, recordPayTime);
   }

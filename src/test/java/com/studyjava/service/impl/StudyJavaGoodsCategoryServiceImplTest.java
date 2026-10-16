@@ -35,8 +35,7 @@ class StudyJavaGoodsCategoryServiceImplTest {
   @Test
   void getCategoryTreeNestsChildrenAndHidesEmptyChildren() {
     when(categoryMapper.selectList(null))
-        .thenReturn(
-            List.of(category(1L, 0L, "护肤", 1, 1), category(11L, 1L, "化妆水", 2, 1)));
+        .thenReturn(List.of(category(1L, 0L, "护肤", 1, 1), category(11L, 1L, "化妆水", 2, 1)));
 
     List<StudyJavaGoodsCategoryVo> tree = service.getCategoryTree();
 
@@ -66,7 +65,10 @@ class StudyJavaGoodsCategoryServiceImplTest {
 
     assertTrue(service.insertCategory(dto(null, 1L, " 化妆水 ")));
     verify(categoryMapper)
-        .insert(argThat(category -> category.getCategoryLevel() == 2 && "化妆水".equals(category.getCategoryName())));
+        .insert(
+            argThat(
+                category ->
+                    category.getCategoryLevel() == 2 && "化妆水".equals(category.getCategoryName())));
   }
 
   @Test

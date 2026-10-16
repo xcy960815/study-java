@@ -19,8 +19,7 @@ class OrderPaidNotificationListenerTest {
   @Test
   void sendsUserNotificationAfterTransactionCommit() throws Exception {
     SimpMessagingTemplate messagingTemplate = mock(SimpMessagingTemplate.class);
-    OrderPaidNotificationListener listener =
-        new OrderPaidNotificationListener(messagingTemplate);
+    OrderPaidNotificationListener listener = new OrderPaidNotificationListener(messagingTemplate);
     OrderPaidEvent event = new OrderPaidEvent(1L, "ORDER-1", 7L, 500, 2, "WX-1");
 
     listener.onOrderPaid(event);

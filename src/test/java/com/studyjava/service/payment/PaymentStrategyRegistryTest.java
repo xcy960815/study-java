@@ -29,8 +29,7 @@ class PaymentStrategyRegistryTest {
     PaymentStrategy duplicate = strategy(PaymentType.ALIPAY);
 
     assertThrows(
-        IllegalStateException.class,
-        () -> new PaymentStrategyRegistry(List.of(first, duplicate)));
+        IllegalStateException.class, () -> new PaymentStrategyRegistry(List.of(first, duplicate)));
   }
 
   private PaymentStrategy strategy(PaymentType paymentType) {

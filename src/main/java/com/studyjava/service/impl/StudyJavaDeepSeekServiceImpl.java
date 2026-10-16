@@ -20,12 +20,11 @@ import com.studyjava.domain.vo.deepseek.StudyJavaDeepSeekCompletionsVo;
 import com.studyjava.service.StudyJavaAiService;
 import com.studyjava.service.StudyJavaDeepSeekService;
 
+import jakarta.annotation.Resource;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-
-import jakarta.annotation.Resource;
 
 @Slf4j
 @Service

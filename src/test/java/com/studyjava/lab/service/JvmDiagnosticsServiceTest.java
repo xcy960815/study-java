@@ -46,8 +46,7 @@ class JvmDiagnosticsServiceTest {
 
   @Test
   void handlesUndefinedMaximumAndNullMemoryUsage() {
-    MemoryUsageInfo info =
-        JvmDiagnosticsService.toMemoryUsageInfo(new MemoryUsage(-1, 10, 20, -1));
+    MemoryUsageInfo info = JvmDiagnosticsService.toMemoryUsageInfo(new MemoryUsage(-1, 10, 20, -1));
 
     assertEquals(-1, info.max());
     assertNull(info.usageRatio());

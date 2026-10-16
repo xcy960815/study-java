@@ -143,8 +143,7 @@ class StudyJavaSysUserServiceImplTest {
     Boolean result = service.updateUserPassword(dto);
 
     assertEquals(Boolean.TRUE, result);
-    ArgumentCaptor<StudyJavaSysUserDao> captor =
-        ArgumentCaptor.forClass(StudyJavaSysUserDao.class);
+    ArgumentCaptor<StudyJavaSysUserDao> captor = ArgumentCaptor.forClass(StudyJavaSysUserDao.class);
     verify(studyJavaSysUserMapper).updateUser(captor.capture());
     StudyJavaSysUserDao saved = captor.getValue();
     assertEquals(1001L, saved.getId());
@@ -162,8 +161,7 @@ class StudyJavaSysUserServiceImplTest {
     Boolean result = service.insertUser(dto);
 
     assertEquals(Boolean.TRUE, result);
-    ArgumentCaptor<StudyJavaSysUserDao> captor =
-        ArgumentCaptor.forClass(StudyJavaSysUserDao.class);
+    ArgumentCaptor<StudyJavaSysUserDao> captor = ArgumentCaptor.forClass(StudyJavaSysUserDao.class);
     verify(studyJavaSysUserMapper).insertUser(captor.capture());
     assertTrue(PasswordUtils.matches("plaintext-pass", captor.getValue().getPasswordMd5()));
   }
@@ -191,8 +189,7 @@ class StudyJavaSysUserServiceImplTest {
 
     service.insertUser(dto);
 
-    ArgumentCaptor<StudyJavaSysUserDao> captor =
-        ArgumentCaptor.forClass(StudyJavaSysUserDao.class);
+    ArgumentCaptor<StudyJavaSysUserDao> captor = ArgumentCaptor.forClass(StudyJavaSysUserDao.class);
     verify(studyJavaSysUserMapper).insertUser(captor.capture());
     assertEquals(0, captor.getValue().getLockedFlag());
   }

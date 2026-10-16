@@ -24,8 +24,8 @@ import com.studyjava.exception.StudyJavaException;
 /**
  * 上传服务测试。
  *
- * <p>服务的上传目录是类加载时基于 user.dir 解析的 static final 字段，因此必须在类加载前
- * 把 user.dir 切到临时目录。static @TempDir 在所有测试方法前创建，满足时序。
+ * <p>服务的上传目录是类加载时基于 user.dir 解析的 static final 字段，因此必须在类加载前 把 user.dir 切到临时目录。static @TempDir
+ * 在所有测试方法前创建，满足时序。
  */
 class StudyJavaUploadFileServiceImplTest {
 
@@ -90,8 +90,7 @@ class StudyJavaUploadFileServiceImplTest {
   void uploadFileRejectsOversizedFile() {
     byte[] oversized = new byte[100 * 1024 * 1024 + 1];
 
-    assertThrows(
-        StudyJavaException.class, () -> service.uploadFile(file("big.bin", oversized)));
+    assertThrows(StudyJavaException.class, () -> service.uploadFile(file("big.bin", oversized)));
   }
 
   @Test
@@ -111,9 +110,7 @@ class StudyJavaUploadFileServiceImplTest {
     service.uploadFile(file("我的文件.txt", "data".getBytes()));
 
     // 非 [A-Za-z0-9._-] 的字符一律替换成下划线，4 个汉字 -> 4 个下划线
-    assertTrue(
-        Files.isRegularFile(uploadFilesDir().resolve("____.txt")),
-        "文件名应只包含 [A-Za-z0-9._-]");
+    assertTrue(Files.isRegularFile(uploadFilesDir().resolve("____.txt")), "文件名应只包含 [A-Za-z0-9._-]");
   }
 
   @Test

@@ -68,10 +68,8 @@ class StudyJavaLogAspectComponentTest {
             (proxy, method, args) ->
                 switch (method.getName()) {
                   case "title" -> "用户管理";
-                  case "businessType" ->
-                      com.studyjava.domain.enums.BusinessType.UPDATE;
-                  case "operatorType" ->
-                      com.studyjava.domain.enums.OperatorType.MANAGE;
+                  case "businessType" -> com.studyjava.domain.enums.BusinessType.UPDATE;
+                  case "operatorType" -> com.studyjava.domain.enums.OperatorType.MANAGE;
                   case "isSaveRequestData" -> true;
                   case "isSaveResponseData" -> false;
                   default -> method.getDefaultValue();

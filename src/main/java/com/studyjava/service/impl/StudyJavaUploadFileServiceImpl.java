@@ -109,9 +109,7 @@ public class StudyJavaUploadFileServiceImpl implements StudyJavaUploadFileServic
     }
   }
 
-  /**
-   * 合并分片文件。先写入临时文件再替换目标，避免中途失败时把半截内容追加到已有文件上。
-   */
+  /** 合并分片文件。先写入临时文件再替换目标，避免中途失败时把半截内容追加到已有文件上。 */
   private void mergeFile(String fileName, int totalChunks) {
     Path mergedPath = resolveUploadPath(FOLDERS_LARGE_PATH, fileName);
     Path tempPath = resolveUploadPath(FOLDERS_LARGE_PATH, fileName + ".merging");

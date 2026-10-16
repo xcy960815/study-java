@@ -53,15 +53,13 @@ public class JvmLabController {
 
   @GetMapping("/threads/dump")
   @PreAuthorize("monitor:jvm:thread")
-  public List<ThreadDumpEntry> threadDump(
-      @RequestParam(defaultValue = "100") int maxDepth) {
+  public List<ThreadDumpEntry> threadDump(@RequestParam(defaultValue = "100") int maxDepth) {
     return diagnosticsService.getThreadDump(maxDepth);
   }
 
   @GetMapping("/threads/deadlocks")
   @PreAuthorize("monitor:jvm:thread")
-  public List<ThreadDumpEntry> deadlocks(
-      @RequestParam(defaultValue = "100") int maxDepth) {
+  public List<ThreadDumpEntry> deadlocks(@RequestParam(defaultValue = "100") int maxDepth) {
     return diagnosticsService.getDeadlocks(maxDepth);
   }
 }

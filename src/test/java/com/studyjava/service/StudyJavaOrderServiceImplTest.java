@@ -30,8 +30,8 @@ import java.util.stream.IntStream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.InOrder;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
@@ -43,11 +43,11 @@ import com.studyjava.domain.dao.StudyJavaGoodsDao;
 import com.studyjava.domain.dao.StudyJavaOrderDao;
 import com.studyjava.domain.dao.StudyJavaOrderItemDao;
 import com.studyjava.domain.dao.StudyJavaOrderPaymentDao;
+import com.studyjava.domain.dto.StudyJavaOrderDto;
+import com.studyjava.domain.dto.StudyJavaOrderTransitionDto;
 import com.studyjava.domain.dto.StudyJavaPayOrderDto;
 import com.studyjava.domain.dto.StudyJavaPlaceOrderDto;
 import com.studyjava.domain.dto.StudyJavaPlaceOrderItemDto;
-import com.studyjava.domain.dto.StudyJavaOrderDto;
-import com.studyjava.domain.dto.StudyJavaOrderTransitionDto;
 import com.studyjava.domain.enums.OrderAction;
 import com.studyjava.domain.enums.OrderStatus;
 import com.studyjava.domain.enums.PaymentStatus;
@@ -125,8 +125,7 @@ class StudyJavaOrderServiceImplTest {
     verify(paymentStrategy)
         .pay(
             argThat(
-                command ->
-                    command.orderNo().equals("ORDER-10") && command.amount().equals(500)));
+                command -> command.orderNo().equals("ORDER-10") && command.amount().equals(500)));
     verify(eventPublisher)
         .publishEvent(
             argThat(
@@ -151,8 +150,7 @@ class StudyJavaOrderServiceImplTest {
     existingPayment.setTransactionNo("ALI-EXISTING");
     when(orderMapper.getOrderByIdForUpdate(10L)).thenReturn(paidOrder);
     when(orderPaymentMapper.insertIfAbsent(any())).thenReturn(0);
-    when(orderPaymentMapper.getByRequestIdForUpdate("same-request"))
-        .thenReturn(existingPayment);
+    when(orderPaymentMapper.getByRequestIdForUpdate("same-request")).thenReturn(existingPayment);
 
     StudyJavaPaymentVo result =
         orderService.payOrder(
@@ -183,8 +181,7 @@ class StudyJavaOrderServiceImplTest {
         orderService.placeOrder(
             placeOrder(
                 List.of(
-                    new StudyJavaPlaceOrderItemDto(2L, 1),
-                    new StudyJavaPlaceOrderItemDto(1L, 2))));
+                    new StudyJavaPlaceOrderItemDto(2L, 1), new StudyJavaPlaceOrderItemDto(1L, 2))));
 
     assertEquals(99L, result.getOrderId());
     assertEquals(320, result.getTotalPrice());
@@ -199,9 +196,7 @@ class StudyJavaOrderServiceImplTest {
                 orderItems ->
                     List.of(1L, 2L)
                         .equals(
-                            orderItems.stream()
-                                .map(StudyJavaOrderItemDao::getGoodsId)
-                                .toList())));
+                            orderItems.stream().map(StudyJavaOrderItemDao::getGoodsId).toList())));
   }
 
   @Test
@@ -334,8 +329,7 @@ class StudyJavaOrderServiceImplTest {
 
   @Test
   void reportsConcurrentStateChange() {
-    when(orderMapper.getOrderInfo(any()))
-        .thenReturn(order(10L, OrderStatus.PENDING_PAYMENT));
+    when(orderMapper.getOrderInfo(any())).thenReturn(order(10L, OrderStatus.PENDING_PAYMENT));
     when(orderMapper.transitionOrder(
             eq(10L),
             eq(OrderStatus.PENDING_PAYMENT.getCode()),

@@ -86,8 +86,9 @@ class StudyJavaAiServiceTest {
 
   @Test
   void handleResponseThrowsAiExceptionWithApiErrorDetails() {
-    String body = "{\"error\":{\"message\":\"Invalid API key\","
-        + "\"type\":\"invalid_request_error\",\"code\":\"invalid_api_key\"}}";
+    String body =
+        "{\"error\":{\"message\":\"Invalid API key\","
+            + "\"type\":\"invalid_request_error\",\"code\":\"invalid_api_key\"}}";
 
     StudyJavaAiException exception =
         assertThrows(
@@ -105,11 +106,9 @@ class StudyJavaAiServiceTest {
             RuntimeException.class,
             () ->
                 aiService.parse(
-                    stringResponse(500, "<html>boom</html>"),
-                    StudyJavaDeepSeekModelsDto.class));
+                    stringResponse(500, "<html>boom</html>"), StudyJavaDeepSeekModelsDto.class));
 
-    assertEquals(
-        "请求失败，状态码：500，内容：<html>boom</html>", exception.getMessage());
+    assertEquals("请求失败，状态码：500，内容：<html>boom</html>", exception.getMessage());
   }
 
   @Test
@@ -137,13 +136,11 @@ class StudyJavaAiServiceTest {
 
   @Test
   void readResponseLinesThrowsAiExceptionOnNonSuccessStatus() {
-    String body =
-        "{\"error\":{\"message\":\"Quota exhausted\",\"code\":\"insufficient_balance\"}}";
+    String body = "{\"error\":{\"message\":\"Quota exhausted\",\"code\":\"insufficient_balance\"}}";
 
     StudyJavaAiException exception =
         assertThrows(
-            StudyJavaAiException.class,
-            () -> aiService.read(streamResponse(429, body), emitter));
+            StudyJavaAiException.class, () -> aiService.read(streamResponse(429, body), emitter));
 
     assertEquals("insufficient_balance", exception.getStatusCode());
   }

@@ -2,9 +2,7 @@ package com.studyjava.domain.order;
 
 import com.studyjava.domain.enums.PaymentType;
 
-/**
- * 订单领域事件。使用 sealed interface 限定事件集合，新增事件时编译器会提醒补全 switch 分支。
- */
+/** 订单领域事件。使用 sealed interface 限定事件集合，新增事件时编译器会提醒补全 switch 分支。 */
 public sealed interface OrderEvent
     permits OrderEvent.Pay,
         OrderEvent.Prepare,

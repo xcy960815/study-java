@@ -35,8 +35,7 @@ public class StudyJavaGoodsServiceImpl implements StudyJavaGoodsService {
     if (categoryId != null && categoryId != 0) {
       query.setCategoryIds(studyJavaGoodsCategoryService.listSelfAndDescendantIds(categoryId));
     }
-    IPage<StudyJavaGoodsDao> studyJavaGoodsDaoPage =
-        studyJavaGoodsMapper.getGoodsList(page, query);
+    IPage<StudyJavaGoodsDao> studyJavaGoodsDaoPage = studyJavaGoodsMapper.getGoodsList(page, query);
     List<StudyJavaGoodsVo> studyJavaGoodsVoList =
         studyJavaGoodsDaoPage.getRecords().stream().map(this::dao2Vo).toList();
     // 创建新的 IPage 对象
