@@ -842,7 +842,7 @@ CREATE TABLE `study_java_sys_menu` (
   PRIMARY KEY (`id`) USING BTREE,
   KEY `idx_parent_id` (`parent_id`),
   KEY `idx_menu_type` (`menu_type`)
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='系统菜单表';
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='系统菜单表';
 
 -- ----------------------------
 -- Records of study_java_sys_menu
@@ -866,6 +866,9 @@ INSERT INTO `study_java_sys_menu` (`id`, `parent_id`, `menu_name`, `path`, `comp
 INSERT INTO `study_java_sys_menu` (`id`, `parent_id`, `menu_name`, `path`, `component`, `icon`, `menu_type`, `perms`, `order_num`, `create_time`, `update_time`, `is_deleted`, `create_by`, `update_by`, `remark`) VALUES (19, 17, 'JVM 诊断查询', NULL, NULL, NULL, 2, 'monitor:jvm:query', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0, 'system', NULL, 'Java/JVM 能力实验室基础查询权限');
 INSERT INTO `study_java_sys_menu` (`id`, `parent_id`, `menu_name`, `path`, `component`, `icon`, `menu_type`, `perms`, `order_num`, `create_time`, `update_time`, `is_deleted`, `create_by`, `update_by`, `remark`) VALUES (20, 17, 'Thread Dump', NULL, NULL, NULL, 2, 'monitor:jvm:thread', 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0, 'system', NULL, 'Java/JVM 能力实验室线程诊断权限');
 INSERT INTO `study_java_sys_menu` (`id`, `parent_id`, `menu_name`, `path`, `component`, `icon`, `menu_type`, `perms`, `order_num`, `create_time`, `update_time`, `is_deleted`, `create_by`, `update_by`, `remark`) VALUES (21, 17, 'JFR 管理', NULL, NULL, NULL, 2, 'monitor:jfr:manage', 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0, 'system', NULL, 'Java/JVM 能力实验室 JFR 管理权限');
+INSERT INTO `study_java_sys_menu` (`id`, `parent_id`, `menu_name`, `path`, `component`, `icon`, `menu_type`, `perms`, `order_num`, `create_time`, `update_time`, `is_deleted`, `create_by`, `update_by`, `remark`) VALUES (22, NULL, 'Java 实验室', '/lab', 'components/layout/index.vue', 'Cpu', 0, '', 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0, 'system', NULL, 'Java/JVM 能力实验室');
+INSERT INTO `study_java_sys_menu` (`id`, `parent_id`, `menu_name`, `path`, `component`, `icon`, `menu_type`, `perms`, `order_num`, `create_time`, `update_time`, `is_deleted`, `create_by`, `update_by`, `remark`) VALUES (23, 22, '虚拟线程基准', '/lab/virtual-thread', 'views/lab/virtual-thread/index.vue', 'Histogram', 1, '', 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0, 'system', NULL, '平台线程池与虚拟线程吞吐对比');
+INSERT INTO `study_java_sys_menu` (`id`, `parent_id`, `menu_name`, `path`, `component`, `icon`, `menu_type`, `perms`, `order_num`, `create_time`, `update_time`, `is_deleted`, `create_by`, `update_by`, `remark`) VALUES (24, 22, '虚拟线程基准查询', NULL, NULL, NULL, 2, 'monitor:vthread:query', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0, 'system', NULL, '虚拟线程基准测试执行权限');
 COMMIT;
 
 -- ----------------------------
@@ -1337,7 +1340,7 @@ CREATE TABLE `study_java_sys_role_menus` (
   UNIQUE KEY `uk_role_menu` (`role_id`,`menu_id`) COMMENT '角色菜单唯一约束',
   KEY `idx_role_id` (`role_id`) COMMENT '角色ID索引',
   KEY `idx_menu_id` (`menu_id`) COMMENT '菜单ID索引'
-) ENGINE=InnoDB AUTO_INCREMENT=60 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='角色菜单关联表';
+) ENGINE=InnoDB AUTO_INCREMENT=66 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='角色菜单关联表';
 
 -- ----------------------------
 -- Records of study_java_sys_role_menus
@@ -1361,6 +1364,12 @@ INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (56,
 INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (57, 101, 19);
 INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (58, 101, 20);
 INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (59, 101, 21);
+INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (60, 100, 22);
+INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (61, 100, 23);
+INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (62, 100, 24);
+INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (63, 101, 22);
+INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (64, 101, 23);
+INSERT INTO `study_java_sys_role_menus` (`id`, `role_id`, `menu_id`) VALUES (65, 101, 24);
 COMMIT;
 
 -- ----------------------------
