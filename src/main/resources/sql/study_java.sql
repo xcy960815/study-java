@@ -1045,4 +1045,18 @@ INSERT INTO `study_java_sys_user_roles` (`id`, `user_id`, `role_id`) VALUES (6, 
 INSERT INTO `study_java_sys_user_roles` (`id`, `user_id`, `role_id`) VALUES (4, 8, 101);
 COMMIT;
 
+-- ----------------------------
+-- Table structure for study_java_server_metrics
+-- ----------------------------
+DROP TABLE IF EXISTS `study_java_server_metrics`;
+CREATE TABLE `study_java_server_metrics` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `metric_key` varchar(32) NOT NULL COMMENT '指标键（cpu_usage/memory_usage/jvm_usage/disk_usage）',
+  `metric_value` decimal(10,2) NOT NULL COMMENT '采样值（百分比）',
+  `sampled_at` datetime NOT NULL COMMENT '采样时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_metric_sampled` (`metric_key`,`sampled_at`) COMMENT '指标采样时间唯一约束',
+  KEY `idx_sampled_at` (`sampled_at`) COMMENT '采样时间索引'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='服务器监控历史采样表';
+
 SET FOREIGN_KEY_CHECKS = 1;

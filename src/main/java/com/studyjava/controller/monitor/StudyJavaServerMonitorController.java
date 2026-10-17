@@ -9,9 +9,12 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.studyjava.domain.vo.StudyJavaServerInfoVo;
+import com.studyjava.domain.vo.StudyJavaServerMetricsHistoryVo;
+import com.studyjava.service.StudyJavaServerMetricsService;
 import com.studyjava.service.StudyJavaServerMonitorService;
 
 import lombok.RequiredArgsConstructor;
@@ -29,6 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 public class StudyJavaServerMonitorController {
 
   private final StudyJavaServerMonitorService serverMonitorService;
+  private final StudyJavaServerMetricsService serverMetricsService;
   private final SimpMessagingTemplate messagingTemplate;
   private ScheduledExecutorService webSocketPushScheduler;
 
@@ -41,6 +45,20 @@ public class StudyJavaServerMonitorController {
   public ResponseEntity<StudyJavaServerInfoVo> getServerInfo() {
     StudyJavaServerInfoVo serverInfo = serverMonitorService.getServerInfo();
     return ResponseEntity.ok(serverInfo);
+  }
+
+  /**
+   * 查询服务器监控指标历史趋势
+   *
+   * @param metricKey 指标键（cpu_usage/memory_usage/jvm_usage/disk_usage）
+   * @param start Unix 秒级起始时间（含）
+   * @param end Unix 秒级结束时间（含）
+   * @return 指标趋势数据（label/unit/points）
+   */
+  @GetMapping("/history")
+  public ResponseEntity<StudyJavaServerMetricsHistoryVo> getServerMetricsHistory(
+      @RequestParam String metricKey, @RequestParam long start, @RequestParam long end) {
+    return ResponseEntity.ok(serverMetricsService.getHistory(metricKey, start, end));
   }
 
   /**

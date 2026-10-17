@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.studyjava.mapper.StudyJavaServerMetricMapper">
+
+    <resultMap id="BaseResultMap" type="com.studyjava.domain.dao.StudyJavaServerMetricDao">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="metricKey" column="metric_key" jdbcType="VARCHAR"/>
+        <result property="metricValue" column="metric_value" jdbcType="DECIMAL"/>
+        <result property="sampledAt" column="sampled_at" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!-- 唯一键 (metric_key, sampled_at) 冲突时忽略写入，避免重复采样产生冗余行 -->
+    <insert id="insertIgnoreBatch">
+        insert ignore into study_java_server_metrics (metric_key, metric_value, sampled_at)
+        values
+        <foreach collection="records" item="record" separator=",">
+            (#{record.metricKey,jdbcType=VARCHAR},
+             #{record.metricValue,jdbcType=DECIMAL},
+             #{record.sampledAt,jdbcType=TIMESTAMP})
+        </foreach>
+    </insert>
+
+    <select id="selectHistory" resultMap="BaseResultMap">
+        select id, metric_key, metric_value, sampled_at
+        from study_java_server_metrics
+        where metric_key = #{metricKey,jdbcType=VARCHAR}
+          and sampled_at &gt;= #{start,jdbcType=TIMESTAMP}
+          and sampled_at &lt;= #{end,jdbcType=TIMESTAMP}
+        order by sampled_at asc
+    </select>
+
+    <!-- 时序数据过期后直接物理删除，防止表无限增长 -->
+    <delete id="deleteSampledBefore">
+        delete from study_java_server_metrics
+        where sampled_at &lt; #{cutoff,jdbcType=TIMESTAMP}
+    </delete>
+</mapper>
