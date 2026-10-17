@@ -24,7 +24,6 @@ public class AuthInterceptorConfig implements WebMvcConfigurer {
           "/refreshToken",
           "/captcha",
           "/test/**",
-          "/ollama/**",
           "/deepseek/**",
           "/v1/chat/completions",
           "/health");

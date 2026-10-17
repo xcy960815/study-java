@@ -4,7 +4,7 @@
 
 - `study-java` 是 Java 21 / Spring Boot 3.1.4 后端 API 项目。
 - 主包名是 `com.studyjava`；应用入口是 `src/main/java/com/studyjava/StudyJavaApplication.java`。
-- 主要能力：登录/注册/验证码、JWT + Redis 会话校验、权限字符串校验、用户/角色/菜单/商品/订单/数据字典、文件上传、操作日志、服务器监控、DeepSeek 与 Ollama 集成。
+- 主要能力：登录/注册/验证码、JWT + Redis 会话校验、权限字符串校验、用户/角色/菜单/商品/订单/数据字典、文件上传、服务器监控、DeepSeek 集成。
 - 持久层使用 MyBatis Plus + XML mapper；mapper XML 位于 `src/main/resources/mapper/`，数据库初始化 SQL 位于 `src/main/resources/sql/study_java.sql`。
 - Maven profile 会过滤运行配置：`dev` -> `8082` + `/dev-api`，`pre` -> `8083` + `/pre-api`，`prod` -> `8084` + `/prod-api`。
 
@@ -60,5 +60,4 @@ docker compose --env-file .env up -d
 - `src/main/resources/dump.rdb` 是二进制 Redis dump，不要手动编辑。
 - MyBatis XML 的 namespace 必须和 mapper 接口保持一致。
 - 大多数接口受 `AuthInterceptorComponent` 保护；公开路径在 `AuthInterceptorConfig` 中维护。
-- `@Log` 会通过 AOP 写操作日志；只在需要审计的接口上使用。
 - DeepSeek、Redis、MySQL 的部署配置应来自环境变量。

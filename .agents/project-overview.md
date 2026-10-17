@@ -7,7 +7,6 @@
 AI 集成包括：
 
 - DeepSeek：读取 `deepseek.api.key` 和 `deepseek.api.base-url`。
-- 本地 Ollama：代码中固定访问 `http://localhost:11434`。
 
 ## 运行形态
 
@@ -24,7 +23,7 @@ AI 集成包括：
 ## 主要目录
 
 - `src/main/java/com/studyjava/controller/`：REST 控制器。
-- `src/main/java/com/studyjava/controller/monitor/`：服务器、报表、操作日志监控 API。
+- `src/main/java/com/studyjava/controller/monitor/`：服务器、报表监控 API。
 - `src/main/java/com/studyjava/service/`：service 接口和 AI 基类。
 - `src/main/java/com/studyjava/service/impl/`：service 实现。
 - `src/main/java/com/studyjava/domain/dao/`：MyBatis 持久化/数据对象。
@@ -32,7 +31,7 @@ AI 集成包括：
 - `src/main/java/com/studyjava/domain/vo/`：接口响应对象，以及部分 AI/文件接口使用的请求对象。
 - `src/main/java/com/studyjava/mapper/`：MyBatis mapper 接口。
 - `src/main/resources/mapper/`：MyBatis XML SQL。
-- `src/main/java/com/studyjava/component/`：JWT、Redis 封装、认证拦截器、操作日志切面等横切组件。
+- `src/main/java/com/studyjava/component/`：JWT、Redis 封装、认证拦截器等横切组件。
 - `src/main/java/com/studyjava/config/`：Spring、Redis、MyBatis Plus、WebSocket、Kaptcha、上传、Jackson、线程池和拦截器配置。
 - `src/main/resources/sql/study_java.sql`：数据库 schema/seed SQL。
 - `docs/`：部署、本地开发和环境变量说明。
@@ -43,7 +42,6 @@ AI 集成包括：
 - MySQL：保存业务数据。
 - Redis：保存验证码、JWT 签名密钥、access token、refresh token 和缓存/会话类状态。
 - DeepSeek API：需要 `DEEPSEEK_API_KEY`；base URL 默认 `https://api.deepseek.com`。
-- Ollama：调用 Ollama 相关接口时，本机 `11434` 端口需要有服务。
 
 ## 生成物和本地状态
 

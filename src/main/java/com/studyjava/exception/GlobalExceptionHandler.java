@@ -19,7 +19,7 @@ public class GlobalExceptionHandler {
 
   // 处理 Ai 系列的抛错
   @ExceptionHandler({StudyJavaAiException.class})
-  public ResponseEntity<ErrorResponse> handleStudyJavaOllamaException(
+  public ResponseEntity<ErrorResponse> handleStudyJavaAiException(
       StudyJavaAiException error, HttpServletRequest request) {
     log.error("AI Service Error: {}", error.getErrorMessage(), error);
     return new ResponseEntity<>(

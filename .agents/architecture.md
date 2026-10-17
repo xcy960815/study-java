@@ -22,7 +22,6 @@
   - `/refreshToken`
   - `/captcha`
   - `/test/**`
-  - `/ollama/**`
   - `/deepseek/**`
   - `/v1/chat/completions`
   - `/health`
@@ -34,16 +33,14 @@
 - 权限/菜单：`StudyJavaSysRole*`、`StudyJavaSysMenu*`、`@PreAuthorize`。
 - 商品/订单：`StudyJavaGoods*`、`StudyJavaOrder*`。
 - 数据字典：`StudyJavaSysDataDict*`。
-- 操作日志：`@Log`、`StudyJavaLogAspectComponent`、`StudyJavaSysOperLog*`。
 - 文件上传：`StudyJavaUploadFileController`、`StudyJavaUploadFileServiceImpl`。
 - 监控：`controller/monitor/`、`StudyJavaServerMonitorService`、`DailyReportTask`。
-- AI：`StudyJavaAiService`、`StudyJavaDeepSeekServiceImpl`、`StudyJavaOllamaServiceImpl`。
+- AI：`StudyJavaAiService`、`StudyJavaDeepSeekServiceImpl`。
 
 ## AI 数据流
 
 - `StudyJavaAiService` 提供通用 HTTP 响应处理和 SSE 行读取逻辑。
 - DeepSeek 通过 `DeepSeekConfig` 读取 `deepseek.api.*`，使用 `java.net.http.HttpClient` 和 `aiTaskExecutor`。
-- Ollama 相关请求固定访问 `http://localhost:11434`，支持 models/tags/version/ps/show/delete/pull/completions。
 - 流式 completions 使用 `SseEmitter`；异步任务运行在线程池 bean `aiTaskExecutor` 上。
 
 ## 文件上传流
@@ -67,15 +64,13 @@
 3. 在 `src/main/resources/mapper/` 下新增 mapper XML，namespace 必须对应 mapper 接口。
 4. 新增 service 接口和实现。
 5. 新增 controller 路由和参数校验。
-6. 需要审计的接口加 `@Log`。
-7. 需要权限控制的接口加 `@PreAuthorize`。
+6. 需要权限控制的接口加 `@PreAuthorize`。
 8. schema 或 seed 数据变化时同步 `src/main/resources/sql/study_java.sql`。
 9. 添加或更新测试。
 
 ## 扩展点
 
 - 新受保护 API：controller + service + mapper，必要时加 `@PreAuthorize`。
-- 新操作日志：使用 `@Log(title = "...", businessType = BusinessType.X)`。
 - 新 AI provider：复用/继承 `StudyJavaAiService`，补配置、service、DTO/VO 和 controller。
 - 新定时任务：直接使用 Spring Scheduling；启动类已启用 `@EnableScheduling`。
 - 新分页查询：使用 `MybatisPlusConfig` 和 `BaseController` 的分页辅助。

@@ -3,9 +3,7 @@ package com.studyjava.controller;
 import org.springframework.web.bind.annotation.*;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.studyjava.annotation.Log;
 import com.studyjava.domain.dto.StudyJavaGoodsDto;
-import com.studyjava.domain.enums.BusinessType;
 import com.studyjava.domain.vo.StudyJavaGoodsVo;
 import com.studyjava.service.StudyJavaGoodsService;
 import com.studyjava.utils.PageResult;
@@ -46,7 +44,6 @@ public class StudyJavaGoodsController extends BaseController {
    * @param studyJavaGoodsDto 商品信息
    * @return Boolean
    */
-  @Log(title = "商品管理", businessType = BusinessType.INSERT)
   @com.studyjava.annotation.PreAuthorize("goods:add")
   @PutMapping("/insertGoods")
   public Boolean insertGoods(@Valid @RequestBody StudyJavaGoodsDto studyJavaGoodsDto) {

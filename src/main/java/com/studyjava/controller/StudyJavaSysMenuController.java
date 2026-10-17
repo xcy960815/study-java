@@ -8,9 +8,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.studyjava.annotation.Log;
 import com.studyjava.domain.dto.StudyJavaSysMenuDto;
-import com.studyjava.domain.enums.BusinessType;
 import com.studyjava.domain.vo.StudyJavaSysMenuVo;
 import com.studyjava.exception.StudyJavaException;
 import com.studyjava.service.StudyJavaSysMenuService;
@@ -41,7 +39,6 @@ public class StudyJavaSysMenuController extends BaseController {
    * @param studyJavaSysMenuDto 查询条件
    * @return PageResult<StudyJavaSysMenuVo>
    */
-  @Log(title = "菜单管理", businessType = BusinessType.QUERY)
   @com.studyjava.annotation.PreAuthorize("system:menu:query")
   @GetMapping("/getMenuList")
   public PageResult<StudyJavaSysMenuVo> getMenuList(
@@ -58,7 +55,6 @@ public class StudyJavaSysMenuController extends BaseController {
    *
    * @return List<StudyJavaSysMenuVo>
    */
-  @Log(title = "菜单管理", businessType = BusinessType.QUERY)
   @GetMapping("/getRoutes")
   public List<StudyJavaSysMenuVo> getRoutes() {
     List<StudyJavaSysMenuVo> userMenuList = studyJavaSysMenuService.getRoutes();
@@ -71,7 +67,6 @@ public class StudyJavaSysMenuController extends BaseController {
    * @param id 主键
    * @return 菜单详情
    */
-  @Log(title = "菜单管理", businessType = BusinessType.QUERY)
   @GetMapping("/getMenuInfo")
   public StudyJavaSysMenuVo getMenuInfo(@RequestParam Serializable id) {
     StudyJavaSysMenuVo studyJavaSysMenuVo = studyJavaSysMenuService.getMenuInfo(id);
@@ -87,7 +82,6 @@ public class StudyJavaSysMenuController extends BaseController {
    * @param studyJavaSysMenuDto 菜单信息
    * @return 新增结果
    */
-  @Log(title = "菜单管理", businessType = BusinessType.INSERT)
   @com.studyjava.annotation.PreAuthorize("system:menu:add")
   @PostMapping("/insertMenu")
   public Boolean insertMenu(@Valid @RequestBody StudyJavaSysMenuDto studyJavaSysMenuDto) {
@@ -100,7 +94,6 @@ public class StudyJavaSysMenuController extends BaseController {
    * @param studyJavaSysMenuDto 菜单信息
    * @return 更新结果
    */
-  @Log(title = "菜单管理", businessType = BusinessType.UPDATE)
   @com.studyjava.annotation.PreAuthorize("system:menu:edit")
   @PutMapping("/updateMenu")
   public Boolean updateMenu(@Valid @RequestBody StudyJavaSysMenuDto studyJavaSysMenuDto) {
@@ -116,7 +109,6 @@ public class StudyJavaSysMenuController extends BaseController {
    * @param studyJavaSysMenuDto StudyJavaSysMenuDto
    * @return 删除结果
    */
-  @Log(title = "菜单管理", businessType = BusinessType.DELETE)
   @com.studyjava.annotation.PreAuthorize("system:menu:remove")
   @DeleteMapping("/deleteMenu")
   public Boolean deleteMenu(@RequestBody StudyJavaSysMenuDto studyJavaSysMenuDto) {
@@ -128,7 +120,6 @@ public class StudyJavaSysMenuController extends BaseController {
    *
    * @return PageResult<StudyJavaSysMenuVo>
    */
-  @Log(title = "菜单管理", businessType = BusinessType.QUERY)
   @GetMapping("/getMenuTree")
   public PageResult<StudyJavaSysMenuVo> getMenuTree(
       @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
@@ -144,7 +135,6 @@ public class StudyJavaSysMenuController extends BaseController {
   }
 
   /** 获取所有菜单树 */
-  @Log(title = "菜单管理", businessType = BusinessType.QUERY)
   @GetMapping("/getAllMenuTree")
   public List<StudyJavaSysMenuVo> getAllMenuTree() {
     List<StudyJavaSysMenuVo> allMenuList = studyJavaSysMenuService.getAllMenuList();

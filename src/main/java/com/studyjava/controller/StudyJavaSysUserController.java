@@ -6,9 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.studyjava.annotation.Log;
 import com.studyjava.domain.dto.StudyJavaSysUserDto;
-import com.studyjava.domain.enums.BusinessType;
 import com.studyjava.domain.vo.StudyJavaSysUserVo;
 import com.studyjava.exception.StudyJavaException;
 import com.studyjava.service.StudyJavaSysUserService;
@@ -33,7 +31,6 @@ public class StudyJavaSysUserController extends BaseController {
    * @param studyJavaUser StudyJavaSysUserDto
    * @return PageResult<StudyJavaSysUserVo>
    */
-  @Log(title = "用户管理", businessType = BusinessType.QUERY)
   @com.studyjava.annotation.PreAuthorize("system:user:query")
   @PostMapping("/getUserList")
   public PageResult<StudyJavaSysUserVo> getUserList(
@@ -50,7 +47,6 @@ public class StudyJavaSysUserController extends BaseController {
    *
    * @return StudyJavaSysUserVo
    */
-  @Log(title = "用户管理", businessType = BusinessType.QUERY)
   @GetMapping("/getUserInfo")
   public StudyJavaSysUserVo getUserInfo() {
     return studyJavaSysUserService.getUserInfo();
@@ -64,7 +60,6 @@ public class StudyJavaSysUserController extends BaseController {
    * @param studyJavaSysUser StudyJavaSysUserDto
    * @return Boolean
    */
-  @Log(title = "用户管理", businessType = BusinessType.UPDATE)
   @com.studyjava.annotation.PreAuthorize("system:user:edit")
   @PostMapping("/updateUser")
   public Boolean updateUser(@Valid @RequestBody StudyJavaSysUserDto studyJavaSysUser) {
@@ -85,7 +80,6 @@ public class StudyJavaSysUserController extends BaseController {
    * @param file MultipartFile
    * @return String
    */
-  @Log(title = "用户管理", businessType = BusinessType.UPDATE)
   @PostMapping("/updateUserAvatar")
   public String updateUserAvatar(
       @RequestParam("userId") String userId, @RequestParam("file") MultipartFile file) {
@@ -102,7 +96,6 @@ public class StudyJavaSysUserController extends BaseController {
    * @param studyJavaUser StudyJavaSysUserDto
    * @return Boolean
    */
-  @Log(title = "用户管理", businessType = BusinessType.INSERT)
   @com.studyjava.annotation.PreAuthorize("system:user:add")
   @PostMapping("/insertUser")
   public Boolean insertUser(@Valid @RequestBody StudyJavaSysUserDto studyJavaUser) {
@@ -116,7 +109,6 @@ public class StudyJavaSysUserController extends BaseController {
    * @param studyJavaSysUserDto StudyJavaSysUserDto
    * @return Boolean
    */
-  @Log(title = "用户管理", businessType = BusinessType.DELETE)
   @com.studyjava.annotation.PreAuthorize("system:user:remove")
   @DeleteMapping("/deleteUser")
   public Boolean deleteUser(@RequestBody StudyJavaSysUserDto studyJavaSysUserDto) {
@@ -129,7 +121,6 @@ public class StudyJavaSysUserController extends BaseController {
    *
    * @return Boolean
    */
-  @Log(title = "用户管理", businessType = BusinessType.UPDATE)
   @PostMapping("/updateUserPassword")
   public Boolean updateUserPassword(@RequestBody StudyJavaSysUserDto studyJavaSysUserDto) {
     // 返回插入结果

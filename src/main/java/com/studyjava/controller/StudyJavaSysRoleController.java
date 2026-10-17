@@ -7,9 +7,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.studyjava.annotation.Log;
 import com.studyjava.domain.dto.StudyJavaSysRoleDto;
-import com.studyjava.domain.enums.BusinessType;
 import com.studyjava.domain.vo.StudyJavaSysRoleVo;
 import com.studyjava.service.StudyJavaSysRoleService;
 import com.studyjava.utils.PageResult;
@@ -21,7 +19,6 @@ public class StudyJavaSysRoleController {
   @Autowired private StudyJavaSysRoleService studyJavaSysRoleService;
 
   /** 获取角色列表（分页） */
-  @Log(title = "角色管理", businessType = BusinessType.QUERY)
   @com.studyjava.annotation.PreAuthorize("system:role:query")
   @GetMapping("/getRoleList")
   public PageResult<StudyJavaSysRoleVo> getRoleList(
@@ -34,7 +31,6 @@ public class StudyJavaSysRoleController {
   }
 
   /** 获取所有角色列表（不分页） */
-  @Log(title = "角色管理", businessType = BusinessType.QUERY)
   @GetMapping("/getAllRoleList")
   public List<StudyJavaSysRoleVo> getAllRoleList() {
     List<StudyJavaSysRoleVo> studyJavaSysRoleList = studyJavaSysRoleService.getAllRoleList();
@@ -42,7 +38,6 @@ public class StudyJavaSysRoleController {
   }
 
   /** 获取角色详细信息 */
-  @Log(title = "角色管理", businessType = BusinessType.QUERY)
   @com.studyjava.annotation.PreAuthorize("system:role:query")
   @GetMapping("/getRoleInfo")
   public StudyJavaSysRoleVo getRoleInfo(@RequestParam Long id) {
@@ -52,7 +47,6 @@ public class StudyJavaSysRoleController {
   }
 
   /** 新增角色 */
-  @Log(title = "角色管理", businessType = BusinessType.INSERT)
   @com.studyjava.annotation.PreAuthorize("system:role:add")
   @PostMapping("/insertRole")
   public Boolean insertRole(@Validated @RequestBody StudyJavaSysRoleDto roleDto) {
@@ -60,7 +54,6 @@ public class StudyJavaSysRoleController {
   }
 
   /** 修改角色 */
-  @Log(title = "角色管理", businessType = BusinessType.UPDATE)
   @com.studyjava.annotation.PreAuthorize("system:role:edit")
   @PutMapping("/updateRole")
   public Boolean updateRole(@Validated @RequestBody StudyJavaSysRoleDto roleDto) {
@@ -68,7 +61,6 @@ public class StudyJavaSysRoleController {
   }
 
   /** 停用角色 */
-  @Log(title = "角色管理", businessType = BusinessType.DELETE)
   @com.studyjava.annotation.PreAuthorize("system:role:remove")
   @DeleteMapping("/deleteRole")
   public Boolean deleteRole(@RequestBody StudyJavaSysRoleDto roleDto) {
@@ -76,7 +68,6 @@ public class StudyJavaSysRoleController {
   }
 
   /** 启用角色 */
-  @Log(title = "角色管理", businessType = BusinessType.UPDATE)
   @com.studyjava.annotation.PreAuthorize("system:role:edit")
   @PostMapping("/enableRole")
   public Boolean enableRole(@RequestBody StudyJavaSysRoleDto roleDto) {
@@ -85,7 +76,6 @@ public class StudyJavaSysRoleController {
   }
 
   /** 禁用角色 */
-  @Log(title = "角色管理", businessType = BusinessType.UPDATE)
   @com.studyjava.annotation.PreAuthorize("system:role:edit")
   @PostMapping("/disableRole")
   public Boolean disableRole(@RequestBody StudyJavaSysRoleDto roleDto) {

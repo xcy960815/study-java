@@ -28,7 +28,7 @@ mvn spotless:apply
 
 ## 如何添加回归测试
 
-优先写不依赖真实 MySQL、Redis、DeepSeek 或 Ollama 的小测试；只有明确要验证集成行为时才连接外部服务。
+优先写不依赖真实 MySQL、Redis 或 DeepSeek 的小测试；只有明确要验证集成行为时才连接外部服务。
 
 推荐起点：
 
@@ -52,7 +52,6 @@ mvn spotless:apply
 - 登录/注册依赖验证码 Redis key 和密码哈希。
 - MyBatis 测试需要 `src/main/resources/sql/study_java.sql` 或专门测试 fixture。
 - DeepSeek 测试应 mock HTTP 调用或只测试请求构建；不要在测试中使用真实 API key。
-- Ollama 测试不应默认假设本机有模型服务，除非明确标记为 integration/manual。
 
 ## AI 默认测试流程
 

@@ -22,17 +22,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
   public void configureAsyncSupport(AsyncSupportConfigurer configurer) {
     // 默认设置超时时间为1分钟
     configurer.setDefaultTimeout(NEVER_TIMEOUT);
-    //        TODO
-
-    // 自定义的拦截器
-    //        configurer.registerCallableInterceptors((request, response, handler) -> {
-    //            // 判断请求路径，如果是以 "ollama" 开头的接口，设置为永不超时
-    //            if (request.getRequestURI().startsWith("/ollama")) {
-    //                configurer.setDefaultTimeout(-1L);  // 永不超时
-    //            } else {
-    //                configurer.setDefaultTimeout(60000L);  // 其他接口超时为1分钟
-    //            }
-    //        });
   }
 
   /**
