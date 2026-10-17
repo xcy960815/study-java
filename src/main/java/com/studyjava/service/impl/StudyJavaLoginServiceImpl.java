@@ -44,8 +44,8 @@ public class StudyJavaLoginServiceImpl implements StudyJavaLoginService {
   /** 验证码 key 名 */
   private static final int CAPTCHA_EXPIRE_TIME_MINUTES = 5;
 
-  /** token 过期时间（与 JWT 本体过期时间保持一致：1 小时） */
-  private static final int TOKEN_EXPIRE_TIME_HOURS = 1;
+  /** token 过期时间（与 JWT 本体过期时间保持一致：24 小时） */
+  private static final int TOKEN_EXPIRE_TIME_HOURS = 24;
 
   /** refresh token 过期时间 */
   private static final int REFRESH_TOKEN_EXPIRE_TIME_DAYS = 7;

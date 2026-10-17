@@ -29,8 +29,8 @@ public class JwtTokenComponent {
   /** 秘钥在redis中的名称 */
   private static final String SECRET_KEY_NAME = "study-java-secret-key";
 
-  /** Access Token 过期时间（1小时） */
-  private static final long ACCESS_EXPIRATION_TIME = 3600000L;
+  /** Access Token 过期时间（24 小时） */
+  private static final long ACCESS_EXPIRATION_TIME = 86400000L;
 
   /** Refresh Token 过期时间（7天） */
   private static final long REFRESH_EXPIRATION_TIME = 604800000L;
