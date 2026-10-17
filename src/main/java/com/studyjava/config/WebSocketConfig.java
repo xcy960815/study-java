@@ -13,11 +13,16 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
   @Override
   public void registerStompEndpoints(StompEndpointRegistry registry) {
-    // 注册 WebSocket 端点
+    // 注册 WebSocket 端点（SockJS 传输，兼容旧版前端）
     registry
         .addEndpoint("/ws/server-monitor") // WebSocket 端点
         .setAllowedOriginPatterns("*") // 允许所有来源
         .withSockJS(); // 启用 SockJS 支持
+    // 注册原生 WebSocket 端点：新版前端直连原生 STOMP，避免 sockjs-client 注册 unload
+    // 监听器触发浏览器 Permissions policy violation（Chrome 115+ 默认禁用 unload）
+    registry
+        .addEndpoint("/ws/server-monitor-native") // 原生 WebSocket 端点
+        .setAllowedOriginPatterns("*"); // 允许所有来源
   }
 
   @Override
