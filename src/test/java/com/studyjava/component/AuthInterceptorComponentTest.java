@@ -48,7 +48,8 @@ class AuthInterceptorComponentTest {
   @BeforeEach
   void setUp() {
     interceptor = new AuthInterceptorComponent();
-    objectMapper = new ObjectMapper();
+    // 对齐 Spring Boot 自动配置：starter-json 携带的 jsr310 模块需注册，否则 ErrorResponse 的 LocalDateTime 序列化会失败
+    objectMapper = new ObjectMapper().findAndRegisterModules();
     ReflectionTestUtils.setField(interceptor, "jwtTokenComponent", jwtTokenComponent);
     ReflectionTestUtils.setField(interceptor, "redisComponent", redisComponent);
     ReflectionTestUtils.setField(interceptor, "objectMapper", objectMapper);

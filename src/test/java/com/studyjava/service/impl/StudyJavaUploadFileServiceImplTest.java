@@ -126,7 +126,7 @@ class StudyJavaUploadFileServiceImplTest {
   }
 
   @Test
-  void uploadLargeFileMergesChunksWhenComplete() {
+  void uploadLargeFileMergesChunksWhenComplete() throws IOException {
     String firstResult =
         service.uploadLargeFile(file("large.bin", "chunk-0-".getBytes()), "large.bin", 0, 2);
     String secondResult =
@@ -136,7 +136,7 @@ class StudyJavaUploadFileServiceImplTest {
     assertEquals("上传完成: large.bin", secondResult);
     Path merged = uploadLargeFilesDir().resolve("large.bin");
     assertTrue(Files.isRegularFile(merged));
-    assertEquals("chunk-0-chunk-1", readAllBytes(merged));
+    assertEquals("chunk-0-chunk-1", Files.readString(merged));
     Path chunk0 = uploadLargeFilesDir().resolve("large.bin.part.0");
     assertFalse(Files.exists(chunk0), "合并后分片应被删除");
   }
@@ -187,13 +187,5 @@ class StudyJavaUploadFileServiceImplTest {
     assertThrows(
         StudyJavaException.class,
         () -> service.uploadLargeFile(file("big.part", oversized), "big.bin", 0, 2));
-  }
-
-  private static byte[] readAllBytes(Path path) {
-    try {
-      return Files.readAllBytes(path);
-    } catch (IOException e) {
-      throw new IllegalStateException(e);
-    }
   }
 }

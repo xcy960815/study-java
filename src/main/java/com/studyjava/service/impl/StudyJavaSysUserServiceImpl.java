@@ -60,8 +60,11 @@ public class StudyJavaSysUserServiceImpl implements StudyJavaSysUserService {
     return studyJavaSysUserDao;
   }
 
-  /** Dao转Vo */
+  /** Dao转Vo，dao 为 null（如用户不存在）时返回 null，与 convertToVo 的空值约定一致 */
   private StudyJavaSysUserVo makeDao2Vo(StudyJavaSysUserDao studyJavaSysUserDao) {
+    if (studyJavaSysUserDao == null) {
+      return null;
+    }
     StudyJavaSysUserVo studyJavaSysUserVo = new StudyJavaSysUserVo();
     BeanUtils.copyProperties(studyJavaSysUserDao, studyJavaSysUserVo);
     return studyJavaSysUserVo;
